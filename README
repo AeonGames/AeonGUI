@@ -1,0 +1,51 @@
+AeonGUI README (09-13-2012)
+===========================
+
+This file contains the following sections:
+
+DESCRIPTION
+HISTORY
+COMPILATION
+LICENSE
+AUTHOR
+
+DESCRIPTION
+===========
+The AeonGUI library is intended as a portable graphic user interface library
+to be used primarily on video games and interactive media.
+Its goals are to keep the rendering engine separated from widget logic to make things easier for
+would be users (developers intending to use the library on their own product), 
+renderer writers (developers looking to implement support for a particular graphic API) and
+widget writers (developers looking to add new controls to the library).
+
+WARNING!!!: The library is not currently on a stable or even usable state.
+
+HISTORY
+=======
+The idea for the library was born around 2004 or 2005 under the name 'Glitch', 
+and has evolved overtime but never quite reached maturity.
+The name change to AeonGUI came about as a way to identify the library as part of the AeonGames brand
+and to avoid confusion since originaly the name 'GLitch' was chosen to emphasize OpenGL support,
+which is still the priority, but not the only graphic API supported.
+
+COMPILATION
+===========
+The library uses CMake to build the required files used to build the binary depending on the platform.
+For information on how to use CMake refer to www.cmake.org.
+The code is known to compile and run only under Linux and Windows at this time.
+
+LICENSE
+=======
+The library is released under the terms of the permisive Apache 2.0 license (http://www.apache.org/licenses/LICENSE-2.0)
+<Insert Objectivist Sermon Here>
+
+Some of the code and assets are not covered by the Apache license:
+
+core/md5  is Copyright (c) 2001 Alexander Peslyak, released under a BSD-like license
+core/crc  is Copyright (c) 2000 Michael Barr, placed under public domain.
+core/sha1 is Copyright (c) 2009 Micael Hildenborg, released under the BSD license.
+fonts     is Copyright (c) 2003 by Bitstream, Inc., refer to COPYRIGHT.TXT for license terms.
+
+AUTHOR
+======
+The only author (for now) of AeonGUI is Rodrigo Hernandez and can be reached at kwizatz at aeongames dot com.

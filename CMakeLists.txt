@@ -1,0 +1,58 @@
+cmake_minimum_required(VERSION 2.6)
+if(COMMAND cmake_policy)
+cmake_policy(SET CMP0003 NEW)
+endif(COMMAND cmake_policy)
+PROJECT(AeonGUI)
+INCLUDE(CPack)
+INCLUDE(FindSDL)
+INCLUDE(FindOpenGL)
+INCLUDE(FindFreetype)
+INCLUDE(FindDevIL)
+OPTION(RELEASE_BUILD "Build for Release")
+
+OPTION(USE_HASH_CRC  "Use CRC32 for Resource hashing")
+OPTION(USE_HASH_SHA1 "Use SHA1 for Resource hashing")
+OPTION(USE_HASH_MD5 "Use MD5 for Resource hashing")
+
+IF((USE_HASH_CRC AND USE_HASH_MD5) OR (USE_HASH_CRC AND USE_HASH_SHA1) OR (USE_HASH_MD5 AND USE_HASH_SHA1))
+MESSAGE(FATAL_ERROR "Must chose only one hashing algorithm")
+ENDIF((USE_HASH_CRC AND USE_HASH_MD5) OR (USE_HASH_CRC AND USE_HASH_SHA1) OR (USE_HASH_MD5 AND USE_HASH_SHA1))
+
+
+# I will be adding Java bindings in the near future, just check for the JNI and java (compiler?) for now.
+#INCLUDE(FindJNI)
+#IF(JNI_FOUND)
+#INCLUDE(FindJava)
+#ENDIF(JNI_FOUND)
+# if FreeType is not found we'll use Xlib on Unix, or GDI on Windows...
+# eventually
+INCLUDE(FindX11)
+IF(CMAKE_COMPILER_IS_GNUCXX)
+SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++0x -Wall")
+IF(RELEASE_BUILD)
+SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -DNDEBUG -fomit-frame-pointer -O3")
+ELSE(RELEASE_BUILD)
+SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -DDEBUG -g -O0")
+ENDIF(RELEASE_BUILD)
+# -std=c++0x is required to be able to include stdint.h as cstdint, weird, I know.
+ENDIF(CMAKE_COMPILER_IS_GNUCXX)
+
+IF(CMAKE_COMPILER_IS_GNUC)
+SET(CMAKE_C_FLAGS_RELEASE "-DNDEBUG -fomit-frame-pointer -O3")
+SET(CMAKE_C_FLAGS_DEBUG "-DDEBUG -g -O0")
+SET(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -Wall")
+ENDIF(CMAKE_COMPILER_IS_GNUC)
+
+IF(MSVC)
+ADD_DEFINITIONS(-D_CRT_SECURE_NO_WARNINGS)
+ENDIF(MSVC)
+
+
+#INCLUDE_DIRECTORIES(${CMAKE_CURRENT_SOURCE_DIR}/include ${CMAKE_CURRENT_SOURCE_DIR}/common ${CMAKE_CURRENT_SOURCE_DIR}/demos/common ${CMAKE_CURRENT_SOURCE_DIR}/core)
+INCLUDE_DIRECTORIES(include common demos/common core ${SDL_INCLUDE_DIR})
+IF(FREETYPE_FOUND)
+INCLUDE_DIRECTORIES(${FREETYPE_INCLUDE_DIR_ft2build} ${FREETYPE_INCLUDE_DIR_freetype2})
+ENDIF(FREETYPE_FOUND)
+SUBDIRS(core renderers tools demos)
+SET(EXECUTABLE_OUTPUT_PATH ${CMAKE_BINARY_DIR}/bin)
+SET(LIBRARY_OUTPUT_PATH  ${CMAKE_BINARY_DIR}/bin)
