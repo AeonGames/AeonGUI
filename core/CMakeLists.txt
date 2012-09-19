@@ -8,7 +8,6 @@ SET(AEONGUI_HEADERS
 ../include/Static.h
 ../include/Image.h
 ../include/Font.h
-../include/Event.h
 ../include/Renderer.h
 ../include/Integer.h
 ../include/Rect.h

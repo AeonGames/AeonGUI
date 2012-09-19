@@ -21,6 +21,7 @@ Copyright 2010-2012 Rodrigo Hernandez Cordoba
 
 void DrawCube ( float size )
 {
+#if 0
     glBegin ( GL_QUADS );
     glColor3f ( 0.0f, 0.0f, 1.0f );
     glVertex3f ( size, size, -size );
@@ -53,4 +54,63 @@ void DrawCube ( float size )
     glVertex3f ( size, -size, size );
     glVertex3f ( size, -size, -size );
     glEnd();
+#else
+    float cube [] = {
+     size, size, -size ,
+     0.0f, 0.0f, 1.0f ,
+     -size, size, -size ,
+     0.0f, 0.0f, 1.0f ,
+     -size, size, size ,
+     0.0f, 0.0f, 1.0f ,
+     size, size, size ,
+     0.0f, 0.0f, 1.0f ,
+     size, -size, size ,
+     1.0f, 0.5f, 0.0f ,
+     -size, -size, size ,
+     1.0f, 0.5f, 0.0f ,
+     -size, -size, -size ,
+     1.0f, 0.5f, 0.0f ,
+     size, -size, -size ,
+     1.0f, 0.5f, 0.0f ,
+     size, size, size ,
+     1.0f, 0.0f, 0.0f ,
+     -size, size, size ,
+     1.0f, 0.0f, 0.0f ,
+     -size, -size, size ,
+     1.0f, 0.0f, 0.0f ,
+     size, -size, size ,
+     1.0f, 0.0f, 0.0f ,
+     size, -size, -size ,
+     1.0f, 1.0f, 0.0f ,
+     -size, -size, -size ,
+     1.0f, 1.0f, 0.0f ,
+     -size, size, -size ,
+     1.0f, 1.0f, 0.0f ,
+     size, size, -size ,
+     1.0f, 1.0f, 0.0f ,
+     -size, size, size ,
+     0.0f, 1.0f, 0.0f ,
+     -size, size, -size ,
+     0.0f, 1.0f, 0.0f ,
+     -size, -size, -size ,
+     0.0f, 1.0f, 0.0f ,
+     -size, -size, size ,
+     0.0f, 1.0f, 0.0f ,
+     size, size, -size ,
+     1.0f, 0.0f, 1.0f ,
+     size, size, size ,
+     1.0f, 0.0f, 1.0f ,
+     size, -size, size ,
+     1.0f, 0.0f, 1.0f ,
+     size, -size, -size ,
+     1.0f, 0.0f, 1.0f
+    };
+    glVertexPointer(3,GL_FLOAT,sizeof(float)*6,cube);
+    glColorPointer(3,GL_FLOAT,sizeof(float)*6,cube+3);
+    glPushClientAttrib(GL_CLIENT_VERTEX_ARRAY_BIT);
+    glEnableClientState(GL_VERTEX_ARRAY);
+    glEnableClientState(GL_COLOR_ARRAY);
+    glDrawArrays(GL_QUADS,0,24);
+    glPopClientAttrib();
+#endif
 }
