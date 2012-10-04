@@ -19,6 +19,7 @@ Copyright 2010-2012 Rodrigo Hernandez Cordoba
 #include <gl/glu.h>
 #include <map>
 #include <cassert>
+#include "wglext.h"
 #include "OpenGLRenderer.h"
 #include "MainWindow.h"
 #include "glcommon.h"
@@ -69,6 +70,8 @@ Window::Window ( HINSTANCE hInstance )
     height = 480;
     int pf;
     RECT rect = {0, 0, width, height};
+    PFNWGLGETEXTENSIONSSTRINGARBPROC wglGetExtensionsStringARB = NULL;
+    PFNWGLCREATECONTEXTATTRIBSARBPROC wglCreateContextAttribsARB = NULL;
     if ( atom == 0 )
     {
         Register ( hInstance );
@@ -114,6 +117,27 @@ Window::Window ( HINSTANCE hInstance )
     SetPixelFormat ( hDC, pf, &pfd );
     hRC = wglCreateContext ( hDC );
     wglMakeCurrent ( hDC, hRC );
+    //---OpenGL 3.0 Context---//
+    wglGetExtensionsStringARB = ( PFNWGLGETEXTENSIONSSTRINGARBPROC ) wglGetProcAddress ( "wglGetExtensionsStringARB" );
+    if ( wglGetExtensionsStringARB != NULL )
+    {
+        if ( strstr ( wglGetExtensionsStringARB ( hDC ), "WGL_ARB_create_context" ) != NULL )
+        {
+            const int ctxAttribs[] =
+            {
+                WGL_CONTEXT_MAJOR_VERSION_ARB, 3,
+                WGL_CONTEXT_MINOR_VERSION_ARB, 1,
+                0
+            };
+
+            wglCreateContextAttribsARB = ( PFNWGLCREATECONTEXTATTRIBSARBPROC ) wglGetProcAddress ( "wglCreateContextAttribsARB" );
+            wglMakeCurrent ( hDC, NULL );
+            wglDeleteContext ( hRC );
+            hRC = wglCreateContextAttribsARB ( hDC, NULL, ctxAttribs );
+            wglMakeCurrent ( hDC, hRC );
+        }
+    }
+    //---OpenGL 3.0 Context---//
     ShowWindow ( hWnd, SW_SHOW );
     Windows[hWnd] = this;
     // Initialize OpenGL
