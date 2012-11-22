@@ -30,7 +30,8 @@ Copyright 2010-2012 Rodrigo Hernandez Cordoba
 class Window
 {
 public:
-    Window ( HINSTANCE hInstance );
+    Window ();
+    bool Initialize ( HINSTANCE hInstance );
     ~Window()
     {
         Windows.erase ( hWnd );
@@ -64,7 +65,9 @@ private:
 ATOM Window::atom = 0;
 std::map<HWND, Window*> Window::Windows = std::map<HWND, Window*>();
 
-Window::Window ( HINSTANCE hInstance )
+Window::Window () {}
+
+bool Window::Initialize ( HINSTANCE hInstance )
 {
     width  = 640;
     height = 480;
@@ -78,7 +81,7 @@ Window::Window ( HINSTANCE hInstance )
     }
     AdjustWindowRectEx ( &rect, WS_OVERLAPPEDWINDOW | WS_CLIPSIBLINGS | WS_CLIPCHILDREN, FALSE, WS_EX_APPWINDOW | WS_EX_WINDOWEDGE );
     hWnd = CreateWindowEx ( WS_EX_APPWINDOW | WS_EX_WINDOWEDGE,
-                            "WGL", "AeonGUI Windows OpenGL Demo",
+                            "WGL31", "AeonGUI Windows OpenGL Demo",
                             WS_OVERLAPPEDWINDOW | WS_CLIPSIBLINGS | WS_CLIPCHILDREN,
                             0, 0, // Location
                             rect.right - rect.left, rect.bottom - rect.top, // dimensions
@@ -176,10 +179,14 @@ Window::Window ( HINSTANCE hInstance )
     window = new AeonGUI::MainWindow ();
     image = new AeonGUI::Image ( logo_name, logo_width, logo_height, AeonGUI::Image::RGBA, AeonGUI::Image::BYTE, logo_data );
     font = new AeonGUI::Font ( Vera.data, Vera.size );
-    renderer.Initialize ( GetSystemMetrics ( SM_CXSCREEN ), GetSystemMetrics ( SM_CYSCREEN ) );
+    if ( !renderer.Initialize ( GetSystemMetrics ( SM_CXSCREEN ), GetSystemMetrics ( SM_CYSCREEN ) ) )
+    {
+        return false;
+    }
     renderer.SetFont ( font );
     std::wstring hello ( L"Hello World" );
     window->SetCaption ( hello );
+    return true;
 }
 
 void Window::RenderLoop()
@@ -217,7 +224,7 @@ void Window::Register ( HINSTANCE hInstance )
     wcex.hCursor = LoadCursor ( NULL, IDC_ARROW );
     wcex.hbrBackground = NULL;
     wcex.lpszMenuName = NULL;
-    wcex.lpszClassName = "WGL";
+    wcex.lpszClassName = "WGL31";
     wcex.hIconSm = NULL;
     Window::atom = RegisterClassEx ( &wcex );
 }
@@ -250,6 +257,10 @@ LRESULT Window::OnSize ( WPARAM type, WORD newwidth, WORD newheight )
     {
         height = 1;
     }
+    if ( width == 0 )
+    {
+        width = 1;
+    }
     glViewport ( 0, 0, width, height );
     glMatrixMode ( GL_PROJECTION );
     glLoadIdentity();
@@ -275,7 +286,11 @@ LRESULT Window::OnPaint()
 
 int WINAPI WinMain ( HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nCmdShow )
 {
-    Window window ( hInstance );
+    Window window;
+    if ( !window.Initialize ( hInstance ) )
+    {
+        return 0;
+    }
     MSG msg;
     memset ( &msg, 0, sizeof ( MSG ) );
     float rotation = 0.0f;
@@ -295,5 +310,5 @@ int WINAPI WinMain ( HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLi
         }
     }
     assert ( msg.message == WM_QUIT );
-    return msg.wParam;
+    return static_cast<int> ( msg.wParam );
 }

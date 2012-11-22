@@ -66,6 +66,9 @@ namespace AeonGUI
         float screen_texture_ratio_h;
         /// Card maximum texture size for texture atlas
         int max_texture_size;
+        uint32_t vert_shader;
+        uint32_t frag_shader;
+        uint32_t shader_program;
         static uint32_t TypeTable[];
         static uint32_t FormatTable[];
     };

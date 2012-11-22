@@ -271,5 +271,5 @@ int WINAPI WinMain ( HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLi
         }
     }
     assert ( msg.message == WM_QUIT );
-    return msg.wParam;
+    return static_cast<int> ( msg.wParam );
 }

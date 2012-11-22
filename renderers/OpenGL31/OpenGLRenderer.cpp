@@ -47,6 +47,21 @@ Copyright 2010-2012 Rodrigo Hernandez Cordoba
 
 namespace AeonGUI
 {
+    static const char* vert_shader_buffer =
+        "#version 140\n"
+        "uniform mat4 projection_matrix;\n"
+        "in  vec3  position;\n"
+        "void main()\n{\ngl_Position = projection_matrix * vec4(position,1.0);\n}\n";
+
+    static const char* frag_shader_buffer =
+        "#version 140\n"
+        "uniform sampler2D texture0;\n"
+        "uniform vec4 color;\n"
+        "in  vec2 final_texcoord;\n"
+        "out vec4 frag_color;\n"
+        "void main(void)\n{\nfrag_color = texture(texture0,final_texcoord) * color;\n}\n";
+    static char log_buffer[1024] = {0};
+
     uint32_t OpenGLRenderer::TypeTable[] =
     {
         GL_UNSIGNED_BYTE
@@ -64,7 +79,8 @@ namespace AeonGUI
         viewport_w ( 0 ), viewport_h ( 0 ),
         screen_texture ( 0 ), screen_bitmap ( NULL ),
         screen_texture_ratio_w ( 1.0f ),
-        screen_texture_ratio_h ( 1.0f )
+        screen_texture_ratio_h ( 1.0f ),
+        shader_program ( 0 )
     {
     }
 
@@ -115,6 +131,112 @@ namespace AeonGUI
         glTexImage2D ( GL_TEXTURE_2D, 0, GL_RGBA8, screen_texture_w, screen_texture_h, 0, GL_BGRA, GL_UNSIGNED_INT_8_8_8_8_REV, NULL );
         LOGERROR();
         screen_bitmap = new uint8_t[screen_w * screen_h * 4];
+
+        // Compile Shaders
+        GLint info_log_length;
+        GLint shader_code_length;
+
+        if ( ( vert_shader = glCreateShader ( GL_VERTEX_SHADER ) ) == 0 )
+        {
+            LOGERROR ();
+            return false;
+        }
+        if ( ( frag_shader = glCreateShader ( GL_FRAGMENT_SHADER ) ) == 0 )
+        {
+            LOGERROR ();
+            return false;
+        }
+
+        shader_code_length = static_cast<GLint> ( strlen ( vert_shader_buffer ) );
+        glShaderSource ( vert_shader, 1, ( const char ** ) &vert_shader_buffer, &shader_code_length );
+        LOGERROR();
+        shader_code_length = static_cast<GLint> ( strlen ( frag_shader_buffer ) );
+        glShaderSource ( frag_shader, 1, ( const char ** ) &frag_shader_buffer, &shader_code_length );
+        LOGERROR();
+
+
+        glCompileShader ( vert_shader );
+        LOGERROR();
+
+        glCompileShader ( frag_shader );
+        LOGERROR();
+
+        GLint compile_status;
+
+        glGetShaderiv ( vert_shader, GL_COMPILE_STATUS, &compile_status );
+        LOGERROR();
+        glGetShaderiv ( vert_shader, GL_INFO_LOG_LENGTH, &info_log_length );
+        LOGERROR();
+
+        if ( info_log_length > 1 )
+        {
+            info_log_length = std::min ( info_log_length, 1024 );
+            glGetShaderInfoLog ( vert_shader, info_log_length, NULL, log_buffer );
+#ifdef WIN32
+            printf ( "Error: %s\n", log_buffer );
+#else
+            printf ( "\033[31mError:\033[0m %s\n", log_buffer );
+#endif
+        }
+
+        if ( compile_status != GL_TRUE )
+        {
+            return false;
+        }
+
+        glGetShaderiv ( frag_shader, GL_COMPILE_STATUS, &compile_status );
+        LOGERROR();
+        glGetShaderiv ( frag_shader, GL_INFO_LOG_LENGTH, &info_log_length );
+        LOGERROR();
+
+        if ( info_log_length > 1 )
+        {
+            info_log_length = std::min ( info_log_length, 1024 );
+            glGetShaderInfoLog ( frag_shader, info_log_length, NULL, log_buffer );
+#ifdef WIN32
+            printf ( "Error: %s\n", log_buffer );
+#else
+            printf ( "\033[31mError:\033[0m %s\n", log_buffer );
+#endif
+        }
+        if ( compile_status != GL_TRUE )
+        {
+            return false;
+        }
+
+        // Create Shader Program
+        shader_program = glCreateProgram();
+        LOGERROR();
+        GLint link_status;
+
+        glAttachShader ( shader_program, vert_shader );
+        LOGERROR();
+        glAttachShader ( shader_program, frag_shader );
+        LOGERROR();
+
+        glLinkProgram ( shader_program );
+        LOGERROR();
+
+        glGetProgramiv ( shader_program, GL_LINK_STATUS, &link_status );
+        LOGERROR();
+        glGetProgramiv ( shader_program, GL_INFO_LOG_LENGTH, &info_log_length );
+        LOGERROR();
+        if ( info_log_length > 1 )
+        {
+            info_log_length = std::min ( info_log_length, 1024 );
+            glGetProgramInfoLog ( shader_program, info_log_length, NULL, log_buffer );
+#ifdef WIN32
+            printf ( "Error: %s\n", log_buffer );
+#else
+            printf ( "\033[31mError:\033[0m %s\n", log_buffer );
+#endif
+        }
+        if ( link_status != GL_TRUE )
+        {
+            return false;
+        }
+
+        LOGERROR();
         return true;
     }
 
@@ -127,6 +249,12 @@ namespace AeonGUI
         if ( screen_bitmap != NULL )
         {
             delete[] screen_bitmap;
+        }
+        if ( shader_program != 0 )
+        {
+            glDeleteProgram ( shader_program );
+            LOGERROR();
+            shader_program = 0;
         }
     }
 
