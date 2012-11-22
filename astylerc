@@ -25,3 +25,4 @@ exclude=logo.c
 exclude=logo.h
 exclude=Vera.c
 exclude=Vera.h
+exclude=wglext.h
