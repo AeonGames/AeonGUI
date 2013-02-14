@@ -463,14 +463,4 @@ namespace AeonGUI
             x += glyph->advance[0];
         }
     }
-#if 0
-    Image* OpenGLRenderer::NewImage ( uint32_t width, uint32_t height, Image::Format format, Image::Type type, void* data )
-    {
-        return new Image ( width, height, format, type, data );
-    }
-    void OpenGLRenderer::DeleteImage ( Image* image )
-    {
-        delete ( Image* ) image;
-    }
-#endif
 }

@@ -31,16 +31,9 @@ class Window
 {
 public:
     Window ();
+    ~Window();
     bool Initialize ( HINSTANCE hInstance );
-    ~Window()
-    {
-        Windows.erase ( hWnd );
-        DestroyWindow ( hWnd );
-        if ( font != NULL )
-        {
-            delete font;
-        };
-    }
+    void Finalize ( );
     LRESULT OnSize ( WPARAM type, WORD newwidth, WORD newheight );
     LRESULT OnPaint();
     static LRESULT CALLBACK WindowProc ( HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam );
@@ -52,7 +45,6 @@ private:
     HGLRC hRC;
     PIXELFORMATDESCRIPTOR pfd;
     static ATOM atom;
-    static std::map<HWND, Window*> Windows;
     AeonGUI::OpenGLRenderer renderer;
     AeonGUI::Image* image;
     AeonGUI::Font* font;
@@ -63,9 +55,11 @@ private:
 };
 
 ATOM Window::atom = 0;
-std::map<HWND, Window*> Window::Windows = std::map<HWND, Window*>();
 
-Window::Window () {}
+Window::Window ()
+{}
+Window::~Window ()
+{}
 
 bool Window::Initialize ( HINSTANCE hInstance )
 {
@@ -89,6 +83,7 @@ bool Window::Initialize ( HINSTANCE hInstance )
                             NULL,
                             hInstance,
                             NULL );
+    SetWindowLongPtr ( hWnd, 0, ( LONG_PTR ) this );
     hDC = GetDC ( hWnd );
     pfd.nSize = sizeof ( PIXELFORMATDESCRIPTOR );
     pfd.nVersion = 1;
@@ -142,14 +137,9 @@ bool Window::Initialize ( HINSTANCE hInstance )
     }
     //---OpenGL 3.0 Context---//
     ShowWindow ( hWnd, SW_SHOW );
-    Windows[hWnd] = this;
-    // Initialize OpenGL
-    //glEnable(GL_TEXTURE_2D);
     glShadeModel ( GL_SMOOTH );
     glClearColor ( 0.0f, 0.0f, 0.0f, 1.0f );
     glClearDepth ( 1.0f );
-    //glDisable(GL_DEPTH_TEST);
-    //glDepthFunc(GL_LEQUAL);
     glHint ( GL_PERSPECTIVE_CORRECTION_HINT, GL_NICEST );
     glViewport ( 0, 0, width, height );
     glMatrixMode ( GL_PROJECTION );
@@ -189,10 +179,27 @@ bool Window::Initialize ( HINSTANCE hInstance )
     return true;
 }
 
+void Window::Finalize ( )
+{
+    DestroyWindow ( hWnd );
+    if ( font != NULL )
+    {
+        delete font;
+        font = NULL;
+    }
+    if ( hRC != NULL )
+    {
+        wglMakeCurrent ( hDC, NULL );
+        wglDeleteContext ( hRC );
+        hRC = NULL;
+    }
+}
+
 void Window::RenderLoop()
 {
     const AeonGUI::Color color ( 0xFFFFFFFF );
     glClear ( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT );
+#if 0
     glLoadIdentity();
     // Move to
     glTranslatef ( 0.0f, 0.0f, 7.0f );
@@ -203,6 +210,7 @@ void Window::RenderLoop()
         rotation = 0;
     }
     DrawCube ( 1.0f );
+#endif
     renderer.BeginRender();
     window->Render ( &renderer );
     renderer.DrawImage ( color, width - logo_width, height - logo_height, image );
@@ -218,7 +226,7 @@ void Window::Register ( HINSTANCE hInstance )
     wcex.style = CS_HREDRAW | CS_VREDRAW | CS_OWNDC;
     wcex.lpfnWndProc = ( WNDPROC ) Window::WindowProc;
     wcex.cbClsExtra = 0;
-    wcex.cbWndExtra = 0;
+    wcex.cbWndExtra = sizeof ( Window* );
     wcex.hInstance = hInstance;
     wcex.hIcon = LoadIcon ( NULL, IDI_WINLOGO );
     wcex.hCursor = LoadCursor ( NULL, IDC_ARROW );
@@ -232,16 +240,17 @@ void Window::Register ( HINSTANCE hInstance )
 LRESULT CALLBACK Window::WindowProc ( HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam )
 {
     LRESULT lresult;
+    Window* window_ptr = ( ( Window* ) GetWindowLongPtr ( hwnd, 0 ) );
     switch ( uMsg )
     {
     case WM_PAINT:
-        lresult = Windows[hwnd]->OnPaint();
+        lresult = window_ptr->OnPaint();
         break;
     case WM_CLOSE:
         PostQuitMessage ( 0 );
         lresult = 0;
     case WM_SIZE:
-        lresult = Windows[hwnd]->OnSize ( wParam, LOWORD ( lParam ), HIWORD ( lParam ) );
+        lresult = window_ptr->OnSize ( wParam, LOWORD ( lParam ), HIWORD ( lParam ) );
         break;
     default:
         lresult = DefWindowProc ( hwnd, uMsg, wParam, lParam );
