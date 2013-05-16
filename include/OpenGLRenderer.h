@@ -26,6 +26,8 @@ namespace AeonGUI
     public:
         OpenGLRenderer();
         ~OpenGLRenderer() {};
+        /*! \copydoc Renderer::UpdateScreenSize. */
+        void UpdateScreenSize();
         /*! \copydoc Renderer::Initialize. */
         bool Initialize ( int32_t screen_width, int32_t screen_height );
         /*! \copydoc Renderer::Finalize. */

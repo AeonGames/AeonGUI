@@ -84,6 +84,11 @@ namespace AeonGUI
     {
     }
 
+    void OpenGLRenderer::UpdateScreenSize()
+    {
+
+    }
+
     bool OpenGLRenderer::Initialize ( int32_t screen_width, int32_t screen_height )
     {
         GLint viewport[4];
@@ -268,6 +273,9 @@ namespace AeonGUI
         width =  float ( viewport_w ) + pixel_offset;
         height = float ( viewport_h ) + pixel_offset;
 
+        glUseProgram ( shader_program );
+        LOGERROR();
+
         // GL_PIXEL_MODE_BIT
         glDisable ( GL_TEXTURE_2D );
         glMatrixMode ( GL_PROJECTION );
@@ -306,6 +314,7 @@ namespace AeonGUI
             0, screen_h,
             screen_w, screen_h
         };
+
         GLfloat uvs[8] =
         {
             0.0f, 0.0f,

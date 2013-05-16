@@ -68,6 +68,11 @@ namespace AeonGUI
     {
     }
 
+    void OpenGLRenderer::UpdateScreenSize()
+    {
+
+    }
+
     bool OpenGLRenderer::Initialize ( int32_t screen_width, int32_t screen_height )
     {
         GLint viewport[4];
