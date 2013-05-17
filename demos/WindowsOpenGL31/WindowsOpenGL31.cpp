@@ -321,3 +321,22 @@ int WINAPI WinMain ( HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLi
     assert ( msg.message == WM_QUIT );
     return static_cast<int> ( msg.wParam );
 }
+
+int main ( int argc, char *argv[] )
+{
+#ifdef _MSC_VER
+    // Send all reports to STDOUT
+    _CrtSetReportMode ( _CRT_WARN, _CRTDBG_MODE_FILE );
+    _CrtSetReportFile ( _CRT_WARN, _CRTDBG_FILE_STDOUT );
+    _CrtSetReportMode ( _CRT_ERROR, _CRTDBG_MODE_FILE );
+    _CrtSetReportFile ( _CRT_ERROR, _CRTDBG_FILE_STDOUT );
+    _CrtSetReportMode ( _CRT_ASSERT, _CRTDBG_MODE_FILE );
+    _CrtSetReportFile ( _CRT_ASSERT, _CRTDBG_FILE_STDOUT );
+    // Use _CrtSetBreakAlloc( ) to set breakpoints on allocations.
+#endif
+    int ret = WinMain ( GetModuleHandle ( NULL ), NULL, NULL, 0 );
+#ifdef _MSC_VER
+    _CrtDumpMemoryLeaks();
+#endif
+    return ret;
+}

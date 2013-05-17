@@ -47,8 +47,15 @@ namespace AeonGUI
         virtual bool Initialize ( int32_t screen_width, int32_t screen_height ) = 0;
         /*! \brief Finalization Function. */
         virtual void Finalize() = 0;
-        /*! \brief Used to do any internal screen size memory updates. */
-        virtual void UpdateScreenSize() {};
+        /*! \brief Used to do any internal screen size memory updates.
+            \param screen_width with to set the screen to.
+            \param screen_height with to set the screen to.
+            \return true on success, false on failure.
+        */
+        virtual bool ChangeScreenSize ( int32_t screen_width, int32_t screen_height )
+        {
+            return true;
+        };
         /*! \brief Used to do any pre-rendering initialization. */
         virtual void BeginRender() {};
         /*! \brief Used to do any post-rendering cleanup. */

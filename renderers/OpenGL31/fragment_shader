@@ -1,0 +1,20 @@
+#ifdef GL_ES
+#version 100
+precision mediump float;
+#else
+#version 140
+out vec4 frag_color;
+#endif
+
+uniform sampler2D screen_texture;
+in vec2 uvout;
+
+void main(void)
+{
+#ifdef GL_ES
+    gl_FragColor =
+#else
+    frag_color = 
+#endif
+        texture2D(screen_texture,uvout);
+}

@@ -18,7 +18,7 @@ Copyright 2010-2012 Rodrigo Hernandez Cordoba
 #ifdef __cplusplus
 extern "C" {
 #endif
-    void DrawCube ( float size );
+void DrawCube ( float size );
 #ifdef __cplusplus
 }
 #endif

@@ -40,26 +40,18 @@ Copyright 2010-2012 Rodrigo Hernandez Cordoba
                         if((error != 0)) \
                         { \
                             std::cout << "Error " << gluErrorString(error) <<\
-                            " at file " << __FILE__ << " at line " <<\
+                            " at function " << __FUNCTION__ << " at line " <<\
+                            ", file " << __FILE__ << " at line " <<\
                             __LINE__ << std::endl; \
                         }\
                     }
 
 namespace AeonGUI
 {
-    static const char* vert_shader_buffer =
-        "#version 140\n"
-        "uniform mat4 projection_matrix;\n"
-        "in  vec3  position;\n"
-        "void main()\n{\ngl_Position = projection_matrix * vec4(position,1.0);\n}\n";
 
-    static const char* frag_shader_buffer =
-        "#version 140\n"
-        "uniform sampler2D texture0;\n"
-        "uniform vec4 color;\n"
-        "in  vec2 final_texcoord;\n"
-        "out vec4 frag_color;\n"
-        "void main(void)\n{\nfrag_color = texture(texture0,final_texcoord) * color;\n}\n";
+#include "vertex_shader.h"
+#include "fragment_shader.h"
+
     static char log_buffer[1024] = {0};
 
     uint32_t OpenGLRenderer::TypeTable[] =
@@ -84,15 +76,27 @@ namespace AeonGUI
     {
     }
 
-    void OpenGLRenderer::UpdateScreenSize()
+    bool OpenGLRenderer::ChangeScreenSize ( int32_t screen_width, int32_t screen_height )
     {
-
-    }
-
-    bool OpenGLRenderer::Initialize ( int32_t screen_width, int32_t screen_height )
-    {
+        glUseProgram ( shader_program );
         GLint viewport[4];
+        GLfloat projection[16];
+        float width;
+        float height;
+
+        const float pixel_offset = -0.375f;
+
+        if ( screen_texture > 0 )
+        {
+            glDeleteTextures ( 1, &screen_texture );
+        }
+        if ( screen_bitmap != NULL )
+        {
+            delete[] screen_bitmap;
+        }
+
         glGetIntegerv ( GL_VIEWPORT, viewport );
+        LOGERROR();
         viewport_w = viewport[2] - viewport[0];
         viewport_h = viewport[3] - viewport[1];
 
@@ -111,6 +115,7 @@ namespace AeonGUI
         screen_texture_ratio_w = static_cast<float> ( screen_w ) / static_cast<float> ( screen_texture_w );
         screen_texture_ratio_h = static_cast<float> ( screen_h ) / static_cast<float> ( screen_texture_h );
         glGetIntegerv ( GL_MAX_TEXTURE_SIZE, &max_texture_size );
+        LOGERROR();
         if ( ( screen_texture_w > max_texture_size ) ||
              ( screen_texture_h > max_texture_size ) )
         {
@@ -137,6 +142,56 @@ namespace AeonGUI
         LOGERROR();
         screen_bitmap = new uint8_t[screen_w * screen_h * 4];
 
+        width =  float ( viewport_w ) + pixel_offset;
+        height = float ( viewport_h ) + pixel_offset;
+
+        // glOrtho
+        // left          right  bottom  top           near  far
+        // pixel_offset, width, height, pixel_offset, 0.0f, 1.0f
+        // X
+        projection[0 ] =  2.0f / ( width - pixel_offset );
+        projection[1 ] =  0.0f;
+        projection[2 ] =  0.0f;
+        projection[3 ] =  0.0f;
+
+        // Y
+        projection[4 ] =  0.0f;
+        projection[5 ] =  2.0f / ( pixel_offset - height );
+        projection[6 ] =  0.0f;
+        projection[7 ] =  0.0f;
+
+        // Z
+        projection[8 ]  =  0.0f;
+        projection[9 ]  =  0.0f;
+        projection[10]  = -2.0f;
+        projection[11]  =  0.0f;
+
+        // Pos
+        projection[12] = - ( ( width + pixel_offset ) / ( width - pixel_offset ) );
+        projection[13] = - ( ( pixel_offset + height ) / ( pixel_offset - height ) );
+        projection[14] = -1.0f;
+        projection[15] =  1.0f;
+
+        GLint projection_matrix = glGetUniformLocation ( shader_program, "projection_matrix" );
+        LOGERROR();
+        if ( projection_matrix > -1 )
+        {
+            glUniformMatrix4fv ( projection_matrix, 1, GL_FALSE, projection );
+            LOGERROR();
+        }
+
+        GLint screen_texture = glGetUniformLocation ( shader_program, "screen_texture" );
+        LOGERROR();
+        if ( screen_texture > -1 )
+        {
+            glUniform1i ( screen_texture, 0 );
+            LOGERROR();
+        }
+        return true;
+    }
+
+    bool OpenGLRenderer::Initialize ( int32_t screen_width, int32_t screen_height )
+    {
         // Compile Shaders
         GLint info_log_length;
         GLint shader_code_length;
@@ -152,11 +207,11 @@ namespace AeonGUI
             return false;
         }
 
-        shader_code_length = static_cast<GLint> ( strlen ( vert_shader_buffer ) );
-        glShaderSource ( vert_shader, 1, ( const char ** ) &vert_shader_buffer, &shader_code_length );
+        shader_code_length = static_cast<GLint> ( strlen ( vertex_shader ) );
+        glShaderSource ( vert_shader, 1, ( const char ** ) &vertex_shader, &shader_code_length );
         LOGERROR();
-        shader_code_length = static_cast<GLint> ( strlen ( frag_shader_buffer ) );
-        glShaderSource ( frag_shader, 1, ( const char ** ) &frag_shader_buffer, &shader_code_length );
+        shader_code_length = static_cast<GLint> ( strlen ( fragment_shader ) );
+        glShaderSource ( frag_shader, 1, ( const char ** ) &fragment_shader, &shader_code_length );
         LOGERROR();
 
 
@@ -230,6 +285,7 @@ namespace AeonGUI
         {
             info_log_length = std::min ( info_log_length, 1024 );
             glGetProgramInfoLog ( shader_program, info_log_length, NULL, log_buffer );
+            LOGERROR();
 #ifdef WIN32
             printf ( "Error: %s\n", log_buffer );
 #else
@@ -241,6 +297,10 @@ namespace AeonGUI
             return false;
         }
 
+        if ( !ChangeScreenSize ( screen_width, screen_height ) )
+        {
+            return false;
+        }
         LOGERROR();
         return true;
     }
@@ -250,10 +310,12 @@ namespace AeonGUI
         if ( screen_texture > 0 )
         {
             glDeleteTextures ( 1, &screen_texture );
+            screen_texture = 0;
         }
         if ( screen_bitmap != NULL )
         {
             delete[] screen_bitmap;
+            screen_bitmap = NULL;
         }
         if ( shader_program != 0 )
         {
@@ -265,34 +327,10 @@ namespace AeonGUI
 
     void OpenGLRenderer::BeginRender()
     {
-        float width;
-        float height;
-        const float pixel_offset = -0.375f;
         glPushAttrib ( GL_ALL_ATTRIB_BITS );
-
-        width =  float ( viewport_w ) + pixel_offset;
-        height = float ( viewport_h ) + pixel_offset;
-
         glUseProgram ( shader_program );
         LOGERROR();
-
-        // GL_PIXEL_MODE_BIT
-        glDisable ( GL_TEXTURE_2D );
-        glMatrixMode ( GL_PROJECTION );
-        glPushMatrix();
-        glLoadIdentity();
-        glOrtho ( pixel_offset, width, height, pixel_offset, -1.0f, 1.0f );
-
-        glMatrixMode ( GL_MODELVIEW );
-        glPushMatrix();
-        glLoadIdentity();
-        /*
-         These should probably be checked and saved somehow, so
-         we can truly return to the old state in EndRender.
-        */
-        glBlendFunc ( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
-        glEnable ( GL_BLEND );
-        glDisable ( GL_DEPTH_TEST );
+        ///\todo Setting the screen bitmap memory to zero may not be always necesary.
         memset ( screen_bitmap, 0, sizeof ( uint8_t ) * ( screen_w * screen_h * 4 ) );
     }
     void OpenGLRenderer::EndRender()
@@ -304,8 +342,6 @@ namespace AeonGUI
 
         glTexSubImage2D ( GL_TEXTURE_2D, 0, 0, 0, screen_w, screen_h, GL_BGRA, GL_UNSIGNED_BYTE, screen_bitmap );
         LOGERROR();
-
-        glColor4ub ( 255, 255, 255, 255 );
 
         GLint vertices[8] =
         {
@@ -322,26 +358,24 @@ namespace AeonGUI
             0.0f, screen_texture_ratio_h,
             screen_texture_ratio_w, screen_texture_ratio_h
         };
-        glEnableClientState ( GL_VERTEX_ARRAY );
+
+        GLint position = glGetAttribLocation ( shader_program, "position" );
+        glVertexAttribPointer ( position, 2, GL_INT, GL_FALSE, ( sizeof ( GLint ) * 2 ) + ( sizeof ( float ) * 2 ), vertices );
         LOGERROR();
-        glEnableClientState ( GL_TEXTURE_COORD_ARRAY );
-        LOGERROR();
-        glVertexPointer ( 2, GL_INT, 0, vertices );
-        LOGERROR();
-        glTexCoordPointer ( 2, GL_FLOAT, 0, uvs );
-        LOGERROR();
-        glDrawArrays ( GL_TRIANGLE_STRIP, 0, 4 );
-        LOGERROR();
-        glDisableClientState ( GL_TEXTURE_COORD_ARRAY );
-        LOGERROR();
-        glDisableClientState ( GL_VERTEX_ARRAY );
+        glEnableVertexAttribArray ( position );
         LOGERROR();
 
-        glMatrixMode ( GL_PROJECTION );
-        glPopMatrix();
-        glMatrixMode ( GL_MODELVIEW );
-        glPopMatrix();
+        GLint uv = glGetAttribLocation ( shader_program, "uv" );
+        glVertexAttribPointer ( uv, 2, GL_FLOAT, GL_FALSE, ( sizeof ( GLint ) * 2 ) + ( sizeof ( float ) * 2 ), uvs );
+        LOGERROR();
+        glEnableVertexAttribArray ( uv );
+        LOGERROR();
+
+        glDrawArrays ( GL_TRIANGLE_STRIP, 0, 4 );
+        LOGERROR();
+
         glPopAttrib();
+        LOGERROR();
     }
     void OpenGLRenderer::DrawRect ( Color color, const Rect* rect )
     {

@@ -68,9 +68,9 @@ namespace AeonGUI
     {
     }
 
-    void OpenGLRenderer::UpdateScreenSize()
+    bool OpenGLRenderer::ChangeScreenSize ( int32_t screen_width, int32_t screen_height )
     {
-
+        return true;
     }
 
     bool OpenGLRenderer::Initialize ( int32_t screen_width, int32_t screen_height )
