@@ -1,2 +1,2 @@
-SUBDIRS(OpenGL15 OpenGL31)
+SUBDIRS(OpenGL)
 

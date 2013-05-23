@@ -62,10 +62,10 @@ namespace AeonGUI
         int32_t screen_h;
         unsigned int screen_texture;
         uint8_t* screen_bitmap;
-        int32_t screen_texture_w;
-        int32_t screen_texture_h;
-        float screen_texture_ratio_w;
-        float screen_texture_ratio_h;
+        //int32_t screen_texture_w;
+        //int32_t screen_texture_h;
+        //float screen_texture_ratio_w;
+        //float screen_texture_ratio_h;
         /// Card maximum texture size for texture atlas
         int max_texture_size;
         uint32_t vert_shader;

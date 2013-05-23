@@ -15,10 +15,13 @@ Copyright 2010-2012 Rodrigo Hernandez Cordoba
 ******************************************************************************/
 #define WIN32_LEAN_AND_MEAN
 #include <windows.h>
-#include <gl/gl.h>
-#include <gl/glu.h>
-#include <map>
+#include <windowsx.h>
+#include <GL/gl.h>
+#include <GL/glu.h>
+#include <iostream>
 #include <cassert>
+#include <cstdint>
+#include <crtdbg.h>
 #include "wglext.h"
 #include "OpenGLRenderer.h"
 #include "MainWindow.h"
@@ -30,59 +33,59 @@ Copyright 2010-2012 Rodrigo Hernandez Cordoba
 class Window
 {
 public:
-    Window ();
-    ~Window();
-    bool Initialize ( HINSTANCE hInstance );
+    Window() {};
+    ~Window() {};
+    void Initialize ( HINSTANCE hInstance );
     void Finalize ( );
     LRESULT OnSize ( WPARAM type, WORD newwidth, WORD newheight );
     LRESULT OnPaint();
+    LRESULT OnMouseMove ( int32_t x, int32_t y );
     static LRESULT CALLBACK WindowProc ( HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam );
     static void Register ( HINSTANCE hInstance );
     void RenderLoop();
 private:
+    static ATOM atom;
     HWND hWnd;
     HDC hDC;
     HGLRC hRC;
     PIXELFORMATDESCRIPTOR pfd;
-    static ATOM atom;
+    int32_t width;
+    int32_t height;
+    int32_t mousex;
+    int32_t mousey;
     AeonGUI::OpenGLRenderer renderer;
     AeonGUI::Image* image;
     AeonGUI::Font* font;
     AeonGUI::MainWindow* window;
-    float rotation;
-    int width;
-    int height;
 };
 
 ATOM Window::atom = 0;
 
-Window::Window ()
-{}
-Window::~Window ()
-{}
-
-bool Window::Initialize ( HINSTANCE hInstance )
+void Window::Initialize ( HINSTANCE hInstance )
 {
-    width  = 640;
-    height = 480;
+    width  = 800;
+    height = 600;
     int pf;
+
     RECT rect = {0, 0, width, height};
+
     PFNWGLGETEXTENSIONSSTRINGARBPROC wglGetExtensionsStringARB = NULL;
     PFNWGLCREATECONTEXTATTRIBSARBPROC wglCreateContextAttribsARB = NULL;
+
     if ( atom == 0 )
     {
         Register ( hInstance );
     }
     AdjustWindowRectEx ( &rect, WS_OVERLAPPEDWINDOW | WS_CLIPSIBLINGS | WS_CLIPCHILDREN, FALSE, WS_EX_APPWINDOW | WS_EX_WINDOWEDGE );
     hWnd = CreateWindowEx ( WS_EX_APPWINDOW | WS_EX_WINDOWEDGE,
-                            "WGL31", "AeonGUI Windows OpenGL Demo",
+                            "AeonGUI", "AeonGUI",
                             WS_OVERLAPPEDWINDOW | WS_CLIPSIBLINGS | WS_CLIPCHILDREN,
                             0, 0, // Location
                             rect.right - rect.left, rect.bottom - rect.top, // dimensions
                             NULL,
                             NULL,
                             hInstance,
-                            NULL );
+                            this );
     SetWindowLongPtr ( hWnd, 0, ( LONG_PTR ) this );
     hDC = GetDC ( hWnd );
     pfd.nSize = sizeof ( PIXELFORMATDESCRIPTOR );
@@ -115,6 +118,7 @@ bool Window::Initialize ( HINSTANCE hInstance )
     SetPixelFormat ( hDC, pf, &pfd );
     hRC = wglCreateContext ( hDC );
     wglMakeCurrent ( hDC, hRC );
+
     //---OpenGL 3.0 Context---//
     wglGetExtensionsStringARB = ( PFNWGLGETEXTENSIONSSTRINGARBPROC ) wglGetProcAddress ( "wglGetExtensionsStringARB" );
     if ( wglGetExtensionsStringARB != NULL )
@@ -124,103 +128,63 @@ bool Window::Initialize ( HINSTANCE hInstance )
             const int ctxAttribs[] =
             {
                 WGL_CONTEXT_MAJOR_VERSION_ARB, 3,
-                WGL_CONTEXT_MINOR_VERSION_ARB, 1,
+                WGL_CONTEXT_MINOR_VERSION_ARB, 2,
+                WGL_CONTEXT_FLAGS_ARB, WGL_CONTEXT_FORWARD_COMPATIBLE_BIT_ARB,
+                WGL_CONTEXT_PROFILE_MASK_ARB,  WGL_CONTEXT_CORE_PROFILE_BIT_ARB,
                 0
             };
 
             wglCreateContextAttribsARB = ( PFNWGLCREATECONTEXTATTRIBSARBPROC ) wglGetProcAddress ( "wglCreateContextAttribsARB" );
-            wglMakeCurrent ( hDC, NULL );
+            wglMakeCurrent ( NULL, NULL );
             wglDeleteContext ( hRC );
             hRC = wglCreateContextAttribsARB ( hDC, NULL, ctxAttribs );
             wglMakeCurrent ( hDC, hRC );
         }
     }
     //---OpenGL 3.0 Context---//
-    ShowWindow ( hWnd, SW_SHOW );
-    glShadeModel ( GL_SMOOTH );
-    glClearColor ( 0.0f, 0.0f, 0.0f, 1.0f );
-    glClearDepth ( 1.0f );
-    glHint ( GL_PERSPECTIVE_CORRECTION_HINT, GL_NICEST );
-    glViewport ( 0, 0, width, height );
-    glMatrixMode ( GL_PROJECTION );
-    glLoadIdentity();
-    glFrustum ( -1.33f, 1.33f, -1, 1, 3, 10 );
-    // switch to left handed system
-    glScalef ( 1, 1, -1 );
-#if 0
-    glGetFloatv ( GL_PROJECTION_MATRIX, m );
-    for ( size_t i = 0; i < 4; ++i )
-    {
-        for ( size_t j = 0; j < 4; ++j )
-        {
-            std::cout << std::fixed << m[i + j * 4] << " ";
-        }
-        std::cout << std::endl;
-    }
-#endif
-    glMatrixMode ( GL_MODELVIEW );
-    glLoadIdentity();
-    glShadeModel ( GL_SMOOTH );
-    glClearDepth ( 1.0f );
-    glEnable ( GL_DEPTH_TEST );
-    glDepthFunc ( GL_LEQUAL );
-    glPointSize ( 16 );
-    rotation = 0.0f;
     window = new AeonGUI::MainWindow ();
     image = new AeonGUI::Image ( logo_name, logo_width, logo_height, AeonGUI::Image::RGBA, AeonGUI::Image::BYTE, logo_data );
     font = new AeonGUI::Font ( Vera.data, Vera.size );
-    if ( !renderer.Initialize ( GetSystemMetrics ( SM_CXSCREEN ), GetSystemMetrics ( SM_CYSCREEN ) ) )
-    {
-        return false;
-    }
+    renderer.Initialize ( GetSystemMetrics ( SM_CXSCREEN ), GetSystemMetrics ( SM_CYSCREEN ) );
     renderer.SetFont ( font );
     std::wstring hello ( L"Hello World" );
     window->SetCaption ( hello );
-    return true;
+    ShowWindow ( hWnd, SW_SHOW );
 }
 
-void Window::Finalize ( )
+void Window::Finalize()
 {
+    wglMakeCurrent ( hDC, NULL );
+    wglDeleteContext ( hRC );
+    ReleaseDC ( hWnd, hDC );
     DestroyWindow ( hWnd );
-    if ( font != NULL )
-    {
-        delete font;
-        font = NULL;
-    }
-    if ( hRC != NULL )
-    {
-        wglMakeCurrent ( hDC, NULL );
-        wglDeleteContext ( hRC );
-        hRC = NULL;
-    }
 }
 
 void Window::RenderLoop()
 {
-    const AeonGUI::Color color ( 0xFFFFFFFF );
-    glClear ( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT );
-#if 0
-    glLoadIdentity();
-    // Move to
-    glTranslatef ( 0.0f, 0.0f, 7.0f );
-    // Rotate around current pos
-    glRotatef ( rotation += 0.60f, 1.0f, 1.0f, 1.0f );
-    if ( rotation >= 360.0f )
+    LARGE_INTEGER frequency;
+    LARGE_INTEGER this_time;
+    QueryPerformanceCounter ( &this_time );
+    QueryPerformanceFrequency ( &frequency );
+    static LARGE_INTEGER last_time = this_time;
+    float delta = static_cast<float> ( this_time.QuadPart - last_time.QuadPart ) / static_cast<float> ( frequency.QuadPart );
+    if ( delta > 1e-1f )
     {
-        rotation = 0;
+        delta = 1.0f / 30.0f;
     }
-    DrawCube ( 1.0f );
-#endif
+
+    const AeonGUI::Color color ( 0xFFFFFFFF );
     renderer.BeginRender();
     window->Render ( &renderer );
     renderer.DrawImage ( color, width - logo_width, height - logo_height, image );
     renderer.EndRender();
+
     SwapBuffers ( hDC );
+    last_time = this_time;
 }
 
 void Window::Register ( HINSTANCE hInstance )
 {
-    DWORD error = 0;
     WNDCLASSEX wcex;
     wcex.cbSize = sizeof ( WNDCLASSEX );
     wcex.style = CS_HREDRAW | CS_VREDRAW | CS_OWNDC;
@@ -232,14 +196,14 @@ void Window::Register ( HINSTANCE hInstance )
     wcex.hCursor = LoadCursor ( NULL, IDC_ARROW );
     wcex.hbrBackground = NULL;
     wcex.lpszMenuName = NULL;
-    wcex.lpszClassName = "WGL31";
+    wcex.lpszClassName = "AeonGUI";
     wcex.hIconSm = NULL;
     Window::atom = RegisterClassEx ( &wcex );
 }
 
 LRESULT CALLBACK Window::WindowProc ( HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam )
 {
-    LRESULT lresult;
+    LRESULT lresult = 0;
     Window* window_ptr = ( ( Window* ) GetWindowLongPtr ( hwnd, 0 ) );
     switch ( uMsg )
     {
@@ -248,9 +212,21 @@ LRESULT CALLBACK Window::WindowProc ( HWND hwnd, UINT uMsg, WPARAM wParam, LPARA
         break;
     case WM_CLOSE:
         PostQuitMessage ( 0 );
-        lresult = 0;
     case WM_SIZE:
         lresult = window_ptr->OnSize ( wParam, LOWORD ( lParam ), HIWORD ( lParam ) );
+        break;
+    case WM_KEYDOWN:
+        lresult = DefWindowProc ( hwnd, uMsg, wParam, lParam );
+        break;
+    case WM_KEYUP:
+        lresult = DefWindowProc ( hwnd, uMsg, wParam, lParam );
+        break;
+    case WM_MOUSEMOVE:
+        lresult = window_ptr->OnMouseMove ( GET_X_LPARAM ( lParam ), GET_Y_LPARAM ( lParam ) );
+        break;
+    case WM_LBUTTONDOWN:
+        break;
+    case WM_LBUTTONUP:
         break;
     default:
         lresult = DefWindowProc ( hwnd, uMsg, wParam, lParam );
@@ -260,8 +236,8 @@ LRESULT CALLBACK Window::WindowProc ( HWND hwnd, UINT uMsg, WPARAM wParam, LPARA
 
 LRESULT Window::OnSize ( WPARAM type, WORD newwidth, WORD newheight )
 {
-    width = newwidth;
-    height = newheight;
+    width = static_cast<int32_t> ( newwidth );
+    height = static_cast<int32_t> ( newheight );
     if ( height == 0 )
     {
         height = 1;
@@ -270,14 +246,6 @@ LRESULT Window::OnSize ( WPARAM type, WORD newwidth, WORD newheight )
     {
         width = 1;
     }
-    glViewport ( 0, 0, width, height );
-    glMatrixMode ( GL_PROJECTION );
-    glLoadIdentity();
-    glFrustum ( -1.33f, 1.33f, -1, 1, 3, 10 );
-    // switch to left handed system
-    glScalef ( 1, 1, -1 );
-    glMatrixMode ( GL_MODELVIEW );
-    glLoadIdentity();
     return 0;
 }
 
@@ -293,16 +261,17 @@ LRESULT Window::OnPaint()
     return 0;
 }
 
+LRESULT Window::OnMouseMove ( int32_t x, int32_t y )
+{
+    return 0;
+}
+
 int WINAPI WinMain ( HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nCmdShow )
 {
     Window window;
-    if ( !window.Initialize ( hInstance ) )
-    {
-        return 0;
-    }
+    window.Initialize ( hInstance );
     MSG msg;
     memset ( &msg, 0, sizeof ( MSG ) );
-    float rotation = 0.0f;
     while ( msg.message != WM_QUIT )
     {
         if ( PeekMessage ( &msg, NULL, 0, 0, PM_REMOVE ) )
@@ -319,6 +288,7 @@ int WINAPI WinMain ( HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLi
         }
     }
     assert ( msg.message == WM_QUIT );
+    window.Finalize();
     return static_cast<int> ( msg.wParam );
 }
 

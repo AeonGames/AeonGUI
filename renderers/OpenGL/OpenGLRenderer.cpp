@@ -1,4 +1,4 @@
-/******************************************************************************
+﻿/******************************************************************************
 Copyright 2010-2012 Rodrigo Hernandez Cordoba
 
    Licensed under the Apache License, Version 2.0 (the "License");
@@ -17,6 +17,13 @@ Copyright 2010-2012 Rodrigo Hernandez Cordoba
 #ifdef WIN32
 #define WIN32_LEAN_AND_MEAN
 #include <windows.h>
+#include <windowsx.h>
+#include <wingdi.h>
+#include <GL/gl.h>
+#include <GL/glu.h>
+#include "glext.h"
+#include "glcorearb.h"
+#include "wglext.h"
 #endif
 #include <cassert>
 #include <cstdlib>
@@ -24,8 +31,6 @@ Copyright 2010-2012 Rodrigo Hernandez Cordoba
 #include <cmath>
 #include <iostream>
 #include <algorithm>
-#include "GLee/GLee.h"
-#include <GL/glu.h>
 #include "Font.h"
 #include "fontstructs.h"
 
@@ -39,7 +44,7 @@ Copyright 2010-2012 Rodrigo Hernandez Cordoba
                         GLenum error = glGetError(); \
                         if((error != 0)) \
                         { \
-                            std::cout << "Error " << gluErrorString(error) <<\
+                            std::cout << "Error " << error << ": " << gluErrorString(error) <<\
                             " at function " << __FUNCTION__ << " at line " <<\
                             ", file " << __FILE__ << " at line " <<\
                             __LINE__ << std::endl; \
@@ -51,6 +56,25 @@ namespace AeonGUI
 
 #include "vertex_shader.h"
 #include "fragment_shader.h"
+
+    static PFNGLATTACHSHADERPROC            glAttachShader = NULL;
+    static PFNGLCOMPILESHADERPROC           glCompileShader = NULL;
+    static PFNGLCREATEPROGRAMPROC           glCreateProgram = NULL;
+    static PFNGLCREATESHADERPROC            glCreateShader = NULL;
+    static PFNGLDELETEPROGRAMPROC           glDeleteProgram = NULL;
+    static PFNGLENABLEVERTEXATTRIBARRAYPROC glEnableVertexAttribArray = NULL;
+    static PFNGLGETATTRIBLOCATIONPROC       glGetAttribLocation = NULL;
+    static PFNGLGETPROGRAMIVPROC            glGetProgramiv = NULL;
+    static PFNGLGETPROGRAMINFOLOGPROC       glGetProgramInfoLog = NULL;
+    static PFNGLGETSHADERIVPROC             glGetShaderiv = NULL;
+    static PFNGLGETSHADERINFOLOGPROC        glGetShaderInfoLog = NULL;
+    static PFNGLGETUNIFORMLOCATIONPROC      glGetUniformLocation = NULL;
+    static PFNGLLINKPROGRAMPROC             glLinkProgram = NULL;
+    static PFNGLSHADERSOURCEPROC            glShaderSource = NULL;
+    static PFNGLUSEPROGRAMPROC              glUseProgram = NULL;
+    static PFNGLUNIFORM1IPROC               glUniform1i = NULL;
+    static PFNGLUNIFORMMATRIX4FVPROC        glUniformMatrix4fv = NULL;
+    static PFNGLVERTEXATTRIBPOINTERPROC     glVertexAttribPointer = NULL;
 
     static char log_buffer[1024] = {0};
 
@@ -70,8 +94,6 @@ namespace AeonGUI
     OpenGLRenderer::OpenGLRenderer() :
         viewport_w ( 0 ), viewport_h ( 0 ),
         screen_texture ( 0 ), screen_bitmap ( NULL ),
-        screen_texture_ratio_w ( 1.0f ),
-        screen_texture_ratio_h ( 1.0f ),
         shader_program ( 0 )
     {
     }
@@ -79,6 +101,7 @@ namespace AeonGUI
     bool OpenGLRenderer::ChangeScreenSize ( int32_t screen_width, int32_t screen_height )
     {
         glUseProgram ( shader_program );
+        LOGERROR();
         GLint viewport[4];
         GLfloat projection[16];
         float width;
@@ -102,22 +125,11 @@ namespace AeonGUI
 
         screen_w = screen_width;
         screen_h = screen_height;
-        if ( GLEE_ARB_texture_non_power_of_two )
-        {
-            screen_texture_w = screen_w;
-            screen_texture_h = screen_h;
-        }
-        else
-        {
-            screen_texture_w = 1 << static_cast<int32_t> ( ceil ( ( log ( static_cast<float> ( screen_w ) ) / log ( 2.0f ) ) ) );
-            screen_texture_h = 1 << static_cast<int32_t> ( ceil ( ( log ( static_cast<float> ( screen_h ) ) / log ( 2.0f ) ) ) );
-        }
-        screen_texture_ratio_w = static_cast<float> ( screen_w ) / static_cast<float> ( screen_texture_w );
-        screen_texture_ratio_h = static_cast<float> ( screen_h ) / static_cast<float> ( screen_texture_h );
+
         glGetIntegerv ( GL_MAX_TEXTURE_SIZE, &max_texture_size );
         LOGERROR();
-        if ( ( screen_texture_w > max_texture_size ) ||
-             ( screen_texture_h > max_texture_size ) )
+        if ( ( screen_w > max_texture_size ) ||
+             ( screen_h > max_texture_size ) )
         {
 #ifdef WIN32
             printf ( "Error: %s\n", "Screen texture dimensions surpass maximum allowed OpenGL texture size" );
@@ -138,7 +150,7 @@ namespace AeonGUI
         LOGERROR();
         glTexParameteri ( GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP );
         LOGERROR();
-        glTexImage2D ( GL_TEXTURE_2D, 0, GL_RGBA8, screen_texture_w, screen_texture_h, 0, GL_BGRA, GL_UNSIGNED_INT_8_8_8_8_REV, NULL );
+        glTexImage2D ( GL_TEXTURE_2D, 0, GL_RGBA8, screen_w, screen_h, 0, GL_BGRA, GL_UNSIGNED_INT_8_8_8_8_REV, NULL );
         LOGERROR();
         screen_bitmap = new uint8_t[screen_w * screen_h * 4];
 
@@ -184,7 +196,7 @@ namespace AeonGUI
         LOGERROR();
         if ( screen_texture > -1 )
         {
-            glUniform1i ( screen_texture, 0 );
+            glUniform1i ( screen_texture, 1 );
             LOGERROR();
         }
         return true;
@@ -192,10 +204,29 @@ namespace AeonGUI
 
     bool OpenGLRenderer::Initialize ( int32_t screen_width, int32_t screen_height )
     {
+        glAttachShader =            ( PFNGLATTACHSHADERPROC )            wglGetProcAddress ( "glAttachShader" );
+        glCompileShader =           (PFNGLCOMPILESHADERPROC )            wglGetProcAddress ( "glCompileShader" );
+        glCreateProgram =           ( PFNGLCREATEPROGRAMPROC )           wglGetProcAddress ( "glCreateProgram" );
+        glCreateShader =            ( PFNGLCREATESHADERPROC  )           wglGetProcAddress ( "glCreateShader" );
+        glDeleteProgram =           ( PFNGLDELETEPROGRAMPROC )           wglGetProcAddress ( "glDeleteProgram" );
+        glEnableVertexAttribArray = ( PFNGLENABLEVERTEXATTRIBARRAYPROC ) wglGetProcAddress ( "glEnableVertexAttribArray" );
+        glGetAttribLocation =       ( PFNGLGETATTRIBLOCATIONPROC )       wglGetProcAddress ( "glGetAttribLocation" );
+        glGetProgramiv =            ( PFNGLGETPROGRAMIVPROC )            wglGetProcAddress ( "glGetProgramiv" );
+        glGetProgramInfoLog =       ( PFNGLGETPROGRAMINFOLOGPROC )       wglGetProcAddress ( "glGetProgramInfoLog" );
+        glGetShaderiv =             ( PFNGLGETSHADERIVPROC )             wglGetProcAddress ( "glGetShaderiv" );
+        glGetShaderInfoLog =        ( PFNGLGETSHADERINFOLOGPROC )        wglGetProcAddress ( "glGetShaderInfoLog" );
+        glGetUniformLocation =      ( PFNGLGETUNIFORMLOCATIONPROC )      wglGetProcAddress ( "glGetUniformLocation" );
+        glLinkProgram =             ( PFNGLLINKPROGRAMPROC )             wglGetProcAddress ( "glLinkProgram" );
+        glShaderSource =            ( PFNGLSHADERSOURCEPROC )            wglGetProcAddress ( "glShaderSource" );
+        glUseProgram =              ( PFNGLUSEPROGRAMPROC )              wglGetProcAddress ( "glUseProgram" );
+        glUniform1i =               ( PFNGLUNIFORM1IPROC )               wglGetProcAddress ( "glUniform1i" );
+        glUniformMatrix4fv =        ( PFNGLUNIFORMMATRIX4FVPROC )        wglGetProcAddress ( "glUniformMatrix4fv" );
+        glVertexAttribPointer =     ( PFNGLVERTEXATTRIBPOINTERPROC )     wglGetProcAddress ( "glVertexAttribPointer" );
+
         // Compile Shaders
         GLint info_log_length;
         GLint shader_code_length;
-
+        LOGERROR ();
         if ( ( vert_shader = glCreateShader ( GL_VERTEX_SHADER ) ) == 0 )
         {
             LOGERROR ();
@@ -327,7 +358,7 @@ namespace AeonGUI
 
     void OpenGLRenderer::BeginRender()
     {
-        glPushAttrib ( GL_ALL_ATTRIB_BITS );
+        //glPushAttrib ( GL_ALL_ATTRIB_BITS );
         glUseProgram ( shader_program );
         LOGERROR();
         ///\todo Setting the screen bitmap memory to zero may not be always necesary.
@@ -335,8 +366,8 @@ namespace AeonGUI
     }
     void OpenGLRenderer::EndRender()
     {
-        glEnable ( GL_TEXTURE_2D );
-        LOGERROR();
+        //glEnable ( GL_TEXTURE_2D );
+        //LOGERROR();
         glBindTexture ( GL_TEXTURE_2D, screen_texture );
         LOGERROR();
 
@@ -354,19 +385,20 @@ namespace AeonGUI
         GLfloat uvs[8] =
         {
             0.0f, 0.0f,
-            screen_texture_ratio_w, 0.0f,
-            0.0f, screen_texture_ratio_h,
-            screen_texture_ratio_w, screen_texture_ratio_h
+            1.0f, 0.0f,
+            0.0f, 1.0f,
+            1.0f, 1.0f
         };
 
         GLint position = glGetAttribLocation ( shader_program, "position" );
-        glVertexAttribPointer ( position, 2, GL_INT, GL_FALSE, ( sizeof ( GLint ) * 2 ) + ( sizeof ( float ) * 2 ), vertices );
+        LOGERROR();
+        glVertexAttribPointer ( position, 2, GL_INT, GL_FALSE, 0, vertices );
         LOGERROR();
         glEnableVertexAttribArray ( position );
         LOGERROR();
 
         GLint uv = glGetAttribLocation ( shader_program, "uv" );
-        glVertexAttribPointer ( uv, 2, GL_FLOAT, GL_FALSE, ( sizeof ( GLint ) * 2 ) + ( sizeof ( float ) * 2 ), uvs );
+        glVertexAttribPointer ( uv, 2, GL_FLOAT, GL_FALSE, 0, uvs );
         LOGERROR();
         glEnableVertexAttribArray ( uv );
         LOGERROR();
@@ -374,8 +406,8 @@ namespace AeonGUI
         glDrawArrays ( GL_TRIANGLE_STRIP, 0, 4 );
         LOGERROR();
 
-        glPopAttrib();
-        LOGERROR();
+        //glPopAttrib();
+        //LOGERROR();
     }
     void OpenGLRenderer::DrawRect ( Color color, const Rect* rect )
     {
