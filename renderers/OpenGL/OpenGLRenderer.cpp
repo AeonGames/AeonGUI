@@ -78,6 +78,8 @@ namespace AeonGUI
     static PFNGLGENBUFFERSPROC              glGenBuffers = NULL;
     static PFNGLBINDBUFFERPROC              glBindBuffer = NULL;
     static PFNGLBUFFERDATAPROC              glBufferData = NULL;
+    static PFNGLGENVERTEXARRAYSPROC         glGenVertexArrays = NULL;
+    static PFNGLBINDVERTEXARRAYPROC         glBindVertexArray = NULL;
 
     static char log_buffer[1024] = {0};
 
@@ -217,7 +219,7 @@ namespace AeonGUI
         LOGERROR();
         glBindBuffer ( GL_ARRAY_BUFFER, vertex_buffer_object );
         LOGERROR();
-        glBufferData ( GL_ARRAY_BUFFER, sizeof ( GLfloat ) * 16, vertices, GL_STATIC_DRAW );
+        glBufferData ( GL_ARRAY_BUFFER, sizeof ( GLfloat ) * 16, &vertices[0], GL_STATIC_DRAW );
         LOGERROR();
 
         return true;
@@ -246,6 +248,9 @@ namespace AeonGUI
         glGenBuffers =              ( PFNGLGENBUFFERSPROC )              wglGetProcAddress ( "glGenBuffers" );
         glBindBuffer =              ( PFNGLBINDBUFFERPROC )              wglGetProcAddress ( "glBindBuffer" );
         glBufferData =              ( PFNGLBUFFERDATAPROC )              wglGetProcAddress ( "glBufferData" );
+        glGenVertexArrays =         ( PFNGLGENVERTEXARRAYSPROC )         wglGetProcAddress ( "glGenVertexArrays" );
+        glBindVertexArray =         ( PFNGLBINDVERTEXARRAYPROC )         wglGetProcAddress ( "glBindVertexArray" );
+
 
         // Compile Shaders
         GLint info_log_length;

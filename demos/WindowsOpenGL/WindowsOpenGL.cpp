@@ -134,7 +134,7 @@ void Window::Initialize ( HINSTANCE hInstance )
             };
 
             wglCreateContextAttribsARB = ( PFNWGLCREATECONTEXTATTRIBSARBPROC ) wglGetProcAddress ( "wglCreateContextAttribsARB" );
-            wglMakeCurrent ( NULL, NULL );
+            wglMakeCurrent ( hDC, NULL );
             wglDeleteContext ( hRC );
             hRC = wglCreateContextAttribsARB ( hDC, NULL, ctxAttribs );
             wglMakeCurrent ( hDC, hRC );
@@ -171,11 +171,11 @@ void Window::RenderLoop()
     {
         delta = 1.0f / 30.0f;
     }
-
+    wglMakeCurrent ( hDC, hRC );
     const AeonGUI::Color color ( 0xFFFFFFFF );
     renderer.BeginRender();
-    window->Render ( &renderer );
-    renderer.DrawImage ( color, width - logo_width, height - logo_height, image );
+    //window->Render ( &renderer );
+    //renderer.DrawImage ( color, width - logo_width, height - logo_height, image );
     renderer.EndRender();
 
     SwapBuffers ( hDC );

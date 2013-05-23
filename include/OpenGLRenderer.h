@@ -74,6 +74,7 @@ namespace AeonGUI
         static uint32_t TypeTable[];
         static uint32_t FormatTable[];
         uint32_t vertex_buffer_object;
+        uint32_t vertex_array_object;
     };
 }
 #endif
