@@ -1,0 +1,18 @@
+static const char* vertex_shader =
+    "#ifdef GL_ES\n"
+    "#version 100\n"
+    "#else\n"
+    "#version 140\n"
+    "#endif\n"
+    "\n"
+    "uniform mat4 projection_matrix;\n"
+    "in vec2 position;\n"
+    "in vec2 uv;\n"
+    "out vec2 uvout;\n"
+    "\n"
+    "void main() \n"
+    "{\n"
+    "    uvout = uv;\n"
+    "    gl_Position = projection_matrix * vec4(position.xy,0.0,1.0);\n"
+    "}\n"
+    ;

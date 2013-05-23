@@ -1,0 +1,1 @@
++		log_buffer	0x000000013fc76a20 "Vertex info\n-----------\n0(10) : warning C7022: unrecognized profile specifier \"projection_matrix\"\n"	char[1024]
