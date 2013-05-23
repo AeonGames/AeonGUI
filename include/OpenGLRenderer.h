@@ -73,6 +73,7 @@ namespace AeonGUI
         uint32_t shader_program;
         static uint32_t TypeTable[];
         static uint32_t FormatTable[];
+        uint32_t vertex_buffer_object;
     };
 }
 #endif

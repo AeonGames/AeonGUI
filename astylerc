@@ -7,7 +7,7 @@ add-brackets
 # Indent namespaces
 indent-namespaces
 # Add spaces besides operators
-pad-oper 
+pad-oper
 # Add spaces between parens and inside statements
 pad-paren
 # We're adding brackets to one line conditional statements,
@@ -15,14 +15,11 @@ pad-paren
 min-conditional-indent=0
 # recurse directory tree
 recursive
+# Continue in exclude errors
+ignore-exclude-errors
 # Exclude external and auto generated code.
-exclude=md5
-exclude=sha1
-exclude=crc
-exclude=GLee
-exclude=resources 
-exclude=logo.c
-exclude=logo.h
-exclude=Vera.c
-exclude=Vera.h
+exclude=glcorearb.h
+exclude=glext.h
+exclude=glxext.h
 exclude=wglext.h
+exclude=pluginmain.cpp

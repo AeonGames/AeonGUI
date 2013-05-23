@@ -75,6 +75,9 @@ namespace AeonGUI
     static PFNGLUNIFORM1IPROC               glUniform1i = NULL;
     static PFNGLUNIFORMMATRIX4FVPROC        glUniformMatrix4fv = NULL;
     static PFNGLVERTEXATTRIBPOINTERPROC     glVertexAttribPointer = NULL;
+    static PFNGLGENBUFFERSPROC              glGenBuffers = NULL;
+    static PFNGLBINDBUFFERPROC              glBindBuffer = NULL;
+    static PFNGLBUFFERDATAPROC              glBufferData = NULL;
 
     static char log_buffer[1024] = {0};
 
@@ -199,13 +202,31 @@ namespace AeonGUI
             glUniform1i ( screen_texture, 1 );
             LOGERROR();
         }
+
+        // Create VBO
+        GLfloat vertices[16] =
+        {
+            /* position */ 0.0f, 0.0f,                                                 /* uv */ 0.0f, 0.0f,
+            /* position */ static_cast<float> ( screen_w ), 0.0f,                         /* uv */ 1.0f, 0.0f,
+            /* position */ 0.0f, static_cast<float> ( screen_h ),                         /* uv */ 0.0f, 1.0f,
+            /* position */ static_cast<float> ( screen_w ), static_cast<float> ( screen_h ), /* uv */ 1.0f, 1.0f
+        };
+
+        // Generate VBO
+        glGenBuffers ( 1, &vertex_buffer_object );
+        LOGERROR();
+        glBindBuffer ( GL_ARRAY_BUFFER, vertex_buffer_object );
+        LOGERROR();
+        glBufferData ( GL_ARRAY_BUFFER, sizeof ( GLfloat ) * 16, vertices, GL_STATIC_DRAW );
+        LOGERROR();
+
         return true;
     }
 
     bool OpenGLRenderer::Initialize ( int32_t screen_width, int32_t screen_height )
     {
         glAttachShader =            ( PFNGLATTACHSHADERPROC )            wglGetProcAddress ( "glAttachShader" );
-        glCompileShader =           (PFNGLCOMPILESHADERPROC )            wglGetProcAddress ( "glCompileShader" );
+        glCompileShader =           ( PFNGLCOMPILESHADERPROC )            wglGetProcAddress ( "glCompileShader" );
         glCreateProgram =           ( PFNGLCREATEPROGRAMPROC )           wglGetProcAddress ( "glCreateProgram" );
         glCreateShader =            ( PFNGLCREATESHADERPROC  )           wglGetProcAddress ( "glCreateShader" );
         glDeleteProgram =           ( PFNGLDELETEPROGRAMPROC )           wglGetProcAddress ( "glDeleteProgram" );
@@ -222,6 +243,9 @@ namespace AeonGUI
         glUniform1i =               ( PFNGLUNIFORM1IPROC )               wglGetProcAddress ( "glUniform1i" );
         glUniformMatrix4fv =        ( PFNGLUNIFORMMATRIX4FVPROC )        wglGetProcAddress ( "glUniformMatrix4fv" );
         glVertexAttribPointer =     ( PFNGLVERTEXATTRIBPOINTERPROC )     wglGetProcAddress ( "glVertexAttribPointer" );
+        glGenBuffers =              ( PFNGLGENBUFFERSPROC )              wglGetProcAddress ( "glGenBuffers" );
+        glBindBuffer =              ( PFNGLBINDBUFFERPROC )              wglGetProcAddress ( "glBindBuffer" );
+        glBufferData =              ( PFNGLBUFFERDATAPROC )              wglGetProcAddress ( "glBufferData" );
 
         // Compile Shaders
         GLint info_log_length;
@@ -358,47 +382,32 @@ namespace AeonGUI
 
     void OpenGLRenderer::BeginRender()
     {
-        //glPushAttrib ( GL_ALL_ATTRIB_BITS );
         glUseProgram ( shader_program );
         LOGERROR();
         ///\todo Setting the screen bitmap memory to zero may not be always necesary.
         memset ( screen_bitmap, 0, sizeof ( uint8_t ) * ( screen_w * screen_h * 4 ) );
     }
+
     void OpenGLRenderer::EndRender()
     {
-        //glEnable ( GL_TEXTURE_2D );
-        //LOGERROR();
+        glBindBuffer ( GL_ARRAY_BUFFER, vertex_buffer_object );
+        LOGERROR();
+
         glBindTexture ( GL_TEXTURE_2D, screen_texture );
         LOGERROR();
 
         glTexSubImage2D ( GL_TEXTURE_2D, 0, 0, 0, screen_w, screen_h, GL_BGRA, GL_UNSIGNED_BYTE, screen_bitmap );
         LOGERROR();
 
-        GLint vertices[8] =
-        {
-            0, 0,
-            screen_w, 0,
-            0, screen_h,
-            screen_w, screen_h
-        };
-
-        GLfloat uvs[8] =
-        {
-            0.0f, 0.0f,
-            1.0f, 0.0f,
-            0.0f, 1.0f,
-            1.0f, 1.0f
-        };
-
         GLint position = glGetAttribLocation ( shader_program, "position" );
         LOGERROR();
-        glVertexAttribPointer ( position, 2, GL_INT, GL_FALSE, 0, vertices );
+        glVertexAttribPointer ( position, 2, GL_FLOAT, GL_FALSE, sizeof ( float ) * 4, ( ( void* ) 0 ) );
         LOGERROR();
         glEnableVertexAttribArray ( position );
         LOGERROR();
 
         GLint uv = glGetAttribLocation ( shader_program, "uv" );
-        glVertexAttribPointer ( uv, 2, GL_FLOAT, GL_FALSE, 0, uvs );
+        glVertexAttribPointer ( uv, 2, GL_FLOAT, GL_FALSE, sizeof ( float ) * 4, ( ( void* ) ( sizeof ( float ) * 2 ) ) );
         LOGERROR();
         glEnableVertexAttribArray ( uv );
         LOGERROR();
