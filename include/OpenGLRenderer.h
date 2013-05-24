@@ -71,10 +71,10 @@ namespace AeonGUI
         uint32_t vert_shader;
         uint32_t frag_shader;
         uint32_t shader_program;
-        static uint32_t TypeTable[];
-        static uint32_t FormatTable[];
         uint32_t vertex_buffer_object;
         uint32_t vertex_array_object;
+        static uint32_t TypeTable[];
+        static uint32_t FormatTable[];
     };
 }
 #endif

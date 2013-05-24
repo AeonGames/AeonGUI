@@ -78,8 +78,10 @@ namespace AeonGUI
     static PFNGLGENBUFFERSPROC              glGenBuffers = NULL;
     static PFNGLBINDBUFFERPROC              glBindBuffer = NULL;
     static PFNGLBUFFERDATAPROC              glBufferData = NULL;
+	static PFNGLDELETEBUFFERSPROC           glDeleteBuffers = NULL;
     static PFNGLGENVERTEXARRAYSPROC         glGenVertexArrays = NULL;
     static PFNGLBINDVERTEXARRAYPROC         glBindVertexArray = NULL;
+    static PFNGLDELETEVERTEXARRAYSPROC      glDeleteVertexArrays = NULL;
 
     static char log_buffer[1024] = {0};
 
@@ -99,7 +101,9 @@ namespace AeonGUI
     OpenGLRenderer::OpenGLRenderer() :
         viewport_w ( 0 ), viewport_h ( 0 ),
         screen_texture ( 0 ), screen_bitmap ( NULL ),
-        shader_program ( 0 )
+        shader_program ( 0 ),
+        vertex_buffer_object(0),
+        vertex_array_object(0)
     {
     }
 
@@ -118,6 +122,7 @@ namespace AeonGUI
         {
             glDeleteTextures ( 1, &screen_texture );
         }
+
         if ( screen_bitmap != NULL )
         {
             delete[] screen_bitmap;
@@ -214,6 +219,13 @@ namespace AeonGUI
             /* position */ static_cast<float> ( screen_w ), static_cast<float> ( screen_h ), /* uv */ 1.0f, 1.0f
         };
 
+
+		// Generate VAO
+        glGenVertexArrays ( 1, &vertex_array_object );
+        LOGERROR();
+        glBindVertexArray ( vertex_array_object );
+        LOGERROR();
+
         // Generate VBO
         glGenBuffers ( 1, &vertex_buffer_object );
         LOGERROR();
@@ -221,6 +233,7 @@ namespace AeonGUI
         LOGERROR();
         glBufferData ( GL_ARRAY_BUFFER, sizeof ( GLfloat ) * 16, &vertices[0], GL_STATIC_DRAW );
         LOGERROR();
+
 
         return true;
     }
@@ -248,8 +261,10 @@ namespace AeonGUI
         glGenBuffers =              ( PFNGLGENBUFFERSPROC )              wglGetProcAddress ( "glGenBuffers" );
         glBindBuffer =              ( PFNGLBINDBUFFERPROC )              wglGetProcAddress ( "glBindBuffer" );
         glBufferData =              ( PFNGLBUFFERDATAPROC )              wglGetProcAddress ( "glBufferData" );
+        glDeleteBuffers =           ( PFNGLDELETEBUFFERSPROC )           wglGetProcAddress ( "glDeleteBuffers" );
         glGenVertexArrays =         ( PFNGLGENVERTEXARRAYSPROC )         wglGetProcAddress ( "glGenVertexArrays" );
         glBindVertexArray =         ( PFNGLBINDVERTEXARRAYPROC )         wglGetProcAddress ( "glBindVertexArray" );
+        glDeleteVertexArrays =      ( PFNGLDELETEVERTEXARRAYSPROC )      wglGetProcAddress ( "glDeleteVertexArrays" );
 
 
         // Compile Shaders
@@ -372,16 +387,24 @@ namespace AeonGUI
             glDeleteTextures ( 1, &screen_texture );
             screen_texture = 0;
         }
+
         if ( screen_bitmap != NULL )
         {
             delete[] screen_bitmap;
             screen_bitmap = NULL;
         }
-        if ( shader_program != 0 )
+
+        if ( vertex_array_object != 0 )
         {
-            glDeleteProgram ( shader_program );
+            glDeleteVertexArrays ( 1, &vertex_array_object );
             LOGERROR();
-            shader_program = 0;
+            vertex_array_object = 0;
+        }
+        if ( vertex_buffer_object != 0 )
+        {
+            glDeleteBuffers ( 1, &vertex_buffer_object );
+            LOGERROR();
+            vertex_buffer_object = 0;
         }
     }
 
