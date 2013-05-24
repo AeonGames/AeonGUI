@@ -78,7 +78,7 @@ namespace AeonGUI
     static PFNGLGENBUFFERSPROC              glGenBuffers = NULL;
     static PFNGLBINDBUFFERPROC              glBindBuffer = NULL;
     static PFNGLBUFFERDATAPROC              glBufferData = NULL;
-	static PFNGLDELETEBUFFERSPROC           glDeleteBuffers = NULL;
+    static PFNGLDELETEBUFFERSPROC           glDeleteBuffers = NULL;
     static PFNGLGENVERTEXARRAYSPROC         glGenVertexArrays = NULL;
     static PFNGLBINDVERTEXARRAYPROC         glBindVertexArray = NULL;
     static PFNGLDELETEVERTEXARRAYSPROC      glDeleteVertexArrays = NULL;
@@ -102,8 +102,8 @@ namespace AeonGUI
         viewport_w ( 0 ), viewport_h ( 0 ),
         screen_texture ( 0 ), screen_bitmap ( NULL ),
         shader_program ( 0 ),
-        vertex_buffer_object(0),
-        vertex_array_object(0)
+        vertex_buffer_object ( 0 ),
+        vertex_array_object ( 0 )
     {
     }
 
@@ -206,7 +206,7 @@ namespace AeonGUI
         LOGERROR();
         if ( screen_texture > -1 )
         {
-            glUniform1i ( screen_texture, 1 );
+            glUniform1i ( screen_texture, 0 );
             LOGERROR();
         }
 
@@ -220,7 +220,7 @@ namespace AeonGUI
         };
 
 
-		// Generate VAO
+        // Generate VAO
         glGenVertexArrays ( 1, &vertex_array_object );
         LOGERROR();
         glBindVertexArray ( vertex_array_object );
@@ -418,9 +418,6 @@ namespace AeonGUI
 
     void OpenGLRenderer::EndRender()
     {
-        glBindBuffer ( GL_ARRAY_BUFFER, vertex_buffer_object );
-        LOGERROR();
-
         glBindTexture ( GL_TEXTURE_2D, screen_texture );
         LOGERROR();
 
@@ -442,9 +439,6 @@ namespace AeonGUI
 
         glDrawArrays ( GL_TRIANGLE_STRIP, 0, 4 );
         LOGERROR();
-
-        //glPopAttrib();
-        //LOGERROR();
     }
     void OpenGLRenderer::DrawRect ( Color color, const Rect* rect )
     {

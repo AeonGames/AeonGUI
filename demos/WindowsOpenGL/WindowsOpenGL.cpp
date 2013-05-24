@@ -153,23 +153,23 @@ void Window::Initialize ( HINSTANCE hInstance )
 
 void Window::Finalize()
 {
-    if(window!=NULL)
-	{
-		delete window;
-		window = NULL;
-	}
-    if(image!=NULL)
-	{
-		delete image;
-		image = NULL;
-	}
-    if(font!=NULL)
-	{
-		delete font;
-		font = NULL;
-	}
-	renderer.Finalize();
-	wglMakeCurrent ( hDC, NULL );
+    if ( window != NULL )
+    {
+        delete window;
+        window = NULL;
+    }
+    if ( image != NULL )
+    {
+        delete image;
+        image = NULL;
+    }
+    if ( font != NULL )
+    {
+        delete font;
+        font = NULL;
+    }
+    renderer.Finalize();
+    wglMakeCurrent ( hDC, NULL );
     wglDeleteContext ( hRC );
     ReleaseDC ( hWnd, hDC );
     DestroyWindow ( hWnd );
@@ -190,8 +190,8 @@ void Window::RenderLoop()
     wglMakeCurrent ( hDC, hRC );
     const AeonGUI::Color color ( 0xFFFFFFFF );
     renderer.BeginRender();
-    //window->Render ( &renderer );
-    //renderer.DrawImage ( color, width - logo_width, height - logo_height, image );
+    window->Render ( &renderer );
+    renderer.DrawImage ( color, width - logo_width, height - logo_height, image );
     renderer.EndRender();
 
     SwapBuffers ( hDC );
@@ -311,10 +311,10 @@ int main ( int argc, char *argv[] )
 {
 #ifdef _MSC_VER
 #if 0
-	_CrtSetBreakAlloc(346);
+    _CrtSetBreakAlloc ( 346 );
 #endif
 #if 1
-	// Send all reports to STDOUT
+    // Send all reports to STDOUT
     _CrtSetReportMode ( _CRT_WARN, _CRTDBG_MODE_FILE );
     _CrtSetReportFile ( _CRT_WARN, _CRTDBG_FILE_STDOUT );
     _CrtSetReportMode ( _CRT_ERROR, _CRTDBG_MODE_FILE );

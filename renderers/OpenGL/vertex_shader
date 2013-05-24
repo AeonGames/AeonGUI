@@ -1,9 +1,4 @@
-#ifdef GL_ES
-#version 100
-#else
 #version 140
-#endif
-
 uniform mat4 projection_matrix;
 in vec2 position;
 in vec2 uv;
