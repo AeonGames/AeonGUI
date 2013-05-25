@@ -1,5 +1,5 @@
 #!/bin/bash
 echo "static const char* $(basename $1) =" > $1.h
-sed "s/\(.*\)/\"\1\\\\n\"/g" $1 >> $1.h
+sed 's/\(.*\)\r/"\1"/' $1 >> $1.h
 echo ";" >> $1.h
 
