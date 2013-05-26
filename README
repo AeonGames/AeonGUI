@@ -1,4 +1,4 @@
-AeonGUI README (09-13-2012)
+AeonGUI README (05-26-2013)
 ===========================
 
 This file contains the following sections:
@@ -32,7 +32,8 @@ COMPILATION
 ===========
 The library uses CMake to build the required files used to build the binary depending on the platform.
 For information on how to use CMake refer to www.cmake.org.
-The code is known to compile and run only under Linux and Windows at this time.
+There is only "official" support for Windows and Linux at this time, 
+however, Linux builds may break from time to time as most development is done on Windows.
 
 LICENSE
 =======
@@ -45,7 +46,6 @@ core/md5  is Copyright (c) 2001 Alexander Peslyak, released under a BSD-like lic
 core/crc  is Copyright (c) 2000 Michael Barr, placed under public domain.
 core/sha1 is Copyright (c) 2009 Micael Hildenborg, released under the BSD license.
 fonts     is Copyright (c) 2003 by Bitstream, Inc., refer to COPYRIGHT.TXT for license terms.
-external/GLee is Copyright (c) 2009 Ben Woodhouse, refer to readme.txt for license terms.
 
 AUTHOR
 ======
