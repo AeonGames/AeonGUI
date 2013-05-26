@@ -162,6 +162,7 @@ namespace AeonGUI
         LOGERROR();
         glTexImage2D ( GL_TEXTURE_2D, 0, GL_RGBA8, screen_w, screen_h, 0, GL_BGRA, GL_UNSIGNED_INT_8_8_8_8_REV, NULL );
         LOGERROR();
+
         screen_bitmap = new uint8_t[screen_w * screen_h * 4];
 
         width =  float ( viewport_w ) + pixel_offset;
@@ -213,9 +214,9 @@ namespace AeonGUI
         // Create VBO
         GLfloat vertices[16] =
         {
-            /* position */ 0.0f, 0.0f,                                                 /* uv */ 0.0f, 0.0f,
-            /* position */ static_cast<float> ( screen_w ), 0.0f,                         /* uv */ 1.0f, 0.0f,
-            /* position */ 0.0f, static_cast<float> ( screen_h ),                         /* uv */ 0.0f, 1.0f,
+            /* position */ 0.0f, 0.0f,                                                       /* uv */ 0.0f, 0.0f,
+            /* position */ static_cast<float> ( screen_w ), 0.0f,                            /* uv */ 1.0f, 0.0f,
+            /* position */ 0.0f, static_cast<float> ( screen_h ),                            /* uv */ 0.0f, 1.0f,
             /* position */ static_cast<float> ( screen_w ), static_cast<float> ( screen_h ), /* uv */ 1.0f, 1.0f
         };
 
@@ -412,12 +413,26 @@ namespace AeonGUI
     {
         glUseProgram ( shader_program );
         LOGERROR();
+        Rect rect;
+        rect.SetPosition ( 0, 0 );
+        rect.SetDimensions ( screen_w, screen_h );
         ///\todo Setting the screen bitmap memory to zero may not be always necesary.
         memset ( screen_bitmap, 0, sizeof ( uint8_t ) * ( screen_w * screen_h * 4 ) );
+        DrawRectOutline ( 0xffffffff, &rect );
     }
 
     void OpenGLRenderer::EndRender()
     {
+        glBlendFunc ( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
+        //glBlendFunc ( GL_ONE, GL_ONE_MINUS_SRC_ALPHA );
+
+        LOGERROR();
+        glEnable ( GL_BLEND );
+        LOGERROR();
+
+        glDepthMask ( GL_FALSE );
+        glDisable ( GL_DEPTH_TEST );
+
         glBindTexture ( GL_TEXTURE_2D, screen_texture );
         LOGERROR();
 

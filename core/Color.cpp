@@ -19,17 +19,15 @@ namespace AeonGUI
 {
     void Color::Blend ( Color src )
     {
-        if ( src.bgra == 0 )
+        if ( ( src.a == 255 ) )
         {
-            return;
-        }
-        else if ( ( src.a == 255 ) || ( a == 0 ) )
-        {
-            /*  Full source opacity static_cast<float>(a)or full destination transparency
+            /*  Full source opacity
                 do a simple replacement*/
             bgra = src.bgra;
         }
-        else
+		/*	If the source alpha is 0 
+			the destination color is unchanged */
+        else if(src.a > 0)
         {
             float sfactor = ( static_cast<float> ( src.a ) / 255.0f );
             //float dfactor = (static_cast<float>(src.a)/255.0f);
@@ -41,5 +39,4 @@ namespace AeonGUI
             a = static_cast<uint8_t> ( std::min ( 255.0f, ( static_cast<float> ( src.a ) + static_cast<float> ( a ) ) ) );
         }
     }
-
 }
