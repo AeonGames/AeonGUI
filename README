@@ -40,6 +40,9 @@ LICENSE
 The library is released under the terms of the permisive Apache 2.0 license (http://www.apache.org/licenses/LICENSE-2.0)
 <Insert Objectivist Sermon Here>
 
+The Aeon Games logo is NOT covered by the Apache license,
+it is a Trade Mark and may not be used for any purpose without permision.
+
 Some of the code and assets are not covered by the Apache license:
 
 core/md5  is Copyright (c) 2001 Alexander Peslyak, released under a BSD-like license
