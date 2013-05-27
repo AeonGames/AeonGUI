@@ -19,12 +19,20 @@ Copyright 2010-2012 Rodrigo Hernandez Cordoba
 #include <windows.h>
 #include <windowsx.h>
 #include <wingdi.h>
+#include "wglext.h"
+#define glGetProcAddress wglGetProcAddress
+#else
+#include <X11/Xlib.h>
+#include <GL/glx.h>
+#include "glxext.h"
+#define glGetProcAddress glXGetProcAddress
+#endif
+
 #include <GL/gl.h>
 #include <GL/glu.h>
 #include "glext.h"
 #include "glcorearb.h"
-#include "wglext.h"
-#endif
+
 #include <cassert>
 #include <cstdlib>
 #include <cwchar>
@@ -62,6 +70,7 @@ namespace AeonGUI
     static PFNGLCREATEPROGRAMPROC           glCreateProgram = NULL;
     static PFNGLCREATESHADERPROC            glCreateShader = NULL;
     static PFNGLDELETEPROGRAMPROC           glDeleteProgram = NULL;
+    static PFNGLDELETESHADERPROC            glDeleteShader = NULL;
     static PFNGLENABLEVERTEXATTRIBARRAYPROC glEnableVertexAttribArray = NULL;
     static PFNGLGETATTRIBLOCATIONPROC       glGetAttribLocation = NULL;
     static PFNGLGETPROGRAMIVPROC            glGetProgramiv = NULL;
@@ -241,32 +250,31 @@ namespace AeonGUI
 
     bool OpenGLRenderer::Initialize ( int32_t screen_width, int32_t screen_height )
     {
-        glAttachShader =            ( PFNGLATTACHSHADERPROC )            wglGetProcAddress ( "glAttachShader" );
-        glCompileShader =           ( PFNGLCOMPILESHADERPROC )            wglGetProcAddress ( "glCompileShader" );
-        glCreateProgram =           ( PFNGLCREATEPROGRAMPROC )           wglGetProcAddress ( "glCreateProgram" );
-        glCreateShader =            ( PFNGLCREATESHADERPROC  )           wglGetProcAddress ( "glCreateShader" );
-        glDeleteProgram =           ( PFNGLDELETEPROGRAMPROC )           wglGetProcAddress ( "glDeleteProgram" );
-        glEnableVertexAttribArray = ( PFNGLENABLEVERTEXATTRIBARRAYPROC ) wglGetProcAddress ( "glEnableVertexAttribArray" );
-        glGetAttribLocation =       ( PFNGLGETATTRIBLOCATIONPROC )       wglGetProcAddress ( "glGetAttribLocation" );
-        glGetProgramiv =            ( PFNGLGETPROGRAMIVPROC )            wglGetProcAddress ( "glGetProgramiv" );
-        glGetProgramInfoLog =       ( PFNGLGETPROGRAMINFOLOGPROC )       wglGetProcAddress ( "glGetProgramInfoLog" );
-        glGetShaderiv =             ( PFNGLGETSHADERIVPROC )             wglGetProcAddress ( "glGetShaderiv" );
-        glGetShaderInfoLog =        ( PFNGLGETSHADERINFOLOGPROC )        wglGetProcAddress ( "glGetShaderInfoLog" );
-        glGetUniformLocation =      ( PFNGLGETUNIFORMLOCATIONPROC )      wglGetProcAddress ( "glGetUniformLocation" );
-        glLinkProgram =             ( PFNGLLINKPROGRAMPROC )             wglGetProcAddress ( "glLinkProgram" );
-        glShaderSource =            ( PFNGLSHADERSOURCEPROC )            wglGetProcAddress ( "glShaderSource" );
-        glUseProgram =              ( PFNGLUSEPROGRAMPROC )              wglGetProcAddress ( "glUseProgram" );
-        glUniform1i =               ( PFNGLUNIFORM1IPROC )               wglGetProcAddress ( "glUniform1i" );
-        glUniformMatrix4fv =        ( PFNGLUNIFORMMATRIX4FVPROC )        wglGetProcAddress ( "glUniformMatrix4fv" );
-        glVertexAttribPointer =     ( PFNGLVERTEXATTRIBPOINTERPROC )     wglGetProcAddress ( "glVertexAttribPointer" );
-        glGenBuffers =              ( PFNGLGENBUFFERSPROC )              wglGetProcAddress ( "glGenBuffers" );
-        glBindBuffer =              ( PFNGLBINDBUFFERPROC )              wglGetProcAddress ( "glBindBuffer" );
-        glBufferData =              ( PFNGLBUFFERDATAPROC )              wglGetProcAddress ( "glBufferData" );
-        glDeleteBuffers =           ( PFNGLDELETEBUFFERSPROC )           wglGetProcAddress ( "glDeleteBuffers" );
-        glGenVertexArrays =         ( PFNGLGENVERTEXARRAYSPROC )         wglGetProcAddress ( "glGenVertexArrays" );
-        glBindVertexArray =         ( PFNGLBINDVERTEXARRAYPROC )         wglGetProcAddress ( "glBindVertexArray" );
-        glDeleteVertexArrays =      ( PFNGLDELETEVERTEXARRAYSPROC )      wglGetProcAddress ( "glDeleteVertexArrays" );
-
+        glAttachShader =            ( PFNGLATTACHSHADERPROC )            glGetProcAddress ( ( GLubyte* ) "glAttachShader" );
+        glCompileShader =           ( PFNGLCOMPILESHADERPROC )           glGetProcAddress ( ( GLubyte* ) "glCompileShader" );
+        glCreateProgram =           ( PFNGLCREATEPROGRAMPROC )           glGetProcAddress ( ( GLubyte* ) "glCreateProgram" );
+        glCreateShader =            ( PFNGLCREATESHADERPROC  )           glGetProcAddress ( ( GLubyte* ) "glCreateShader" );
+        glDeleteProgram =           ( PFNGLDELETEPROGRAMPROC )           glGetProcAddress ( ( GLubyte* ) "glDeleteProgram" );
+        glEnableVertexAttribArray = ( PFNGLENABLEVERTEXATTRIBARRAYPROC ) glGetProcAddress ( ( GLubyte* ) "glEnableVertexAttribArray" );
+        glGetAttribLocation =       ( PFNGLGETATTRIBLOCATIONPROC )       glGetProcAddress ( ( GLubyte* ) "glGetAttribLocation" );
+        glGetProgramiv =            ( PFNGLGETPROGRAMIVPROC )            glGetProcAddress ( ( GLubyte* ) "glGetProgramiv" );
+        glGetProgramInfoLog =       ( PFNGLGETPROGRAMINFOLOGPROC )       glGetProcAddress ( ( GLubyte* ) "glGetProgramInfoLog" );
+        glGetShaderiv =             ( PFNGLGETSHADERIVPROC )             glGetProcAddress ( ( GLubyte* ) "glGetShaderiv" );
+        glGetShaderInfoLog =        ( PFNGLGETSHADERINFOLOGPROC )        glGetProcAddress ( ( GLubyte* ) "glGetShaderInfoLog" );
+        glGetUniformLocation =      ( PFNGLGETUNIFORMLOCATIONPROC )      glGetProcAddress ( ( GLubyte* ) "glGetUniformLocation" );
+        glLinkProgram =             ( PFNGLLINKPROGRAMPROC )             glGetProcAddress ( ( GLubyte* ) "glLinkProgram" );
+        glShaderSource =            ( PFNGLSHADERSOURCEPROC )            glGetProcAddress ( ( GLubyte* ) "glShaderSource" );
+        glUseProgram =              ( PFNGLUSEPROGRAMPROC )              glGetProcAddress ( ( GLubyte* ) "glUseProgram" );
+        glUniform1i =               ( PFNGLUNIFORM1IPROC )               glGetProcAddress ( ( GLubyte* ) "glUniform1i" );
+        glUniformMatrix4fv =        ( PFNGLUNIFORMMATRIX4FVPROC )        glGetProcAddress ( ( GLubyte* ) "glUniformMatrix4fv" );
+        glVertexAttribPointer =     ( PFNGLVERTEXATTRIBPOINTERPROC )     glGetProcAddress ( ( GLubyte* ) "glVertexAttribPointer" );
+        glGenBuffers =              ( PFNGLGENBUFFERSPROC )              glGetProcAddress ( ( GLubyte* ) "glGenBuffers" );
+        glBindBuffer =              ( PFNGLBINDBUFFERPROC )              glGetProcAddress ( ( GLubyte* ) "glBindBuffer" );
+        glBufferData =              ( PFNGLBUFFERDATAPROC )              glGetProcAddress ( ( GLubyte* ) "glBufferData" );
+        glDeleteBuffers =           ( PFNGLDELETEBUFFERSPROC )           glGetProcAddress ( ( GLubyte* ) "glDeleteBuffers" );
+        glGenVertexArrays =         ( PFNGLGENVERTEXARRAYSPROC )         glGetProcAddress ( ( GLubyte* ) "glGenVertexArrays" );
+        glBindVertexArray =         ( PFNGLBINDVERTEXARRAYPROC )         glGetProcAddress ( ( GLubyte* ) "glBindVertexArray" );
+        glDeleteVertexArrays =      ( PFNGLDELETEVERTEXARRAYSPROC )      glGetProcAddress ( ( GLubyte* ) "glDeleteVertexArrays" );
 
         // Compile Shaders
         GLint info_log_length;
@@ -393,6 +401,24 @@ namespace AeonGUI
         {
             delete[] screen_bitmap;
             screen_bitmap = NULL;
+        }
+
+        if ( shader_program > 0 )
+        {
+            glDeleteProgram ( shader_program );
+            shader_program = 0;
+        }
+
+        if ( vert_shader > 0 )
+        {
+            glDeleteShader ( vert_shader );
+            vert_shader = 0;
+        }
+
+        if ( frag_shader > 0 )
+        {
+            glDeleteShader ( frag_shader );
+            frag_shader = 0;
         }
 
         if ( vertex_array_object != 0 )
