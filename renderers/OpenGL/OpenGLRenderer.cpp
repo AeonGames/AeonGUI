@@ -30,12 +30,12 @@ Copyright 2010-2012 Rodrigo Hernandez Cordoba
 #include <X11/Xlib.h>
 #include <GL/gl.h>
 #include <GL/glu.h>
-#include "glext.h"
-#include "glcorearb.h"
 #include <GL/glx.h>
 #include "glxext.h"
+#include "glext.h"
+#include "glcorearb.h"
 #define GLGETPROCADDRESS(glFunction,glFunctionType) \
-    glFunction = ( glFunctionType ) glxGetProcAddress ( static_cast<GLubyte*>( #glFunction ));
+    glFunction = ( glFunctionType ) glXGetProcAddress ( (const GLubyte*) #glFunction );
 #endif
 
 
@@ -115,7 +115,10 @@ namespace AeonGUI
 
     OpenGLRenderer::OpenGLRenderer() :
         viewport_w ( 0 ), viewport_h ( 0 ),
+        screen_w ( 0 ), screen_h ( 0 ),
         screen_texture ( 0 ), screen_bitmap ( NULL ),
+        max_texture_size ( 0 ),
+        vert_shader ( 0 ), frag_shader ( 0 ),
         shader_program ( 0 ),
         vertex_buffer_object ( 0 ),
         vertex_array_object ( 0 )

@@ -1,6 +1,8 @@
 #include <cstdio>
 #include <cstdlib>
 #include <cstring>
+#include <cassert>
+#include <ctime>
 #include <unistd.h>
 
 #include <X11/Xlib.h>
@@ -54,6 +56,7 @@ static bool isExtensionSupported ( const char *extList, const char *extension )
     return false;
 }
 
+#if 0
 static uint32_t GetScancode ( KeySym keysym )
 {
     switch ( keysym )
@@ -159,8 +162,9 @@ static uint32_t GetScancode ( KeySym keysym )
         KEY_DEL      = 0x53
 #endif
     }
-    return keysym;
+                   return keysym;
 }
+#endif
 
 class GLWindow
 {
