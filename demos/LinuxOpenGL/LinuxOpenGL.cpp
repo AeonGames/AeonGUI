@@ -232,8 +232,8 @@ bool GLWindow::Create ( Display* dpy )
             glXGetFBConfigAttrib ( display, fbc[i], GLX_SAMPLES       , &samples  );
 
             printf ( "  Matching fbconfig %d, visual ID 0x%2x: SAMPLE_BUFFERS = %d,"
-                                 " SAMPLES = %d",
-                                 i, static_cast<unsigned int> ( vi->visualid ), samp_buf, samples );
+                     " SAMPLES = %d",
+                     i, static_cast<unsigned int> ( vi->visualid ), samp_buf, samples );
 
             if ( best_fbc < 0 || ( samp_buf && samples > best_num_samp ) )
             {
@@ -340,7 +340,7 @@ bool GLWindow::Create ( Display* dpy )
     bool running = true;
     XEvent xEvent;
 
-    glViewport( 0, 0, 800, 600 );
+    glViewport ( 0, 0, 800, 600 );
 
     timespec current_time;
     clock_gettime ( CLOCK_REALTIME, &current_time );
@@ -364,7 +364,7 @@ bool GLWindow::Create ( Display* dpy )
             case MotionNotify:
                 break;
             case ResizeRequest:
-                glViewport(0, 0, xEvent.xresizerequest.width, xEvent.xresizerequest.height );
+                glViewport ( 0, 0, xEvent.xresizerequest.width, xEvent.xresizerequest.height );
                 break;
             case ClientMessage:
                 if ( static_cast<Atom> ( xEvent.xclient.data.l[0] ) == wm_delete_window )
@@ -383,7 +383,7 @@ bool GLWindow::Create ( Display* dpy )
         {
             delta = 1.0f / 30.0f;
         }
-        
+
         last_time = current_time;
 
         glXSwapBuffers ( display, window );
