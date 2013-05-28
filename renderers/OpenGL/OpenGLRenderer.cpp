@@ -431,7 +431,7 @@ namespace AeonGUI
         rect.SetDimensions ( screen_w, screen_h );
         ///\todo Setting the screen bitmap memory to zero may not be always necesary.
         memset ( screen_bitmap, 0, sizeof ( uint8_t ) * ( screen_w * screen_h * 4 ) );
-        DrawRectOutline ( 0xffffffff, &rect );
+        DrawRectOutline ( Color ( 0xffffffff ), &rect );
     }
 
     void OpenGLRenderer::EndRender()

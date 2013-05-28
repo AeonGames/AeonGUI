@@ -48,10 +48,19 @@ public:
         \param _argc [in] Argument count.
         \param _argv [in] Argument array;
     */
-    Font2C ( int32_t _argc, char **_argv )
+    Font2C ( int32_t _argc, char **_argv ) :
+        argc (_argc),
+        argv (_argv),
+		bytesperline(24),
+	    freetype2(NULL),
+	    face(NULL),
+		fontsize(12),
+		glyphs_per_row(0),
+		glyphs_per_column(0),
+		pixels(NULL),
+		poweroftwo(false),
+		buffersize(0)
     {
-        argc = _argc;
-        argv = _argv;
         header.id[0] = 'A';
         header.id[1] = 'E';
         header.id[2] = 'O';
@@ -63,12 +72,7 @@ public:
         header.version[0] = 0;
         header.version[1] = 1;
         header.glyphcount = 0;
-        pixels = NULL;
-        bytesperline = 24;
-        fontsize = 12;
-        poweroftwo = false;
-        fontfile.clear();
-        buffersize = 0;
+		fontfile.clear();
     }
     ~Font2C()
     {
@@ -100,7 +104,9 @@ public:
         char drive[FILENAME_MAX] = "";
         char directory[FILENAME_MAX] = "";
         char filename[FILENAME_MAX] = "";
+#if WIN32
         char extension[FILENAME_MAX] = "";
+#endif
         for ( int32_t i = 1; i < argc; ++i )
         {
             if ( argv[i][0] == '-' )
