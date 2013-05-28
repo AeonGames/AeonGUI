@@ -47,7 +47,7 @@ namespace AeonGUI
         renderer->DrawString ( color, x, y, text );
     }
 
-    void Widget::MouseButtonDown ( uint8_t button, uint16_t x, uint16_t y )
+    void Widget::MouseButtonDown ( uint8_t button, uint32_t x, uint32_t y )
     {
         for ( std::list<Widget*>::iterator i = children.begin(); i != children.end(); ++i )
         {
@@ -68,7 +68,7 @@ namespace AeonGUI
         handler->GetFocus();
     }
 
-    void Widget::MouseButtonUp ( uint8_t button, uint16_t x, uint16_t y )
+    void Widget::MouseButtonUp ( uint8_t button, uint32_t x, uint32_t y )
     {
         for ( std::list<Widget*>::iterator i = children.begin(); i != children.end(); ++i )
         {
@@ -95,17 +95,17 @@ namespace AeonGUI
         }
     }
 
-    void Widget::MouseMove ( uint16_t x, uint16_t y, short xrel, short yrel )
+    void Widget::MouseMove ( uint32_t x, uint32_t y )
     {
         /// \todo This currently just broadcasts the mouse movement, need to make it more specific.
-        OnMouseMove ( x, y, xrel, yrel );
+        OnMouseMove ( x, y);
         if ( mouseListener != NULL )
         {
-            mouseListener->OnMouseMove ( this, x, y, xrel, yrel );
+            mouseListener->OnMouseMove ( this, x, y);
         }
         for ( std::list<Widget*>::iterator i = children.begin(); i != children.end(); ++i )
         {
-            ( *i )->MouseMove ( x, y, xrel, yrel );
+            ( *i )->MouseMove ( x, y);
         }
     }
 

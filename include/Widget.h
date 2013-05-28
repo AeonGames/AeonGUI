@@ -146,20 +146,18 @@ namespace AeonGUI
         /*! \brief Signal a mouse move event to widget under the mouse cursor.
             \param x [in] absolute x coordinate for the event.
             \param y [in] absolute y coordinate for the event.
-            \param xrel [in] relative x coordinate for the event.
-            \param yrel [in] relative y coordinate for the event.
         */
-        void MouseMove ( uint16_t x, uint16_t y, short xrel, short yrel );
+        void MouseMove ( uint32_t x, uint32_t y );
 
         /*! \brief Signal a mouse button down event to widget under the mouse cursor.
             \param x [in] absolute x coordinate for the event.
             \param y [in] absolute y coordinate for the event.*/
-        void MouseButtonDown ( uint8_t button, uint16_t x, uint16_t y );
+        void MouseButtonDown ( uint8_t button, uint32_t x, uint32_t y );
 
         /*! \brief Signal a mouse button up event to widget under the mouse cursor.
             \param x [in] absolute x coordinate for the event.
             \param y [in] absolute y coordinate for the event.*/
-        void MouseButtonUp ( uint8_t button, uint16_t x, uint16_t y );
+        void MouseButtonUp ( uint8_t button, uint32_t x, uint32_t y );
 
         /*! \brief Trigger widget tree rendering.
             \param renderer [in] Renderer to use.*/
@@ -171,25 +169,23 @@ namespace AeonGUI
         /*!\brief Handles own Mouse Move event.
             \param x [in] absolute x coordinate for the event.
             \param y [in] absolute y coordinate for the event.
-            \param xrel [in] relative x coordinate for the event.
-            \param yrel [in] relative y coordinate for the event.
         */
-        virtual void OnMouseMove ( uint16_t x, uint16_t y, short xrel, short yrel ) {};
+        virtual void OnMouseMove ( uint32_t x, uint32_t y ) {};
         /*!\brief Handles own Mouse Button Down event.
            \param x [in] absolute x coordinate for the event.
            \param y [in] absolute y coordinate for the event.
         */
-        virtual void OnMouseButtonDown ( uint8_t button, uint16_t x, uint16_t y ) {};
+        virtual void OnMouseButtonDown ( uint8_t button, uint32_t x, uint32_t y ) {};
         /*!\brief Handles own Mouse Button Up event.
            \param x [in] absolute x coordinate for the event.
            \param y [in] absolute y coordinate for the event.
         */
-        virtual void OnMouseButtonUp ( uint8_t button, uint16_t x, uint16_t y ) {};
+        virtual void OnMouseButtonUp ( uint8_t button, uint32_t x, uint32_t y ) {};
         /*!\brief Handles own Mouse Click event.
            \param x [in] absolute x coordinate for the event.
            \param y [in] absolute y coordinate for the event.
         */
-        virtual void OnMouseClick ( uint8_t button, uint16_t x, uint16_t y ) {};
+        virtual void OnMouseClick ( uint8_t button, uint32_t x, uint32_t y ) {};
         /* @} */
         inline int32_t GetX ( )
         {

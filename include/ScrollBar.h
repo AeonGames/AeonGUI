@@ -75,12 +75,12 @@ namespace AeonGUI
         int32_t GetMaximum();
 
     protected:
-        virtual void OnMouseButtonDown ( Widget* widget, uint8_t button, uint16_t X, uint16_t Y );
-        virtual void OnMouseButtonUp ( Widget* widget, uint8_t button, uint16_t X, uint16_t Y );
-        virtual void OnMouseMove ( Widget* widget, uint16_t X, uint16_t Y, int16_t Xrel, int16_t Yrel ) {};
-        virtual void OnMouseClick ( uint8_t button, uint16_t x, uint16_t y );
-        virtual void OnMouseClick ( Widget* widget, uint8_t button, uint16_t X, uint16_t Y );
-        virtual void OnMouseMove ( uint16_t X, uint16_t Y, int16_t Xrel, int16_t Yrel );
+        virtual void OnMouseButtonDown ( Widget* widget, uint8_t button, uint32_t X, uint32_t Y );
+        virtual void OnMouseButtonUp ( Widget* widget, uint8_t button, uint32_t X, uint32_t Y );
+        virtual void OnMouseMove ( Widget* widget, uint32_t X, uint32_t Y ) {};
+        virtual void OnMouseClick ( uint8_t button, uint32_t x, uint32_t y );
+        virtual void OnMouseClick ( Widget* widget, uint8_t button, uint32_t X, uint32_t Y );
+        virtual void OnMouseMove ( uint32_t X, uint32_t Y );
         virtual void OnSize();
         void Update();
     private:

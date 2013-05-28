@@ -40,6 +40,8 @@ public:
     LRESULT OnSize ( WPARAM type, WORD newwidth, WORD newheight );
     LRESULT OnPaint();
     LRESULT OnMouseMove ( int32_t x, int32_t y );
+    LRESULT OnMouseButtonDown ( uint8_t button, int32_t x, int32_t y );
+    LRESULT OnMouseButtonUp ( uint8_t button, int32_t x, int32_t y );
     static LRESULT CALLBACK WindowProc ( HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam );
     static void Register ( HINSTANCE hInstance );
     void RenderLoop();
@@ -141,6 +143,7 @@ void Window::Initialize ( HINSTANCE hInstance )
         }
     }
     //---OpenGL 3.0 Context---//
+    glClearColor ( 0, 0, 0, 0 );
     window = new AeonGUI::MainWindow ();
     image = new AeonGUI::Image ( logo_name, logo_width, logo_height, AeonGUI::Image::RGBA, AeonGUI::Image::BYTE, logo_data );
     font = new AeonGUI::Font ( Vera.data, Vera.size );
@@ -150,6 +153,7 @@ void Window::Initialize ( HINSTANCE hInstance )
     std::wstring hello ( L"Hello World" );
     window->SetCaption ( hello );
     ShowWindow ( hWnd, SW_SHOW );
+
 }
 
 void Window::Finalize()
@@ -189,12 +193,12 @@ void Window::RenderLoop()
         delta = 1.0f / 30.0f;
     }
     wglMakeCurrent ( hDC, hRC );
+    glClear ( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT );
     const AeonGUI::Color color ( 0xFFFFFFFF );
     renderer.BeginRender();
     window->Render ( &renderer );
     renderer.DrawImage ( color, width - logo_width, height - logo_height, image );
     renderer.EndRender();
-
     SwapBuffers ( hDC );
     last_time = this_time;
 }
@@ -241,8 +245,10 @@ LRESULT CALLBACK Window::WindowProc ( HWND hwnd, UINT uMsg, WPARAM wParam, LPARA
         lresult = window_ptr->OnMouseMove ( GET_X_LPARAM ( lParam ), GET_Y_LPARAM ( lParam ) );
         break;
     case WM_LBUTTONDOWN:
+        lresult = window_ptr->OnMouseButtonDown ( 1, GET_X_LPARAM ( lParam ), GET_Y_LPARAM ( lParam ) );
         break;
     case WM_LBUTTONUP:
+        lresult = window_ptr->OnMouseButtonUp ( 1, GET_X_LPARAM ( lParam ), GET_Y_LPARAM ( lParam ) );
         break;
     default:
         lresult = DefWindowProc ( hwnd, uMsg, wParam, lParam );
@@ -262,6 +268,7 @@ LRESULT Window::OnSize ( WPARAM type, WORD newwidth, WORD newheight )
     {
         width = 1;
     }
+    renderer.ChangeScreenSize ( width, height );
     return 0;
 }
 
@@ -279,8 +286,22 @@ LRESULT Window::OnPaint()
 
 LRESULT Window::OnMouseMove ( int32_t x, int32_t y )
 {
+    window->MouseMove ( x, y );
     return 0;
 }
+
+LRESULT Window::OnMouseButtonDown ( uint8_t button, int32_t x, int32_t y )
+{
+    window->MouseButtonDown ( button, x, y );
+    return 0;
+}
+
+LRESULT Window::OnMouseButtonUp ( uint8_t button, int32_t x, int32_t y )
+{
+    window->MouseButtonUp ( button, x, y );
+    return 0;
+}
+
 
 int WINAPI WinMain ( HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nCmdShow )
 {

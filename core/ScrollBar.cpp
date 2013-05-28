@@ -201,7 +201,7 @@ namespace AeonGUI
         return max;
     }
 
-    void ScrollBar::OnMouseButtonDown ( Widget* widget, uint8_t button, uint16_t X, uint16_t Y )
+    void ScrollBar::OnMouseButtonDown ( Widget* widget, uint8_t button, uint32_t X, uint32_t Y )
     {
         Rect slider_rect;
         if ( widget == &slider )
@@ -221,7 +221,7 @@ namespace AeonGUI
         }
     }
 
-    void ScrollBar::OnMouseButtonUp ( Widget* widget, uint8_t button, uint16_t X, uint16_t Y )
+    void ScrollBar::OnMouseButtonUp ( Widget* widget, uint8_t button, uint32_t X, uint32_t Y )
     {
         if ( sliderdrag )
         {
@@ -230,7 +230,7 @@ namespace AeonGUI
         }
     }
 
-    void ScrollBar::OnMouseClick ( uint8_t button, uint16_t x, uint16_t y )
+    void ScrollBar::OnMouseClick ( uint8_t button, uint32_t x, uint32_t y )
     {
         int32_t lx = x;
         int32_t ly = y;
@@ -260,7 +260,7 @@ namespace AeonGUI
         }
     }
 
-    void ScrollBar::OnMouseClick ( Widget* widget, uint8_t button, uint16_t X, uint16_t Y )
+    void ScrollBar::OnMouseClick ( Widget* widget, uint8_t button, uint32_t X, uint32_t Y )
     {
         if ( widget == &back )
         {
@@ -272,7 +272,7 @@ namespace AeonGUI
         }
     }
 
-    void ScrollBar::OnMouseMove ( uint16_t X, uint16_t Y, int16_t Xrel, int16_t Yrel )
+    void ScrollBar::OnMouseMove ( uint32_t X, uint32_t Y)
     {
         int16_t move;
         Rect slider_rect;

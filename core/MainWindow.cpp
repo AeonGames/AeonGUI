@@ -116,7 +116,7 @@ namespace AeonGUI
         }
     }
 
-    void MainWindow::OnMouseButtonDown ( uint8_t button, uint16_t X, uint16_t Y )
+    void MainWindow::OnMouseButtonDown ( uint8_t button, uint32_t X, uint32_t Y )
     {
         int x = X;
         int y = Y;
@@ -136,7 +136,7 @@ namespace AeonGUI
 #endif
     }
 
-    void MainWindow::OnMouseButtonUp ( uint8_t button, uint16_t X, uint16_t Y )
+    void MainWindow::OnMouseButtonUp ( uint8_t button, uint32_t X, uint32_t Y )
     {
         int x = X;
         int y = Y;
@@ -153,7 +153,7 @@ namespace AeonGUI
         }
 #endif
     }
-    void MainWindow::OnMouseClick ( Widget* clicked_widget, uint8_t button, uint16_t x, uint16_t y )
+    void MainWindow::OnMouseClick ( Widget* clicked_widget, uint8_t button, uint32_t x, uint32_t y )
     {
         if ( clicked_widget == &close )
         {
@@ -169,7 +169,7 @@ namespace AeonGUI
         }
     }
 
-    void MainWindow::OnMouseMove ( uint16_t X, uint16_t Y, int16_t Xrel, int16_t Yrel )
+    void MainWindow::OnMouseMove ( uint32_t X, uint32_t Y )
     {
 #if 0
         std::cout << "Mouse Moved " << X << " " << Y << " " << Xrel << " " << Yrel << std::endl;
