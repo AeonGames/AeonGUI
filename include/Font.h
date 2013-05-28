@@ -73,11 +73,11 @@ namespace AeonGUI
         {
             return ascender;
         }
-        inline int16_t GetDescender()
+        inline int16_t GetDescender() const
         {
             return descender;
         }
-        inline uint16_t GetHeight()
+        inline uint16_t GetHeight() const
         {
             return height;
         }

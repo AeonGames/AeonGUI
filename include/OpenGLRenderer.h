@@ -1,7 +1,7 @@
 #ifndef AEONGUI_OPENGL_RENDERER
 #define AEONGUI_OPENGL_RENDERER
 /******************************************************************************
-Copyright 2010-2012 Rodrigo Hernandez Cordoba
+Copyright 2010-2013 Rodrigo Hernandez Cordoba
 
    Licensed under the Apache License, Version 2.0 (the "License");
    you may not use this file except in compliance with the License.
@@ -29,13 +29,14 @@ namespace AeonGUI
         /*! \copydoc Renderer::ChangeScreenSize. */
         bool ChangeScreenSize ( int32_t screen_width, int32_t screen_height );
         /*! \copydoc Renderer::Initialize. */
-        bool Initialize ( int32_t screen_width, int32_t screen_height );
+        bool Initialize ();
         /*! \copydoc Renderer::Finalize. */
         void Finalize();
         /*! \copydoc Renderer::BeginRender. */
         void BeginRender();
         /*! \copydoc Renderer::EndRender. */
         void EndRender();
+#if 0
         /*! \copydoc Renderer::DrawRect. */
         void DrawRect ( Color color, const Rect* rect );
         /*! \copydoc Renderer::DrawRectOutline. */
@@ -44,24 +45,11 @@ namespace AeonGUI
         void DrawImage ( Color color, int32_t x, int32_t y, Image* image );
         /*! \copydoc Renderer::DrawString. */
         void DrawString ( Color color, int32_t x, int32_t y, const wchar_t* text );
-    private:
-#if 0
-        Image* NewImage ( uint32_t width, uint32_t height, Image::Format format, Image::Type type, void* data );
-        void DeleteImage ( Image* image );
-        struct TextureData
-        {
-            uint32_t texture;
-            uint32_t tw;
-            uint32_t th;
-            std::vector<Image*> images;
-        };
 #endif
+    private:
         int32_t viewport_w;
         int32_t viewport_h;
-        int32_t screen_w;
-        int32_t screen_h;
         unsigned int screen_texture;
-        uint8_t* screen_bitmap;
         /// Card maximum texture size for texture atlas
         int max_texture_size;
         uint32_t vert_shader;

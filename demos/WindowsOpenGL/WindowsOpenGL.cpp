@@ -144,7 +144,8 @@ void Window::Initialize ( HINSTANCE hInstance )
     window = new AeonGUI::MainWindow ();
     image = new AeonGUI::Image ( logo_name, logo_width, logo_height, AeonGUI::Image::RGBA, AeonGUI::Image::BYTE, logo_data );
     font = new AeonGUI::Font ( Vera.data, Vera.size );
-    renderer.Initialize ( width, height );
+    renderer.Initialize ( );
+    renderer.ChangeScreenSize ( width, height );
     renderer.SetFont ( font );
     std::wstring hello ( L"Hello World" );
     window->SetCaption ( hello );

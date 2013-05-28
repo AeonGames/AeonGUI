@@ -115,8 +115,7 @@ namespace AeonGUI
 
     OpenGLRenderer::OpenGLRenderer() :
         viewport_w ( 0 ), viewport_h ( 0 ),
-        screen_w ( 0 ), screen_h ( 0 ),
-        screen_texture ( 0 ), screen_bitmap ( NULL ),
+        screen_texture ( 0 ),
         max_texture_size ( 0 ),
         vert_shader ( 0 ), frag_shader ( 0 ),
         shader_program ( 0 ),
@@ -127,6 +126,7 @@ namespace AeonGUI
 
     bool OpenGLRenderer::ChangeScreenSize ( int32_t screen_width, int32_t screen_height )
     {
+        Renderer::ChangeScreenSize ( screen_width, screen_height );
         glUseProgram ( shader_program );
         LOGERROR();
         GLint viewport[4];
@@ -141,23 +141,15 @@ namespace AeonGUI
             glDeleteTextures ( 1, &screen_texture );
         }
 
-        if ( screen_bitmap != NULL )
-        {
-            delete[] screen_bitmap;
-        }
-
         glGetIntegerv ( GL_VIEWPORT, viewport );
         LOGERROR();
         viewport_w = viewport[2] - viewport[0];
         viewport_h = viewport[3] - viewport[1];
 
-        screen_w = screen_width;
-        screen_h = screen_height;
-
         glGetIntegerv ( GL_MAX_TEXTURE_SIZE, &max_texture_size );
         LOGERROR();
-        if ( ( screen_w > max_texture_size ) ||
-             ( screen_h > max_texture_size ) )
+        if ( ( screen_width > max_texture_size ) ||
+             ( screen_height > max_texture_size ) )
         {
 #ifdef WIN32
             printf ( "Error: %s\n", "Screen texture dimensions surpass maximum allowed OpenGL texture size" );
@@ -178,10 +170,8 @@ namespace AeonGUI
         LOGERROR();
         glTexParameteri ( GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP );
         LOGERROR();
-        glTexImage2D ( GL_TEXTURE_2D, 0, GL_RGBA8, screen_w, screen_h, 0, GL_BGRA, GL_UNSIGNED_INT_8_8_8_8_REV, NULL );
+        glTexImage2D ( GL_TEXTURE_2D, 0, GL_RGBA8, screen_width, screen_height, 0, GL_BGRA, GL_UNSIGNED_INT_8_8_8_8_REV, NULL );
         LOGERROR();
-
-        screen_bitmap = new uint8_t[screen_w * screen_h * 4];
 
         width =  float ( viewport_w ) + pixel_offset;
         height = float ( viewport_h ) + pixel_offset;
@@ -221,21 +211,21 @@ namespace AeonGUI
             LOGERROR();
         }
 
-        GLint screen_texture = glGetUniformLocation ( shader_program, "screen_texture" );
+        GLint screen_texture_index = glGetUniformLocation ( shader_program, "screen_texture" );
         LOGERROR();
-        if ( screen_texture > -1 )
+        if ( screen_texture_index > -1 )
         {
-            glUniform1i ( screen_texture, 0 );
+            glUniform1i ( screen_texture_index, 0 );
             LOGERROR();
         }
 
         // Create VBO
         GLfloat vertices[16] =
         {
-            /* position */ 0.0f, 0.0f,                                                       /* uv */ 0.0f, 0.0f,
-            /* position */ static_cast<float> ( screen_w ), 0.0f,                            /* uv */ 1.0f, 0.0f,
-            /* position */ 0.0f, static_cast<float> ( screen_h ),                            /* uv */ 0.0f, 1.0f,
-            /* position */ static_cast<float> ( screen_w ), static_cast<float> ( screen_h ), /* uv */ 1.0f, 1.0f
+            /* position */ 0.0f, 0.0f,                                                                /* uv */ 0.0f, 0.0f,
+            /* position */ static_cast<float> ( screen_width ), 0.0f,                                 /* uv */ 1.0f, 0.0f,
+            /* position */ 0.0f, static_cast<float> ( screen_height ),                                /* uv */ 0.0f, 1.0f,
+            /* position */ static_cast<float> ( screen_width ), static_cast<float> ( screen_height ), /* uv */ 1.0f, 1.0f
         };
 
 
@@ -252,18 +242,17 @@ namespace AeonGUI
         LOGERROR();
         glBufferData ( GL_ARRAY_BUFFER, sizeof ( GLfloat ) * 16, &vertices[0], GL_STATIC_DRAW );
         LOGERROR();
-
-
         return true;
     }
 
-    bool OpenGLRenderer::Initialize ( int32_t screen_width, int32_t screen_height )
+    bool OpenGLRenderer::Initialize ()
     {
         GLGETPROCADDRESS ( glAttachShader,             PFNGLATTACHSHADERPROC            );
         GLGETPROCADDRESS ( glCompileShader,            PFNGLCOMPILESHADERPROC           );
         GLGETPROCADDRESS ( glCreateProgram,            PFNGLCREATEPROGRAMPROC           );
         GLGETPROCADDRESS ( glCreateShader,             PFNGLCREATESHADERPROC            );
         GLGETPROCADDRESS ( glDeleteProgram,            PFNGLDELETEPROGRAMPROC           );
+        GLGETPROCADDRESS ( glDeleteShader,             PFNGLDELETESHADERPROC            );
         GLGETPROCADDRESS ( glEnableVertexAttribArray,  PFNGLENABLEVERTEXATTRIBARRAYPROC );
         GLGETPROCADDRESS ( glGetAttribLocation,        PFNGLGETATTRIBLOCATIONPROC       );
         GLGETPROCADDRESS ( glGetProgramiv,             PFNGLGETPROGRAMIVPROC            );
@@ -389,12 +378,6 @@ namespace AeonGUI
         {
             return false;
         }
-
-        if ( !ChangeScreenSize ( screen_width, screen_height ) )
-        {
-            return false;
-        }
-        LOGERROR();
         return true;
     }
 
@@ -404,12 +387,6 @@ namespace AeonGUI
         {
             glDeleteTextures ( 1, &screen_texture );
             screen_texture = 0;
-        }
-
-        if ( screen_bitmap != NULL )
-        {
-            delete[] screen_bitmap;
-            screen_bitmap = NULL;
         }
 
         if ( shader_program > 0 )
@@ -442,6 +419,7 @@ namespace AeonGUI
             LOGERROR();
             vertex_buffer_object = 0;
         }
+        Renderer::Finalize();
     }
 
     void OpenGLRenderer::BeginRender()
@@ -459,9 +437,8 @@ namespace AeonGUI
     void OpenGLRenderer::EndRender()
     {
         glBlendFunc ( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
-        //glBlendFunc ( GL_ONE, GL_ONE_MINUS_SRC_ALPHA );
-
         LOGERROR();
+
         glEnable ( GL_BLEND );
         LOGERROR();
 
@@ -489,134 +466,5 @@ namespace AeonGUI
 
         glDrawArrays ( GL_TRIANGLE_STRIP, 0, 4 );
         LOGERROR();
-    }
-    void OpenGLRenderer::DrawRect ( Color color, const Rect* rect )
-    {
-        Color* pixels = reinterpret_cast<Color*> ( screen_bitmap );
-        int32_t x1 = ( rect->GetLeft() < 0 ) ? 0 : rect->GetLeft();
-        int32_t x2 = ( rect->GetRight() > screen_w ) ? screen_w : rect->GetRight();
-        int32_t y1 = ( rect->GetTop() < 0 ) ? 0 : rect->GetTop();
-        int32_t y2 = ( rect->GetBottom() > screen_h ) ? screen_h : rect->GetBottom();
-
-        if ( ( x1 > screen_w ) || ( x2 < 0 ) ||
-             ( y1 > screen_h ) || ( y2 < 0 ) )
-        {
-            return;
-        }
-        for ( int32_t y = y1; y < y2; ++y )
-        {
-            for ( int32_t x = x1; x < x2; ++x )
-            {
-                pixels[ ( y * screen_w ) + x].Blend ( color );
-            }
-        }
-    }
-    void OpenGLRenderer::DrawRectOutline ( Color color, const Rect* rect )
-    {
-        Color* pixels = reinterpret_cast<Color*> ( screen_bitmap );
-        int32_t x1 = ( rect->GetLeft() < 0 ) ? 0 : rect->GetLeft();
-        int32_t x2 = ( rect->GetRight() > screen_w ) ? ( screen_w - 1 ) : ( rect->GetRight() - 1 );
-        int32_t y1 = ( rect->GetTop() < 0 ) ? 0 : rect->GetTop();
-        int32_t y2 = ( rect->GetBottom() > screen_h ) ? ( screen_h - 1 ) : ( rect->GetBottom() - 1 );
-
-        if ( ( x1 > screen_w ) || ( x2 < 0 ) ||
-             ( y1 > screen_h ) || ( y2 < 0 ) )
-        {
-            return;
-        }
-
-        for ( int32_t y = y1; y <= y2; ++y )
-        {
-            pixels[ ( y * screen_w ) + x1].Blend ( color );
-            pixels[ ( y * screen_w ) + x2].Blend ( color );
-        }
-        // Avoid setting the corner pixels twice
-        for ( int32_t x = x1 + 1; x < x2; ++x )
-        {
-            pixels[ ( y1 * screen_w ) + x].Blend ( color );
-            pixels[ ( y2 * screen_w ) + x].Blend ( color );
-        }
-    }
-
-    void OpenGLRenderer::DrawImage ( Color color, int32_t x, int32_t y, Image* image )
-    {
-        assert ( image != NULL );
-        const Color* image_bitmap = image->GetBitmap();
-        Color* pixels = reinterpret_cast<Color*> ( screen_bitmap );
-
-        int32_t x1 = x;
-        int32_t x2 = x + image->GetWidth();
-        int32_t y1 = y;
-        int32_t y2 = y + image->GetHeight();
-
-        if ( ( x1 > screen_w ) || ( x2 < 0 ) ||
-             ( y1 > screen_h ) || ( y2 < 0 ) )
-        {
-            return;
-        }
-
-        int32_t iy = 0;
-        for ( int32_t sy = y1; sy < y2; ++sy )
-        {
-            if ( ( sy >= 0 ) && ( sy < screen_h ) )
-            {
-                int32_t ix = 0;
-                for ( int32_t sx = x1; sx < x2; ++sx )
-                {
-                    if ( ( sx >= 0 ) && ( sx < screen_w ) )
-                    {
-                        pixels[ ( ( sy * screen_w ) + sx )].Blend ( image_bitmap[ ( ( iy * image->GetWidth() ) + ix )] );
-                    }
-                    ++ix;
-                }
-            }
-            ++iy;
-        }
-    }
-
-    void OpenGLRenderer::DrawString ( Color color, int32_t x, int32_t y, const wchar_t* text )
-    {
-        size_t textlength = wcslen ( text );
-        Color* pixels = reinterpret_cast<Color*> ( screen_bitmap );
-        int32_t curx;
-        int32_t cury;
-        Font::Glyph* glyph;
-        const uint8_t* glyph_map = font->GetGlyphMap();
-        int32_t glyph_map_width = font->GetMapWidth();
-        Color pixel;
-        pixel.r = color.r;
-        pixel.g = color.g;
-        pixel.b = color.b;
-        for ( size_t i = 0; i < textlength; ++i )
-        {
-            // Find Character Code
-            glyph = font->GetGlyph ( text[i] );
-
-            if ( glyph == NULL )
-            {
-                continue;
-            };
-
-            cury = y - glyph->top;
-            for ( int32_t Y = glyph->min[1]; Y < glyph->max[1]; ++Y )
-            {
-                if ( ( cury >= 0 ) && ( cury < screen_h ) )
-                {
-                    curx = x + glyph->left;
-                    for ( int32_t X = glyph->min[0]; X < ( glyph->max[0] ); ++X )
-                    {
-                        if ( ( curx >= 0 ) && ( curx < screen_w ) )
-                        {
-                            pixel.a = glyph_map[ ( Y * glyph_map_width ) + X];
-                            pixels[ ( cury * screen_w ) + curx ].Blend ( pixel );
-                        }
-                        ++curx;
-                    }
-                }
-                ++cury;
-            }
-            // Advance pen position
-            x += glyph->advance[0];
-        }
     }
 }
