@@ -1,0 +1,9 @@
+# Keep source files with native EOL
+*.c text
+*.cpp text
+*.h text
+
+# Keep shaders on Unix format regardless of platform
+vertex_shader text eol=lf
+fragment_shader text eol=lf
+
