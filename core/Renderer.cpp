@@ -92,8 +92,8 @@ namespace AeonGUI
         int32_t y1 = ( rect->GetTop() < 0 ) ? 0 : rect->GetTop();
         int32_t y2 = ( rect->GetBottom() > screen_h ) ? ( screen_h - 1 ) : ( rect->GetBottom() - 1 );
 
-        if ( ( x1 > screen_w ) || ( x2 < 0 ) ||
-             ( y1 > screen_h ) || ( y2 < 0 ) )
+        if ( ( x1 >= screen_w ) || ( x2 < 0 ) ||
+             ( y1 >= screen_h ) || ( y2 < 0 ) )
         {
             return;
         }
