@@ -15,10 +15,11 @@ Copyright 2010-2013 Rodrigo Hernandez Cordoba
 ******************************************************************************/
 #include <algorithm>
 #include "Renderer.h"
+#include "Widget.h"
 
 namespace AeonGUI
 {
-	Renderer::Renderer() : font(NULL), screen_w(0),screen_h(0),screen_bitmap(NULL)
+    Renderer::Renderer() : font(NULL), screen_w(0),screen_h(0),screen_bitmap(NULL),widgets(NULL)
     {}
 
     Renderer::~Renderer()
@@ -190,6 +191,48 @@ namespace AeonGUI
             }
             // Advance pen position
             x += glyph->advance[0];
+        }
+    }
+
+    void Renderer::AddWidget(Widget* widget)
+    {
+        if(widgets==NULL)
+        {
+            widgets = widget;
+        }
+        else
+        {
+            Widget* sibling = widgets;
+            while ( sibling != NULL )
+            {
+                if ( sibling->next == NULL )
+                {
+                    sibling->next = widget;
+                    sibling = NULL;
+                }
+                else
+                {
+                    sibling = sibling->next;
+                }
+            }
+        }
+    }
+
+    void Renderer::RemoveWidget(Widget* widget)
+    {
+        Widget* sibling = widgets;
+        while ( sibling != NULL )
+        {
+            if ( sibling->next == widget )
+            {
+                sibling->next = sibling->next->next;
+                widget->next = NULL;
+                sibling = NULL;
+            }
+            else
+            {
+                sibling = sibling->next;
+            }
         }
     }
 }

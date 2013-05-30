@@ -27,6 +27,7 @@ Copyright 2010-2013 Rodrigo Hernandez Cordoba
 
 namespace AeonGUI
 {
+    class Widget;
     /*! \brief Renderer base class. */
     class Renderer
     {
@@ -67,6 +68,15 @@ namespace AeonGUI
         */
         const Font* GetFont();
 
+        /*! \brief Add widget to widget rendering list.
+            It is the user resposibility to allocate, initialize, manage and eventually deallocate the memory the widget object resides in.
+            \param widget Pointer to the widget object to add.*/
+        void AddWidget ( Widget* widget );
+        /*! \brief Remove widget to widget rendering list.
+            It is the user resposibility to allocate, initialize, manage and eventually deallocate the memory the widget object resides in.
+            \param widget Pointer to the widget object to remove.*/
+        void RemoveWidget ( Widget* widget );
+
         ///\name Drawing Functions
         //@{
         /*! \brief Draws a Rect in screen space.
@@ -101,6 +111,8 @@ namespace AeonGUI
         int32_t screen_h;
         /// Screen buffer.
         uint8_t* screen_bitmap;
+        /// Widget linked list.
+        Widget* widgets;
     };
 }
 #endif
