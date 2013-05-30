@@ -199,7 +199,7 @@ namespace AeonGUI
         friend class Renderer;
         /*! \brief Trigger widget tree rendering.
             This function is only accesible from derived classes and renderers,
-            to render a widget you must add it to a renderer's widget list 
+            to render a widget you must add it to a renderer's widget list
             and then call the renderer's RenderWidgets member function between calls for BeginRender and EndRender.
             \param renderer [in] Renderer to use.*/
         void Render ( Renderer* renderer );
