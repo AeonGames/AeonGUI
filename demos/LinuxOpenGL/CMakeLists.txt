@@ -1,4 +1,4 @@
-SET(LINUXOPENGL_SRCS LinuxOpenGL.cpp)
+SET(LINUXOPENGL_SRCS LinuxOpenGL.cpp ../common/logo.c ../common/Vera.c ../common/glcommon.c)
 ADD_EXECUTABLE(LinuxOpenGL ${LINUXOPENGL_SRCS})
 
 SET_TARGET_PROPERTIES(LinuxOpenGL PROPERTIES COMPILE_FLAGS "${COMPILE_FLAGS} -Wall -g")

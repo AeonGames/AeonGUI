@@ -12,6 +12,12 @@
 #include <GL/glx.h>
 #include "glxext.h"
 #include "glext.h"
+#include "OpenGLRenderer.h"
+#include "MainWindow.h"
+#include "glcommon.h"
+#include "logo.h"
+#include "Vera.h"
+#include "Color.h"
 
 
 static PFNGLXCREATECONTEXTATTRIBSARBPROC glXCreateContextAttribsARB = NULL;
@@ -162,7 +168,7 @@ static uint32_t GetScancode ( KeySym keysym )
         KEY_DEL      = 0x53
 #endif
     }
-    return keysym;
+                   return keysym;
 }
 #endif
 
@@ -178,6 +184,12 @@ private:
     GLXContext ctx;
     Colormap cmap;
     Window window;
+    uint32_t width;
+    uint32_t height;
+    AeonGUI::OpenGLRenderer renderer;
+    AeonGUI::Image* image;
+    AeonGUI::Font* font;
+    AeonGUI::MainWindow* mainwindow;
 };
 
 GLWindow::GLWindow() :
@@ -345,6 +357,17 @@ bool GLWindow::Create ( Display* dpy )
     XEvent xEvent;
 
     glViewport ( 0, 0, 800, 600 );
+    glClearColor ( 0, 0, 0, 0 );
+    width = 800;
+    height = 600;
+    mainwindow = new AeonGUI::MainWindow ();
+    image = new AeonGUI::Image ( logo_name, logo_width, logo_height, AeonGUI::Image::RGBA, AeonGUI::Image::BYTE, logo_data );
+    font = new AeonGUI::Font ( Vera.data, Vera.size );
+    renderer.Initialize ( );
+    renderer.ChangeScreenSize ( 800, 600 );
+    renderer.SetFont ( font );
+    std::wstring hello ( L"Hello World" );
+    mainwindow->SetCaption ( hello );
 
     timespec current_time;
     clock_gettime ( CLOCK_REALTIME, &current_time );
@@ -368,7 +391,10 @@ bool GLWindow::Create ( Display* dpy )
             case MotionNotify:
                 break;
             case ResizeRequest:
+                width = xEvent.xresizerequest.width;
+                height = xEvent.xresizerequest.height;
                 glViewport ( 0, 0, xEvent.xresizerequest.width, xEvent.xresizerequest.height );
+                renderer.ChangeScreenSize ( xEvent.xresizerequest.width, xEvent.xresizerequest.height );
                 break;
             case ClientMessage:
                 if ( static_cast<Atom> ( xEvent.xclient.data.l[0] ) == wm_delete_window )
@@ -389,7 +415,12 @@ bool GLWindow::Create ( Display* dpy )
         }
 
         last_time = current_time;
-
+        glClear ( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT );
+        const AeonGUI::Color color ( 0xFFFFFFFF );
+        renderer.BeginRender();
+        mainwindow->Render ( &renderer );
+        renderer.DrawImage ( color, width - logo_width, height - logo_height, image );
+        renderer.EndRender();
         glXSwapBuffers ( display, window );
     }
     return true;
@@ -397,6 +428,23 @@ bool GLWindow::Create ( Display* dpy )
 
 void GLWindow::Destroy()
 {
+    if ( mainwindow != NULL )
+    {
+        delete mainwindow;
+        mainwindow = NULL;
+    }
+    if ( image != NULL )
+    {
+        delete image;
+        image = NULL;
+    }
+    if ( font != NULL )
+    {
+        delete font;
+        font = NULL;
+    }
+    renderer.Finalize();
+
     if ( display != NULL )
     {
         glXMakeCurrent ( display, 0, 0 );

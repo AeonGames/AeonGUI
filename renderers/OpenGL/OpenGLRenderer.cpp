@@ -242,6 +242,7 @@ namespace AeonGUI
         LOGERROR();
         glBufferData ( GL_ARRAY_BUFFER, sizeof ( GLfloat ) * 16, &vertices[0], GL_STATIC_DRAW );
         LOGERROR();
+
         return true;
     }
 
@@ -436,6 +437,7 @@ namespace AeonGUI
 
     void OpenGLRenderer::EndRender()
     {
+#if 1
         glBlendFunc ( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
         LOGERROR();
 
@@ -463,7 +465,9 @@ namespace AeonGUI
         LOGERROR();
         glEnableVertexAttribArray ( uv );
         LOGERROR();
-
+#else
+        glBindVertexArray ( vertex_array_object );
+#endif
         glDrawArrays ( GL_TRIANGLE_STRIP, 0, 4 );
         LOGERROR();
     }
