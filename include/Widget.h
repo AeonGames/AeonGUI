@@ -32,126 +32,31 @@ namespace AeonGUI
     class Widget
     {
     public:
-        Widget () :
-            keyListener ( NULL ),
-            mouseListener ( NULL ),
-            parent ( NULL ),
-            next ( NULL ),
-            children ( NULL ),
-            // this is temporary, should be 0
-            rect ( 0, 0, 320, 200 ),
-            // Window members
-            backgroundcolor ( 0xffffffff ),
-            textcolor ( 0xffffffff ),
-            bordercolor ( 255, 128, 128, 128 ),
-            bordersize ( 2 ),
-            wantsupdate ( true ),
-            hasborder ( false ),
-            hidden ( false ),
-            drawfilled ( false )
-        {}
+        Widget ();
 
-        Widget ( int32_t X, int32_t Y, uint32_t width, uint32_t height ) :
-            keyListener ( NULL ),
-            mouseListener ( NULL ),
-            parent ( NULL ),
-            // this is temporary, should be 0
-            rect ( X, Y, X + width, Y + height ),
-            // Window members
-            backgroundcolor ( 0xffffffff ),
-            textcolor ( 0xffffffff ),
-            bordercolor ( 255, 128, 128, 128 ),
-            bordersize ( 2 ),
-            wantsupdate ( true ),
-            hasborder ( false ),
-            hidden ( false ),
-            drawfilled ( false )
-        {}
+        Widget ( int32_t X, int32_t Y, uint32_t width, uint32_t height );
 
-        virtual ~Widget()
-        {
-            SetParent ( NULL );
-        }
-        inline void SetKeyListener ( KeyListener* listener )
-        {
-            // Should Use local event handling functions for handling own events.
-            assert ( static_cast<void*> ( listener ) != static_cast<void*> ( this ) );
-            keyListener = listener;
-        }
-        inline void SetMouseListener ( MouseListener* listener )
-        {
-            // Should Use local event handling functions for handling own events.
-            assert ( static_cast<void*> ( listener ) != static_cast<void*> ( this ) );
-            mouseListener = listener;
-        }
+        virtual ~Widget();
 
-        inline void SetParent ( Widget* newparent )
-        {
-            Widget* child;
-            if ( parent != NULL )
-            {
-                child = parent->children;
-                while ( child != NULL )
-                {
-                    if ( child->next == this )
-                    {
-                        child->next = child->next->next;
-                        next = NULL;
-                        child = NULL;
-                    }
-                    else
-                    {
-                        child = child->next;
-                    }
-                }
-            }
+        void SetKeyListener ( KeyListener* listener );
 
-            parent = newparent;
-            if ( parent != NULL )
-            {
-                child = parent->children;
-                while ( child != NULL )
-                {
-                    if ( child->next = NULL )
-                    {
-                        child->next = this;
-                        child = NULL;
-                    }
-                    else
-                    {
-                        child = child->next;
-                    }
-                }
-            }
-        }
+        void SetMouseListener ( MouseListener* listener );
 
+        void SetParent ( Widget* newparent );
         /*!
             \brief Checks if the widget has input focus.
             \return true if the widget has focus, false if not
          */
-        inline bool HasFocus()
-        {
-            return focusedWidget == this;
-        }
+        bool HasFocus();
 
         /*!\brief Grabs input focus */
-        inline void GetFocus()
-        {
-            focusedWidget = this;
-        }
+        void GetFocus();
 
         /*!\brief Captures mouse input. */
-        inline void CaptureMouse()
-        {
-            GetFocus();
-            mouseCaptured = true;
-        }
+        void CaptureMouse();
 
         /*!\brief Releases mouse input. */
-        inline void ReleaseMouse()
-        {
-            mouseCaptured = false;
-        }
+        void ReleaseMouse();
 
         /*!
             \name Event emission functions
@@ -216,107 +121,42 @@ namespace AeonGUI
         */
         virtual void OnMouseClick ( uint8_t button, uint32_t x, uint32_t y ) {};
         /* @} */
-        inline int32_t GetX ( )
-        {
-            return rect.GetX();
-        }
-        inline void SetX ( int X )
-        {
-            rect.SetX ( X );
-            OnMove();
-        }
-        inline int32_t GetY ( )
-        {
-            return rect.GetY();
-        }
-        inline void SetY ( int Y )
-        {
-            rect.SetY ( Y );
-            OnMove();
-        }
-        inline void SetPosition ( int X, int Y )
-        {
-            rect.SetPosition ( X, Y );
-            OnMove();
-        }
-        inline void Move ( int X, int Y )
-        {
-            rect.Move ( X, Y );
-            OnMove();
-        }
-        inline void SetDimensions ( int width, int height )
-        {
-            rect.SetDimensions ( width, height );
-            OnSize();
-        }
-        inline void GetRect ( Rect& outrect )
-        {
-            outrect = rect;
-        }
-        inline void GetClientRect ( Rect& outrect )
-        {
-            outrect.Set ( 0, 0, rect.GetWidth(), rect.GetHeight() );
-        }
-        inline void GetScreenRect ( Rect* outrect ) const
-        {
-            Widget* current_parent = this->parent;
-            int x = rect.GetLeft();
-            int y = rect.GetTop();
-            while ( current_parent != NULL )
-            {
-                x += current_parent->rect.GetLeft();
-                y += current_parent->rect.GetTop();
-                current_parent = current_parent->parent;
-            }
-            outrect->Set ( x, y, x + rect.GetWidth(), y + rect.GetHeight() );
-        }
-        inline void ClientToScreenRect ( Rect* inoutrect ) const
-        {
-            int x = inoutrect->GetLeft();
-            int y = inoutrect->GetTop();
-            ClientToScreenCoords ( x, y );
-            inoutrect->Set ( x, y, x + inoutrect->GetWidth(), y + inoutrect->GetHeight() );
-        }
 
-        inline void ClientToScreenCoords ( int& x, int& y ) const
-        {
-            Widget* current_parent = const_cast<Widget*> ( this );
-            while ( current_parent != NULL )
-            {
-                x += current_parent->rect.GetLeft();
-                y += current_parent->rect.GetTop();
-                current_parent = current_parent->parent;
-            }
-        }
-        inline void ScreenToClientRect ( Rect* inoutrect ) const
-        {
-            int x = inoutrect->GetLeft();
-            int y = inoutrect->GetTop();
-            ScreenToClientCoords ( x, y );
-            inoutrect->Set ( x, y, x + inoutrect->GetWidth(), y + inoutrect->GetHeight() );
-        }
+        int32_t GetX ( );
 
-        inline void ScreenToClientCoords ( int32_t& x, int32_t& y ) const
-        {
-            Widget* current_parent = const_cast<Widget*> ( this );
-            while ( current_parent != NULL )
-            {
-                x -= current_parent->rect.GetLeft();
-                y -= current_parent->rect.GetTop();
-                current_parent = current_parent->parent;
-            }
-        }
+        void SetX ( int X );
+
+        int32_t GetY ( );
+
+        void SetY ( int Y );
+
+        void SetPosition ( int X, int Y );
+
+        void Move ( int X, int Y );
+
+        void SetDimensions ( int width, int height );
+
+        void GetRect ( Rect& outrect );
+
+        void GetClientRect ( Rect& outrect );
+
+        void GetScreenRect ( Rect* outrect ) const;
+
+        void ClientToScreenRect ( Rect* inoutrect ) const;
+
+        void ClientToScreenCoords ( int& x, int& y ) const;
+
+        void ScreenToClientRect ( Rect* inoutrect ) const;
+
+        void ScreenToClientCoords ( int32_t& x, int32_t& y ) const;
+
         /*! \brief Determines if a point (x,y coordinate) is inside a widget rect.
             \param x [in] x coordinate in screen space.
             \param y [in] y coordinate in screen space.
             \return true if the point is inside the rect, false if not.
         */
-        inline bool IsPointInside ( int x, int y )
-        {
-            Rect screen_rect;
-            GetScreenRect ( &screen_rect );
-            return screen_rect.IsPointInside ( x, y );
-        }
+        bool IsPointInside ( int x, int y );
+
         /*! \name Primitive Drawing Functions */
         /* @{ */
         /*! \brief Draws a Rect in widget space.
@@ -347,36 +187,17 @@ namespace AeonGUI
         /* @} */
 
         // From Window: ------------------------------------------------
-        inline void Hide ( bool hide )
-        {
-            hidden =  hide;
-        }
-        inline void HasBorder ( bool drawborder )
-        {
-            hasborder = drawborder;
-        }
-        inline void DrawFilled ( bool isfilled )
-        {
-            drawfilled = isfilled;
-        }
-        inline void SetBorderSize ( uint32_t newsize )
-        {
-            bordersize = newsize;
-        }
-        inline void SetBackgroundColor ( uint8_t R, uint8_t G, uint8_t B, uint8_t A )
-        {
-            backgroundcolor.r = R;
-            backgroundcolor.g = G;
-            backgroundcolor.b = B;
-            backgroundcolor.a = A;
-        }
-        inline void SetBorderColor ( uint8_t R, uint8_t G, uint8_t B, uint8_t A )
-        {
-            bordercolor.r = R;
-            bordercolor.g = G;
-            bordercolor.b = B;
-            bordercolor.a = A;
-        }
+        void Hide ( bool hide );
+
+        void HasBorder ( bool drawborder );
+
+        void DrawFilled ( bool isfilled );
+
+        void SetBorderSize ( uint32_t newsize );
+
+        void SetBackgroundColor ( uint8_t R, uint8_t G, uint8_t B, uint8_t A );
+
+        void SetBorderColor ( uint8_t R, uint8_t G, uint8_t B, uint8_t A );
 
     protected:
 
