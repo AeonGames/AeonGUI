@@ -49,13 +49,15 @@ namespace AeonGUI
 
     void Widget::MouseButtonDown ( uint8_t button, uint32_t x, uint32_t y )
     {
-        for ( std::list<Widget*>::iterator i = children.begin(); i != children.end(); ++i )
+        Widget* child = children;
+        while(child!=NULL)
         {
-            if ( ( *i )->IsPointInside ( x, y ) )
+            if ( child->IsPointInside ( x, y ) )
             {
-                ( *i )->MouseButtonDown ( button, x, y );
+                child->MouseButtonDown ( button, x, y );
                 return;
             }
+            child=child->next;
         }
         Widget* handler = ( mouseCaptured ) ? focusedWidget : this;
         assert ( handler != NULL );
@@ -70,13 +72,15 @@ namespace AeonGUI
 
     void Widget::MouseButtonUp ( uint8_t button, uint32_t x, uint32_t y )
     {
-        for ( std::list<Widget*>::iterator i = children.begin(); i != children.end(); ++i )
+        Widget* child = children;
+        while(child!=NULL)
         {
-            if ( ( *i )->IsPointInside ( x, y ) )
+            if ( child->IsPointInside ( x, y ) )
             {
-                ( *i )->MouseButtonUp ( button, x, y );
+                child->MouseButtonUp ( button, x, y );
                 return;
             }
+            child=child->next;
         }
         Widget* handler = ( mouseCaptured ) ? focusedWidget : this;
         assert ( handler != NULL );
@@ -103,20 +107,27 @@ namespace AeonGUI
         {
             mouseListener->OnMouseMove ( this, x, y);
         }
-        for ( std::list<Widget*>::iterator i = children.begin(); i != children.end(); ++i )
+        Widget* child = children;
+        while(child!=NULL)
         {
-            ( *i )->MouseMove ( x, y);
+            child->MouseMove ( x, y);
+            child=child->next;
         }
     }
 
     bool Widget::KeyDown ( uint32_t charcode )
     {
-        if ( children.size() > 0 )
+        Widget* child = children;
+        while(child!=NULL)
         {
-            if ( children.back()->KeyDown ( charcode ) )
+            if(child->next=NULL)
             {
-                return true;
+                if ( child->KeyDown ( charcode ) )
+                {
+                    return true;
+                }
             }
+            child=child->next;
         }
         if ( keyListener != NULL )
         {
@@ -127,12 +138,17 @@ namespace AeonGUI
 
     bool Widget::KeyUp ( uint32_t charcode )
     {
-        if ( children.size() > 0 )
+        Widget* child = children;
+        while(child!=NULL)
         {
-            if ( children.back()->KeyUp ( charcode ) )
+            if(child->next=NULL)
             {
-                return true;
+                if ( child->KeyUp ( charcode ) )
+                {
+                    return true;
+                }
             }
+            child=child->next;
         }
         if ( keyListener != NULL )
         {
@@ -144,9 +160,11 @@ namespace AeonGUI
     void Widget::Render ( Renderer* renderer )
     {
         OnRender ( renderer );
-        for ( std::list<Widget*>::iterator i = children.begin(); i != children.end(); ++i )
+        Widget* child = children;
+        while(child!=NULL)
         {
-            ( *i )->Render ( renderer );
+            child->Render ( renderer );
+            child = child->next;
         }
     }
 

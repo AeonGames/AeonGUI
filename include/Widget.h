@@ -23,7 +23,6 @@ Copyright 2010-2012 Rodrigo Hernandez Cordoba
 #include "Rect.h"
 #include "KeyListener.h"
 #include "MouseListener.h"
-#include <list>
 #include <algorithm>
 #include <string>
 
@@ -37,6 +36,8 @@ namespace AeonGUI
             keyListener ( NULL ),
             mouseListener ( NULL ),
             parent ( NULL ),
+            next ( NULL ),
+            children ( NULL ),
             // this is temporary, should be 0
             rect ( 0, 0, 320, 200 ),
             // Window members
@@ -83,16 +84,44 @@ namespace AeonGUI
             assert ( static_cast<void*> ( listener ) != static_cast<void*> ( this ) );
             mouseListener = listener;
         }
+
         inline void SetParent ( Widget* newparent )
         {
+            Widget* child;
             if ( parent != NULL )
             {
-                parent->children.remove ( this );
+                child = parent->children;
+                while (child!=NULL)
+                {
+                    if(child->next==this)
+                    {
+                        child->next = child->next->next;
+                        next = NULL;
+                        child=NULL;
+                    }
+                    else
+                    {
+                        child = child->next;
+                    }
+                }
             }
+
             parent = newparent;
             if ( parent != NULL )
             {
-                parent->children.push_back ( this );
+                child = parent->children;
+                while(child != NULL)
+                {
+                    if(child->next=NULL)
+                    {
+                        child->next = this;
+                        child=NULL;
+                    }
+                    else
+                    {
+                        child = child->next;
+                    }
+                }
             }
         }
 
@@ -360,7 +389,8 @@ namespace AeonGUI
         KeyListener* keyListener;
         MouseListener* mouseListener;
         Widget* parent;
-        std::list<Widget*> children;
+        Widget* next;
+        Widget* children;
         Rect rect;
         // From Window:
         Rect clientrect;
