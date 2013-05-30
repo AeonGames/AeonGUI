@@ -91,13 +91,13 @@ namespace AeonGUI
             if ( parent != NULL )
             {
                 child = parent->children;
-                while (child!=NULL)
+                while ( child != NULL )
                 {
-                    if(child->next==this)
+                    if ( child->next == this )
                     {
                         child->next = child->next->next;
                         next = NULL;
-                        child=NULL;
+                        child = NULL;
                     }
                     else
                     {
@@ -110,12 +110,12 @@ namespace AeonGUI
             if ( parent != NULL )
             {
                 child = parent->children;
-                while(child != NULL)
+                while ( child != NULL )
                 {
-                    if(child->next=NULL)
+                    if ( child->next = NULL )
                     {
                         child->next = this;
-                        child=NULL;
+                        child = NULL;
                     }
                     else
                     {
