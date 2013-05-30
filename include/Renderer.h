@@ -77,6 +77,11 @@ namespace AeonGUI
             \param widget Pointer to the widget object to remove.*/
         void RemoveWidget ( Widget* widget );
 
+        /*! Renders the widget list.
+            Must be called between BeginRender and EndRender calls.
+        */
+        void RenderWidgets();
+
         ///\name Drawing Functions
         //@{
         /*! \brief Draws a Rect in screen space.

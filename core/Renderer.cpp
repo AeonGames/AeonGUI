@@ -196,23 +196,26 @@ namespace AeonGUI
 
     void Renderer::AddWidget(Widget* widget)
     {
-        if(widgets==NULL)
+        if(widget!=NULL)
         {
-            widgets = widget;
-        }
-        else
-        {
-            Widget* sibling = widgets;
-            while ( sibling != NULL )
+            if(widgets==NULL)
             {
-                if ( sibling->next == NULL )
+                widgets = widget;
+            }
+            else
+            {
+                Widget* sibling = widgets;
+                while ( sibling != NULL )
                 {
-                    sibling->next = widget;
-                    sibling = NULL;
-                }
-                else
-                {
-                    sibling = sibling->next;
+                    if ( sibling->next == NULL )
+                    {
+                        sibling->next = widget;
+                        sibling = NULL;
+                    }
+                    else
+                    {
+                        sibling = sibling->next;
+                    }
                 }
             }
         }
@@ -233,6 +236,16 @@ namespace AeonGUI
             {
                 sibling = sibling->next;
             }
+        }
+    }
+
+    void Renderer::RenderWidgets()
+    {
+        Widget* sibling = widgets;
+        while ( sibling != NULL )
+        {
+            sibling->Render(this);
+            sibling = sibling->next;
         }
     }
 }
