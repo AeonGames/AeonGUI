@@ -152,6 +152,7 @@ void Window::Initialize ( HINSTANCE hInstance )
     renderer.SetFont ( font );
     std::wstring hello ( L"Hello World" );
     window->SetCaption ( hello );
+    renderer.AddWidget ( window );
     ShowWindow ( hWnd, SW_SHOW );
 
 }
@@ -160,6 +161,7 @@ void Window::Finalize()
 {
     if ( window != NULL )
     {
+        renderer.RemoveWidget ( window );
         delete window;
         window = NULL;
     }
@@ -196,7 +198,7 @@ void Window::RenderLoop()
     glClear ( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT );
     const AeonGUI::Color color ( 0xFFFFFFFF );
     renderer.BeginRender();
-    window->Render ( &renderer );
+    renderer.RenderWidgets();
     renderer.DrawImage ( color, width - logo_width, height - logo_height, image );
     renderer.EndRender();
     SwapBuffers ( hDC );

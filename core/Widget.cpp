@@ -20,6 +20,129 @@ namespace AeonGUI
     Widget* Widget::focusedWidget = NULL;
     bool Widget::mouseCaptured = false;
 
+    Widget::Widget () :
+        keyListener ( NULL ),
+        mouseListener ( NULL ),
+        parent ( NULL ),
+        next ( NULL ),
+        children ( NULL ),
+        // this is temporary, should be 0
+        rect ( 0, 0, 320, 200 ),
+        // Window members
+        backgroundcolor ( 0xffffffff ),
+        textcolor ( 0xffffffff ),
+        bordercolor ( 255, 128, 128, 128 ),
+        bordersize ( 2 ),
+        wantsupdate ( true ),
+        hasborder ( false ),
+        hidden ( false ),
+        drawfilled ( false )
+    {}
+
+    Widget::Widget ( int32_t X, int32_t Y, uint32_t width, uint32_t height ) :
+        keyListener ( NULL ),
+        mouseListener ( NULL ),
+        parent ( NULL ),
+        // this is temporary, should be 0
+        rect ( X, Y, X + width, Y + height ),
+        // Window members
+        backgroundcolor ( 0xffffffff ),
+        textcolor ( 0xffffffff ),
+        bordercolor ( 255, 128, 128, 128 ),
+        bordersize ( 2 ),
+        wantsupdate ( true ),
+        hasborder ( false ),
+        hidden ( false ),
+        drawfilled ( false )
+    {}
+
+    Widget::~Widget()
+    {
+        SetParent ( NULL );
+    }
+
+    void Widget::SetKeyListener ( KeyListener* listener )
+    {
+        // Should Use local event handling functions for handling own events.
+        assert ( static_cast<void*> ( listener ) != static_cast<void*> ( this ) );
+        keyListener = listener;
+    }
+
+    void Widget::SetMouseListener ( MouseListener* listener )
+    {
+        // Should Use local event handling functions for handling own events.
+        assert ( static_cast<void*> ( listener ) != static_cast<void*> ( this ) );
+        mouseListener = listener;
+    }
+
+    void Widget::SetParent ( Widget* newparent )
+    {
+        Widget* child;
+        if ( parent != NULL )
+        {
+            child = parent->children;
+            while ( child != NULL )
+            {
+                if ( child->next == this )
+                {
+                    child->next = child->next->next;
+                    next = NULL;
+                    child = NULL;
+                }
+                else
+                {
+                    child = child->next;
+                }
+            }
+        }
+
+        parent = newparent;
+        if ( parent != NULL )
+        {
+            if(parent->children==NULL)
+            {
+                parent->children = this;
+            }
+            else
+            {
+                child = parent->children;
+                while ( child != NULL )
+                {
+                    if ( child->next == NULL )
+                    {
+                        child->next = this;
+                        child = NULL;
+                    }
+                    else
+                    {
+                        child = child->next;
+                    }
+                }
+            }
+        }
+    }
+
+    bool Widget::HasFocus()
+    {
+        return focusedWidget == this;
+    }
+
+    void Widget::GetFocus()
+    {
+        focusedWidget = this;
+    }
+
+    void Widget::CaptureMouse()
+    {
+        GetFocus();
+        mouseCaptured = true;
+    }
+
+    void Widget::ReleaseMouse()
+    {
+        mouseCaptured = false;
+    }
+
     void Widget::DrawRect ( Renderer* renderer, Color color, const Rect* draw_rect )
     {
         Rect wrect = *draw_rect;
@@ -49,13 +172,15 @@ namespace AeonGUI
 
     void Widget::MouseButtonDown ( uint8_t button, uint32_t x, uint32_t y )
     {
-        for ( std::list<Widget*>::iterator i = children.begin(); i != children.end(); ++i )
+        Widget* child = children;
+        while(child!=NULL)
         {
-            if ( ( *i )->IsPointInside ( x, y ) )
+            if ( child->IsPointInside ( x, y ) )
             {
-                ( *i )->MouseButtonDown ( button, x, y );
+                child->MouseButtonDown ( button, x, y );
                 return;
             }
+            child=child->next;
         }
         Widget* handler = ( mouseCaptured ) ? focusedWidget : this;
         assert ( handler != NULL );
@@ -70,13 +195,15 @@ namespace AeonGUI
 
     void Widget::MouseButtonUp ( uint8_t button, uint32_t x, uint32_t y )
     {
-        for ( std::list<Widget*>::iterator i = children.begin(); i != children.end(); ++i )
+        Widget* child = children;
+        while(child!=NULL)
         {
-            if ( ( *i )->IsPointInside ( x, y ) )
+            if ( child->IsPointInside ( x, y ) )
             {
-                ( *i )->MouseButtonUp ( button, x, y );
+                child->MouseButtonUp ( button, x, y );
                 return;
             }
+            child=child->next;
         }
         Widget* handler = ( mouseCaptured ) ? focusedWidget : this;
         assert ( handler != NULL );
@@ -103,20 +230,27 @@ namespace AeonGUI
         {
             mouseListener->OnMouseMove ( this, x, y);
         }
-        for ( std::list<Widget*>::iterator i = children.begin(); i != children.end(); ++i )
+        Widget* child = children;
+        while(child!=NULL)
         {
-            ( *i )->MouseMove ( x, y);
+            child->MouseMove ( x, y);
+            child=child->next;
         }
     }
 
     bool Widget::KeyDown ( uint32_t charcode )
     {
-        if ( children.size() > 0 )
+        Widget* child = children;
+        while(child!=NULL)
         {
-            if ( children.back()->KeyDown ( charcode ) )
+            if(child->next=NULL)
             {
-                return true;
+                if ( child->KeyDown ( charcode ) )
+                {
+                    return true;
+                }
             }
+            child=child->next;
         }
         if ( keyListener != NULL )
         {
@@ -127,12 +261,17 @@ namespace AeonGUI
 
     bool Widget::KeyUp ( uint32_t charcode )
     {
-        if ( children.size() > 0 )
+        Widget* child = children;
+        while(child!=NULL)
         {
-            if ( children.back()->KeyUp ( charcode ) )
+            if(child->next=NULL)
             {
-                return true;
+                if ( child->KeyUp ( charcode ) )
+                {
+                    return true;
+                }
             }
+            child=child->next;
         }
         if ( keyListener != NULL )
         {
@@ -141,12 +280,123 @@ namespace AeonGUI
         return false;
     }
 
+    int32_t Widget::GetX ( )
+    {
+        return rect.GetX();
+    }
+
+    void Widget::SetX ( int X )
+    {
+        rect.SetX ( X );
+        OnMove();
+    }
+
+    int32_t Widget::GetY ( )
+    {
+        return rect.GetY();
+    }
+
+    void Widget::SetY ( int Y )
+    {
+        rect.SetY ( Y );
+        OnMove();
+    }
+
+    void Widget::SetPosition ( int X, int Y )
+    {
+        rect.SetPosition ( X, Y );
+        OnMove();
+    }
+
+    void Widget::Move ( int X, int Y )
+    {
+        rect.Move ( X, Y );
+        OnMove();
+    }
+
+    void Widget::SetDimensions ( int width, int height )
+    {
+        rect.SetDimensions ( width, height );
+        OnSize();
+    }
+
+    void Widget::GetRect ( Rect& outrect )
+    {
+        outrect = rect;
+    }
+
+    void Widget::GetClientRect ( Rect& outrect )
+    {
+        outrect.Set ( 0, 0, rect.GetWidth(), rect.GetHeight() );
+    }
+
+    void Widget::GetScreenRect ( Rect* outrect ) const
+    {
+        Widget* current_parent = this->parent;
+        int x = rect.GetLeft();
+        int y = rect.GetTop();
+        while ( current_parent != NULL )
+        {
+            x += current_parent->rect.GetLeft();
+            y += current_parent->rect.GetTop();
+            current_parent = current_parent->parent;
+        }
+        outrect->Set ( x, y, x + rect.GetWidth(), y + rect.GetHeight() );
+    }
+
+    void Widget::ClientToScreenRect ( Rect* inoutrect ) const
+    {
+        int x = inoutrect->GetLeft();
+        int y = inoutrect->GetTop();
+        ClientToScreenCoords ( x, y );
+        inoutrect->Set ( x, y, x + inoutrect->GetWidth(), y + inoutrect->GetHeight() );
+    }
+
+    void Widget::ClientToScreenCoords ( int& x, int& y ) const
+    {
+        Widget* current_parent = const_cast<Widget*> ( this );
+        while ( current_parent != NULL )
+        {
+            x += current_parent->rect.GetLeft();
+            y += current_parent->rect.GetTop();
+            current_parent = current_parent->parent;
+        }
+    }
+
+    void Widget::ScreenToClientRect ( Rect* inoutrect ) const
+    {
+        int x = inoutrect->GetLeft();
+        int y = inoutrect->GetTop();
+        ScreenToClientCoords ( x, y );
+        inoutrect->Set ( x, y, x + inoutrect->GetWidth(), y + inoutrect->GetHeight() );
+    }
+
+    void Widget::ScreenToClientCoords ( int32_t& x, int32_t& y ) const
+    {
+        Widget* current_parent = const_cast<Widget*> ( this );
+        while ( current_parent != NULL )
+        {
+            x -= current_parent->rect.GetLeft();
+            y -= current_parent->rect.GetTop();
+            current_parent = current_parent->parent;
+        }
+    }
+
+    bool Widget::IsPointInside ( int x, int y )
+    {
+        Rect screen_rect;
+        GetScreenRect ( &screen_rect );
+        return screen_rect.IsPointInside ( x, y );
+    }
+
     void Widget::Render ( Renderer* renderer )
     {
         OnRender ( renderer );
-        for ( std::list<Widget*>::iterator i = children.begin(); i != children.end(); ++i )
+        Widget* child = children;
+        while(child!=NULL)
         {
-            ( *i )->Render ( renderer );
+            child->Render ( renderer );
+            child = child->next;
         }
     }
 
@@ -174,4 +424,34 @@ namespace AeonGUI
 #endif
     }
 
+    void Widget::Hide ( bool hide )
+    {
+        hidden =  hide;
+    }
+    void Widget::HasBorder ( bool drawborder )
+    {
+        hasborder = drawborder;
+    }
+    void Widget::DrawFilled ( bool isfilled )
+    {
+        drawfilled = isfilled;
+    }
+    void Widget::SetBorderSize ( uint32_t newsize )
+    {
+        bordersize = newsize;
+    }
+    void Widget::SetBackgroundColor ( uint8_t R, uint8_t G, uint8_t B, uint8_t A )
+    {
+        backgroundcolor.r = R;
+        backgroundcolor.g = G;
+        backgroundcolor.b = B;
+        backgroundcolor.a = A;
+    }
+    void Widget::SetBorderColor ( uint8_t R, uint8_t G, uint8_t B, uint8_t A )
+    {
+        bordercolor.r = R;
+        bordercolor.g = G;
+        bordercolor.b = B;
+        bordercolor.a = A;
+    }
 }
