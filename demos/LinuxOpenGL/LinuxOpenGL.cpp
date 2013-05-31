@@ -168,7 +168,7 @@ static uint32_t GetScancode ( KeySym keysym )
         KEY_DEL      = 0x53
 #endif
     }
-    return keysym;
+                   return keysym;
 }
 #endif
 
@@ -367,6 +367,7 @@ bool GLWindow::Create ( Display* dpy )
     renderer.SetFont ( font );
     std::wstring hello ( L"Hello World" );
     mainwindow->SetCaption ( hello );
+    renderer.AddWidget ( mainwindow );
 
     timespec current_time;
     clock_gettime ( CLOCK_REALTIME, &current_time );
@@ -417,7 +418,7 @@ bool GLWindow::Create ( Display* dpy )
         glClear ( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT );
         const AeonGUI::Color color ( 0xFFFFFFFF );
         renderer.BeginRender();
-        mainwindow->Render ( &renderer );
+        renderer.RenderWidgets();
         renderer.DrawImage ( color, width - logo_width, height - logo_height, image );
         renderer.EndRender();
         glXSwapBuffers ( display, window );
@@ -429,6 +430,7 @@ void GLWindow::Destroy()
 {
     if ( mainwindow != NULL )
     {
+        renderer.RemoveWidget ( mainwindow );
         delete mainwindow;
         mainwindow = NULL;
     }

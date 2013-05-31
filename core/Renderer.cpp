@@ -223,18 +223,25 @@ namespace AeonGUI
 
     void Renderer::RemoveWidget(Widget* widget)
     {
-        Widget* sibling = widgets;
-        while ( sibling != NULL )
+        if(widgets->next==NULL)
         {
-            if ( sibling->next == widget )
+            widgets=NULL;
+        }
+        else
+        {
+            Widget* sibling = widgets;
+            while ( sibling != NULL )
             {
-                sibling->next = sibling->next->next;
-                widget->next = NULL;
-                sibling = NULL;
-            }
-            else
-            {
-                sibling = sibling->next;
+                if ( sibling->next == widget )
+                {
+                    sibling->next = sibling->next->next;
+                    widget->next = NULL;
+                    sibling = NULL;
+                }
+                else
+                {
+                    sibling = sibling->next;
+                }
             }
         }
     }
