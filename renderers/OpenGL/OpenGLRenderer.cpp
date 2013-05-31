@@ -114,7 +114,6 @@ namespace AeonGUI
     };
 
     OpenGLRenderer::OpenGLRenderer() :
-        viewport_w ( 0 ), viewport_h ( 0 ),
         screen_texture ( 0 ),
         max_texture_size ( 0 ),
         vert_shader ( 0 ), frag_shader ( 0 ),
@@ -129,7 +128,6 @@ namespace AeonGUI
         Renderer::ChangeScreenSize ( screen_width, screen_height );
         glUseProgram ( shader_program );
         LOGERROR();
-        GLint viewport[4];
         GLfloat projection[16];
         float width;
         float height;
@@ -140,11 +138,6 @@ namespace AeonGUI
         {
             glDeleteTextures ( 1, &screen_texture );
         }
-
-        glGetIntegerv ( GL_VIEWPORT, viewport );
-        LOGERROR();
-        viewport_w = viewport[2] - viewport[0];
-        viewport_h = viewport[3] - viewport[1];
 
         glGetIntegerv ( GL_MAX_TEXTURE_SIZE, &max_texture_size );
         LOGERROR();
@@ -173,8 +166,8 @@ namespace AeonGUI
         glTexImage2D ( GL_TEXTURE_2D, 0, GL_RGBA8, screen_width, screen_height, 0, GL_BGRA, GL_UNSIGNED_INT_8_8_8_8_REV, NULL );
         LOGERROR();
 
-        width =  float ( viewport_w ) + pixel_offset;
-        height = float ( viewport_h ) + pixel_offset;
+        width =  float ( screen_w ) + pixel_offset;
+        height = float ( screen_h ) + pixel_offset;
 
         // glOrtho
         // left          right  bottom  top           near  far
@@ -425,19 +418,22 @@ namespace AeonGUI
 
     void OpenGLRenderer::BeginRender()
     {
-        glUseProgram ( shader_program );
-        LOGERROR();
         Rect rect;
         rect.SetPosition ( 0, 0 );
         rect.SetDimensions ( screen_w, screen_h );
         ///\todo Setting the screen bitmap memory to zero may not be always necesary.
-        memset ( screen_bitmap, 0, sizeof ( uint8_t ) * ( screen_w * screen_h * 4 ) );
-        DrawRectOutline ( Color ( 0xffffffff ), &rect );
+        memset ( screen_bitmap, 0xFF, sizeof ( uint8_t ) * ( screen_w * screen_h * 4 ) );
+        //DrawRectOutline ( Color ( 0xffffffff ), &rect );
     }
 
     void OpenGLRenderer::EndRender()
     {
-#if 1
+        glUseProgram ( shader_program );
+        LOGERROR();
+
+        glBindVertexArray ( vertex_array_object );
+        LOGERROR();
+
         glBlendFunc ( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
         LOGERROR();
 
@@ -465,9 +461,7 @@ namespace AeonGUI
         LOGERROR();
         glEnableVertexAttribArray ( uv );
         LOGERROR();
-#else
-        glBindVertexArray ( vertex_array_object );
-#endif
+
         glDrawArrays ( GL_TRIANGLE_STRIP, 0, 4 );
         LOGERROR();
     }

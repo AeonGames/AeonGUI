@@ -36,19 +36,7 @@ namespace AeonGUI
         void BeginRender();
         /*! \copydoc Renderer::EndRender. */
         void EndRender();
-#if 0
-        /*! \copydoc Renderer::DrawRect. */
-        void DrawRect ( Color color, const Rect* rect );
-        /*! \copydoc Renderer::DrawRectOutline. */
-        void DrawRectOutline ( Color color, const Rect* rect );
-        /*! \copydoc Renderer::DrawImage. */
-        void DrawImage ( Color color, int32_t x, int32_t y, Image* image );
-        /*! \copydoc Renderer::DrawString. */
-        void DrawString ( Color color, int32_t x, int32_t y, const wchar_t* text );
-#endif
     private:
-        int32_t viewport_w;
-        int32_t viewport_h;
         unsigned int screen_texture;
         /// Card maximum texture size for texture atlas
         int max_texture_size;

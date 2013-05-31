@@ -270,6 +270,7 @@ LRESULT Window::OnSize ( WPARAM type, WORD newwidth, WORD newheight )
     {
         width = 1;
     }
+    glViewport ( 0, 0, width, height );
     renderer.ChangeScreenSize ( width, height );
     return 0;
 }
