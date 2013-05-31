@@ -222,19 +222,19 @@ bool GLWindow::Create ( Display* dpy )
         None
     };
 
-    printf ( "Getting matching framebuffer configs" );
+    printf ( "Getting matching framebuffer configs\n" );
     int fbcount;
     GLXFBConfig *fbc = glXChooseFBConfig ( display, DefaultScreen ( display ),
                                            visual_attribs, &fbcount );
     if ( !fbc )
     {
-        printf ( "Failed to retrieve a framebuffer config" );
+        printf ( "Failed to retrieve a framebuffer config\n" );
         return false;
     }
-    printf ( "Found %d matching FB configs.", fbcount );
+    printf ( "Found %d matching FB configs.\n", fbcount );
 
     // Pick the FB config/visual with the most samples per pixel
-    printf ( "Getting XVisualInfos" );
+    printf ( "Getting XVisualInfos\n" );
     int best_fbc = -1, worst_fbc = -1, best_num_samp = -1, worst_num_samp = 999;
 
     int i;
@@ -248,7 +248,7 @@ bool GLWindow::Create ( Display* dpy )
             glXGetFBConfigAttrib ( display, fbc[i], GLX_SAMPLES       , &samples  );
 
             printf ( "  Matching fbconfig %d, visual ID 0x%2x: SAMPLE_BUFFERS = %d,"
-                     " SAMPLES = %d",
+                     " SAMPLES = %d\n",
                      i, static_cast<unsigned int> ( vi->visualid ), samp_buf, samples );
 
             if ( best_fbc < 0 || ( samp_buf && samples > best_num_samp ) )
@@ -270,9 +270,9 @@ bool GLWindow::Create ( Display* dpy )
 
     // Get a visual
     XVisualInfo *vi = glXGetVisualFromFBConfig ( display, bestFbc );
-    printf ( "Chosen visual ID = 0x%x", static_cast<unsigned int> ( vi->visualid ) );
+    printf ( "Chosen visual ID = 0x%x\n", static_cast<unsigned int> ( vi->visualid ) );
 
-    printf ( "Creating colormap" );
+    printf ( "Creating colormap\n" );
     XSetWindowAttributes swa;
 
     swa.colormap = cmap = XCreateColormap ( display,
@@ -282,14 +282,14 @@ bool GLWindow::Create ( Display* dpy )
     swa.border_pixel      = 0;
     swa.event_mask        = StructureNotifyMask;
 
-    printf ( "Creating window" );
+    printf ( "Creating window\n" );
     window = XCreateWindow ( display, RootWindow ( display, vi->screen ),
                              0, 0, 800, 600, 0, vi->depth, InputOutput,
                              vi->visual,
                              CWBorderPixel | CWColormap | CWEventMask, &swa );
     if ( !window )
     {
-        printf ( "Failed to create window." );
+        printf ( "Failed to create window.\n" );
         return false;
     }
 
@@ -309,7 +309,7 @@ bool GLWindow::Create ( Display* dpy )
     Atom wm_delete_window = XInternAtom ( display, "WM_DELETE_WINDOW", 0 );
     XSetWMProtocols ( display, window, &wm_delete_window, 1 );
 
-    printf ( "Mapping window" );
+    printf ( "Mapping window\n" );
     XMapWindow ( display, window );
 
     if ( glXCreateContextAttribsARB )
@@ -318,18 +318,17 @@ bool GLWindow::Create ( Display* dpy )
         {
             GLX_CONTEXT_MAJOR_VERSION_ARB, 3,
             GLX_CONTEXT_MINOR_VERSION_ARB, 2,
-            GLX_CONTEXT_PROFILE_MASK_ARB, GLX_CONTEXT_COMPATIBILITY_PROFILE_BIT_ARB,
-            //GLX_CONTEXT_FLAGS_ARB        , GLX_CONTEXT_FORWARD_COMPATIBLE_BIT_ARB,
+            GLX_CONTEXT_PROFILE_MASK_ARB, GLX_CONTEXT_CORE_PROFILE_BIT_ARB,
             None
         };
 
-        printf ( "Creating context" );
+        printf ( "Creating context\n" );
         ctx = glXCreateContextAttribsARB ( display, bestFbc, 0,
                                            True, context_attribs );
         XSync ( display, False );
         if ( ctx != NULL )
         {
-            printf ( "Created GL %d.%d context", context_attribs[1], context_attribs[3] );
+            printf ( "Created GL %d.%d context\n", context_attribs[1], context_attribs[3] );
         }
         else
         {
@@ -343,14 +342,14 @@ bool GLWindow::Create ( Display* dpy )
     // Verifying that context is a direct context
     if ( ! glXIsDirect ( display, ctx ) )
     {
-        printf ( "Indirect GLX rendering context obtained" );
+        printf ( "Indirect GLX rendering context obtained\n" );
     }
     else
     {
-        printf ( "Direct GLX rendering context obtained" );
+        printf ( "Direct GLX rendering context obtained\n" );
     }
 
-    printf ( "Making context current" );
+    printf ( "Making context current\n" );
     glXMakeCurrent ( display, window, ctx );
 
     bool running = true;
@@ -403,7 +402,7 @@ bool GLWindow::Create ( Display* dpy )
                 }
                 break;
             default:
-                printf ( "Received Event Type: %d", xEvent.type );
+                printf ( "Received Event Type: %d\n", xEvent.type );
             }
         }
         clock_gettime ( CLOCK_REALTIME, &current_time );
@@ -481,7 +480,7 @@ int main ( int argc, char ** argv )
     Display* display = XOpenDisplay ( 0 );
     if ( !display )
     {
-        printf ( "Failed to open X display" );
+        printf ( "Failed to open X display\n" );
         return EXIT_FAILURE;
     }
 
@@ -489,11 +488,11 @@ int main ( int argc, char ** argv )
     if ( !glXQueryVersion ( display, &glx_major, &glx_minor ) ||
          ( ( glx_major == 1 ) && ( glx_minor < 3 ) ) || ( glx_major < 1 ) )
     {
-        printf ( "Invalid GLX version %d.%d", glx_major, glx_minor );
+        printf ( "Invalid GLX version %d.%d\n", glx_major, glx_minor );
         XCloseDisplay ( display );
         return EXIT_FAILURE;
     }
-    printf ( "GLX Version: %d.%d", glx_major, glx_minor );
+    printf ( "GLX Version: %d.%d\n", glx_major, glx_minor );
 
     // Get the default screen's GLX extension list
     const char *glxExts = glXQueryExtensionsString ( display,
@@ -502,7 +501,7 @@ int main ( int argc, char ** argv )
     // Check for the GLX_ARB_create_context extension string and the function.
     if ( !isExtensionSupported ( glxExts, "GLX_ARB_create_context" ) )
     {
-        printf ( "GLX_ARB_create_context not supported" );
+        printf ( "GLX_ARB_create_context not supported\n" );
         XCloseDisplay ( display );
         return EXIT_FAILURE;
     }
@@ -513,7 +512,7 @@ int main ( int argc, char ** argv )
                                  glXGetProcAddressARB ( ( const GLubyte * ) "glXCreateContextAttribsARB" );
     if ( glXCreateContextAttribsARB == NULL )
     {
-        printf ( "Pointer for glXCreateContextAttribsARB is NULL" );
+        printf ( "Pointer for glXCreateContextAttribsARB is NULL\n" );
         XCloseDisplay ( display );
         return EXIT_FAILURE;
     }
