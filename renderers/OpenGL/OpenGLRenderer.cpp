@@ -418,8 +418,8 @@ namespace AeonGUI
 
     void OpenGLRenderer::BeginRender()
     {
-        ///\todo Setting the screen bitmap memory to zero may not be always necesary.
-        memset ( screen_bitmap, 0x00, sizeof ( uint8_t ) * ( screen_w * screen_h * 4 ) );
+        ///\todo Setting the screen bitmap memory to zero may not be always necessary.
+        memset ( reinterpret_cast<void*> ( screen_bitmap ), 0x00, sizeof ( uint8_t ) * ( screen_w * screen_h * 4 ) );
     }
 
     void OpenGLRenderer::EndRender()

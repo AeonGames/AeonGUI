@@ -168,7 +168,7 @@ static uint32_t GetScancode ( KeySym keysym )
         KEY_DEL      = 0x53
 #endif
     }
-    return keysym;
+                   return keysym;
 }
 #endif
 
@@ -196,7 +196,12 @@ GLWindow::GLWindow() :
     display ( NULL ),
     ctx ( 0 ),
     cmap ( 0 ),
-    window ( 0 )
+    window ( 0 ),
+    width ( 0 ),
+    height ( 0 ),
+    image ( NULL ),
+    font ( NULL ),
+    mainwindow ( NULL )
 {}
 
 bool GLWindow::Create ( Display* dpy )

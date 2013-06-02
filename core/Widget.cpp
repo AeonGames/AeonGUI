@@ -43,6 +43,8 @@ namespace AeonGUI
         keyListener ( NULL ),
         mouseListener ( NULL ),
         parent ( NULL ),
+        next ( NULL ),
+        children ( NULL ),
         // this is temporary, should be 0
         rect ( X, Y, X + width, Y + height ),
         // Window members
@@ -243,7 +245,7 @@ namespace AeonGUI
         Widget* child = children;
         while(child!=NULL)
         {
-            if(child->next=NULL)
+            if(NULL == child->next)
             {
                 if ( child->KeyDown ( charcode ) )
                 {
@@ -264,7 +266,7 @@ namespace AeonGUI
         Widget* child = children;
         while(child!=NULL)
         {
-            if(child->next=NULL)
+            if(NULL==child->next)
             {
                 if ( child->KeyUp ( charcode ) )
                 {
