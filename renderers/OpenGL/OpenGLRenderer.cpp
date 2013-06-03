@@ -100,18 +100,35 @@ namespace AeonGUI
 
     static char log_buffer[1024] = {0};
 
-    uint32_t OpenGLRenderer::TypeTable[] =
+    static void LoadOpenGLFunctions()
     {
-        GL_UNSIGNED_BYTE
-    };
-
-    uint32_t OpenGLRenderer::FormatTable[] =
-    {
-        GL_RGB,
-        GL_BGR,
-        GL_RGBA,
-        GL_BGRA,
-    };
+        GLGETPROCADDRESS ( glAttachShader,             PFNGLATTACHSHADERPROC            );
+        GLGETPROCADDRESS ( glCompileShader,            PFNGLCOMPILESHADERPROC           );
+        GLGETPROCADDRESS ( glCreateProgram,            PFNGLCREATEPROGRAMPROC           );
+        GLGETPROCADDRESS ( glCreateShader,             PFNGLCREATESHADERPROC            );
+        GLGETPROCADDRESS ( glDeleteProgram,            PFNGLDELETEPROGRAMPROC           );
+        GLGETPROCADDRESS ( glDeleteShader,             PFNGLDELETESHADERPROC            );
+        GLGETPROCADDRESS ( glEnableVertexAttribArray,  PFNGLENABLEVERTEXATTRIBARRAYPROC );
+        GLGETPROCADDRESS ( glGetAttribLocation,        PFNGLGETATTRIBLOCATIONPROC       );
+        GLGETPROCADDRESS ( glGetProgramiv,             PFNGLGETPROGRAMIVPROC            );
+        GLGETPROCADDRESS ( glGetProgramInfoLog,        PFNGLGETPROGRAMINFOLOGPROC       );
+        GLGETPROCADDRESS ( glGetShaderiv,              PFNGLGETSHADERIVPROC             );
+        GLGETPROCADDRESS ( glGetShaderInfoLog,         PFNGLGETSHADERINFOLOGPROC        );
+        GLGETPROCADDRESS ( glGetUniformLocation,       PFNGLGETUNIFORMLOCATIONPROC      );
+        GLGETPROCADDRESS ( glLinkProgram,              PFNGLLINKPROGRAMPROC             );
+        GLGETPROCADDRESS ( glShaderSource,             PFNGLSHADERSOURCEPROC            );
+        GLGETPROCADDRESS ( glUseProgram,               PFNGLUSEPROGRAMPROC              );
+        GLGETPROCADDRESS ( glUniform1i,                PFNGLUNIFORM1IPROC               );
+        GLGETPROCADDRESS ( glUniformMatrix4fv,         PFNGLUNIFORMMATRIX4FVPROC        );
+        GLGETPROCADDRESS ( glVertexAttribPointer,      PFNGLVERTEXATTRIBPOINTERPROC     );
+        GLGETPROCADDRESS ( glGenBuffers,               PFNGLGENBUFFERSPROC              );
+        GLGETPROCADDRESS ( glBindBuffer,               PFNGLBINDBUFFERPROC              );
+        GLGETPROCADDRESS ( glBufferData,               PFNGLBUFFERDATAPROC              );
+        GLGETPROCADDRESS ( glDeleteBuffers,            PFNGLDELETEBUFFERSPROC           );
+        GLGETPROCADDRESS ( glGenVertexArrays,          PFNGLGENVERTEXARRAYSPROC         );
+        GLGETPROCADDRESS ( glBindVertexArray,          PFNGLBINDVERTEXARRAYPROC         );
+        GLGETPROCADDRESS ( glDeleteVertexArrays,       PFNGLDELETEVERTEXARRAYSPROC      );
+    }
 
     OpenGLRenderer::OpenGLRenderer() :
         screen_texture ( 0 ),
@@ -241,32 +258,7 @@ namespace AeonGUI
 
     bool OpenGLRenderer::Initialize ()
     {
-        GLGETPROCADDRESS ( glAttachShader,             PFNGLATTACHSHADERPROC            );
-        GLGETPROCADDRESS ( glCompileShader,            PFNGLCOMPILESHADERPROC           );
-        GLGETPROCADDRESS ( glCreateProgram,            PFNGLCREATEPROGRAMPROC           );
-        GLGETPROCADDRESS ( glCreateShader,             PFNGLCREATESHADERPROC            );
-        GLGETPROCADDRESS ( glDeleteProgram,            PFNGLDELETEPROGRAMPROC           );
-        GLGETPROCADDRESS ( glDeleteShader,             PFNGLDELETESHADERPROC            );
-        GLGETPROCADDRESS ( glEnableVertexAttribArray,  PFNGLENABLEVERTEXATTRIBARRAYPROC );
-        GLGETPROCADDRESS ( glGetAttribLocation,        PFNGLGETATTRIBLOCATIONPROC       );
-        GLGETPROCADDRESS ( glGetProgramiv,             PFNGLGETPROGRAMIVPROC            );
-        GLGETPROCADDRESS ( glGetProgramInfoLog,        PFNGLGETPROGRAMINFOLOGPROC       );
-        GLGETPROCADDRESS ( glGetShaderiv,              PFNGLGETSHADERIVPROC             );
-        GLGETPROCADDRESS ( glGetShaderInfoLog,         PFNGLGETSHADERINFOLOGPROC        );
-        GLGETPROCADDRESS ( glGetUniformLocation,       PFNGLGETUNIFORMLOCATIONPROC      );
-        GLGETPROCADDRESS ( glLinkProgram,              PFNGLLINKPROGRAMPROC             );
-        GLGETPROCADDRESS ( glShaderSource,             PFNGLSHADERSOURCEPROC            );
-        GLGETPROCADDRESS ( glUseProgram,               PFNGLUSEPROGRAMPROC              );
-        GLGETPROCADDRESS ( glUniform1i,                PFNGLUNIFORM1IPROC               );
-        GLGETPROCADDRESS ( glUniformMatrix4fv,         PFNGLUNIFORMMATRIX4FVPROC        );
-        GLGETPROCADDRESS ( glVertexAttribPointer,      PFNGLVERTEXATTRIBPOINTERPROC     );
-        GLGETPROCADDRESS ( glGenBuffers,               PFNGLGENBUFFERSPROC              );
-        GLGETPROCADDRESS ( glBindBuffer,               PFNGLBINDBUFFERPROC              );
-        GLGETPROCADDRESS ( glBufferData,               PFNGLBUFFERDATAPROC              );
-        GLGETPROCADDRESS ( glDeleteBuffers,            PFNGLDELETEBUFFERSPROC           );
-        GLGETPROCADDRESS ( glGenVertexArrays,          PFNGLGENVERTEXARRAYSPROC         );
-        GLGETPROCADDRESS ( glBindVertexArray,          PFNGLBINDVERTEXARRAYPROC         );
-        GLGETPROCADDRESS ( glDeleteVertexArrays,       PFNGLDELETEVERTEXARRAYSPROC      );
+        LoadOpenGLFunctions();
 
         // Compile Shaders
         GLint info_log_length;
