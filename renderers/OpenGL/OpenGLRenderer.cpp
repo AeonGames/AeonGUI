@@ -222,17 +222,12 @@ namespace AeonGUI
         };
 
 
-        // Generate VAO
-        glGenVertexArrays ( 1, &vertex_array_object );
-        LOGERROR();
         glBindVertexArray ( vertex_array_object );
         LOGERROR();
 
-        // Generate VBO
-        glGenBuffers ( 1, &vertex_buffer_object );
-        LOGERROR();
         glBindBuffer ( GL_ARRAY_BUFFER, vertex_buffer_object );
         LOGERROR();
+
         glBufferData ( GL_ARRAY_BUFFER, sizeof ( GLfloat ) * 16, &vertices[0], GL_STATIC_DRAW );
         LOGERROR();
 
@@ -373,6 +368,15 @@ namespace AeonGUI
             return false;
         }
         return true;
+
+        // Generate VAO
+        glGenVertexArrays ( 1, &vertex_array_object );
+        LOGERROR();
+
+        // Generate VBO
+        glGenBuffers ( 1, &vertex_buffer_object );
+        LOGERROR();
+
     }
 
     void OpenGLRenderer::Finalize()
