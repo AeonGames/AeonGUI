@@ -25,7 +25,7 @@ Copyright 2010-2012 Rodrigo Hernandez Cordoba
 #include "glcorearb.h"
 #include "wglext.h"
 #define GLGETPROCADDRESS(glFunction,glFunctionType) \
-    glFunction = ( glFunctionType ) wglGetProcAddress ( #glFunction );
+    glFunction = ( glFunctionType ) wglGetProcAddress ( #glFunction )
 #else
 #include <X11/Xlib.h>
 #include <GL/gl.h>
@@ -35,8 +35,10 @@ Copyright 2010-2012 Rodrigo Hernandez Cordoba
 #include "glext.h"
 #include "glcorearb.h"
 #define GLGETPROCADDRESS(glFunction,glFunctionType) \
-    glFunction = ( glFunctionType ) glXGetProcAddress ( (const GLubyte*) #glFunction );
+    glFunction = ( glFunctionType ) glXGetProcAddress ( (const GLubyte*) #glFunction )
 #endif
+#define GLDECLAREFUNCTION(glFunction,glFunctionType) \
+    static glFunctionType glFunction = NULL
 
 
 #include <cassert>
@@ -71,32 +73,32 @@ namespace AeonGUI
 #include "vertex_shader.h"
 #include "fragment_shader.h"
 
-    static PFNGLATTACHSHADERPROC            glAttachShader = NULL;
-    static PFNGLCOMPILESHADERPROC           glCompileShader = NULL;
-    static PFNGLCREATEPROGRAMPROC           glCreateProgram = NULL;
-    static PFNGLCREATESHADERPROC            glCreateShader = NULL;
-    static PFNGLDELETEPROGRAMPROC           glDeleteProgram = NULL;
-    static PFNGLDELETESHADERPROC            glDeleteShader = NULL;
-    static PFNGLENABLEVERTEXATTRIBARRAYPROC glEnableVertexAttribArray = NULL;
-    static PFNGLGETATTRIBLOCATIONPROC       glGetAttribLocation = NULL;
-    static PFNGLGETPROGRAMIVPROC            glGetProgramiv = NULL;
-    static PFNGLGETPROGRAMINFOLOGPROC       glGetProgramInfoLog = NULL;
-    static PFNGLGETSHADERIVPROC             glGetShaderiv = NULL;
-    static PFNGLGETSHADERINFOLOGPROC        glGetShaderInfoLog = NULL;
-    static PFNGLGETUNIFORMLOCATIONPROC      glGetUniformLocation = NULL;
-    static PFNGLLINKPROGRAMPROC             glLinkProgram = NULL;
-    static PFNGLSHADERSOURCEPROC            glShaderSource = NULL;
-    static PFNGLUSEPROGRAMPROC              glUseProgram = NULL;
-    static PFNGLUNIFORM1IPROC               glUniform1i = NULL;
-    static PFNGLUNIFORMMATRIX4FVPROC        glUniformMatrix4fv = NULL;
-    static PFNGLVERTEXATTRIBPOINTERPROC     glVertexAttribPointer = NULL;
-    static PFNGLGENBUFFERSPROC              glGenBuffers = NULL;
-    static PFNGLBINDBUFFERPROC              glBindBuffer = NULL;
-    static PFNGLBUFFERDATAPROC              glBufferData = NULL;
-    static PFNGLDELETEBUFFERSPROC           glDeleteBuffers = NULL;
-    static PFNGLGENVERTEXARRAYSPROC         glGenVertexArrays = NULL;
-    static PFNGLBINDVERTEXARRAYPROC         glBindVertexArray = NULL;
-    static PFNGLDELETEVERTEXARRAYSPROC      glDeleteVertexArrays = NULL;
+    GLDECLAREFUNCTION ( glAttachShader,             PFNGLATTACHSHADERPROC            );
+    GLDECLAREFUNCTION ( glCompileShader,            PFNGLCOMPILESHADERPROC           );
+    GLDECLAREFUNCTION ( glCreateProgram,            PFNGLCREATEPROGRAMPROC           );
+    GLDECLAREFUNCTION ( glCreateShader,             PFNGLCREATESHADERPROC            );
+    GLDECLAREFUNCTION ( glDeleteProgram,            PFNGLDELETEPROGRAMPROC           );
+    GLDECLAREFUNCTION ( glDeleteShader,             PFNGLDELETESHADERPROC            );
+    GLDECLAREFUNCTION ( glEnableVertexAttribArray,  PFNGLENABLEVERTEXATTRIBARRAYPROC );
+    GLDECLAREFUNCTION ( glGetAttribLocation,        PFNGLGETATTRIBLOCATIONPROC       );
+    GLDECLAREFUNCTION ( glGetProgramiv,             PFNGLGETPROGRAMIVPROC            );
+    GLDECLAREFUNCTION ( glGetProgramInfoLog,        PFNGLGETPROGRAMINFOLOGPROC       );
+    GLDECLAREFUNCTION ( glGetShaderiv,              PFNGLGETSHADERIVPROC             );
+    GLDECLAREFUNCTION ( glGetShaderInfoLog,         PFNGLGETSHADERINFOLOGPROC        );
+    GLDECLAREFUNCTION ( glGetUniformLocation,       PFNGLGETUNIFORMLOCATIONPROC      );
+    GLDECLAREFUNCTION ( glLinkProgram,              PFNGLLINKPROGRAMPROC             );
+    GLDECLAREFUNCTION ( glShaderSource,             PFNGLSHADERSOURCEPROC            );
+    GLDECLAREFUNCTION ( glUseProgram,               PFNGLUSEPROGRAMPROC              );
+    GLDECLAREFUNCTION ( glUniform1i,                PFNGLUNIFORM1IPROC               );
+    GLDECLAREFUNCTION ( glUniformMatrix4fv,         PFNGLUNIFORMMATRIX4FVPROC        );
+    GLDECLAREFUNCTION ( glVertexAttribPointer,      PFNGLVERTEXATTRIBPOINTERPROC     );
+    GLDECLAREFUNCTION ( glGenBuffers,               PFNGLGENBUFFERSPROC              );
+    GLDECLAREFUNCTION ( glBindBuffer,               PFNGLBINDBUFFERPROC              );
+    GLDECLAREFUNCTION ( glBufferData,               PFNGLBUFFERDATAPROC              );
+    GLDECLAREFUNCTION ( glDeleteBuffers,            PFNGLDELETEBUFFERSPROC           );
+    GLDECLAREFUNCTION ( glGenVertexArrays,          PFNGLGENVERTEXARRAYSPROC         );
+    GLDECLAREFUNCTION ( glBindVertexArray,          PFNGLBINDVERTEXARRAYPROC         );
+    GLDECLAREFUNCTION ( glDeleteVertexArrays,       PFNGLDELETEVERTEXARRAYSPROC      );
 
     static char log_buffer[1024] = {0};
 
