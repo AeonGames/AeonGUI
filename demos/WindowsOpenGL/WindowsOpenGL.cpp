@@ -33,7 +33,18 @@ Copyright 2010-2012 Rodrigo Hernandez Cordoba
 class Window
 {
 public:
-    Window() {};
+    Window() :
+        hWnd ( NULL ),
+        hDC ( NULL ),
+        hRC ( NULL ),
+        width ( 0 ),
+        height ( 0 ),
+        mousex ( 0 ),
+        mousey ( 0 ),
+        image ( NULL ),
+        font ( NULL ),
+        window ( NULL )
+    {};
     ~Window() {};
     void Initialize ( HINSTANCE hInstance );
     void Finalize ( );
@@ -234,6 +245,7 @@ LRESULT CALLBACK Window::WindowProc ( HWND hwnd, UINT uMsg, WPARAM wParam, LPARA
         break;
     case WM_CLOSE:
         PostQuitMessage ( 0 );
+        break;
     case WM_SIZE:
         lresult = window_ptr->OnSize ( wParam, LOWORD ( lParam ), HIWORD ( lParam ) );
         break;

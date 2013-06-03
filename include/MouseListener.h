@@ -23,6 +23,7 @@ namespace AeonGUI
     class MouseListener
     {
     public:
+        virtual ~MouseListener() {};
         virtual void OnMouseMove ( Widget* widget, uint32_t X, uint32_t Y ) = 0;
         virtual void OnMouseButtonDown ( Widget* widget, uint8_t button, uint32_t X, uint32_t Y ) = 0;
         virtual void OnMouseButtonUp ( Widget* widget, uint8_t button, uint32_t X, uint32_t Y ) = 0;

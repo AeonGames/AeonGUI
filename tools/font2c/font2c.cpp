@@ -321,7 +321,7 @@ private:
         }
         pixels = new uint8_t[header.map_width * header.map_height];
         // clear to black
-        memset ( pixels, 0, sizeof ( uint8_t ) *header.map_width * header.map_height );
+        memset ( reinterpret_cast<void*>(pixels), 0, static_cast<unsigned long int>(sizeof ( uint8_t ) *header.map_width * header.map_height ));
         pos = pixels;
         glyph.charcode = wchar_t ( FT_Get_First_Char ( face, &gindex ) );
         int32_t printableglyphs = 0;
@@ -365,7 +365,7 @@ private:
                     pixel = face->glyph->bitmap.buffer;
                     for ( int32_t py = 0; py < face->glyph->bitmap.rows; ++py )
                     {
-                        memcpy ( pos + ( py * header.map_width ), pixel, sizeof ( uint8_t ) *face->glyph->bitmap.width );
+                        memcpy ( reinterpret_cast<void*>(pos + ( py * header.map_width )), pixel, sizeof ( uint8_t ) *face->glyph->bitmap.width );
                         pixel += face->glyph->bitmap.pitch;
                     }
                     if ( glyphx == glyphs_per_row )
@@ -398,7 +398,7 @@ private:
                 assert ( face->glyph->format == FT_GLYPH_FORMAT_BITMAP );
             }
             glyphs.push_back ( glyph );
-            glyph.charcode = wchar_t ( FT_Get_Next_Char ( face, glyph.charcode, &gindex ) );
+            glyph.charcode = wchar_t ( FT_Get_Next_Char ( face, static_cast<unsigned long int>(glyph.charcode), &gindex ) );
         }
         // Sorting by charcode is probably unnecessary, but better safe than sorry
         std::sort ( glyphs.begin(), glyphs.end(), compare_glyphs );
@@ -426,10 +426,9 @@ private:
         fnt.write ( ( const char* ) &header, sizeof ( FNTHeader ) );
         for ( std::vector<FNTGlyph>::iterator i = glyphs.begin(); i != glyphs.end(); ++i )
         {
-            //std::cout << "Charcode " << i->charcode << std::endl;
             fnt.write ( ( const char* ) & ( *i ), sizeof ( FNTGlyph ) );
         }
-        fnt.write ( ( const char* ) pixels, sizeof ( char ) * ( header.map_width * header.map_height ) );
+        fnt.write ( ( const char* ) pixels, (long int) (sizeof ( char ) * ( header.map_width * header.map_height )) );
         fnt.close();
         return true;
     }
@@ -449,7 +448,10 @@ private:
         ILuint image = ilGenImage();
         ilBindImage ( image );
         error = ilGetError();
-        ilLoadDataL ( pixels, header.map_width * header.map_height, header.map_width, header.map_height, 1, 1 );
+        ilLoadDataL (
+        		reinterpret_cast<void*>(pixels) ,
+        		static_cast<unsigned int>(header.map_width * header.map_height),
+        		static_cast<unsigned int>(header.map_width,	header.map_height, 1, 1 );
         error = ilGetError();
         remove ( imagename.c_str() );
         if ( !ilSave ( IL_PNG, imagename.c_str() ) )

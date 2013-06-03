@@ -21,6 +21,7 @@ namespace AeonGUI
     class KeyListener
     {
     public:
+        virtual ~KeyListener() {};
         /*! \brief Key down event callback function.
             \param charcode [in] Key Unicode charcode.
             \return true if handled, false otherwise.
