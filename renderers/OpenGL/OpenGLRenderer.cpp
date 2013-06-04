@@ -61,7 +61,7 @@ Copyright 2010-2012 Rodrigo Hernandez Cordoba
                         if((error != 0)) \
                         { \
                             std::cout << "Error " << error << ": " << gluErrorString(error) <<\
-                            " at function " << __FUNCTION__ << " at line " <<\
+                            " at function " << __FUNCTION__ <<\
                             ", file " << __FILE__ << " at line " <<\
                             __LINE__ << std::endl; \
                         }\
@@ -250,6 +250,19 @@ namespace AeonGUI
         glBufferData ( GL_ARRAY_BUFFER, sizeof ( GLfloat ) * 16, &vertices[0], GL_STATIC_DRAW );
         LOGERROR();
 
+        GLint position = glGetAttribLocation ( shader_program, "position" );
+        LOGERROR();
+        glVertexAttribPointer ( position, 2, GL_FLOAT, GL_FALSE, sizeof ( float ) * 4, ( ( void* ) 0 ) );
+        LOGERROR();
+        glEnableVertexAttribArray ( position );
+        LOGERROR();
+
+        GLint uv = glGetAttribLocation ( shader_program, "uv" );
+        glVertexAttribPointer ( uv, 2, GL_FLOAT, GL_FALSE, sizeof ( float ) * 4, ( ( void* ) ( sizeof ( float ) * 2 ) ) );
+        LOGERROR();
+        glEnableVertexAttribArray ( uv );
+        LOGERROR();
+
         return true;
     }
 
@@ -361,7 +374,6 @@ namespace AeonGUI
         {
             return false;
         }
-        return true;
 
         // Generate VAO
         glGenVertexArrays ( 1, &vertex_array_object );
@@ -371,6 +383,7 @@ namespace AeonGUI
         glGenBuffers ( 1, &vertex_buffer_object );
         LOGERROR();
 
+        return true;
     }
 
     void OpenGLRenderer::Finalize()
@@ -428,6 +441,9 @@ namespace AeonGUI
         glBindVertexArray ( vertex_array_object );
         LOGERROR();
 
+        glBindBuffer (  GL_ARRAY_BUFFER, vertex_buffer_object );
+        LOGERROR();
+
         glBlendFunc ( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
         LOGERROR();
 
@@ -441,19 +457,6 @@ namespace AeonGUI
         LOGERROR();
 
         glTexSubImage2D ( GL_TEXTURE_2D, 0, 0, 0, screen_w, screen_h, GL_BGRA, GL_UNSIGNED_BYTE, screen_bitmap );
-        LOGERROR();
-
-        GLint position = glGetAttribLocation ( shader_program, "position" );
-        LOGERROR();
-        glVertexAttribPointer ( position, 2, GL_FLOAT, GL_FALSE, sizeof ( float ) * 4, ( ( void* ) 0 ) );
-        LOGERROR();
-        glEnableVertexAttribArray ( position );
-        LOGERROR();
-
-        GLint uv = glGetAttribLocation ( shader_program, "uv" );
-        glVertexAttribPointer ( uv, 2, GL_FLOAT, GL_FALSE, sizeof ( float ) * 4, ( ( void* ) ( sizeof ( float ) * 2 ) ) );
-        LOGERROR();
-        glEnableVertexAttribArray ( uv );
         LOGERROR();
 
         glDrawArrays ( GL_TRIANGLE_STRIP, 0, 4 );

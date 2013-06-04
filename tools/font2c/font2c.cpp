@@ -403,7 +403,7 @@ private:
         // Sorting by charcode is probably unnecessary, but better safe than sorry
         std::sort ( glyphs.begin(), glyphs.end(), compare_glyphs );
         // Set Glyph count
-        header.glyphcount = glyphs.size();
+        header.glyphcount = static_cast<uint32_t>(glyphs.size());
 #if 0
         for ( std::vector<FNTGlyph>::iterator i = glyphs.begin(); i != glyphs.end(); ++i )
         {
