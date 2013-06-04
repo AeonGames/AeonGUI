@@ -22,11 +22,10 @@ WARNING!!!: The library is not currently on a stable or even usable state.
 
 HISTORY
 =======
-The idea for the library was born around 2004 or 2005 under the name 'Glitch', 
-and has evolved overtime but never quite reached maturity.
+The idea for the library was born around 2004 or 2005 under the name 'Glitch', and has evolved overtime but never quite reached maturity.
 The name change to AeonGUI came about as a way to identify the library as part of the AeonGames brand
-and to avoid confusion since originaly the name 'GLitch' was chosen to emphasize OpenGL support,
-which is still the priority, but not the only graphic API supported.
+and to avoid confusion since originaly the name 'GLitch' was chosen to emphasize OpenGL support, which is still the priority, 
+but not necesarily the only graphic API supported.
 
 COMPILATION
 ===========
@@ -34,6 +33,12 @@ The library uses CMake to build the required files used to build the binary depe
 For information on how to use CMake refer to www.cmake.org.
 There is only "official" support for Windows and Linux at this time, 
 however, Linux builds may break from time to time as most development is done on Windows.
+
+Optional USE variables are available to add support for various features such as freetype font rendering and PNG file format loading,
+these add external dependencies to the library, so they are all initially set to OFF, if turned ON, the user has the option to provide
+the dependencies or let CMake download and configure the dependencies which will show up as projects inside the build environment.
+The rules to download and configure external dependencies are most useful to Windows users as Linux distributions usually provide 
+development libraries for most software packages.
 
 LICENSE
 =======
