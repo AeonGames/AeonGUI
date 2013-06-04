@@ -46,6 +46,12 @@ endif(NOT IS_DIRECTORY "${CMAKE_SOURCE_DIR}/freetype-2.4.12")
 INCLUDE_DIRECTORIES(${CMAKE_SOURCE_DIR}/freetype-2.4.12/include)
 set(FREETYPE_LIBRARIES freetype)
 set(FT_SOURCES
+      # This list of source files has been extracted from the file INSTALL.ANY
+      # at the freetype source distribution and is used to create a custom build
+      # of the library since by itself does not provide a consistent way to build
+      # 64 bit versions of the library on Windows using Visual Studio/Visual C.
+      # Most Linux distributions will already have development libraries for freetype,
+      # but if not or a custom build is desired, this target project should suffice.
       ${CMAKE_SOURCE_DIR}/freetype-2.4.12/src/base/ftsystem.c
       ${CMAKE_SOURCE_DIR}/freetype-2.4.12/src/base/ftinit.c
       ${CMAKE_SOURCE_DIR}/freetype-2.4.12/src/base/ftdebug.c
@@ -106,8 +112,10 @@ set(FT_SOURCES
       ${CMAKE_SOURCE_DIR}/freetype-2.4.12/src/pshinter/pshinter.c #-- PS hinting module
       ${CMAKE_SOURCE_DIR}/freetype-2.4.12/src/psnames/psnames.c   #-- PostScript glyph names support
     )
+    
 add_library(freetype ${FT_SOURCES})
-set_target_properties(freetype PROPERTIES COMPILE_FLAGS "-DFT2_BUILD_LIBRARY")
+set_target_properties(freetype PROPERTIES COMPILE_DEFINITIONS "FT2_BUILD_LIBRARY")
+#set_target_properties(freetype PROPERTIES COMPILE_FLAGS "-DFT2_BUILD_LIBRARY")
 
 endif(FREETYPE_FOUND)
 endif(USE_FREETYPE)

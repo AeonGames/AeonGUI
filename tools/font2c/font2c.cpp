@@ -27,11 +27,7 @@ Copyright 2010-2012 Rodrigo Hernandez Cordoba
 #include <cassert>
 #include <vector>
 #include <climits>
-#ifdef USE_PCX
 #include "pcx.h"
-#else
-#include "IL/il.h"
-#endif
 #include "fontstructs.h"
 
 /*! \file
@@ -434,32 +430,10 @@ private:
     }
     bool WriteImage()
     {
-#ifdef USE_PCX
         std::string imagename = output + ".pcx";
         Pcx pcx;
         pcx.Encode ( header.map_width, header.map_height, pixels, header.map_width * header.map_height );
         pcx.Save ( imagename.c_str() );
-#else
-        std::string imagename = output + ".png";
-        ILenum error;
-        ilInit();
-        ilEnable ( IL_ORIGIN_SET );
-        ilOriginFunc ( IL_ORIGIN_UPPER_LEFT );
-        ILuint image = ilGenImage();
-        ilBindImage ( image );
-        error = ilGetError();
-        ilLoadDataL (
-        		reinterpret_cast<void*>(pixels) ,
-        		static_cast<unsigned int>(header.map_width * header.map_height),
-        		static_cast<unsigned int>(header.map_width,	header.map_height, 1, 1 );
-        error = ilGetError();
-        remove ( imagename.c_str() );
-        if ( !ilSave ( IL_PNG, imagename.c_str() ) )
-        {
-            error = ilGetError();
-        }
-        ilShutDown();
-#endif
         return true;
     }
     bool WriteH()
