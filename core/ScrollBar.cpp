@@ -49,22 +49,22 @@ namespace AeonGUI
         forward.SetMouseListener ( this );
 
         scrollup = new Image;
-        scrollup->Load( scrollup_name, scrollup_width, scrollup_height, AeonGUI::Image::RGBA, AeonGUI::Image::BYTE, scrollup_data );
+        scrollup->Load( scrollup_width, scrollup_height, AeonGUI::Image::RGBA, AeonGUI::Image::BYTE, scrollup_data );
         scrolluppressed = new Image;
-        scrolluppressed->Load( scrolluppressed_name, scrolluppressed_width, scrolluppressed_height, AeonGUI::Image::RGBA, AeonGUI::Image::BYTE, scrolluppressed_data );
+        scrolluppressed->Load( scrolluppressed_width, scrolluppressed_height, AeonGUI::Image::RGBA, AeonGUI::Image::BYTE, scrolluppressed_data );
         scrolldown = new Image;
-        scrolldown->Load( scrolldown_name, scrolldown_width, scrolldown_height, AeonGUI::Image::RGBA, AeonGUI::Image::BYTE, scrolldown_data );
+        scrolldown->Load( scrolldown_width, scrolldown_height, AeonGUI::Image::RGBA, AeonGUI::Image::BYTE, scrolldown_data );
         scrolldownpressed = new Image;
-        scrolldownpressed->Load( scrolldownpressed_name, scrolldownpressed_width, scrolldownpressed_height, AeonGUI::Image::RGBA, AeonGUI::Image::BYTE, scrolldownpressed_data );
+        scrolldownpressed->Load( scrolldownpressed_width, scrolldownpressed_height, AeonGUI::Image::RGBA, AeonGUI::Image::BYTE, scrolldownpressed_data );
 
         scrollleft = new Image;
-        scrollleft->Load( scrollleft_name, scrollleft_width, scrollleft_height, AeonGUI::Image::RGBA, AeonGUI::Image::BYTE, scrollleft_data );
+        scrollleft->Load( scrollleft_width, scrollleft_height, AeonGUI::Image::RGBA, AeonGUI::Image::BYTE, scrollleft_data );
         scrollleftpressed = new Image;
-        scrollleftpressed->Load( scrollleftpressed_name, scrollleftpressed_width, scrollleftpressed_height, AeonGUI::Image::RGBA, AeonGUI::Image::BYTE, scrollleftpressed_data );
+        scrollleftpressed->Load( scrollleftpressed_width, scrollleftpressed_height, AeonGUI::Image::RGBA, AeonGUI::Image::BYTE, scrollleftpressed_data );
         scrollright = new Image;
-        scrollright->Load( scrollright_name, scrollright_width, scrollright_height, AeonGUI::Image::RGBA, AeonGUI::Image::BYTE, scrollright_data );
+        scrollright->Load( scrollright_width, scrollright_height, AeonGUI::Image::RGBA, AeonGUI::Image::BYTE, scrollright_data );
         scrollrightpressed = new Image;
-        scrollrightpressed->Load( scrollrightpressed_name, scrollrightpressed_width, scrollrightpressed_height, AeonGUI::Image::RGBA, AeonGUI::Image::BYTE, scrollrightpressed_data );
+        scrollrightpressed->Load( scrollrightpressed_width, scrollrightpressed_height, AeonGUI::Image::RGBA, AeonGUI::Image::BYTE, scrollrightpressed_data );
 
         slider.SetParent ( this );
         slider.SetMouseListener ( this );

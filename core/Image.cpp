@@ -29,7 +29,7 @@ namespace AeonGUI
     {
     }
 
-    bool Image::Load ( const std::string& id, uint32_t image_width, uint32_t image_height, Image::Format format, Image::Type type, void* data )
+    bool Image::Load ( uint32_t image_width, uint32_t image_height, Image::Format format, Image::Type type, void* data )
     {
         assert ( data != NULL );
         width = image_width;

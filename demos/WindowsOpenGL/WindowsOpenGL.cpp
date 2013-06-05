@@ -157,7 +157,7 @@ void Window::Initialize ( HINSTANCE hInstance )
     glClearColor ( 0, 0, 0, 0 );
     window = new AeonGUI::MainWindow ();
     image = new AeonGUI::Image;
-    image->Load ( logo_name, logo_width, logo_height, AeonGUI::Image::RGBA, AeonGUI::Image::BYTE, logo_data );
+    image->Load ( logo_width, logo_height, AeonGUI::Image::RGBA, AeonGUI::Image::BYTE, logo_data );
     font = new AeonGUI::Font ( Vera.data, Vera.size );
     renderer.Initialize ( );
     renderer.ChangeScreenSize ( width, height );

@@ -18,8 +18,6 @@ Copyright 2010-2012 Rodrigo Hernandez Cordoba
 #include <cstddef>
 #include <cassert>
 #include <cstring>
-#include <string>
-#include <map>
 #include "Integer.h"
 #include "Color.h"
 
@@ -50,7 +48,7 @@ namespace AeonGUI
         \brief Loads an image from memory.
         \return true on success, false otherwise.
         */
-        bool Load ( const std::string& id, uint32_t image_width, uint32_t image_height, Image::Format format, Image::Type type, void* data );
+        bool Load ( uint32_t image_width, uint32_t image_height, Image::Format format, Image::Type type, void* data );
 
         /*! \brief Unloads and releases image data from memory.*/
         void Unload (  );
