@@ -14,6 +14,7 @@ Copyright 2010-2012 Rodrigo Hernandez Cordoba
    limitations under the License.
 ******************************************************************************/
 #include "Image.h"
+#include "pcx.h"
 
 #ifdef USE_PNG
 #include "png.h"

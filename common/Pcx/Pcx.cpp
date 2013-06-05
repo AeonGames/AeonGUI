@@ -16,6 +16,7 @@ Copyright 2010-2012 Rodrigo Hernandez Cordoba
 #include "pcx.h"
 #include <iostream>
 #include <fstream>
+
 bool Pcx::Encode ( unsigned int width, unsigned int height, void* buffer, unsigned int buffer_size )
 {
     header.Identifier = 0x0A;
@@ -103,4 +104,34 @@ bool Pcx::Save ( const char* filename )
     pcx.write ( ( const char* ) pixels, sizeof ( char ) *pixels_size );
     pcx.close();
     return true;
+}
+
+bool Pcx::Decode ( void* buffer, unsigned int buffer_size )
+{
+    return false;
+}
+
+bool Pcx::Load ( const char* filename )
+{
+    unsigned char* buffer = NULL;
+    unsigned int buffer_size = 0;
+    bool retval;
+    std::ifstream pcx;
+    pcx.open ( filename, std::ios_base::in | std::ios_base::binary );
+    if ( !pcx.is_open() )
+    {
+        std::cerr << "Problem opening " << filename << " for reading." << std::endl;
+        return false;
+    }
+
+    pcx.seekg ( 0, std::ios_base::end );
+    buffer_size = pcx.tellg();
+    pcx.seekg ( 0, std::ios_base::beg );
+    buffer = new unsigned char[buffer_size];
+    pcx.read ( reinterpret_cast<char*> ( buffer ), buffer_size );
+    pcx.close();
+
+    retval = Decode ( buffer, buffer_size );
+    delete[] buffer;
+    return retval;
 }

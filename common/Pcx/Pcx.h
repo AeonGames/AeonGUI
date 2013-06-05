@@ -19,11 +19,11 @@ Copyright 2010-2012 Rodrigo Hernandez Cordoba
 class Pcx
 {
 public:
-    Pcx()
+    Pcx() :
+        pixels ( NULL ),
+        pixels_size ( 0 )
     {
-        pixels = NULL;
         memset ( &header, 0, sizeof ( Header ) );
-        pixels_size = 0;
     }
     ~Pcx()
     {
@@ -34,28 +34,31 @@ public:
     }
     bool Encode ( unsigned int width, unsigned int height, void* buffer, unsigned int buffer_size );
     bool Save ( const char* filename );
+    bool Decode ( void* buffer, unsigned int buffer_size );
+    bool Load ( const char* filename );
+
 private:
     unsigned int FillPixels ( unsigned int width, unsigned int height, void* buffer, unsigned int buffer_size );
     struct Header
     {
-        unsigned char    Identifier;        // PCX Id Number (Always 0x0A)
-        unsigned char    Version;           // Version Number
-        unsigned char    Encoding;          // Encoding Format
-        unsigned char    BitsPerPixel;      // Bits per Pixel
+        unsigned char  Identifier;        // PCX Id Number (Always 0x0A)
+        unsigned char  Version;           // Version Number
+        unsigned char  Encoding;          // Encoding Format
+        unsigned char  BitsPerPixel;      // Bits per Pixel
         unsigned short XStart;            // Left of image
         unsigned short YStart;            // Top of Image
         unsigned short XEnd;              // Right of Image
         unsigned short YEnd;              // Bottom of image
         unsigned short HorzRes;           // Horizontal Resolution
         unsigned short VertRes;           // Vertical Resolution
-        unsigned char    Palette[48];       // 16-Color EGA Palette
-        unsigned char    Reserved1;         // Reserved (Always 0)
-        unsigned char    NumBitPlanes;      // Number of Bit Planes
+        unsigned char  Palette[48];       // 16-Color EGA Palette
+        unsigned char  Reserved1;         // Reserved (Always 0)
+        unsigned char  NumBitPlanes;      // Number of Bit Planes
         unsigned short BytesPerLine;      // Bytes per Scan-line
         unsigned short PaletteType;       // Palette Type
         unsigned short HorzScreenSize;    // Horizontal Screen Size
         unsigned short VertScreenSize;    // Vertical Screen Size
-        unsigned char    Reserved2[54];     // Reserved (Always 0)
+        unsigned char  Reserved2[54];     // Reserved (Always 0)
     };
     Header header;
     void* pixels;
