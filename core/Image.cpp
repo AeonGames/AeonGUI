@@ -15,181 +15,91 @@ Copyright 2010-2012 Rodrigo Hernandez Cordoba
 ******************************************************************************/
 #include "Image.h"
 
-#if (defined(USE_HASH_CRC) && defined(USE_HASH_MD5)) || (defined(USE_HASH_CRC) && defined(USE_HASH_SHA1)) || (defined(USE_HASH_MD5) && defined(USE_HASH_SHA1))
-#error Must only define one of USE_HASH_CRC,USE_HASH_MD5 or USE_HASH_SHA1
-#endif
-
-extern "C" {
-#ifdef USE_HASH_CRC
-#include "crc/crc.h"
-#endif
-#ifdef USE_HASH_MD5
-#include "md5/md5.h"
-#endif
-}
-#ifdef USE_HASH_SHA1
-#include "sha1/sha1.h"
+#ifdef USE_PNG
+#include "png.h"
+#include <algorithm>
 #endif
 
 namespace AeonGUI
 {
+    Image::Image () :
+            width(0),
+            height(0),
+            bitmap(NULL)
+    {
+    }
 
-#if defined(USE_HASH_CRC)
-    std::map<uint32_t, Image::ImageData*> Image::Images;
-#elif defined(USE_HASH_MD5) || defined(USE_HASH_SHA1)
-    std::map<std::string, Image::ImageData*> Image::Images;
-#else
-    uint32_t Image::imageCount;
-#endif
-
-    Image::Image ( const std::string& id, uint32_t width, uint32_t height, Image::Format format, Image::Type type, void* data )
+    bool Image::Load ( const std::string& id, uint32_t image_width, uint32_t image_height, Image::Format format, Image::Type type, void* data )
     {
         assert ( data != NULL );
-#ifdef USE_HASH_CRC
-        uint32_t hash = crcFast ( static_cast<const unsigned char*> ( data ),
-                                  sizeof ( Color ) * width * height );
-        std::map<uint32_t, Image::ImageData*>::iterator it;
-#endif
-#ifdef USE_HASH_MD5
-        char hash[33];
-        uint8_t binary_hash[16];
+        width = image_width;
+        height = image_height;
 
-        MD5_CTX ctx;
+        bitmap = new Color[width * height];
 
-        std::map<std::string, Image::ImageData*>::iterator it;
-
-        MD5_Init ( &ctx );
-        MD5_Update ( &ctx, data, sizeof ( Color ) * width * height );
-        MD5_Final ( binary_hash, &ctx );
-
-        const char tab[] = {"0123456789abcdef"};
-        for ( int i = 16; --i >= 0; )
-        {
-            hash[i << 1] = tab[ ( binary_hash[i] >> 4 ) & 0xF];
-            hash[ ( i << 1 ) + 1] = tab[binary_hash[i] & 0xF];
-        }
-        hash[32] = 0;
-#endif
-#ifdef USE_HASH_SHA1
-        char hash[41];
-        uint8_t binary_hash[20];
-        std::map<std::string, Image::ImageData*>::iterator it;
-        sha1::calc ( data, sizeof ( Color ) * width * height, binary_hash );
-        sha1::toHexString ( binary_hash, hash );
-#endif
-
-#if defined(USE_HASH_CRC) || defined(USE_HASH_MD5) || defined(USE_HASH_SHA1)
-        it = Images.find ( hash );
-        if ( it != Images.end() )
-        {
-            imageData = it->second;
-            imageData->refcount++;
-            return;
-        }
-#endif
-        imageData = new ImageData;
-
-#if defined(USE_HASH_CRC)
-        imageData->hash = hash;
-#elif defined(USE_HASH_MD5) || defined(USE_HASH_SHA1)
-        imageData->hash = hash;
-#endif
-#if defined(USE_HASH_CRC) || defined(USE_HASH_MD5) || defined(USE_HASH_SHA1)
-        imageData->refcount = 1;
-#endif
-        imageData->w = width;
-        imageData->h = height;
-        imageData->f = format;
-        imageData->t = type;
-
-        imageData->bitmap = new Color[width * height];
-
-        switch ( imageData->f )
+        switch ( format )
         {
         case RGB:
             for ( uint32_t i = 0; i < ( width * height ); ++i )
             {
-                imageData->bitmap[i].r = reinterpret_cast<uint8_t*> ( data ) [ ( i * 3 ) + 0];
-                imageData->bitmap[i].g = reinterpret_cast<uint8_t*> ( data ) [ ( i * 3 ) + 1];
-                imageData->bitmap[i].b = reinterpret_cast<uint8_t*> ( data ) [ ( i * 3 ) + 2];
-                imageData->bitmap[i].a = 255;
+                bitmap[i].r = reinterpret_cast<uint8_t*> ( data ) [ ( i * 3 ) + 0];
+                bitmap[i].g = reinterpret_cast<uint8_t*> ( data ) [ ( i * 3 ) + 1];
+                bitmap[i].b = reinterpret_cast<uint8_t*> ( data ) [ ( i * 3 ) + 2];
+                bitmap[i].a = 255;
             }
             break;
         case BGR:
             for ( uint32_t i = 0; i < ( width * height ); ++i )
             {
-                imageData->bitmap[i].b = reinterpret_cast<uint8_t*> ( data ) [ ( i * 3 ) + 0];
-                imageData->bitmap[i].g = reinterpret_cast<uint8_t*> ( data ) [ ( i * 3 ) + 1];
-                imageData->bitmap[i].r = reinterpret_cast<uint8_t*> ( data ) [ ( i * 3 ) + 2];
-                imageData->bitmap[i].a = 255;
+                bitmap[i].b = reinterpret_cast<uint8_t*> ( data ) [ ( i * 3 ) + 0];
+                bitmap[i].g = reinterpret_cast<uint8_t*> ( data ) [ ( i * 3 ) + 1];
+                bitmap[i].r = reinterpret_cast<uint8_t*> ( data ) [ ( i * 3 ) + 2];
+                bitmap[i].a = 255;
             }
             break;
         case RGBA:
             for ( uint32_t i = 0; i < ( width * height ); ++i )
             {
-                imageData->bitmap[i].r = reinterpret_cast<uint8_t*> ( data ) [ ( i * 4 ) + 0];
-                imageData->bitmap[i].g = reinterpret_cast<uint8_t*> ( data ) [ ( i * 4 ) + 1];
-                imageData->bitmap[i].b = reinterpret_cast<uint8_t*> ( data ) [ ( i * 4 ) + 2];
-                imageData->bitmap[i].a = reinterpret_cast<uint8_t*> ( data ) [ ( i * 4 ) + 3];
+                bitmap[i].r = reinterpret_cast<uint8_t*> ( data ) [ ( i * 4 ) + 0];
+                bitmap[i].g = reinterpret_cast<uint8_t*> ( data ) [ ( i * 4 ) + 1];
+                bitmap[i].b = reinterpret_cast<uint8_t*> ( data ) [ ( i * 4 ) + 2];
+                bitmap[i].a = reinterpret_cast<uint8_t*> ( data ) [ ( i * 4 ) + 3];
             }
             break;
         case BGRA:
-            memcpy ( imageData->bitmap, data, sizeof ( Color ) * width * height );
+            memcpy ( bitmap, data, sizeof ( Color ) * width * height );
             break;
         }
-#if defined(USE_HASH_CRC) || defined(USE_HASH_MD5) || defined(USE_HASH_SHA1)
-        Images[hash] = imageData;
-#else
-        imageCount++;
-#endif
+        return true;
+    }
+
+    void Image::Unload()
+    {
+        if(bitmap!=NULL)
+        {
+            delete [] bitmap;
+            width = 0;
+            height = 0;
+        }
     }
 
     Image::~Image()
     {
-        assert ( imageData != NULL );
-
-#if defined(USE_HASH_CRC) || defined(USE_HASH_MD5) || defined(USE_HASH_SHA1)
-        if ( --imageData->refcount == 0 )
-        {
-            Images.erase ( imageData->hash );
-#endif
-
-            if ( imageData->bitmap != NULL )
-            {
-                delete[] imageData->bitmap;
-            }
-            delete imageData;
-
-#if defined(USE_HASH_CRC) || defined(USE_HASH_MD5) || defined(USE_HASH_SHA1)
-        }
-#else
-            imageCount--;
-#endif
-
+        Unload();
     }
 
     int32_t Image::GetWidth()
     {
-        return imageData->w;
+        return width;
     }
 
     int32_t Image::GetHeight()
     {
-        return imageData->h;
-    }
-
-    Image::Format Image::GetFormat()
-    {
-        return imageData->f;
-    }
-
-    Image::Type Image::GetType()
-    {
-        return imageData->t;
+        return height;
     }
 
     const Color* Image::GetBitmap() const
     {
-        return imageData->bitmap;
+        return bitmap;
     }
 }

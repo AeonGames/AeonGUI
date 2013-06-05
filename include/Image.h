@@ -26,7 +26,6 @@ Copyright 2010-2012 Rodrigo Hernandez Cordoba
 namespace AeonGUI
 {
     /*! \brief Generic Image class.
-        \todo Write some code to avoid multiple copies of the same image in memory
     */
     class Image
     {
@@ -45,48 +44,44 @@ namespace AeonGUI
             BGRA
         };
 
-        Image ( const std::string& id, uint32_t width, uint32_t height, Image::Format format, Image::Type type, void* data );
+        Image();
+
+        /*!
+        \brief Loads an image from memory.
+        \return true on success, false otherwise.
+        */
+        bool Load ( const std::string& id, uint32_t image_width, uint32_t image_height, Image::Format format, Image::Type type, void* data );
+
+        /*! \brief Unloads and releases image data from memory.*/
+        void Unload (  );
 
         ~Image();
 
+        /*!
+        \brief Get the width for the loaded image.
+        If no image data is loaded, the returned value will be zero.
+        \return Image width, including guides for 9 patch images.
+        */
         int32_t GetWidth();
 
+        /*!
+        \brief Get the height for the loaded image.
+        If no image data is loaded, the returned value will be zero.
+        \return Image height, including guides for 9 patch images.
+        */
         int32_t GetHeight();
 
-        Format GetFormat();
-
-        Type GetType();
-
+        /*!
+        \brief Retrieve read only bitmap buffer for the image.
+        If no image data is loaded, the pointer returned will be NULL.
+        \return pointer to the color bitmap buffer for the image object or NULL.
+        */
         const Color* GetBitmap() const;
 
     private:
-
-        struct ImageData
-        {
-#if defined(USE_HASH_CRC)
-            uint32_t hash;
-#elif defined(USE_HASH_MD5) || defined(USE_HASH_SHA1)
-            std::string hash;
-#endif
-#if defined(USE_HASH_CRC) || defined(USE_HASH_MD5) || defined(USE_HASH_SHA1)
-            uint32_t refcount;
-#endif
-            int32_t w;
-            int32_t h;
-            Format f;
-            Type t;
-            Color* bitmap;
-        };
-
-        ImageData* imageData;
-
-#if defined(USE_HASH_CRC)
-        static std::map<uint32_t, ImageData*> Images;
-#elif defined(USE_HASH_MD5) || defined(USE_HASH_SHA1)
-        static std::map<std::string, ImageData*> Images;
-#else
-        static uint32_t imageCount;
-#endif
+        uint32_t width;
+        uint32_t height;
+        Color* bitmap;
     };
 }
 #endif
