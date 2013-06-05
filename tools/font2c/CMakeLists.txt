@@ -1,10 +1,10 @@
 SET(FONT2C_HEADERS ../../common/fontstructs.h ../../include/Integer.h)
-SET(FONT2C_SOURCES font2c.cpp pcx.h pcx.cpp)
+SET(FONT2C_SOURCES font2c.cpp)
 
 ADD_EXECUTABLE(font2c ${FONT2C_HEADERS} ${FONT2C_SOURCES} )
 
 if(NOT FREETYPE_FOUND)
 add_dependencies(font2c ${FREETYPE_LIBRARIES})
 endif(NOT FREETYPE_FOUND)
-TARGET_LINK_LIBRARIES(font2c "${FREETYPE_LIBRARIES}")
+TARGET_LINK_LIBRARIES(font2c ${FREETYPE_LIBRARIES} pcx)
 
