@@ -122,9 +122,20 @@ uint32_t Pcx::GetWidth()
 {
     return header.XEnd - header.XStart + 1;
 }
+
 uint32_t Pcx::GetHeight()
 {
     return header.YEnd - header.YStart + 1;
+}
+
+const uint8_t* Pcx::GetPixels()
+{
+    return pixels;
+}
+
+uint8_t Pcx::GetNumBitPlanes()
+{
+    return header.NumBitPlanes;
 }
 
 bool Pcx::Decode ( uint32_t buffer_size, void* buffer )
@@ -137,10 +148,39 @@ bool Pcx::Decode ( uint32_t buffer_size, void* buffer )
         return false;
     }
     uint32_t scanline_length = header.NumBitPlanes * header.BytesPerLine;
-    uint32_t line_padding_size = ( ( header.BytesPerLine * header.NumBitPlanes ) * ( 8 / header.BitsPerPixel ) ) - ( ( header.XEnd - header.XStart ) + 1 );
     uint8_t* byte = reinterpret_cast<uint8_t*> ( buffer ) + sizeof ( Header );
+    pixels = new uint8_t[ scanline_length * GetHeight() ];
+    uint8_t* pixel = pixels;
 
-    return false;
+    for ( uint32_t i = 0; i < GetHeight(); ++i )
+    {
+        for ( uint8_t j = 0; j < header.NumBitPlanes; ++j )
+        {
+            uint8_t* pixel = pixels + ( scanline_length * i ) + j;
+            for ( uint16_t k = 0; k < header.BytesPerLine; )
+            {
+                if ( ( byte[0] & 0xC0 ) == 0xC0 )
+                {
+                    uint8_t count = byte[0] & 0x3F;
+                    for ( uint8_t l = 0; l < count; ++l )
+                    {
+                        *pixel = byte[1];
+                        pixel += header.NumBitPlanes;
+                    }
+                    byte += 2;
+                    k += count;
+                }
+                else
+                {
+                    *pixel = byte[0];
+                    pixel += header.NumBitPlanes;
+                    ++byte;
+                    ++k;
+                }
+            }
+        }
+    }
+    return true;
 }
 
 bool Pcx::Load ( const char* filename )
@@ -172,7 +212,8 @@ void Pcx::Unload ( )
 {
     if ( pixels != NULL )
     {
-        delete[] ( unsigned char* ) pixels;
+        delete[] pixels;
+        pixels = NULL;
         pixels_size = 0;
         memset ( &header, 0, sizeof ( Header ) );
     }

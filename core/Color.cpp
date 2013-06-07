@@ -30,7 +30,6 @@ namespace AeonGUI
         else if(src.a > 0)
         {
             float sfactor = ( static_cast<float> ( src.a ) / 255.0f );
-            //float dfactor = (static_cast<float>(src.a)/255.0f);
             float dfactor = 1.0f - sfactor;
             r = static_cast<uint8_t> ( std::min ( 255.0f, ( static_cast<float> ( src.r ) * sfactor + static_cast<float> ( r ) * dfactor ) ) );
             g = static_cast<uint8_t> ( std::min ( 255.0f, ( static_cast<float> ( src.g ) * sfactor + static_cast<float> ( g ) * dfactor ) ) );

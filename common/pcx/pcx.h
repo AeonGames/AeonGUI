@@ -29,32 +29,34 @@ public:
     void Unload ( );
     uint32_t GetWidth();
     uint32_t GetHeight();
+    const uint8_t* GetPixels();
+    uint8_t GetNumBitPlanes();
 
 private:
     uint32_t FillPixels ( uint32_t width, uint32_t height, void* buffer, uint32_t buffer_size );
     struct Header
     {
-        unsigned char  Identifier;        // PCX Id Number (Always 0x0A)
-        unsigned char  Version;           // Version Number
-        unsigned char  Encoding;          // Encoding Format
-        unsigned char  BitsPerPixel;      // Bits per Pixel
-        unsigned short XStart;            // Left of image
-        unsigned short YStart;            // Top of Image
-        unsigned short XEnd;              // Right of Image
-        unsigned short YEnd;              // Bottom of image
-        unsigned short HorzRes;           // Horizontal Resolution
-        unsigned short VertRes;           // Vertical Resolution
-        unsigned char  Palette[48];       // 16-Color EGA Palette
-        unsigned char  Reserved1;         // Reserved (Always 0)
-        unsigned char  NumBitPlanes;      // Number of Bit Planes
-        unsigned short BytesPerLine;      // Bytes per Scan-line
-        unsigned short PaletteType;       // Palette Type
-        unsigned short HorzScreenSize;    // Horizontal Screen Size
-        unsigned short VertScreenSize;    // Vertical Screen Size
-        unsigned char  Reserved2[54];     // Reserved (Always 0)
+        uint8_t  Identifier;        // PCX Id Number (Always 0x0A)
+        uint8_t  Version;           // Version Number
+        uint8_t  Encoding;          // Encoding Format
+        uint8_t  BitsPerPixel;      // Bits per Pixel
+        uint16_t XStart;            // Left of image
+        uint16_t YStart;            // Top of Image
+        uint16_t XEnd;              // Right of Image
+        uint16_t YEnd;              // Bottom of image
+        uint16_t HorzRes;           // Horizontal Resolution
+        uint16_t VertRes;           // Vertical Resolution
+        uint8_t  Palette[48];       // 16-Color EGA Palette
+        uint8_t  Reserved1;         // Reserved (Always 0)
+        uint8_t  NumBitPlanes;      // Number of Bit Planes
+        uint16_t BytesPerLine;      // Bytes per Scan-line
+        uint16_t PaletteType;       // Palette Type
+        uint16_t HorzScreenSize;    // Horizontal Screen Size
+        uint16_t VertScreenSize;    // Vertical Screen Size
+        uint8_t  Reserved2[54];     // Reserved (Always 0)
     };
     Header header;
-    void* pixels;
+    uint8_t* pixels;
     uint32_t pixels_size;
 };
 #endif

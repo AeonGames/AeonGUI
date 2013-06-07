@@ -31,7 +31,7 @@ namespace AeonGUI
     {
     }
 
-    bool Image::Load ( uint32_t image_width, uint32_t image_height, Image::Format format, Image::Type type, void* data )
+    bool Image::Load ( uint32_t image_width, uint32_t image_height, Image::Format format, Image::Type type, const void* data )
     {
         assert ( data != NULL );
         width = image_width;
@@ -44,28 +44,28 @@ namespace AeonGUI
         case RGB:
             for ( uint32_t i = 0; i < ( width * height ); ++i )
             {
-                bitmap[i].r = reinterpret_cast<uint8_t*> ( data ) [ ( i * 3 ) + 0];
-                bitmap[i].g = reinterpret_cast<uint8_t*> ( data ) [ ( i * 3 ) + 1];
-                bitmap[i].b = reinterpret_cast<uint8_t*> ( data ) [ ( i * 3 ) + 2];
+                bitmap[i].r = reinterpret_cast<const uint8_t*> ( data ) [ ( i * 3 ) + 0];
+                bitmap[i].g = reinterpret_cast<const uint8_t*> ( data ) [ ( i * 3 ) + 1];
+                bitmap[i].b = reinterpret_cast<const uint8_t*> ( data ) [ ( i * 3 ) + 2];
                 bitmap[i].a = 255;
             }
             break;
         case BGR:
             for ( uint32_t i = 0; i < ( width * height ); ++i )
             {
-                bitmap[i].b = reinterpret_cast<uint8_t*> ( data ) [ ( i * 3 ) + 0];
-                bitmap[i].g = reinterpret_cast<uint8_t*> ( data ) [ ( i * 3 ) + 1];
-                bitmap[i].r = reinterpret_cast<uint8_t*> ( data ) [ ( i * 3 ) + 2];
+                bitmap[i].b = reinterpret_cast<const uint8_t*> ( data ) [ ( i * 3 ) + 0];
+                bitmap[i].g = reinterpret_cast<const uint8_t*> ( data ) [ ( i * 3 ) + 1];
+                bitmap[i].r = reinterpret_cast<const uint8_t*> ( data ) [ ( i * 3 ) + 2];
                 bitmap[i].a = 255;
             }
             break;
         case RGBA:
             for ( uint32_t i = 0; i < ( width * height ); ++i )
             {
-                bitmap[i].r = reinterpret_cast<uint8_t*> ( data ) [ ( i * 4 ) + 0];
-                bitmap[i].g = reinterpret_cast<uint8_t*> ( data ) [ ( i * 4 ) + 1];
-                bitmap[i].b = reinterpret_cast<uint8_t*> ( data ) [ ( i * 4 ) + 2];
-                bitmap[i].a = reinterpret_cast<uint8_t*> ( data ) [ ( i * 4 ) + 3];
+                bitmap[i].r = reinterpret_cast<const uint8_t*> ( data ) [ ( i * 4 ) + 0];
+                bitmap[i].g = reinterpret_cast<const uint8_t*> ( data ) [ ( i * 4 ) + 1];
+                bitmap[i].b = reinterpret_cast<const uint8_t*> ( data ) [ ( i * 4 ) + 2];
+                bitmap[i].a = reinterpret_cast<const uint8_t*> ( data ) [ ( i * 4 ) + 3];
             }
             break;
         case BGRA:
@@ -140,6 +140,15 @@ namespace AeonGUI
             {
                 return false;
             }
+			if(pcx.GetNumBitPlanes()==3)
+			{
+				return Load(pcx.GetWidth(),pcx.GetHeight(),RGB,BYTE,pcx.GetPixels());
+			}
+			else if(pcx.GetNumBitPlanes()==4)
+			{
+				return Load(pcx.GetWidth(),pcx.GetHeight(),RGBA,BYTE,pcx.GetPixels());
+			}
+			// Let the Pcx destructor release its pixel buffer.
         }
         return false;
     }

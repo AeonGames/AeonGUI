@@ -54,7 +54,7 @@ namespace AeonGUI
         \todo is the type param really necesary? it's name does not really reflects what it does.
         \return true on success, false otherwise.
         */
-        bool Load ( uint32_t image_width, uint32_t image_height, Image::Format format, Image::Type type, void* data );
+        bool Load ( uint32_t image_width, uint32_t image_height, Image::Format format, Image::Type type, const void* data );
 
         /*!
         \brief Loads an image from a file.
