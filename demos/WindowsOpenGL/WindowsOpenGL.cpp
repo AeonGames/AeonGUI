@@ -41,7 +41,8 @@ public:
         height ( 0 ),
         mousex ( 0 ),
         mousey ( 0 ),
-        image ( NULL ),
+        aeongames_logo ( NULL ),
+        aeongui_logo ( NULL ),
         font ( NULL ),
         window ( NULL )
     {};
@@ -67,7 +68,8 @@ private:
     int32_t mousex;
     int32_t mousey;
     AeonGUI::OpenGLRenderer renderer;
-    AeonGUI::Image* image;
+    AeonGUI::Image* aeongames_logo;
+    AeonGUI::Image* aeongui_logo;
     AeonGUI::Font* font;
     AeonGUI::MainWindow* window;
 };
@@ -156,8 +158,10 @@ void Window::Initialize ( HINSTANCE hInstance )
     //---OpenGL 3.0 Context---//
     glClearColor ( 0, 0, 0, 0 );
     window = new AeonGUI::MainWindow ();
-    image = new AeonGUI::Image;
-    image->Load ( logo_width, logo_height, AeonGUI::Image::RGBA, AeonGUI::Image::BYTE, logo_data );
+    aeongames_logo = new AeonGUI::Image;
+    aeongames_logo->Load ( logo_width, logo_height, AeonGUI::Image::RGBA, AeonGUI::Image::BYTE, logo_data );
+    aeongui_logo = new AeonGUI::Image;
+    aeongui_logo->LoadFromFile ( "AeonGUILogoBlBkg.pcx" );
     font = new AeonGUI::Font ( Vera.data, Vera.size );
     renderer.Initialize ( );
     renderer.ChangeScreenSize ( width, height );
@@ -177,10 +181,15 @@ void Window::Finalize()
         delete window;
         window = NULL;
     }
-    if ( image != NULL )
+    if ( aeongames_logo != NULL )
     {
-        delete image;
-        image = NULL;
+        delete aeongames_logo;
+        aeongames_logo = NULL;
+    }
+    if ( aeongui_logo != NULL )
+    {
+        delete aeongui_logo;
+        aeongui_logo = NULL;
     }
     if ( font != NULL )
     {
@@ -211,7 +220,8 @@ void Window::RenderLoop()
     const AeonGUI::Color color ( 0xFFFFFFFF );
     renderer.BeginRender();
     renderer.RenderWidgets();
-    renderer.DrawImage ( color, width - logo_width, height - logo_height, image );
+    renderer.DrawImage ( color, width - logo_width, height - logo_height, aeongames_logo );
+    renderer.DrawImage ( color, 0, height - aeongui_logo->GetHeight(), aeongui_logo );
     renderer.EndRender();
     SwapBuffers ( hDC );
     last_time = this_time;

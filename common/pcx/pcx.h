@@ -16,29 +16,22 @@ Copyright 2010-2012 Rodrigo Hernandez Cordoba
    limitations under the License.
 ******************************************************************************/
 #include <cstring>
+#include <cstdint>
 class Pcx
 {
 public:
-    Pcx() :
-        pixels ( NULL ),
-        pixels_size ( 0 )
-    {
-        memset ( &header, 0, sizeof ( Header ) );
-    }
-    ~Pcx()
-    {
-        if ( pixels != NULL )
-        {
-            delete[] ( unsigned char* ) pixels;
-        }
-    }
-    bool Encode ( unsigned int width, unsigned int height, void* buffer, unsigned int buffer_size );
+    Pcx();
+    ~Pcx();
+    bool Encode ( uint32_t width, uint32_t height, void* buffer, uint32_t buffer_size );
     bool Save ( const char* filename );
-    bool Decode ( void* buffer, unsigned int buffer_size );
+    bool Decode ( uint32_t buffer_size, void* buffer );
     bool Load ( const char* filename );
+    void Unload ( );
+    uint32_t GetWidth();
+    uint32_t GetHeight();
 
 private:
-    unsigned int FillPixels ( unsigned int width, unsigned int height, void* buffer, unsigned int buffer_size );
+    uint32_t FillPixels ( uint32_t width, uint32_t height, void* buffer, uint32_t buffer_size );
     struct Header
     {
         unsigned char  Identifier;        // PCX Id Number (Always 0x0A)
@@ -62,6 +55,6 @@ private:
     };
     Header header;
     void* pixels;
-    unsigned int pixels_size;
+    uint32_t pixels_size;
 };
 #endif

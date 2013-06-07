@@ -45,10 +45,34 @@ namespace AeonGUI
         Image();
 
         /*!
-        \brief Loads an image from memory.
+        \brief Loads a raw image from memory.
+        \param image_width The width of the image in memory.
+        \param image_height The height of the image in memory.
+        \param format The format of the image in memory, RGB,BGR,RGBA or BGRA.
+        \param type The type of each color component, currently only BYTE.
+        \param data Pointer to the memory buffer containing the image data.
+        \todo is the type param really necesary? it's name does not really reflects what it does.
         \return true on success, false otherwise.
         */
         bool Load ( uint32_t image_width, uint32_t image_height, Image::Format format, Image::Type type, void* data );
+
+        /*!
+        \brief Loads an image from a file.
+        The function tries to guess the file format based on the file or memory magic number,
+        a bare build of the library (no external dependencies), will only look for and process PCX images.
+        \param filename Path to the file to load.
+        \return true on success, false otherwise.
+        */
+        bool LoadFromFile ( const char* filename );
+
+        /*!
+        \brief Loads an image from a file in memory.
+        \copydoc Image::LoadFromFile
+        \param buffer_size Size in bytes of the provided buffer.
+        \param buffer Pointer to the buffer containing image data.
+        \return true on success, false otherwise.
+        */
+        bool LoadFromMemory ( uint32_t buffer_size, void* buffer );
 
         /*! \brief Unloads and releases image data from memory.*/
         void Unload (  );

@@ -14,6 +14,7 @@ Copyright 2010-2012 Rodrigo Hernandez Cordoba
    limitations under the License.
 ******************************************************************************/
 #include "Image.h"
+#include <fstream>
 #include "pcx.h"
 
 #ifdef USE_PNG
@@ -102,5 +103,44 @@ namespace AeonGUI
     const Color* Image::GetBitmap() const
     {
         return bitmap;
+    }
+
+    bool Image::LoadFromFile ( const char* filename )
+    {
+        uint8_t* buffer = NULL;
+        uint32_t buffer_size = 0;
+        bool retval;
+        std::ifstream file;
+        file.open ( filename, std::ios_base::in | std::ios_base::binary );
+        if ( !file.is_open() )
+        {
+            printf("Problem opening %s for reading.\n",filename);
+            return false;
+        }
+
+        file.seekg ( 0, std::ios_base::end );
+        buffer_size = static_cast<uint32_t>(file.tellg());
+        file.seekg ( 0, std::ios_base::beg );
+        buffer = new uint8_t[buffer_size];
+        file.read ( reinterpret_cast<char*> ( buffer ), buffer_size );
+        file.close();
+
+        retval = LoadFromMemory ( buffer_size, buffer );
+        delete[] buffer;
+        return retval;
+    }
+
+    bool Image::LoadFromMemory ( uint32_t buffer_size, void* buffer )
+    {
+        if(reinterpret_cast<uint8_t*>(buffer)[0]==0x0A)
+        {
+            // Posible PCX file
+            Pcx pcx;
+            if(!pcx.Decode(buffer_size,buffer))
+            {
+                return false;
+            }
+        }
+        return false;
     }
 }

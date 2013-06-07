@@ -17,7 +17,19 @@ Copyright 2010-2012 Rodrigo Hernandez Cordoba
 #include <iostream>
 #include <fstream>
 
-bool Pcx::Encode ( unsigned int width, unsigned int height, void* buffer, unsigned int buffer_size )
+Pcx::Pcx() :
+    pixels ( NULL ),
+    pixels_size ( 0 )
+{
+    memset ( &header, 0, sizeof ( Header ) );
+}
+
+Pcx::~Pcx()
+{
+    Unload();
+}
+
+bool Pcx::Encode ( uint32_t width, uint32_t height, void* buffer, uint32_t buffer_size )
 {
     header.Identifier = 0x0A;
     header.Version = 5;
@@ -33,28 +45,28 @@ bool Pcx::Encode ( unsigned int width, unsigned int height, void* buffer, unsign
     header.BytesPerLine = width;
     header.PaletteType = 1;
     pixels_size = FillPixels ( width, height, buffer, buffer_size );
-    pixels = new unsigned char[pixels_size];
+    pixels = new uint8_t[pixels_size];
     FillPixels ( width, height, buffer, buffer_size );
     return true;
 }
 
-unsigned int Pcx::FillPixels ( unsigned int width, unsigned int height, void* buffer, unsigned int buffer_size )
+uint32_t Pcx::FillPixels ( uint32_t width, uint32_t height, void* buffer, uint32_t buffer_size )
 {
     // This function is untested
-    unsigned int datasize = 0;
-    unsigned char counter = 0;
-    unsigned char* scanline = ( unsigned char* ) buffer;
-    unsigned char* encoded_pixel = ( unsigned char* ) pixels;
-    unsigned char* encoded_scanline = new unsigned char[width * 2]; // worst case scenario all bytes are different
-    unsigned int scanline_count = 0;
-    unsigned char byte;
+    uint32_t datasize = 0;
+    uint8_t counter = 0;
+    uint8_t* scanline = ( uint8_t* ) buffer;
+    uint8_t* encoded_pixel = ( uint8_t* ) pixels;
+    uint8_t* encoded_scanline = new uint8_t[width * 2]; // worst case scenario all bytes are different
+    uint32_t scanline_count = 0;
+    uint8_t byte;
 
-    for ( unsigned int y = 0; y < height; ++y )
+    for ( uint32_t y = 0; y < height; ++y )
     {
         byte = scanline[0];
         counter = 1;
         scanline_count = 0;
-        for ( unsigned int x = 1; x < width; ++x )
+        for ( uint32_t x = 1; x < width; ++x )
         {
             if ( ( byte == scanline[x] ) && ( counter < 63 ) )
             {
@@ -106,15 +118,35 @@ bool Pcx::Save ( const char* filename )
     return true;
 }
 
-bool Pcx::Decode ( void* buffer, unsigned int buffer_size )
+uint32_t Pcx::GetWidth()
 {
+    return header.XEnd - header.XStart + 1;
+}
+uint32_t Pcx::GetHeight()
+{
+    return header.YEnd - header.YStart + 1;
+}
+
+bool Pcx::Decode ( uint32_t buffer_size, void* buffer )
+{
+    memcpy ( &header, buffer, sizeof ( Header ) );
+    if ( ( header.Version != 5 ) && ( header.Encoding != 1 ) && ( header.BitsPerPixel != 8 ) )
+    {
+        // Support only file format version 5 for now.
+        Unload();
+        return false;
+    }
+    uint32_t scanline_length = header.NumBitPlanes * header.BytesPerLine;
+    uint32_t line_padding_size = ( ( header.BytesPerLine * header.NumBitPlanes ) * ( 8 / header.BitsPerPixel ) ) - ( ( header.XEnd - header.XStart ) + 1 );
+    uint8_t* byte = reinterpret_cast<uint8_t*> ( buffer ) + sizeof ( Header );
+
     return false;
 }
 
 bool Pcx::Load ( const char* filename )
 {
-    unsigned char* buffer = NULL;
-    unsigned int buffer_size = 0;
+    uint8_t* buffer = NULL;
+    uint32_t buffer_size = 0;
     bool retval;
     std::ifstream pcx;
     pcx.open ( filename, std::ios_base::in | std::ios_base::binary );
@@ -125,13 +157,23 @@ bool Pcx::Load ( const char* filename )
     }
 
     pcx.seekg ( 0, std::ios_base::end );
-    buffer_size = pcx.tellg();
+    buffer_size = static_cast<uint32_t> ( pcx.tellg() );
     pcx.seekg ( 0, std::ios_base::beg );
-    buffer = new unsigned char[buffer_size];
+    buffer = new uint8_t[buffer_size];
     pcx.read ( reinterpret_cast<char*> ( buffer ), buffer_size );
     pcx.close();
 
-    retval = Decode ( buffer, buffer_size );
+    retval = Decode ( buffer_size, buffer );
     delete[] buffer;
     return retval;
+}
+
+void Pcx::Unload ( )
+{
+    if ( pixels != NULL )
+    {
+        delete[] ( unsigned char* ) pixels;
+        pixels_size = 0;
+        memset ( &header, 0, sizeof ( Header ) );
+    }
 }
