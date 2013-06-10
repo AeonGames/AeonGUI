@@ -11,15 +11,7 @@ OPTION(USE_PNG "Enable PNG image support (Requires zlib)")
 
 OPTION(RELEASE_BUILD "Build for Release")
 
-OPTION(USE_HASH_CRC  "Use CRC32 for Resource hashing")
-OPTION(USE_HASH_SHA1 "Use SHA1 for Resource hashing")
-OPTION(USE_HASH_MD5 "Use MD5 for Resource hashing")
-
 set(HTTP_PROXY "" CACHE STRING "Specify a proxy server if required for downloads")
-
-IF((USE_HASH_CRC AND USE_HASH_MD5) OR (USE_HASH_CRC AND USE_HASH_SHA1) OR (USE_HASH_MD5 AND USE_HASH_SHA1))
-MESSAGE(FATAL_ERROR "Must chose only one hashing algorithm")
-ENDIF((USE_HASH_CRC AND USE_HASH_MD5) OR (USE_HASH_CRC AND USE_HASH_SHA1) OR (USE_HASH_MD5 AND USE_HASH_SHA1))
 
 if(USE_FREETYPE)
 ADD_DEFINITIONS(-DUSE_FREETYPE)

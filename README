@@ -50,9 +50,6 @@ it is a Trade Mark and may not be used for any purpose without permision.
 
 Some of the code and assets are not covered by the Apache license:
 
-core/md5  is Copyright (c) 2001 Alexander Peslyak, released under a BSD-like license
-core/crc  is Copyright (c) 2000 Michael Barr, placed under public domain.
-core/sha1 is Copyright (c) 2009 Micael Hildenborg, released under the BSD license.
 fonts     is Copyright (c) 2003 by Bitstream, Inc., refer to COPYRIGHT.TXT for license terms.
 
 AUTHOR
