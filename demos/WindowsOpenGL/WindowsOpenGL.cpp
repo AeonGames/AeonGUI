@@ -161,7 +161,11 @@ void Window::Initialize ( HINSTANCE hInstance )
     aeongames_logo = new AeonGUI::Image;
     aeongames_logo->Load ( logo_width, logo_height, AeonGUI::Image::RGBA, AeonGUI::Image::BYTE, logo_data );
     aeongui_logo = new AeonGUI::Image;
+#ifdef USE_PNG
+    aeongui_logo->LoadFromFile ( "AeonGUILogoBlBkg.png" );
+#else
     aeongui_logo->LoadFromFile ( "AeonGUILogoBlBkg.pcx" );
+#endif
     font = new AeonGUI::Font ( Vera.data, Vera.size );
     renderer.Initialize ( );
     renderer.ChangeScreenSize ( width, height );
