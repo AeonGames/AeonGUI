@@ -163,7 +163,7 @@ namespace AeonGUI
     {
         Rect world_rect;
         GetScreenRect ( &world_rect );
-        renderer->DrawImage ( color, world_rect.GetLeft(), world_rect.GetTop(), image );
+        renderer->DrawImage ( image, world_rect.GetLeft(), world_rect.GetTop() );
     }
 
     void Widget::DrawString ( Renderer* renderer, Color color, int32_t x, int32_t y, const wchar_t* text )

@@ -112,7 +112,7 @@ namespace AeonGUI
         }
     }
 
-    void Renderer::DrawImage ( Color color, int32_t x, int32_t y, Image* image )
+    void Renderer::DrawImage ( Image* image, int32_t x, int32_t y,int32_t w, int32_t h )
     {
         assert ( image != NULL );
         const Color* image_bitmap = image->GetBitmap();

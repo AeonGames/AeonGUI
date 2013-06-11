@@ -97,10 +97,13 @@ namespace AeonGUI
         void DrawRectOutline ( Color color, const Rect* rect );
 
         /*! \brief Draws an image in screen space.
-            \param color [in] Pointer to the color to use for drawing.
-            \param rect [in] Pointer to the rect.
+            \param image [in] Pointer to the image object to draw.
+            \param x [in] X screen coordinate to draw the image.
+            \param y [in] Y screen coordinate to draw the image.
+            \param w [in] w optional width of the image to draw, used for scaling, if 0, the image is drawn horizontaly unscaled (This is NOT currently implemented).
+            \param h [in] h optional height of the image to draw, used for scaling, if 0, the image is drawn verticaly unscaled (This is NOT currently implemented).
         */
-        void DrawImage ( Color color, int32_t x, int32_t y, Image* image );
+        void DrawImage ( Image* image, int32_t x, int32_t y, int32_t w = 0, int32_t h = 0 );
         /*! \brief Render some text.
             \param font [in] To the font to use.
             \sa NewFont,DeleteFont.

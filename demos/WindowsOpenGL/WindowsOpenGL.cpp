@@ -224,8 +224,8 @@ void Window::RenderLoop()
     const AeonGUI::Color color ( 0xFFFFFFFF );
     renderer.BeginRender();
     renderer.RenderWidgets();
-    renderer.DrawImage ( color, width - logo_width, height - logo_height, aeongames_logo );
-    renderer.DrawImage ( color, 0, height - aeongui_logo->GetHeight(), aeongui_logo );
+    renderer.DrawImage ( aeongames_logo, width - logo_width, height - logo_height );
+    renderer.DrawImage ( aeongui_logo, 0, height - aeongui_logo->GetHeight() );
     renderer.EndRender();
     SwapBuffers ( hDC );
     last_time = this_time;
