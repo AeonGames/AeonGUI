@@ -28,32 +28,50 @@
     <div id="content-wrapper">
       <div class="inner clearfix">
         <section id="main-content">
-          <h3>Welcome to GitHub Pages.</h3>
+          <h3>
+<a name="the-software-library" class="anchor" href="#the-software-library"><span class="octicon octicon-link"></span></a>The Software Library</h3>
 
-<p>This automatic page generator is the easiest way to create beautiful pages for all of your projects. Author your page content here using GitHub Flavored Markdown, select a template crafted by a designer, and publish. After your page is generated, you can check out the new branch:</p>
+<p>The AeonGUI library is intended as a portable graphic user interface library
+to be used primarily on video games and interactive media.
+Its goals are to keep the rendering engine separated from widget logic to make things easier for
+would be users (developers intending to use the library on their own product), 
+renderer writers (developers looking to implement support for a particular graphic API) and
+widget writers (developers looking to add new controls to the library).</p>
 
-<pre><code>$ cd your_repo_root/repo_name
-$ git fetch origin
-$ git checkout gh-pages
-</code></pre>
+<h3>
+<a name="status" class="anchor" href="#status"><span class="octicon octicon-link"></span></a>Status</h3>
 
-<p>If you're using the GitHub for Mac, simply sync your repository and you'll see the new branch.</p>
+<p>The library is currently under development and its API is changing a lot, it is not functionally complete yet, but there is already plenty of work done.</p>
 
-<h3>Designer Templates</h3>
+<h3>
+<a name="history" class="anchor" href="#history"><span class="octicon octicon-link"></span></a>History</h3>
 
-<p>We've crafted some handsome templates for you to use. Go ahead and continue to layouts to browse through them. You can easily go back to edit your page before publishing. After publishing your page, you can revisit the page generator and switch to another theme. Your Page content will be preserved if it remained markdown format.</p>
+<p>The idea for the library was born around 2004 or 2005 under the name 'Glitch', and has evolved overtime but never quite reached maturity.
+The name change to AeonGUI came about as a way to identify the library as part of the AeonGames brand
+and to avoid confusion since originally the name 'GLitch' was chosen to emphasize OpenGL support, which is still the priority, but not necessarily the only graphic API supported.</p>
 
-<h3>Rather Drive Stick?</h3>
+<h3>
+<a name="compilation" class="anchor" href="#compilation"><span class="octicon octicon-link"></span></a>Compilation</h3>
 
-<p>If you prefer to not use the automatic generator, push a branch named <code>gh-pages</code> to your repository to create a page manually. In addition to supporting regular HTML content, GitHub Pages support Jekyll, a simple, blog aware static site generator written by our own Tom Preston-Werner. Jekyll makes it easy to create site-wide headers and footers without having to copy them across every page. It also offers intelligent blog support and other advanced templating features.</p>
+<p>The library uses CMake to build the required files used to build the binary depending on the platform.
+For information on how to use CMake refer to <a href="www.cmake.org">www.cmake.org</a>.
+There is only "official" support for Windows and Linux at this time, 
+however, Linux builds may break and lag from time to time as most development is done on Windows.</p>
 
-<h3>Authors and Contributors</h3>
+<p>Optional USE variables are available to add support for various features such as freetype font rendering and PNG file format loading, these add external dependencies to the library, so they are all initially set to OFF, if turned ON, the user has the option to provide the dependencies or let CMake download and configure the dependencies which will show up as projects inside the build environment.
+The rules to download and configure external dependencies are most useful to Windows users as Linux distributions usually provide development libraries for most software packages.</p>
 
-<p>You can <a href="https://github.com/blog/821" class="user-mention">@mention</a> a GitHub username to generate a link to their profile. The resulting <code>&lt;a&gt;</code> element will link to the contributor's GitHub Profile. For example: In 2007, Chris Wanstrath (<a href="https://github.com/defunkt" class="user-mention">@defunkt</a>), PJ Hyett (<a href="https://github.com/pjhyett" class="user-mention">@pjhyett</a>), and Tom Preston-Werner (<a href="https://github.com/mojombo" class="user-mention">@mojombo</a>) founded GitHub.</p>
+<h3>
+<a name="license" class="anchor" href="#license"><span class="octicon octicon-link"></span></a>License</h3>
 
-<h3>Support or Contact</h3>
+<p>The library is released under the terms of the permissive <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache 2.0 license</a>, however the Aeon Games logo is NOT covered by the Apache license,
+it is a Trade Mark and may not be used for any purpose outside the demo code without permission.</p>
 
-<p>Having trouble with Pages? Check out the documentation at <a href="http://help.github.com/pages">http://help.github.com/pages</a> or contact <a href="mailto:support@github.com">support@github.com</a> and we’ll help you sort it out.</p>
+<h3>
+<a name="author" class="anchor" href="#author"><span class="octicon octicon-link"></span></a>AUTHOR</h3>
+
+<p>The only author (for now) of AeonGUI is Rodrigo Hernandez and can be reached at kwizatz at aeongames dot com. 
+Please feel free and encouraged to clone and tinker with the code.</p>
         </section>
 
         <aside id="sidebar">
