@@ -168,7 +168,7 @@ static uint32_t GetScancode ( KeySym keysym )
         KEY_DEL      = 0x53
 #endif
     }
-    return keysym;
+                   return keysym;
 }
 #endif
 
@@ -365,7 +365,8 @@ bool GLWindow::Create ( Display* dpy )
     width = 800;
     height = 600;
     mainwindow = new AeonGUI::MainWindow ();
-    image = new AeonGUI::Image ( logo_name, logo_width, logo_height, AeonGUI::Image::RGBA, AeonGUI::Image::BYTE, logo_data );
+    image = new AeonGUI::Image;
+    image->Load ( logo_width, logo_height, AeonGUI::Image::RGBA, AeonGUI::Image::BYTE, logo_data );
     font = new AeonGUI::Font ( Vera.data, Vera.size );
     renderer.Initialize ( );
     renderer.ChangeScreenSize ( 800, 600 );
@@ -424,7 +425,7 @@ bool GLWindow::Create ( Display* dpy )
         const AeonGUI::Color color ( 0xFFFFFFFF );
         renderer.BeginRender();
         renderer.RenderWidgets();
-        renderer.DrawImage ( color, width - logo_width, height - logo_height, image );
+        renderer.DrawImage ( color, static_cast<uint32_t> ( width - logo_width ), static_cast<uint32_t> ( height - logo_height ), image );
         renderer.EndRender();
         glXSwapBuffers ( display, window );
     }

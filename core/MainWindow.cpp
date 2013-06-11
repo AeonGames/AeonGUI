@@ -133,6 +133,16 @@ namespace AeonGUI
         }
     }
 
+    void MainWindow::OnMouseButtonDown ( Widget* widget, uint8_t button, uint32_t X, uint32_t Y )
+    {
+
+    }
+
+    void MainWindow::OnMouseButtonUp ( Widget* widget, uint8_t button, uint32_t X, uint32_t Y )
+    {
+
+    }
+
     void MainWindow::OnMouseButtonDown ( uint8_t button, uint32_t X, uint32_t Y )
     {
         int x = X;

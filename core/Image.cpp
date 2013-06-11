@@ -235,7 +235,6 @@ namespace AeonGUI
                 {
                     row_pointers[y] = image_buffer + ( rowbytes * y );
                 }
-                // --------------------------------------
                 png_read_image ( png_ptr, row_pointers );
 
                 bool retval = Load(image_width,image_height,(color_type==PNG_COLOR_TYPE_RGB)? RGB : RGBA,BYTE,image_buffer);

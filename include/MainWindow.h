@@ -38,8 +38,8 @@ namespace AeonGUI
         }
         virtual void OnRender ( Renderer* renderer );
     protected:
-        virtual void OnMouseButtonDown ( Widget* widget, uint8_t button, uint32_t X, uint32_t Y ) {};
-        virtual void OnMouseButtonUp ( Widget* widget, uint8_t button, uint32_t X, uint32_t Y ) {};
+        virtual void OnMouseButtonDown ( Widget* widget, uint8_t button, uint32_t X, uint32_t Y );
+        virtual void OnMouseButtonUp ( Widget* widget, uint8_t button, uint32_t X, uint32_t Y );
         virtual void OnMouseClick ( Widget* widget, uint8_t button, uint32_t x, uint32_t y );
         virtual void OnMouseMove ( Widget* widget, uint32_t X, uint32_t Y ) {};
 

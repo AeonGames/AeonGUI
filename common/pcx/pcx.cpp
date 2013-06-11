@@ -150,7 +150,6 @@ bool Pcx::Decode ( uint32_t buffer_size, void* buffer )
     uint32_t scanline_length = header.NumBitPlanes * header.BytesPerLine;
     uint8_t* byte = reinterpret_cast<uint8_t*> ( buffer ) + sizeof ( Header );
     pixels = new uint8_t[ scanline_length * GetHeight() ];
-    uint8_t* pixel = pixels;
 
     for ( uint32_t i = 0; i < GetHeight(); ++i )
     {
