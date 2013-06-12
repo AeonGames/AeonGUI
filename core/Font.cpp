@@ -97,18 +97,18 @@ namespace AeonGUI
 #endif
     }
     Font::Font ( const char* filename ) :
-    		isgood(false),
-    		glyphcount(0),
-    		map_width(0),
-    		map_height(0),
-    		nominal_width(0),
-    		nominal_height(0),
-    		ascender(0),
-    		descender(0),
-    		height(0),
-    		max_advance(0),
-    		glyphdata(NULL),
-    		glyphmap(NULL)
+        isgood ( false ),
+        glyphcount ( 0 ),
+        map_width ( 0 ),
+        map_height ( 0 ),
+        nominal_width ( 0 ),
+        nominal_height ( 0 ),
+        ascender ( 0 ),
+        descender ( 0 ),
+        height ( 0 ),
+        max_advance ( 0 ),
+        glyphdata ( NULL ),
+        glyphmap ( NULL )
     {
         unsigned char* buffer;
         size_t length;

@@ -58,9 +58,9 @@ namespace AeonGUI
     }
 #endif
     Image::Image () :
-            width(0),
-            height(0),
-            bitmap(NULL)
+        width ( 0 ),
+        height ( 0 ),
+        bitmap ( NULL )
     {
     }
 
@@ -110,7 +110,7 @@ namespace AeonGUI
 
     void Image::Unload()
     {
-        if(bitmap!=NULL)
+        if ( bitmap != NULL )
         {
             delete [] bitmap;
             width = 0;
@@ -147,12 +147,12 @@ namespace AeonGUI
         file.open ( filename, std::ios_base::in | std::ios_base::binary );
         if ( !file.is_open() )
         {
-            printf("Problem opening %s for reading.\n",filename);
+            printf ( "Problem opening %s for reading.\n", filename );
             return false;
         }
 
         file.seekg ( 0, std::ios_base::end );
-        buffer_size = static_cast<uint32_t>(file.tellg());
+        buffer_size = static_cast<uint32_t> ( file.tellg() );
         file.seekg ( 0, std::ios_base::beg );
         buffer = new uint8_t[buffer_size];
         file.read ( reinterpret_cast<char*> ( buffer ), buffer_size );
@@ -165,26 +165,26 @@ namespace AeonGUI
 
     bool Image::LoadFromMemory ( uint32_t buffer_size, void* buffer )
     {
-        if(reinterpret_cast<uint8_t*>(buffer)[0]==0x0A)
+        if ( reinterpret_cast<uint8_t*> ( buffer ) [0] == 0x0A )
         {
             // Posible PCX file
             Pcx pcx;
-            if(!pcx.Decode(buffer_size,buffer))
+            if ( !pcx.Decode ( buffer_size, buffer ) )
             {
                 return false;
             }
-			if(pcx.GetNumBitPlanes()==3)
-			{
-				return Load(pcx.GetWidth(),pcx.GetHeight(),RGB,BYTE,pcx.GetPixels());
-			}
-			else if(pcx.GetNumBitPlanes()==4)
-			{
-				return Load(pcx.GetWidth(),pcx.GetHeight(),RGBA,BYTE,pcx.GetPixels());
-			}
-			// Let the Pcx destructor release its pixel buffer.
+            if ( pcx.GetNumBitPlanes() == 3 )
+            {
+                return Load ( pcx.GetWidth(), pcx.GetHeight(), RGB, BYTE, pcx.GetPixels() );
+            }
+            else if ( pcx.GetNumBitPlanes() == 4 )
+            {
+                return Load ( pcx.GetWidth(), pcx.GetHeight(), RGBA, BYTE, pcx.GetPixels() );
+            }
+            // Let the Pcx destructor release its pixel buffer.
         }
 #if USE_PNG
-        else if ( png_sig_cmp ( reinterpret_cast<png_const_bytep>(buffer), 0, 8 ) == 0 )
+        else if ( png_sig_cmp ( reinterpret_cast<png_const_bytep> ( buffer ), 0, 8 ) == 0 )
         {
             png_structp png_ptr = png_create_read_struct ( PNG_LIBPNG_VER_STRING, NULL, NULL, NULL );
             if ( png_ptr == NULL )
@@ -203,7 +203,7 @@ namespace AeonGUI
                 printf ( "Error during init_io\n" );
                 return false;
             }
-            png_read_memory_struct read_memory_struct = {reinterpret_cast<uint8_t*>(buffer), reinterpret_cast<uint8_t*>(buffer) + 8, buffer_size};
+            png_read_memory_struct read_memory_struct = {reinterpret_cast<uint8_t*> ( buffer ), reinterpret_cast<uint8_t*> ( buffer ) + 8, buffer_size};
             png_set_read_fn ( png_ptr, &read_memory_struct, png_read_memory_data );
             //png_init_io ( png_ptr, fp );
             png_set_sig_bytes ( png_ptr, 8 );
@@ -237,10 +237,10 @@ namespace AeonGUI
                 }
                 png_read_image ( png_ptr, row_pointers );
 
-                bool retval = Load(image_width,image_height,(color_type==PNG_COLOR_TYPE_RGB)? RGB : RGBA,BYTE,image_buffer);
+                bool retval = Load ( image_width, image_height, ( color_type == PNG_COLOR_TYPE_RGB ) ? RGB : RGBA, BYTE, image_buffer );
 
-                free ( image_buffer);
-                free ( row_pointers);
+                free ( image_buffer );
+                free ( row_pointers );
                 png_destroy_read_struct ( &png_ptr, &info_ptr, ( png_infopp ) 0 );
                 return retval;
             }

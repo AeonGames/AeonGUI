@@ -25,9 +25,9 @@ namespace AeonGUI
                 do a simple replacement*/
             bgra = src.bgra;
         }
-		/*	If the source alpha is 0 
-			the destination color is unchanged */
-        else if(src.a > 0)
+        /*  If the source alpha is 0
+            the destination color is unchanged */
+        else if ( src.a > 0 )
         {
             float sfactor = ( static_cast<float> ( src.a ) / 255.0f );
             float dfactor = 1.0f - sfactor;

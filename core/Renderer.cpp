@@ -13,56 +13,87 @@ Copyright 2010-2013 Rodrigo Hernandez Cordoba
    See the License for the specific language governing permissions and
    limitations under the License.
 ******************************************************************************/
+#define _USE_MATH_DEFINES
 #include <algorithm>
+#include <cmath>
 #include "Renderer.h"
 #include "Widget.h"
 
 namespace AeonGUI
 {
-    Renderer::Renderer() : font(NULL), screen_w(0),screen_h(0),screen_bitmap(NULL),widgets(NULL)
-    {}
+    static float LanczosKernel ( float  x, int32_t a )
+    {
+        if ( x == 0.0f )
+        {
+            return 1.0f;
+        }
+        else if ( x < a )
+        {
+            return ( a * sinf ( static_cast<float> ( M_PI ) * x ) * sinf ( static_cast<float> ( M_PI ) * x / a ) ) / static_cast<float> ( M_PI * M_PI ) * x * x;
+        }
+        return ( 0.0f );
+    }
+
+    static float LanczosInterpolation ( float x, int32_t a, uint8_t* samples, int32_t sample_count, uint32_t stride )
+    {
+        int32_t fx = static_cast<int32_t> ( floorf ( x ) );
+        float result = 0;
+        int32_t start = fx - a + 1;
+        int32_t end = fx + a;
+        start = ( start < 0 ) ? start : 0;
+        end = ( end < sample_count ) ? end : sample_count;
+        for ( int32_t i = start; i < end; ++i )
+        {
+            result += samples[i * stride] * LanczosKernel ( x - i, a );
+        }
+    }
+
+    Renderer::Renderer() : font ( NULL ), screen_w ( 0 ), screen_h ( 0 ), screen_bitmap ( NULL ), widgets ( NULL )
+    {
+    }
 
     Renderer::~Renderer()
-    {}
+    {
+    }
 
-	bool Renderer::Initialize ( )
-	{
-		return true;
-	}
+    bool Renderer::Initialize ( )
+    {
+        return true;
+    }
 
-	void Renderer::Finalize()
-	{
-		font = NULL;
-		screen_w = 0;
-		screen_h = 0;
+    void Renderer::Finalize()
+    {
+        font = NULL;
+        screen_w = 0;
+        screen_h = 0;
         if ( screen_bitmap != NULL )
         {
             delete[] screen_bitmap;
-			screen_bitmap = NULL;
+            screen_bitmap = NULL;
         }
-	}
+    }
 
     bool Renderer::ChangeScreenSize ( int32_t screen_width, int32_t screen_height )
-	{
-		screen_w = screen_width;
-		screen_h = screen_height;
+    {
+        screen_w = screen_width;
+        screen_h = screen_height;
         if ( screen_bitmap != NULL )
         {
             delete[] screen_bitmap;
         }
-		screen_bitmap = new uint8_t[screen_w * screen_h * 4];
-		return true;
-	}
+        screen_bitmap = new uint8_t[screen_w * screen_h * 4];
+        return true;
+    }
 
     void Renderer::SetFont ( Font* newfont )
     {
         font = newfont;
     }
 
-	const Font* Renderer::GetFont()
-	{
-		return font;
-	}
+    const Font* Renderer::GetFont()
+    {
+        return font;
+    }
 
     void Renderer::DrawRect ( Color color, const Rect* rect )
     {
@@ -112,7 +143,7 @@ namespace AeonGUI
         }
     }
 
-    void Renderer::DrawImage ( Image* image, int32_t x, int32_t y,int32_t w, int32_t h )
+    void Renderer::DrawImage ( Image* image, int32_t x, int32_t y, int32_t w, int32_t h )
     {
         assert ( image != NULL );
         const Color* image_bitmap = image->GetBitmap();
@@ -194,11 +225,11 @@ namespace AeonGUI
         }
     }
 
-    void Renderer::AddWidget(Widget* widget)
+    void Renderer::AddWidget ( Widget* widget )
     {
-        if(widget!=NULL)
+        if ( widget != NULL )
         {
-            if(widgets==NULL)
+            if ( widgets == NULL )
             {
                 widgets = widget;
             }
@@ -221,11 +252,11 @@ namespace AeonGUI
         }
     }
 
-    void Renderer::RemoveWidget(Widget* widget)
+    void Renderer::RemoveWidget ( Widget* widget )
     {
-        if(widgets->next==NULL)
+        if ( widgets->next == NULL )
         {
-            widgets=NULL;
+            widgets = NULL;
         }
         else
         {
@@ -251,7 +282,7 @@ namespace AeonGUI
         Widget* sibling = widgets;
         while ( sibling != NULL )
         {
-            sibling->Render(this);
+            sibling->Render ( this );
             sibling = sibling->next;
         }
     }

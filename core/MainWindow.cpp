@@ -28,8 +28,8 @@ Copyright 2010-2012 Rodrigo Hernandez Cordoba
 namespace AeonGUI
 {
     MainWindow::MainWindow () :
-        xoffset(0),
-        yoffset(0),
+        xoffset ( 0 ),
+        yoffset ( 0 ),
         verticalscroll ( ScrollBar::VERTICAL ),
         horizontalscroll ( ScrollBar::HORIZONTAL )
     {
@@ -58,32 +58,32 @@ namespace AeonGUI
         close.SetParent ( this );
 
         image = new Image;
-        image->Load( close_width, close_height, AeonGUI::Image::RGBA, AeonGUI::Image::BYTE, close_data );
+        image->Load ( close_width, close_height, AeonGUI::Image::RGBA, AeonGUI::Image::BYTE, close_data );
         close.SetNormalImage ( image );
 
         image = new Image;
-        image->Load( close_down_width, close_down_height, AeonGUI::Image::RGBA, AeonGUI::Image::BYTE, close_down_data );
+        image->Load ( close_down_width, close_down_height, AeonGUI::Image::RGBA, AeonGUI::Image::BYTE, close_down_data );
         close.SetPressedImage ( image );
         close.SetDimensions ( close_width, close_height );
         close.SetMouseListener ( this );
 
         maximize.SetParent ( this );
         image = new Image;
-        image->Load( maximize_width, maximize_height, AeonGUI::Image::RGBA, AeonGUI::Image::BYTE, maximize_data );
+        image->Load ( maximize_width, maximize_height, AeonGUI::Image::RGBA, AeonGUI::Image::BYTE, maximize_data );
         maximize.SetNormalImage ( image );
 
         image = new Image;
-        image->Load( maximize_down_width, maximize_down_height, AeonGUI::Image::RGBA, AeonGUI::Image::BYTE, maximize_down_data );
+        image->Load ( maximize_down_width, maximize_down_height, AeonGUI::Image::RGBA, AeonGUI::Image::BYTE, maximize_down_data );
         maximize.SetPressedImage ( image );
         maximize.SetDimensions ( maximize_width, maximize_height );
         maximize.SetMouseListener ( this );
 
         minimize.SetParent ( this );
         image = new Image;
-        image->Load( minimize_width, minimize_height, AeonGUI::Image::RGBA, AeonGUI::Image::BYTE, minimize_data );
+        image->Load ( minimize_width, minimize_height, AeonGUI::Image::RGBA, AeonGUI::Image::BYTE, minimize_data );
         minimize.SetNormalImage ( image );
         image = new Image;
-        image->Load( minimize_down_width, minimize_down_height, AeonGUI::Image::RGBA, AeonGUI::Image::BYTE, minimize_down_data );
+        image->Load ( minimize_down_width, minimize_down_height, AeonGUI::Image::RGBA, AeonGUI::Image::BYTE, minimize_down_data );
         minimize.SetPressedImage ( image );
         minimize.SetDimensions ( minimize_width, minimize_height );
         minimize.SetMouseListener ( this );

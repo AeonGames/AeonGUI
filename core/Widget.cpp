@@ -101,7 +101,7 @@ namespace AeonGUI
         parent = newparent;
         if ( parent != NULL )
         {
-            if(parent->children==NULL)
+            if ( parent->children == NULL )
             {
                 parent->children = this;
             }
@@ -175,14 +175,14 @@ namespace AeonGUI
     void Widget::MouseButtonDown ( uint8_t button, uint32_t x, uint32_t y )
     {
         Widget* child = children;
-        while(child!=NULL)
+        while ( child != NULL )
         {
             if ( child->IsPointInside ( x, y ) )
             {
                 child->MouseButtonDown ( button, x, y );
                 return;
             }
-            child=child->next;
+            child = child->next;
         }
         Widget* handler = ( mouseCaptured ) ? focusedWidget : this;
         assert ( handler != NULL );
@@ -198,14 +198,14 @@ namespace AeonGUI
     void Widget::MouseButtonUp ( uint8_t button, uint32_t x, uint32_t y )
     {
         Widget* child = children;
-        while(child!=NULL)
+        while ( child != NULL )
         {
             if ( child->IsPointInside ( x, y ) )
             {
                 child->MouseButtonUp ( button, x, y );
                 return;
             }
-            child=child->next;
+            child = child->next;
         }
         Widget* handler = ( mouseCaptured ) ? focusedWidget : this;
         assert ( handler != NULL );
@@ -227,32 +227,32 @@ namespace AeonGUI
     void Widget::MouseMove ( uint32_t x, uint32_t y )
     {
         /// \todo This currently just broadcasts the mouse movement, need to make it more specific.
-        OnMouseMove ( x, y);
+        OnMouseMove ( x, y );
         if ( mouseListener != NULL )
         {
-            mouseListener->OnMouseMove ( this, x, y);
+            mouseListener->OnMouseMove ( this, x, y );
         }
         Widget* child = children;
-        while(child!=NULL)
+        while ( child != NULL )
         {
-            child->MouseMove ( x, y);
-            child=child->next;
+            child->MouseMove ( x, y );
+            child = child->next;
         }
     }
 
     bool Widget::KeyDown ( uint32_t charcode )
     {
         Widget* child = children;
-        while(child!=NULL)
+        while ( child != NULL )
         {
-            if(NULL == child->next)
+            if ( NULL == child->next )
             {
                 if ( child->KeyDown ( charcode ) )
                 {
                     return true;
                 }
             }
-            child=child->next;
+            child = child->next;
         }
         if ( keyListener != NULL )
         {
@@ -264,16 +264,16 @@ namespace AeonGUI
     bool Widget::KeyUp ( uint32_t charcode )
     {
         Widget* child = children;
-        while(child!=NULL)
+        while ( child != NULL )
         {
-            if(NULL==child->next)
+            if ( NULL == child->next )
             {
                 if ( child->KeyUp ( charcode ) )
                 {
                     return true;
                 }
             }
-            child=child->next;
+            child = child->next;
         }
         if ( keyListener != NULL )
         {
@@ -395,7 +395,7 @@ namespace AeonGUI
     {
         OnRender ( renderer );
         Widget* child = children;
-        while(child!=NULL)
+        while ( child != NULL )
         {
             child->Render ( renderer );
             child = child->next;
