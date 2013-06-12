@@ -168,7 +168,7 @@ static uint32_t GetScancode ( KeySym keysym )
         KEY_DEL      = 0x53
 #endif
     }
-    return keysym;
+                   return keysym;
 }
 #endif
 
@@ -425,7 +425,7 @@ bool GLWindow::Create ( Display* dpy )
         const AeonGUI::Color color ( 0xFFFFFFFF );
         renderer.BeginRender();
         renderer.RenderWidgets();
-        renderer.DrawImage ( color, static_cast<uint32_t> ( width - logo_width ), static_cast<uint32_t> ( height - logo_height ), image );
+        renderer.DrawImage ( image, static_cast<uint32_t> ( width - logo_width ), static_cast<uint32_t> ( height - logo_height ) );
         renderer.EndRender();
         glXSwapBuffers ( display, window );
     }
