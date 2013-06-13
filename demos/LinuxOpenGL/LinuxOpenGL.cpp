@@ -168,7 +168,7 @@ static uint32_t GetScancode ( KeySym keysym )
         KEY_DEL      = 0x53
 #endif
     }
-    return keysym;
+                   return keysym;
 }
 #endif
 
@@ -285,7 +285,12 @@ bool GLWindow::Create ( Display* dpy )
                                             vi->visual, AllocNone );
     swa.background_pixmap = None ;
     swa.border_pixel      = 0;
-    swa.event_mask        = StructureNotifyMask;
+    swa.event_mask        = KeyPressMask |
+                            KeyReleaseMask |
+                            ButtonPressMask |
+                            ButtonReleaseMask |
+                            PointerMotionMask |
+                            StructureNotifyMask;
 
     printf ( "Creating window\n" );
     window = XCreateWindow ( display, RootWindow ( display, vi->screen ),
@@ -309,7 +314,7 @@ bool GLWindow::Create ( Display* dpy )
                    ButtonPressMask |
                    ButtonReleaseMask |
                    PointerMotionMask |
-                   ResizeRedirectMask );
+                   StructureNotifyMask );
 
     Atom wm_delete_window = XInternAtom ( display, "WM_DELETE_WINDOW", 0 );
     XSetWMProtocols ( display, window, &wm_delete_window, 1 );
@@ -396,11 +401,11 @@ bool GLWindow::Create ( Display* dpy )
                 break;
             case MotionNotify:
                 break;
-            case ResizeRequest:
-                width = xEvent.xresizerequest.width;
-                height = xEvent.xresizerequest.height;
-                glViewport ( 0, 0, xEvent.xresizerequest.width, xEvent.xresizerequest.height );
-                renderer.ChangeScreenSize ( xEvent.xresizerequest.width, xEvent.xresizerequest.height );
+            case ConfigureNotify:
+                width = xEvent.xconfigure.width;
+                height = xEvent.xconfigure.height;
+                glViewport ( 0, 0, width, height );
+                renderer.ChangeScreenSize ( width, height );
                 break;
             case ClientMessage:
                 if ( static_cast<Atom> ( xEvent.xclient.data.l[0] ) == wm_delete_window )
