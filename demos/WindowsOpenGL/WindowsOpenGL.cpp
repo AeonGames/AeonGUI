@@ -225,7 +225,7 @@ void Window::RenderLoop()
     renderer.BeginRender();
     renderer.RenderWidgets();
     renderer.DrawImage ( aeongames_logo, width - logo_width, height - logo_height );
-    renderer.DrawImage ( aeongui_logo, 0, height - aeongui_logo->GetHeight() );
+    renderer.DrawImage ( aeongui_logo, 0, height - aeongui_logo->GetHeight(), aeongui_logo->GetWidth() * 2 );
     renderer.EndRender();
     SwapBuffers ( hDC );
     last_time = this_time;

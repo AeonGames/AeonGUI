@@ -17,6 +17,11 @@ Copyright 2010-2012 Rodrigo Hernandez Cordoba
 #include <algorithm>
 namespace AeonGUI
 {
+    Color::Color() : bgra ( 0 ) {}
+    Color::Color ( uint32_t value ) : bgra ( value ) {}
+    Color::Color ( uint8_t A, uint8_t R, uint8_t G, uint8_t B )
+        : b ( B ), g ( G ), r ( R ), a ( A ) {}
+
     void Color::Blend ( Color src )
     {
         if ( ( src.a == 255 ) )

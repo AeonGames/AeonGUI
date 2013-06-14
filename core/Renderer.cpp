@@ -21,31 +21,41 @@ Copyright 2010-2013 Rodrigo Hernandez Cordoba
 
 namespace AeonGUI
 {
-    static float LanczosKernel ( float  x, int32_t a )
+    static float LanczosKernel ( float  x )
     {
+        const float a = 3.0f;
         if ( x == 0.0f )
         {
             return 1.0f;
         }
-        else if ( x < a )
+        else if ( fabs ( x ) < a )
         {
-            return ( a * sinf ( static_cast<float> ( M_PI ) * x ) * sinf ( static_cast<float> ( M_PI ) * x / a ) ) / static_cast<float> ( M_PI * M_PI ) * x * x;
+            float pi_x = static_cast<float> ( M_PI ) * x;
+            float pi_x_over_a = pi_x / a;
+            return ( a * sinf ( pi_x ) * sinf ( pi_x_over_a ) ) / static_cast<float> ( M_PI * M_PI ) * x * x;
         }
         return ( 0.0f );
     }
 
-    static float LanczosInterpolation ( float x, int32_t a, uint8_t* samples, int32_t sample_count, uint32_t stride )
+    static Color Lanczos1DInterpolation ( float x, const Color* samples, int32_t sample_count, uint32_t sample_stride )
     {
+        const int32_t a = 3;
         int32_t fx = static_cast<int32_t> ( floorf ( x ) );
-        float result = 0;
-        int32_t start = fx - a + 1;
+        Color result = 0;
+        int32_t start = ( fx - a ) + 1;
         int32_t end = fx + a;
-        start = ( start < 0 ) ? start : 0;
+        start = ( start < 0 ) ? 0 : start;
         end = ( end < sample_count ) ? end : sample_count;
         for ( int32_t i = start; i < end; ++i )
         {
-            result += samples[i * stride] * LanczosKernel ( x - i, a );
+            ///\todo Consider adding color operators
+            float L = LanczosKernel ( x - i );
+            result.b += static_cast<uint8_t> ( samples[i * sample_stride].b * L );
+            result.g += static_cast<uint8_t> ( samples[i * sample_stride].g * L );
+            result.r += static_cast<uint8_t> ( samples[i * sample_stride].r * L );
+            result.a += static_cast<uint8_t> ( samples[i * sample_stride].a * L );
         }
+        return result;
     }
 
     Renderer::Renderer() : font ( NULL ), screen_w ( 0 ), screen_h ( 0 ), screen_bitmap ( NULL ), widgets ( NULL )
@@ -146,13 +156,23 @@ namespace AeonGUI
     void Renderer::DrawImage ( Image* image, int32_t x, int32_t y, int32_t w, int32_t h )
     {
         assert ( image != NULL );
+        uint32_t image_w = image->GetWidth();
+        uint32_t image_h = image->GetHeight();
+        if ( w == 0 )
+        {
+            w = image_w;
+        }
+        if ( h == 0 )
+        {
+            h = image_h;
+        }
         const Color* image_bitmap = image->GetBitmap();
         Color* pixels = reinterpret_cast<Color*> ( screen_bitmap );
 
         int32_t x1 = x;
-        int32_t x2 = x + image->GetWidth();
+        int32_t x2 = x + w;
         int32_t y1 = y;
-        int32_t y2 = y + image->GetHeight();
+        int32_t y2 = y + h;
 
         if ( ( x1 > screen_w ) || ( x2 < 0 ) ||
              ( y1 > screen_h ) || ( y2 < 0 ) )
@@ -160,22 +180,76 @@ namespace AeonGUI
             return;
         }
 
-        int32_t iy = 0;
-        for ( int32_t sy = y1; sy < y2; ++sy )
+        if ( ( w == image_w ) && ( h == image_h ) )
         {
-            if ( ( sy >= 0 ) && ( sy < screen_h ) )
+            // Same as original
+            int32_t iy = 0;
+            for ( int32_t sy = y1; sy < y2; ++sy )
             {
-                int32_t ix = 0;
-                for ( int32_t sx = x1; sx < x2; ++sx )
+                if ( ( sy >= 0 ) && ( sy < screen_h ) )
                 {
-                    if ( ( sx >= 0 ) && ( sx < screen_w ) )
+                    int32_t ix = 0;
+                    for ( int32_t sx = x1; sx < x2; ++sx )
                     {
-                        pixels[ ( ( sy * screen_w ) + sx )].Blend ( image_bitmap[ ( ( iy * image->GetWidth() ) + ix )] );
+                        if ( ( sx >= 0 ) && ( sx < screen_w ) )
+                        {
+                            pixels[ ( ( sy * screen_w ) + sx )].Blend ( image_bitmap[ ( ( iy * w ) + ix )] );
+                        }
+                        ++ix;
                     }
-                    ++ix;
                 }
+                ++iy;
             }
-            ++iy;
+        }
+        else if ( w == image_w )
+        {
+            // Verticaly Scaled
+            float ratio_h = static_cast<float> ( image_h ) / static_cast<float> ( h );
+            int32_t iy = 0;
+            for ( int32_t sy = y1; sy < y2; ++sy )
+            {
+                if ( ( sy >= 0 ) && ( sy < screen_h ) )
+                {
+                    int32_t ix = 0;
+                    for ( int32_t sx = x1; sx < x2; ++sx )
+                    {
+                        if ( ( sx >= 0 ) && ( sx < screen_w ) )
+                        {
+                            pixels[ ( ( sy * screen_w ) + sx )].Blend ( Lanczos1DInterpolation ( iy * ratio_h, image_bitmap + ( ix ), image_h, image_w ) );
+                        }
+                        ++ix;
+                    }
+                }
+                ++iy;
+            }
+        }
+        else if ( h == image_h )
+        {
+            // Horizontaly Scaled
+            float ratio_w = static_cast<float> ( image_w ) / static_cast<float> ( w );
+            int32_t iy = 0;
+            for ( int32_t sy = y1; sy < y2; ++sy )
+            {
+                if ( ( sy >= 0 ) && ( sy < screen_h ) )
+                {
+                    int32_t ix = 0;
+                    for ( int32_t sx = x1; sx < x2; ++sx )
+                    {
+                        if ( ( sx >= 0 ) && ( sx < screen_w ) )
+                        {
+                            pixels[ ( ( sy * screen_w ) + sx )].Blend ( Lanczos1DInterpolation ( ix * ratio_w, image_bitmap + ( iy * image_w ), image_w, 1 ) );
+                        }
+                        ++ix;
+                    }
+                }
+                ++iy;
+            }
+        }
+        else
+        {
+            // Both Horizontaly and Vertically Scaled
+            float ratio_w = static_cast<float> ( image_w ) / static_cast<float> ( w );
+            float ratio_h = static_cast<float> ( image_h ) / static_cast<float> ( h );
         }
     }
 
