@@ -30,31 +30,48 @@ namespace AeonGUI
         }
         else if ( fabs ( x ) < a )
         {
-            float pi_x = static_cast<float> ( M_PI ) * x;
-            float pi_x_over_a = pi_x / a;
-            return ( a * sinf ( pi_x ) * sinf ( pi_x_over_a ) ) / static_cast<float> ( M_PI * M_PI ) * x * x;
+            return ( sinf ( x ) / x ) * ( sinf ( x / a ) / ( x / a ) );
         }
         return ( 0.0f );
     }
 
     static Color Lanczos1DInterpolation ( float x, const Color* samples, int32_t sample_count, uint32_t sample_stride )
     {
-        const int32_t a = 3;
+        const int32_t filter = 3;
         int32_t fx = static_cast<int32_t> ( floorf ( x ) );
         Color result = 0;
-        int32_t start = ( fx - a ) + 1;
-        int32_t end = fx + a;
-        start = ( start < 0 ) ? 0 : start;
-        end = ( end < sample_count ) ? end : sample_count;
+        int32_t start = ( fx - filter ) + 1;
+        int32_t end = fx + filter;
+        float sum = 0;
+        float b = 0, g = 0, r = 0, a = 0;
+        float kernel[ ( filter * 2 ) - 1];
+
         for ( int32_t i = start; i < end; ++i )
         {
-            ///\todo Consider adding color operators
-            float L = LanczosKernel ( x - i );
-            result.b += static_cast<uint8_t> ( samples[i * sample_stride].b * L );
-            result.g += static_cast<uint8_t> ( samples[i * sample_stride].g * L );
-            result.r += static_cast<uint8_t> ( samples[i * sample_stride].r * L );
-            result.a += static_cast<uint8_t> ( samples[i * sample_stride].a * L );
+            sum += kernel[ ( fx - i ) + 2] = LanczosKernel ( x - i );
         }
+
+        // Normalize
+        for ( int32_t i = 0; i < 5; ++i )
+        {
+            kernel[i] /= sum;
+        }
+
+        start = ( start < 0 ) ? 0 : start;
+        end = ( end < sample_count ) ? end : sample_count;
+
+        for ( int32_t i = start; i < end; ++i )
+        {
+            b += ( samples[i * sample_stride].b * kernel[ ( fx - i ) + 2] );
+            g += ( samples[i * sample_stride].g * kernel[ ( fx - i ) + 2] );
+            r += ( samples[i * sample_stride].r * kernel[ ( fx - i ) + 2] );
+            a += ( samples[i * sample_stride].a * kernel[ ( fx - i ) + 2] );
+        }
+        result.b = ( b < 0.0f ) ? 0 : ( b > 255.0f ) ? 255 : static_cast<uint8_t> ( b );
+        result.g = ( g < 0.0f ) ? 0 : ( g > 255.0f ) ? 255 : static_cast<uint8_t> ( g );
+        result.r = ( r < 0.0f ) ? 0 : ( r > 255.0f ) ? 255 : static_cast<uint8_t> ( r );
+        result.a = ( a < 0.0f ) ? 0 : ( a > 255.0f ) ? 255 : static_cast<uint8_t> ( a );
+
         return result;
     }
 
