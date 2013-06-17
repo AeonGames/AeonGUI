@@ -164,8 +164,8 @@ void Window::Initialize ( HINSTANCE hInstance )
 #ifdef USE_PNG
     aeongui_logo->LoadFromFile ( "AeonGUILogoBlBkg.png" );
 #else
-    //aeongui_logo->LoadFromFile ( "AeonGUILogoBlBkg.pcx" );
-    aeongui_logo->LoadFromFile ( "ScaleTest.pcx" );
+    aeongui_logo->LoadFromFile ( "AeonGUILogoBlBkg.pcx" );
+    //aeongui_logo->LoadFromFile ( "ScaleTest.pcx" );
 #endif
     font = new AeonGUI::Font ( Vera.data, Vera.size );
     renderer.Initialize ( );
@@ -226,8 +226,8 @@ void Window::RenderLoop()
     renderer.BeginRender();
     renderer.RenderWidgets();
     renderer.DrawImage ( aeongames_logo, width - logo_width, height - logo_height );
-    //renderer.DrawImage ( aeongui_logo, 0, height - aeongui_logo->GetHeight(), aeongui_logo->GetWidth() * 2 );
-    renderer.DrawImage ( aeongui_logo, 0, height - 80, 80, 80 );
+    renderer.DrawImage ( aeongui_logo, 0, height - aeongui_logo->GetHeight(), aeongui_logo->GetWidth() * 2 );
+    //renderer.DrawImage ( aeongui_logo, 0, height - 80, 80, 80 );
     renderer.EndRender();
     SwapBuffers ( hDC );
     last_time = this_time;

@@ -25,7 +25,11 @@ namespace AeonGUI
     {
         const float filter = 3.0f;
         const float fx = fabsf ( x );
-        if ( fx >= filter )
+        if ( fx == 0.0f )
+        {
+            return ( 1.0f );
+        }
+        else if ( fx >= filter )
         {
             return ( 0.0f );
         }
