@@ -23,16 +23,15 @@ namespace AeonGUI
 {
     static float LanczosKernel ( float  x )
     {
-        const float a = 3;
-        if ( x == 0.0f )
+        const float filter = 3.0f;
+        const float fx = fabsf ( x );
+        if ( fx >= filter )
         {
-            return 1.0f;
+            return ( 0.0f );
         }
-        else if ( fabs ( x ) < a )
-        {
-            return ( sinf ( x ) / x ) * ( sinf ( x / a ) / ( x / a ) );
-        }
-        return ( 0.0f );
+        const float pix = fx * static_cast<float> ( M_PI );
+        const float pix_over_filter = pix / filter;
+        return ( sinf ( pix ) / pix ) * ( sinf ( pix_over_filter ) / ( pix_over_filter ) );
     }
 
     static Color Lanczos1DInterpolation ( float x, const Color* samples, int32_t sample_count, uint32_t sample_stride )
@@ -40,13 +39,10 @@ namespace AeonGUI
         const int32_t filter = 3;
         int32_t fx = static_cast<int32_t> ( floorf ( x ) );
         Color result = 0;
-        int32_t start = ( fx - filter ) + 1;
-        int32_t end = fx + filter;
         float sum = 0;
         float b = 0, g = 0, r = 0, a = 0;
         float kernel[ ( filter * 2 ) - 1];
 
-        //for ( int32_t i = start; i < end; ++i )
         for ( int32_t i = -2; i < 3; ++i )
         {
             sum += kernel[i + 2] = LanczosKernel ( x - ( fx + i ) );
@@ -58,34 +54,6 @@ namespace AeonGUI
             kernel[i] /= sum;
         }
 
-        //start = ( start < 0 ) ? 0 : start;
-        //end = ( end < sample_count ) ? end : sample_count;
-#if 0
-        for ( int32_t i = start; i < end; ++i )
-        {
-            if ( i < 0 )
-            {
-                b += ( samples[0].b * kernel[ ( fx + i ) + ( filter - 1 )] );
-                g += ( samples[0].g * kernel[ ( fx + i ) + ( filter - 1 )] );
-                r += ( samples[0].r * kernel[ ( fx + i ) + ( filter - 1 )] );
-                a += ( samples[0].a * kernel[ ( fx + i ) + ( filter - 1 )] );
-            }
-            else if ( i >= sample_count )
-            {
-                b += ( samples[ ( sample_count - 1 ) * sample_stride].b * kernel[ ( fx - i ) + ( filter - 1 )] );
-                g += ( samples[ ( sample_count - 1 ) * sample_stride].g * kernel[ ( fx - i ) + ( filter - 1 )] );
-                r += ( samples[ ( sample_count - 1 ) * sample_stride].r * kernel[ ( fx - i ) + ( filter - 1 )] );
-                a += ( samples[ ( sample_count - 1 ) * sample_stride].a * kernel[ ( fx - i ) + ( filter - 1 )] );
-            }
-            else
-            {
-                b += ( samples[i * sample_stride].b * kernel[ ( fx - i ) + ( filter - 1 )] );
-                g += ( samples[i * sample_stride].g * kernel[ ( fx - i ) + ( filter - 1 )] );
-                r += ( samples[i * sample_stride].r * kernel[ ( fx - i ) + ( filter - 1 )] );
-                a += ( samples[i * sample_stride].a * kernel[ ( fx - i ) + ( filter - 1 )] );
-            }
-        }
-#else
         for ( int32_t i = -2; i < 3; ++i )
         {
             if ( ( fx + i ) < 0 )
@@ -110,12 +78,21 @@ namespace AeonGUI
                 a += samples[ ( fx + i ) * sample_stride].a * kernel[i + 2];
             }
         }
-#endif
         result.b = ( b < 0.0f ) ? 0 : ( b > 255.0f ) ? 255 : static_cast<uint8_t> ( b );
         result.g = ( g < 0.0f ) ? 0 : ( g > 255.0f ) ? 255 : static_cast<uint8_t> ( g );
         result.r = ( r < 0.0f ) ? 0 : ( r > 255.0f ) ? 255 : static_cast<uint8_t> ( r );
         result.a = ( a < 0.0f ) ? 0 : ( a > 255.0f ) ? 255 : static_cast<uint8_t> ( a );
         return result;
+    }
+
+    static Color NearestNeighbor1DInterpolation ( float x, const Color* samples, int32_t sample_count, uint32_t sample_stride )
+    {
+        int32_t fx = static_cast<int32_t> ( floorf ( x ) );
+        if ( ( x - fx ) < 0.5 )
+        {
+            return samples[ fx * sample_stride];
+        }
+        return samples[ ( fx + 1 ) * sample_stride];
     }
 
     Renderer::Renderer() : font ( NULL ), screen_w ( 0 ), screen_h ( 0 ), screen_bitmap ( NULL ), widgets ( NULL )
@@ -298,6 +275,7 @@ namespace AeonGUI
                         if ( ( sx >= 0 ) && ( sx < screen_w ) )
                         {
                             pixels[ ( ( sy * screen_w ) + sx )].Blend ( Lanczos1DInterpolation ( ix * ratio_w, image_bitmap + ( iy * image_w ), image_w, 1 ) );
+                            //pixels[ ( ( sy * screen_w ) + sx )].Blend ( NearestNeighbor1DInterpolation ( ix * ratio_w, image_bitmap + ( iy * image_w ), image_w, 1 ) );
                         }
                         ++ix;
                     }
