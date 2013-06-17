@@ -23,7 +23,7 @@ namespace AeonGUI
 {
     static float LanczosKernel ( float  x )
     {
-        const float a = 3.0f;
+        const float a = 3;
         if ( x == 0.0f )
         {
             return 1.0f;
@@ -46,32 +46,75 @@ namespace AeonGUI
         float b = 0, g = 0, r = 0, a = 0;
         float kernel[ ( filter * 2 ) - 1];
 
-        for ( int32_t i = start; i < end; ++i )
+        //for ( int32_t i = start; i < end; ++i )
+        for ( int32_t i = -2; i < 3; ++i )
         {
-            sum += kernel[ ( fx - i ) + 2] = LanczosKernel ( x - i );
+            sum += kernel[i + 2] = LanczosKernel ( x - ( fx + i ) );
         }
 
         // Normalize
-        for ( int32_t i = 0; i < 5; ++i )
+        for ( int32_t i = 0; i < ( filter * 2 ) - 1; ++i )
         {
             kernel[i] /= sum;
         }
 
-        start = ( start < 0 ) ? 0 : start;
-        end = ( end < sample_count ) ? end : sample_count;
-
+        //start = ( start < 0 ) ? 0 : start;
+        //end = ( end < sample_count ) ? end : sample_count;
+#if 0
         for ( int32_t i = start; i < end; ++i )
         {
-            b += ( samples[i * sample_stride].b * kernel[ ( fx - i ) + 2] );
-            g += ( samples[i * sample_stride].g * kernel[ ( fx - i ) + 2] );
-            r += ( samples[i * sample_stride].r * kernel[ ( fx - i ) + 2] );
-            a += ( samples[i * sample_stride].a * kernel[ ( fx - i ) + 2] );
+            if ( i < 0 )
+            {
+                b += ( samples[0].b * kernel[ ( fx + i ) + ( filter - 1 )] );
+                g += ( samples[0].g * kernel[ ( fx + i ) + ( filter - 1 )] );
+                r += ( samples[0].r * kernel[ ( fx + i ) + ( filter - 1 )] );
+                a += ( samples[0].a * kernel[ ( fx + i ) + ( filter - 1 )] );
+            }
+            else if ( i >= sample_count )
+            {
+                b += ( samples[ ( sample_count - 1 ) * sample_stride].b * kernel[ ( fx - i ) + ( filter - 1 )] );
+                g += ( samples[ ( sample_count - 1 ) * sample_stride].g * kernel[ ( fx - i ) + ( filter - 1 )] );
+                r += ( samples[ ( sample_count - 1 ) * sample_stride].r * kernel[ ( fx - i ) + ( filter - 1 )] );
+                a += ( samples[ ( sample_count - 1 ) * sample_stride].a * kernel[ ( fx - i ) + ( filter - 1 )] );
+            }
+            else
+            {
+                b += ( samples[i * sample_stride].b * kernel[ ( fx - i ) + ( filter - 1 )] );
+                g += ( samples[i * sample_stride].g * kernel[ ( fx - i ) + ( filter - 1 )] );
+                r += ( samples[i * sample_stride].r * kernel[ ( fx - i ) + ( filter - 1 )] );
+                a += ( samples[i * sample_stride].a * kernel[ ( fx - i ) + ( filter - 1 )] );
+            }
         }
+#else
+        for ( int32_t i = -2; i < 3; ++i )
+        {
+            if ( ( fx + i ) < 0 )
+            {
+                b += samples[0].b * kernel[i + 2];
+                g += samples[0].g * kernel[i + 2];
+                r += samples[0].r * kernel[i + 2];
+                a += samples[0].a * kernel[i + 2];
+            }
+            else if ( ( fx + i ) >= sample_count )
+            {
+                b += samples[ ( sample_count - 1 ) * sample_stride].b * kernel[i + 2];
+                g += samples[ ( sample_count - 1 ) * sample_stride].g * kernel[i + 2];
+                r += samples[ ( sample_count - 1 ) * sample_stride].r * kernel[i + 2];
+                a += samples[ ( sample_count - 1 ) * sample_stride].a * kernel[i + 2];
+            }
+            else
+            {
+                b += samples[ ( fx + i ) * sample_stride].b * kernel[i + 2];
+                g += samples[ ( fx + i ) * sample_stride].g * kernel[i + 2];
+                r += samples[ ( fx + i ) * sample_stride].r * kernel[i + 2];
+                a += samples[ ( fx + i ) * sample_stride].a * kernel[i + 2];
+            }
+        }
+#endif
         result.b = ( b < 0.0f ) ? 0 : ( b > 255.0f ) ? 255 : static_cast<uint8_t> ( b );
         result.g = ( g < 0.0f ) ? 0 : ( g > 255.0f ) ? 255 : static_cast<uint8_t> ( g );
         result.r = ( r < 0.0f ) ? 0 : ( r > 255.0f ) ? 255 : static_cast<uint8_t> ( r );
         result.a = ( a < 0.0f ) ? 0 : ( a > 255.0f ) ? 255 : static_cast<uint8_t> ( a );
-
         return result;
     }
 
