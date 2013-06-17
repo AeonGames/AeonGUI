@@ -99,6 +99,25 @@ namespace AeonGUI
         return samples[ ( fx + 1 ) * sample_stride];
     }
 
+    static Color NearestNeighbor2DInterpolation ( float x, float y, uint32_t w, uint32_t h, const Color* buffer )
+    {
+        assert ( x < w );
+        assert ( y < h );
+        int32_t fx = static_cast<int32_t> ( floorf ( x ) );
+        int32_t fy = static_cast<int32_t> ( floorf ( y ) );
+        float   dx = ( x - fx );
+        float   dy = ( y - fy );
+        if ( dx > 0.5 )
+        {
+            ++fx;
+        }
+        if ( dy > 0.5 )
+        {
+            ++fy;
+        }
+        return buffer[ ( fy * w ) + fx];
+    }
+
     Renderer::Renderer() : font ( NULL ), screen_w ( 0 ), screen_h ( 0 ), screen_bitmap ( NULL ), widgets ( NULL )
     {
     }
@@ -292,6 +311,24 @@ namespace AeonGUI
             // Both Horizontaly and Vertically Scaled
             float ratio_w = static_cast<float> ( image_w ) / static_cast<float> ( w );
             float ratio_h = static_cast<float> ( image_h ) / static_cast<float> ( h );
+
+            int32_t iy = 0;
+            for ( int32_t sy = y1; sy < y2; ++sy )
+            {
+                if ( ( sy >= 0 ) && ( sy < screen_h ) )
+                {
+                    int32_t ix = 0;
+                    for ( int32_t sx = x1; sx < x2; ++sx )
+                    {
+                        if ( ( sx >= 0 ) && ( sx < screen_w ) )
+                        {
+                            pixels[ ( ( sy * screen_w ) + sx )].Blend ( NearestNeighbor2DInterpolation ( ix * ratio_w, iy * ratio_h, image_w, image_h, image_bitmap ) );
+                        }
+                        ++ix;
+                    }
+                }
+                ++iy;
+            }
         }
     }
 
