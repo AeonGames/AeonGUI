@@ -28,6 +28,11 @@ Copyright 2010-2013 Rodrigo Hernandez Cordoba
 namespace AeonGUI
 {
     class Widget;
+    enum ResizeAlgorithm
+    {
+        NEAREST,
+        LANCZOS
+    };
     /*! \brief Renderer base class. */
     class Renderer
     {
@@ -100,10 +105,11 @@ namespace AeonGUI
             \param image [in] Pointer to the image object to draw.
             \param x [in] X screen coordinate to draw the image.
             \param y [in] Y screen coordinate to draw the image.
-            \param w [in] w optional width of the image to draw, used for scaling, if 0, the image is drawn horizontaly unscaled (This is NOT currently implemented).
-            \param h [in] h optional height of the image to draw, used for scaling, if 0, the image is drawn verticaly unscaled (This is NOT currently implemented).
+            \param w [in] Optional width of the image to draw, used for scaling, if 0, the image is drawn horizontaly unscaled.
+            \param h [in] Optional height of the image to draw, used for scaling, if 0, the image is drawn verticaly unscaled.
+            \param algorithm [in] Optional enumeration value for the resize algorithm to be used, NEAREST is used by default.
         */
-        void DrawImage ( Image* image, int32_t x, int32_t y, int32_t w = 0, int32_t h = 0 );
+        void DrawImage ( Image* image, int32_t x, int32_t y, int32_t w = 0, int32_t h = 0, ResizeAlgorithm algorithm = NEAREST );
         /*! \brief Render some text.
             \param font [in] To the font to use.
             \sa NewFont,DeleteFont.
