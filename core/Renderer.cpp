@@ -21,6 +21,102 @@ Copyright 2010-2013 Rodrigo Hernandez Cordoba
 
 namespace AeonGUI
 {
+
+    Renderer::Renderer() : font ( NULL ), screen_w ( 0 ), screen_h ( 0 ), screen_bitmap ( NULL ), widgets ( NULL )
+    {
+    }
+
+    Renderer::~Renderer()
+    {
+    }
+
+    bool Renderer::Initialize ( )
+    {
+        return true;
+    }
+
+    void Renderer::Finalize()
+    {
+        font = NULL;
+        screen_w = 0;
+        screen_h = 0;
+        if ( screen_bitmap != NULL )
+        {
+            delete[] screen_bitmap;
+            screen_bitmap = NULL;
+        }
+    }
+
+    bool Renderer::ChangeScreenSize ( int32_t screen_width, int32_t screen_height )
+    {
+        screen_w = screen_width;
+        screen_h = screen_height;
+        if ( screen_bitmap != NULL )
+        {
+            delete[] screen_bitmap;
+        }
+        screen_bitmap = new uint8_t[screen_w * screen_h * 4];
+        return true;
+    }
+
+    void Renderer::SetFont ( Font* newfont )
+    {
+        font = newfont;
+    }
+
+    const Font* Renderer::GetFont()
+    {
+        return font;
+    }
+
+    void Renderer::DrawRect ( Color color, const Rect* rect )
+    {
+        Color* pixels = reinterpret_cast<Color*> ( screen_bitmap );
+        int32_t x1 = ( rect->GetLeft() < 0 ) ? 0 : rect->GetLeft();
+        int32_t x2 = ( rect->GetRight() > screen_w ) ? screen_w : rect->GetRight();
+        int32_t y1 = ( rect->GetTop() < 0 ) ? 0 : rect->GetTop();
+        int32_t y2 = ( rect->GetBottom() > screen_h ) ? screen_h : rect->GetBottom();
+
+        if ( ( x1 > screen_w ) || ( x2 < 0 ) ||
+             ( y1 > screen_h ) || ( y2 < 0 ) )
+        {
+            return;
+        }
+        for ( int32_t y = y1; y < y2; ++y )
+        {
+            for ( int32_t x = x1; x < x2; ++x )
+            {
+                pixels[ ( y * screen_w ) + x].Blend ( color );
+            }
+        }
+    }
+    void Renderer::DrawRectOutline ( Color color, const Rect* rect )
+    {
+        Color* pixels = reinterpret_cast<Color*> ( screen_bitmap );
+        int32_t x1 = ( rect->GetLeft() < 0 ) ? 0 : rect->GetLeft();
+        int32_t x2 = ( rect->GetRight() > screen_w ) ? ( screen_w - 1 ) : ( rect->GetRight() - 1 );
+        int32_t y1 = ( rect->GetTop() < 0 ) ? 0 : rect->GetTop();
+        int32_t y2 = ( rect->GetBottom() > screen_h ) ? ( screen_h - 1 ) : ( rect->GetBottom() - 1 );
+
+        if ( ( x1 >= screen_w ) || ( x2 < 0 ) ||
+             ( y1 >= screen_h ) || ( y2 < 0 ) )
+        {
+            return;
+        }
+
+        for ( int32_t y = y1; y <= y2; ++y )
+        {
+            pixels[ ( y * screen_w ) + x1].Blend ( color );
+            pixels[ ( y * screen_w ) + x2].Blend ( color );
+        }
+        // Avoid setting the corner pixels twice
+        for ( int32_t x = x1 + 1; x < x2; ++x )
+        {
+            pixels[ ( y1 * screen_w ) + x].Blend ( color );
+            pixels[ ( y2 * screen_w ) + x].Blend ( color );
+        }
+    }
+
     static float LanczosKernel ( float  x )
     {
         const float filter = 3.0f;
@@ -190,101 +286,6 @@ namespace AeonGUI
             ++fy;
         }
         return buffer[ ( fy * w ) + fx];
-    }
-
-    Renderer::Renderer() : font ( NULL ), screen_w ( 0 ), screen_h ( 0 ), screen_bitmap ( NULL ), widgets ( NULL )
-    {
-    }
-
-    Renderer::~Renderer()
-    {
-    }
-
-    bool Renderer::Initialize ( )
-    {
-        return true;
-    }
-
-    void Renderer::Finalize()
-    {
-        font = NULL;
-        screen_w = 0;
-        screen_h = 0;
-        if ( screen_bitmap != NULL )
-        {
-            delete[] screen_bitmap;
-            screen_bitmap = NULL;
-        }
-    }
-
-    bool Renderer::ChangeScreenSize ( int32_t screen_width, int32_t screen_height )
-    {
-        screen_w = screen_width;
-        screen_h = screen_height;
-        if ( screen_bitmap != NULL )
-        {
-            delete[] screen_bitmap;
-        }
-        screen_bitmap = new uint8_t[screen_w * screen_h * 4];
-        return true;
-    }
-
-    void Renderer::SetFont ( Font* newfont )
-    {
-        font = newfont;
-    }
-
-    const Font* Renderer::GetFont()
-    {
-        return font;
-    }
-
-    void Renderer::DrawRect ( Color color, const Rect* rect )
-    {
-        Color* pixels = reinterpret_cast<Color*> ( screen_bitmap );
-        int32_t x1 = ( rect->GetLeft() < 0 ) ? 0 : rect->GetLeft();
-        int32_t x2 = ( rect->GetRight() > screen_w ) ? screen_w : rect->GetRight();
-        int32_t y1 = ( rect->GetTop() < 0 ) ? 0 : rect->GetTop();
-        int32_t y2 = ( rect->GetBottom() > screen_h ) ? screen_h : rect->GetBottom();
-
-        if ( ( x1 > screen_w ) || ( x2 < 0 ) ||
-             ( y1 > screen_h ) || ( y2 < 0 ) )
-        {
-            return;
-        }
-        for ( int32_t y = y1; y < y2; ++y )
-        {
-            for ( int32_t x = x1; x < x2; ++x )
-            {
-                pixels[ ( y * screen_w ) + x].Blend ( color );
-            }
-        }
-    }
-    void Renderer::DrawRectOutline ( Color color, const Rect* rect )
-    {
-        Color* pixels = reinterpret_cast<Color*> ( screen_bitmap );
-        int32_t x1 = ( rect->GetLeft() < 0 ) ? 0 : rect->GetLeft();
-        int32_t x2 = ( rect->GetRight() > screen_w ) ? ( screen_w - 1 ) : ( rect->GetRight() - 1 );
-        int32_t y1 = ( rect->GetTop() < 0 ) ? 0 : rect->GetTop();
-        int32_t y2 = ( rect->GetBottom() > screen_h ) ? ( screen_h - 1 ) : ( rect->GetBottom() - 1 );
-
-        if ( ( x1 >= screen_w ) || ( x2 < 0 ) ||
-             ( y1 >= screen_h ) || ( y2 < 0 ) )
-        {
-            return;
-        }
-
-        for ( int32_t y = y1; y <= y2; ++y )
-        {
-            pixels[ ( y * screen_w ) + x1].Blend ( color );
-            pixels[ ( y * screen_w ) + x2].Blend ( color );
-        }
-        // Avoid setting the corner pixels twice
-        for ( int32_t x = x1 + 1; x < x2; ++x )
-        {
-            pixels[ ( y1 * screen_w ) + x].Blend ( color );
-            pixels[ ( y2 * screen_w ) + x].Blend ( color );
-        }
     }
 
     void Renderer::DrawImage ( Image* image, int32_t x, int32_t y, int32_t w, int32_t h )
