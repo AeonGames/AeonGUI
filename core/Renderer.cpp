@@ -89,6 +89,80 @@ namespace AeonGUI
         return result;
     }
 
+    static Color Lanczos2DInterpolation ( float x, float y, uint32_t w, uint32_t h, const Color* buffer )
+    {
+        const int32_t filter = 3;
+        int32_t fx = static_cast<int32_t> ( floorf ( x ) );
+        int32_t fy = static_cast<int32_t> ( floorf ( y ) );
+        Color result = 0;
+        float sumx = 0;
+        float sumy = 0;
+
+        float finalsums[4] = {0};
+        float kernelx[ ( filter * 2 ) - 1];
+        float kernely[ ( filter * 2 ) - 1];
+
+        for ( int32_t i = -2; i < 3; ++i )
+        {
+            sumx += kernelx[i + 2] = LanczosKernel ( x - ( fx + i ) );
+            sumy += kernely[i + 2] = LanczosKernel ( y - ( fy + i ) );
+        }
+
+        // Normalize
+        for ( int32_t i = 0; i < ( filter * 2 ) - 1; ++i )
+        {
+            kernelx[i] /= sumx;
+            kernely[i] /= sumy;
+        }
+
+        for ( int32_t yi = -2; yi < 3; ++yi )
+        {
+            int32_t row = fy + yi;
+            if ( row < 0 )
+            {
+                row = 0;
+            }
+            else if ( row >= static_cast<int32_t> ( h ) )
+            {
+                row = h - 1;
+            }
+            float sums[4] = {0};
+
+            for ( int32_t xi = -2; xi < 3; ++xi )
+            {
+                int32_t column = fx + xi;
+                if ( column < 0 )
+                {
+                    column = 0;
+                }
+                else if ( column >= static_cast<int32_t> ( w ) )
+                {
+                    column = w - 1;
+                }
+                sums[0] += buffer[ ( row * w ) + column].b * kernelx[xi + 2];
+                sums[1] += buffer[ ( row * w ) + column].g * kernelx[xi + 2];
+                sums[2] += buffer[ ( row * w ) + column].r * kernelx[xi + 2];
+                sums[3] += buffer[ ( row * w ) + column].a * kernelx[xi + 2];
+            }
+            sums[0] *= kernely[yi + 2];
+            sums[1] *= kernely[yi + 2];
+            sums[2] *= kernely[yi + 2];
+            sums[3] *= kernely[yi + 2];
+
+            finalsums[0] += sums[0];
+            finalsums[1] += sums[1];
+            finalsums[2] += sums[2];
+            finalsums[3] += sums[3];
+        }
+
+        result.b = ( finalsums[0] < 0.0f ) ? 0 : ( finalsums[0] > 255.0f ) ? 255 : static_cast<uint8_t> ( finalsums[0] );
+        result.g = ( finalsums[1] < 0.0f ) ? 0 : ( finalsums[1] > 255.0f ) ? 255 : static_cast<uint8_t> ( finalsums[1] );
+        result.r = ( finalsums[2] < 0.0f ) ? 0 : ( finalsums[2] > 255.0f ) ? 255 : static_cast<uint8_t> ( finalsums[2] );
+        result.a = ( finalsums[3] < 0.0f ) ? 0 : ( finalsums[3] > 255.0f ) ? 255 : static_cast<uint8_t> ( finalsums[3] );
+
+        return result;
+    }
+
     static Color NearestNeighbor1DInterpolation ( float x, const Color* samples, int32_t sample_count, uint32_t sample_stride )
     {
         int32_t fx = static_cast<int32_t> ( floorf ( x ) );
@@ -322,7 +396,8 @@ namespace AeonGUI
                     {
                         if ( ( sx >= 0 ) && ( sx < screen_w ) )
                         {
-                            pixels[ ( ( sy * screen_w ) + sx )].Blend ( NearestNeighbor2DInterpolation ( ix * ratio_w, iy * ratio_h, image_w, image_h, image_bitmap ) );
+                            //pixels[ ( ( sy * screen_w ) + sx )].Blend ( NearestNeighbor2DInterpolation ( ix * ratio_w, iy * ratio_h, image_w, image_h, image_bitmap ) );
+                            pixels[ ( ( sy * screen_w ) + sx )].Blend ( Lanczos2DInterpolation ( ix * ratio_w, iy * ratio_h, image_w, image_h, image_bitmap ) );
                         }
                         ++ix;
                     }
