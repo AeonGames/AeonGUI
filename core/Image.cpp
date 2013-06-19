@@ -58,6 +58,7 @@ namespace AeonGUI
     }
 #endif
     Image::Image () :
+        patch9 ( false ),
         width ( 0 ),
         height ( 0 ),
         bitmap ( NULL )
@@ -144,6 +145,18 @@ namespace AeonGUI
         uint32_t buffer_size = 0;
         bool retval;
         std::ifstream file;
+#ifdef WIN32
+        size_t fnamelen;
+        char fname[_MAX_FNAME];
+        _splitpath ( filename, NULL, NULL, fname, NULL );
+        fnamelen = strlen ( fname );
+        if ( ( fname[fnamelen - 1] == '9' ) && ( fname[fnamelen - 2] == '.' ) )
+        {
+            patch9 = true;
+        }
+#else
+        ///\todo Implement POSIX or otherwise _splitpath version here.
+#endif
         file.open ( filename, std::ios_base::in | std::ios_base::binary );
         if ( !file.is_open() )
         {
@@ -173,6 +186,7 @@ namespace AeonGUI
             {
                 return false;
             }
+            patch9 = pcx.IsPatch9();
             if ( pcx.GetNumBitPlanes() == 3 )
             {
                 return Load ( pcx.GetWidth(), pcx.GetHeight(), RGB, BYTE, pcx.GetPixels() );

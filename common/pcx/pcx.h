@@ -31,8 +31,9 @@ public:
     uint32_t GetHeight();
     const uint8_t* GetPixels();
     uint8_t GetNumBitPlanes();
-
+    bool IsPatch9();
 private:
+    bool patch9;
     uint32_t FillPixels ( uint32_t width, uint32_t height, void* buffer, uint32_t buffer_size );
     struct Header
     {

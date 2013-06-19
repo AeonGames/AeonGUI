@@ -101,6 +101,7 @@ namespace AeonGUI
         const Color* GetBitmap() const;
 
     private:
+        bool patch9;
         uint32_t width;
         uint32_t height;
         Color* bitmap;

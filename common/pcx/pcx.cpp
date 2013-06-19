@@ -18,10 +18,16 @@ Copyright 2010-2012 Rodrigo Hernandez Cordoba
 #include <fstream>
 
 Pcx::Pcx() :
+    patch9 ( false ),
     pixels ( NULL ),
     pixels_size ( 0 )
 {
     memset ( &header, 0, sizeof ( Header ) );
+}
+
+bool Pcx::IsPatch9()
+{
+    return patch9;
 }
 
 Pcx::~Pcx()
@@ -147,6 +153,17 @@ bool Pcx::Decode ( uint32_t buffer_size, void* buffer )
         Unload();
         return false;
     }
+
+    // Check for special patch9 mark on reserved bytes.
+    if ( ( header.Reserved2[0] == '.' ) && ( header.Reserved2[1] == '9' ) )
+    {
+        patch9 = true;
+    }
+    else
+    {
+        patch9 = false;
+    }
+
     uint32_t scanline_length = header.NumBitPlanes * header.BytesPerLine;
     uint8_t* byte = reinterpret_cast<uint8_t*> ( buffer ) + sizeof ( Header );
     pixels = new uint8_t[ scanline_length * GetHeight() ];
