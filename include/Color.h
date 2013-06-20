@@ -171,7 +171,7 @@ namespace AeonGUI
     };
     /** \brief Pixel Color Union.
         The Color union allows access to each unsigned 8 bit RGBA color component individually or as a single 32 bit unsigned integer,
-        making possible color asignments similar to those used on the web (IE: color = 0xFF000000).
+        making possible color asignments similar to those used on the web (IE: color = 0xFF000000 with the format 0xAARRGGBB).
         The union type is also 32bits wide which makes it suitable to be passed as value or as reference.
         Wherever a Color variable can be passed it \a should be possible to pass a 32 bit unsigned integer value, but some compilers may complain depending on the set warning level.
     */

@@ -42,9 +42,6 @@ namespace AeonGUI
         /// Virtual destructor so all derived destructors are called accordingly.
         virtual ~Renderer();
         /*! \brief Initialization Function.
-            \param screen_width [in] Current Screen width resolution.
-            \param screen_height [in] Current Screen width resolution.
-            \note This function takes the screen or display resolution, not the window size.
             \return true on success, false on failure.
         */
         virtual bool Initialize();
@@ -110,9 +107,12 @@ namespace AeonGUI
             \param algorithm [in] Optional enumeration value for the resize algorithm to be used, NEAREST is used by default.
         */
         void DrawImage ( Image* image, int32_t x, int32_t y, int32_t w = 0, int32_t h = 0, ResizeAlgorithm algorithm = NEAREST );
-        /*! \brief Render some text.
-            \param font [in] To the font to use.
-            \sa NewFont,DeleteFont.
+
+        /*! \brief Draw a string of text.
+            \param color [in] Color to draw the string with.
+            \param x [in] X coordinate to draw the string at.
+            \param y [in] Y coordinate to draw the string at.
+            \param text [in] Text to draw.
         */
         void DrawString ( Color color, int32_t x, int32_t y, const wchar_t* text );
         //@}

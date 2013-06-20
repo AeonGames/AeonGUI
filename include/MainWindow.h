@@ -49,36 +49,36 @@ namespace AeonGUI
         /*!\name Mouse listener interface functions */
         /* @{ */
         /*! \copydoc MouseListener::OnMouseButtonDown */
-        virtual void OnMouseButtonDown ( Widget* widget, uint8_t button, uint32_t X, uint32_t Y );
+        virtual void OnMouseButtonDown ( Widget* widget, uint8_t button, uint32_t x, uint32_t y );
         /*! \copydoc MouseListener::OnMouseButtonUp */
-        virtual void OnMouseButtonUp ( Widget* widget, uint8_t button, uint32_t X, uint32_t Y );
+        virtual void OnMouseButtonUp ( Widget* widget, uint8_t button, uint32_t x, uint32_t y );
         /*! \copydoc MouseListener::OnMouseClick */
         virtual void OnMouseClick ( Widget* widget, uint8_t button, uint32_t x, uint32_t y );
         /*! \copydoc MouseListener::OnMouseMove */
-        virtual void OnMouseMove ( Widget* widget, uint32_t X, uint32_t Y ) {};
+        virtual void OnMouseMove ( Widget* widget, uint32_t x, uint32_t y ) {};
         /* @} */
 
         /*! \copydoc Widget::OnMouseButtonDown */
-        virtual void OnMouseButtonDown ( uint8_t button, uint32_t X, uint32_t Y );
+        virtual void OnMouseButtonDown ( uint8_t button, uint32_t x, uint32_t y );
         /*! \copydoc Widget::OnMouseButtonUp */
-        virtual void OnMouseButtonUp ( uint8_t button, uint32_t X, uint32_t Y );
+        virtual void OnMouseButtonUp ( uint8_t button, uint32_t x, uint32_t y );
         /*! \copydoc Widget::OnMouseMove */
-        virtual void OnMouseMove ( uint32_t X, uint32_t Y );
+        virtual void OnMouseMove ( uint32_t x, uint32_t y );
 
-        Rect captionrect;
-        std::wstring caption;
-        uint32_t padding;
-        uint32_t captionheight;
-        Color captioncolor;
-        uint16_t xoffset;
-        uint16_t yoffset;
-        bool hascaption;
-        bool moving;
-        Button close;
-        Button maximize;
-        Button minimize;
-        ScrollBar verticalscroll;
-        ScrollBar horizontalscroll;
+        Rect captionrect;               ///< Rect for caption box at top of the frame.
+        std::wstring caption;           ///< Caption text.
+        uint32_t padding;               ///< Window content padding.
+        uint32_t captionheight;         ///< Caption height.
+        Color captioncolor;             ///< Caption text color.
+        uint16_t xoffset;               ///< Mouse X offset for move operation.
+        uint16_t yoffset;               ///< Mouse Y offset for move operation.
+        bool hascaption;                ///< Wether this window has a caption box or not.
+        bool moving;                    ///< Wether the window is currently moving.
+        Button close;                   ///< Close window button.
+        Button maximize;                ///< Maximize window button.
+        Button minimize;                ///< Minimize window button.
+        ScrollBar verticalscroll;       ///< Window vertical scroll control.
+        ScrollBar horizontalscroll;     ///< Window horizontal scroll control
     };
 }
 #endif

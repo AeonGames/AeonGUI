@@ -25,10 +25,36 @@ namespace AeonGUI
     {
     public:
         virtual ~MouseListener() {};
-        virtual void OnMouseMove ( Widget* widget, uint32_t X, uint32_t Y ) = 0;
-        virtual void OnMouseButtonDown ( Widget* widget, uint8_t button, uint32_t X, uint32_t Y ) = 0;
-        virtual void OnMouseButtonUp ( Widget* widget, uint8_t button, uint32_t X, uint32_t Y ) = 0;
-        virtual void OnMouseClick ( Widget* widget, uint8_t button, uint32_t X, uint32_t Y ) = 0;
+        /*! \brief Handles remote widget mouse move event.
+            \param widget [in] Pointer to the remote widget.
+            \param x [in] absolute x coordinate for the event.
+            \param y [in] absolute y coordinate for the event.
+        */
+        virtual void OnMouseMove ( Widget* widget, uint32_t x, uint32_t y ) = 0;
+
+        /*! \brief Handles remote widget mouse button down event.
+            \param widget [in] Pointer to the remote widget.
+            \param button [in] The pressed button.
+            \param x [in] absolute x coordinate for the event.
+            \param y [in] absolute y coordinate for the event.
+        */
+        virtual void OnMouseButtonDown ( Widget* widget, uint8_t button, uint32_t x, uint32_t y ) = 0;
+
+        /*! \brief Handles remote widget mouse button up event.
+            \param widget [in] Pointer to the remote widget.
+            \param button [in] The pressed button.
+            \param x [in] absolute x coordinate for the event.
+            \param y [in] absolute y coordinate for the event.
+        */
+        virtual void OnMouseButtonUp ( Widget* widget, uint8_t button, uint32_t x, uint32_t y ) = 0;
+
+        /*! \brief Handles remote widget mouse click event.
+            \param widget [in] Pointer to the remote widget.
+            \param button [in] The pressed button.
+            \param x [in] absolute x coordinate for the event.
+            \param y [in] absolute y coordinate for the event.
+        */
+        virtual void OnMouseClick ( Widget* widget, uint8_t button, uint32_t x, uint32_t y ) = 0;
     };
 }
 #endif

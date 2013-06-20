@@ -136,6 +136,7 @@ namespace AeonGUI
         */
         virtual void OnMouseButtonUp ( uint8_t button, uint32_t x, uint32_t y ) {};
         /*!\brief Handles own Mouse Click event.
+           \param button [in] The pressed button.
            \param x [in] absolute x coordinate for the event.
            \param y [in] absolute y coordinate for the event.
         */
@@ -230,28 +231,31 @@ namespace AeonGUI
         /*! \name Primitive Drawing Functions */
         /* @{ */
         /*! \brief Draws a Rect in widget space.
+            \param renderer [in] Pointer to the renderer to handle the drawing.
             \param color [in] Pointer to the color to use for drawing.
-            \param rect [in] Pointer to the rect.
+            \param draw_rect [in] Pointer to the rect.
         */
         void DrawRect ( Renderer* renderer, Color color, const Rect* draw_rect );
         /*! \brief Draws a Rect outline in widget space.
+            \param renderer [in] Pointer to the renderer to handle the drawing.
             \param color [in] Pointer to the color to use for drawing.
-            \param rect [in] Pointer to the rect.
+            \param draw_rect [in] Pointer to the rect.
         */
         void DrawRectOutline ( Renderer* renderer, Color color, const Rect* draw_rect );
         /*! \brief Draw an Image in widget space.
+            \param renderer [in] Pointer to the renderer to handle the drawing.
             \param color [in] Pointer to the color to use for drawing.
-            \param points [in] Pointer to a buffer containing x,y point coordinates for the polygon.
-            \param pointcount [in] Number of points contained in the points parameter.
-            \sa NewImage,DeleteImage
+            \param x [in] x coordinate in screen space.
+            \param y [in] y coordinate in screen space.
+            \param image [in] Pointer to the image object to draw.
         */
         void DrawImage ( Renderer* renderer, Color color, int32_t x, int32_t y, Image* image );
         /*! \brief Draw text in widget space.
+            \param renderer [in] Pointer to the renderer to handle the drawing.
             \param color [in] Pointer to the color to use for drawing.
             \param x [in] x coordinate.
             \param y [in] y coordinate.
             \param text [in] text to render.
-            \sa NewFont,DeleteFont.
         */
         void DrawString ( Renderer* renderer, Color color, int32_t x, int32_t y, const wchar_t* text );
         /* @} */

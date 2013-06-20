@@ -24,6 +24,12 @@ namespace AeonGUI
     {
     public:
         Rect() : left ( 0 ), top ( 0 ), right ( 0 ), bottom ( 0 ) {}
+        /*! \brief Dimensions constructor.
+            \param X1 Left coordinate for the rect.
+            \param Y1 Top coordinate for the rect.
+            \param X2 Right coordinate for the rect.
+            \param Y2 Bottom coordinate for the rect.
+        */
         Rect ( int X1, int Y1, int X2, int Y2 ) : left ( X1 ), top ( Y1 ), right ( X2 ), bottom ( Y2 ) {}
         /*! \name Getters */
         //@{
@@ -64,11 +70,20 @@ namespace AeonGUI
             return bottom;
         }
 
-        inline void GetPosition ( int& X, int& Y ) const
+        /*! \brief Get rect position.
+            \param x [out] Reference to a variable to hold the X coordinate.
+            \param y [out] Reference to a variable to hold the Y coordinate.
+        */
+        inline void GetPosition ( int& x, int& y ) const
         {
-            X = left;
-            Y = top;
+            x = left;
+            y = top;
         }
+
+        /*! \brief Get rect Dimensions.
+            \param width [out] Reference to a variable to hold the rect's width.
+            \param height [out] Reference to a variable to hold the rect's height.
+        */
         inline void GetDimensions ( int& width, int& height )
         {
             width = right - left;
@@ -109,7 +124,10 @@ namespace AeonGUI
             right = X + right - left;
             left = X;
         }
-        /// Set Y coordinate
+
+        /*! \brief Set Y coordinate.
+            \param Y Value to set the Y coordinate of the rect to.
+        */
         inline void SetY ( int Y )
         {
             bottom = Y + bottom - top;
