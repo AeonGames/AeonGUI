@@ -28,6 +28,7 @@ Copyright 2010-2012 Rodrigo Hernandez Cordoba
 namespace AeonGUI
 {
     MainWindow::MainWindow () :
+        caption ( NULL ),
         xoffset ( 0 ),
         yoffset ( 0 ),
         verticalscroll ( ScrollBar::VERTICAL ),
