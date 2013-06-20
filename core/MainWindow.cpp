@@ -103,6 +103,10 @@ namespace AeonGUI
 
     MainWindow::~MainWindow()
     {
+        if ( caption != NULL )
+        {
+            delete[] caption;
+        }
         delete close.GetNormalImage();
         delete maximize.GetNormalImage();
         delete minimize.GetNormalImage() ;
@@ -111,14 +115,19 @@ namespace AeonGUI
         delete minimize.GetPressedImage() ;
     }
 
-    void MainWindow::SetCaption ( std::wstring& newcaption )
+    void MainWindow::SetCaption ( const wchar_t* newcaption )
     {
-        caption = newcaption;
-    }
-
-    void MainWindow::SetCaption ( wchar_t* newcaption )
-    {
-        caption = newcaption;
+        size_t len = wcslen ( newcaption );
+        if ( caption != NULL )
+        {
+            delete[] caption;
+        }
+        if ( len == 0 )
+        {
+            return;
+        }
+        caption = new wchar_t[len + 1];
+        wcscpy ( caption, newcaption );
     }
 
     void MainWindow::OnRender ( Renderer* renderer )
@@ -139,7 +148,7 @@ namespace AeonGUI
                          textcolor,
                          captionrect.GetLeft() + padding,
                          captionrect.GetTop() + renderer->GetFont()->GetHeight() + renderer->GetFont()->GetDescender() + padding,
-                         caption.c_str() );
+                         caption );
         }
     }
 

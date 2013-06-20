@@ -30,11 +30,8 @@ namespace AeonGUI
         virtual ~MainWindow();
         /*! \brief Set the window caption to be displayed on the window frame.
             \param newcaption Text for the caption.
-            \todo Remove STL use.
         */
-        void SetCaption ( std::wstring& newcaption );
-        /*! \copydoc MainWindow::SetCaption(std::wstring&)*/
-        void SetCaption ( wchar_t* newcaption );
+        void SetCaption ( const wchar_t* newcaption );
 
         /*! \copydoc Widget::OnRender */
         virtual void OnRender ( Renderer* renderer );
@@ -61,7 +58,7 @@ namespace AeonGUI
         virtual void OnMouseMove ( uint32_t x, uint32_t y );
 
         Rect captionrect;               ///< Rect for caption box at top of the frame.
-        std::wstring caption;           ///< Caption text.
+        wchar_t* caption;               ///< Caption text.
         uint32_t padding;               ///< Window content padding.
         uint32_t captionheight;         ///< Caption height.
         Color captioncolor;             ///< Caption text color.
