@@ -15,169 +15,106 @@ Copyright 2010-2012 Rodrigo Hernandez Cordoba
    See the License for the specific language governing permissions and
    limitations under the License.
 ******************************************************************************/
+#include <Integer.h>
 namespace AeonGUI
 {
-    /*! \brief Rectangle class.
-        \todo Remove inlines, move implementations to source file.
-    */
+    /*! \brief Rectangle class. */
     class Rect
     {
     public:
-        Rect() : left ( 0 ), top ( 0 ), right ( 0 ), bottom ( 0 ) {}
+        Rect();
+
         /*! \brief Dimensions constructor.
             \param X1 Left coordinate for the rect.
             \param Y1 Top coordinate for the rect.
             \param X2 Right coordinate for the rect.
             \param Y2 Bottom coordinate for the rect.
         */
-        Rect ( int X1, int Y1, int X2, int Y2 ) : left ( X1 ), top ( Y1 ), right ( X2 ), bottom ( Y2 ) {}
+        Rect ( int32_t X1, int32_t Y1, int32_t X2, int32_t Y2 );
+
         /*! \name Getters */
         //@{
-
         /// Get Width.
-        inline int GetWidth() const
-        {
-            return right - left;
-        }
+        int32_t GetWidth() const;
 
         /// Get Height.
-        inline int GetHeight() const
-        {
-            return bottom - top;
-        }
+        int32_t GetHeight() const;
 
         /// Get left bound.
-        inline int GetLeft() const
-        {
-            return left;
-        }
+        int32_t GetLeft() const;
 
         /// Get top bound.
-        inline int GetTop() const
-        {
-            return top;
-        }
+        int32_t GetTop() const;
 
         /// Get right bound.
-        inline int GetRight() const
-        {
-            return right;
-        }
+        int32_t GetRight() const;
 
         /// Get bottom bound.
-        inline int GetBottom() const
-        {
-            return bottom;
-        }
+        int32_t GetBottom() const;
 
         /*! \brief Get rect position.
             \param x [out] Reference to a variable to hold the X coordinate.
             \param y [out] Reference to a variable to hold the Y coordinate.
         */
-        inline void GetPosition ( int& x, int& y ) const
-        {
-            x = left;
-            y = top;
-        }
+        void GetPosition ( int32_t& x, int32_t& y ) const;
 
         /*! \brief Get rect Dimensions.
             \param width [out] Reference to a variable to hold the rect's width.
             \param height [out] Reference to a variable to hold the rect's height.
         */
-        inline void GetDimensions ( int& width, int& height )
-        {
-            width = right - left;
-            height = bottom - top;
-        }
+        void GetDimensions ( int32_t& width, int32_t& height );
+
         /*! \brief Get X coordinate.
             \return Value of the rect's X coordinate.
         */
-        inline int32_t GetX()
-        {
-            return left;
-        }
+        int32_t GetX();
+
         /*! \brief Get X coordinate.
             \return Value of the rect's X coordinate.
         */
-        inline int32_t GetY()
-        {
-            return top;
-        }
+        int32_t GetY();
         //@}
+
         /*! \name Setters */
         //@{
         /// Set Width.
-        inline void SetW ( int width )
-        {
-            right = left + width;
-        }
+        void SetW ( int32_t width );
+
         /// Set Height.
-        inline void SetHeight ( int height )
-        {
-            bottom = top + height;
-        }
+        void SetHeight ( int32_t height );
+
         /*! \brief Set X coordinate.
             \param X Value to set the X coordinate of the rect to.
         */
-        inline void SetX ( int X )
-        {
-            right = X + right - left;
-            left = X;
-        }
+        void SetX ( int32_t X );
 
         /*! \brief Set Y coordinate.
             \param Y Value to set the Y coordinate of the rect to.
         */
-        inline void SetY ( int Y )
-        {
-            bottom = Y + bottom - top;
-            top = Y;
-        }
+        void SetY ( int32_t Y );
 
         /// Set left bound.
-        inline void SetLeft ( int newleft )
-        {
-            left = newleft;
-        }
+        void SetLeft ( int32_t newleft );
 
         /// Set top bound.
-        inline void SetTop ( int newtop )
-        {
-            top = newtop;
-        }
+        void SetTop ( int32_t newtop );
 
         /// Set right bound.
-        inline void SetRight ( int newright )
-        {
-            right = newright;
-        }
+        void SetRight ( int32_t newright );
 
         /// Set bottom bound.
-        inline void SetBottom ( int newbottom )
-        {
-            bottom = newbottom;
-        }
+        void SetBottom ( int32_t newbottom );
 
-        inline void Set ( int X1, int Y1, int X2, int Y2 )
-        {
-            left = X1;
-            top = Y1;
-            right = X2;
-            bottom = Y2;
-        }
+        void Set ( int32_t X1, int32_t Y1, int32_t X2, int32_t Y2 );
+
         /*! \brief Set Rect absolute position.
             Unlike Rect::Move, this function sets the poisition without regard to the current values.
             \param X Position's X coordinate.
             \param Y Position's Y coordinate.
             \sa Rect::Move
         */
-        inline void SetPosition ( int X, int Y )
-        {
-            right = X + right - left;
-            bottom = Y + bottom - top;
-            left = X;
-            top = Y;
-        }
+        void SetPosition ( int32_t X, int32_t Y );
+
         /*! \brief Set Rect relative position from current one.
             Unlike Rect::SetPosition, this function sets the poisition with regard to the current values,
             that is the new position is calculated relative to the current one.
@@ -185,47 +122,27 @@ namespace AeonGUI
             \param Y Position's Y coordinate.
             \sa Rect::SetPosition
         */
-        inline void Move ( int X, int Y )
-        {
-            left += X;
-            top += Y;
-            right += X;
-            bottom += Y;
-        }
+        void Move ( int32_t X, int32_t Y );
+
         /*! \brief Set the Rect's dimensions (Width and Height).
             \param width Rect width.
             \param height Rect height.
         */
-        inline void SetDimensions ( int width, int height )
-        {
-            right = left + width;
-            bottom = top + height;
-        }
+        void SetDimensions ( int32_t width, int32_t height );
+
         //@}
-        /*! \brief Test to find out if a point (x,y) lays inside the rect perimeter.
-            \param x Point's X coordinate.
-            \param y Point's Y coordinate.
-            \return Wether or not the point x,y lies inside the rect perimeter.
+        /*! \brief Test to find out if a point32_t (x,y) lays inside the rect perimeter.
+            \param x Point32_t's X coordinate.
+            \param y Point32_t's Y coordinate.
+            \return Wether or not the point32_t x,y lies inside the rect perimeter.
         */
-        inline bool IsPointInside ( int x, int y )
-        {
-            if ( ( x < left ) || ( y < top ) || ( x > right ) || ( y > bottom ) )
-            {
-                return false;
-            }
-            return true;
-        }
+        bool IsPointInside ( int32_t x, int32_t y );
 
         /*! \brief Scale Rect.
             \param amount [in] amount of pixels to scale rect in pixels.
         */
-        inline void Scale ( int amount )
-        {
-            left = left - amount;
-            top = top - amount;
-            right = right + amount;
-            bottom = bottom + amount;
-        }
+        void Scale ( int32_t amount );
+
     private:
         /// Left boundary (X Coordinate).
         int left;

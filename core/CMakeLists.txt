@@ -21,6 +21,7 @@ Button.cpp
 ScrollBar.cpp
 MainWindow.cpp
 Image.cpp
+Rect.cpp
 Color.cpp
 )
 SET(AEONGUI_RESOURCES
