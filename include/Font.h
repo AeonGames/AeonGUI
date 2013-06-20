@@ -22,7 +22,6 @@ namespace AeonGUI
 {
     /*! \brief Raster Font class.
         \note This class has to change to accomodate for multiple font formats.
-        \todo Remove constructor is initialization design.
     */
     class Font
     {
@@ -41,16 +40,21 @@ namespace AeonGUI
             int16_t left;            ///< Glyph left.
             int16_t advance[2];      ///< Glyph x and y advance.
         };
-        /*! \brief Constructor from memory buffer.
+
+        Font();
+
+        /*! \brief Load font from memory buffer.
             \param data Font file memory buffer.
             \param size Font file memory buffer size in bytes.
-        */
-        Font ( void* data, size_t size );
+            \return true if load was succesful, false otherwise.
+            */
+        bool Load ( void* data, size_t size );
 
-        /*! \brief Constructor from file.
+        /*! \brief Load font from file.
             \param filename font file file path.
-        */
-        Font ( const char* filename );
+            \return true if load was succesful, false otherwise.
+            */
+        bool Load ( const char* filename );
 
         virtual ~Font();
 
@@ -100,7 +104,6 @@ namespace AeonGUI
             \return pointer to glyph bitmap buffer.*/
         const uint8_t* GetGlyphMap();
     protected:
-        bool isgood;            ///< Wether the constructor succeded in initializing the object.
         uint32_t glyphcount;    ///< Number of glyphs contained in the font.
         uint32_t map_width;     ///< Font bitmap width.
         uint32_t map_height;    ///< Font bitmap height.

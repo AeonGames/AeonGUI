@@ -39,17 +39,28 @@ static int glyphcompar ( const void *key, const void *element )
 
 namespace AeonGUI
 {
-    Font::Font ( void* data, size_t size )
+    Font::Font() :
+        glyphcount ( 0 ),
+        map_width ( 0 ),
+        map_height ( 0 ),
+        nominal_width ( 0 ),
+        nominal_height ( 0 ),
+        ascender ( 0 ),
+        descender ( 0 ),
+        height ( 0 ),
+        max_advance ( 0 ),
+        glyphdata ( NULL ),
+        glyphmap ( NULL ) {}
+
+    bool Font::Load ( void* data, size_t size )
     {
         ///\todo Split for different font version loading.
         // Safe Guard, Glyph and FNTGlyph must be exactly the same
         assert ( sizeof ( Glyph ) == sizeof ( FNTGlyph ) );
         FNTHeader* header = ( FNTHeader* ) data;
-        isgood = true;
         if ( std::string ( header->id ) != "AEONFNT" )
         {
-            isgood = false;
-            return;
+            return false;
         }
         glyphcount = header->glyphcount;
         map_width = header->map_width;
@@ -95,20 +106,9 @@ namespace AeonGUI
             std::cout << "Vertical Advance: " << glyphs[i].advance[1] << std::endl;
         }
 #endif
+        return true;
     }
-    Font::Font ( const char* filename ) :
-        isgood ( false ),
-        glyphcount ( 0 ),
-        map_width ( 0 ),
-        map_height ( 0 ),
-        nominal_width ( 0 ),
-        nominal_height ( 0 ),
-        ascender ( 0 ),
-        descender ( 0 ),
-        height ( 0 ),
-        max_advance ( 0 ),
-        glyphdata ( NULL ),
-        glyphmap ( NULL )
+    bool Font::Load ( const char* filename )
     {
         unsigned char* buffer;
         size_t length;
@@ -116,9 +116,7 @@ namespace AeonGUI
         file.open ( filename, std::fstream::in | std::fstream::binary );
         if ( !file.is_open() )
         {
-            // need to catch this error
-            isgood = false;
-            return;
+            return false;
         }
         file.seekg ( 0, std::ios::end );
         length = static_cast<size_t> ( file.tellg() );
@@ -126,10 +124,9 @@ namespace AeonGUI
         file.seekg ( 0, std::ios::beg );
         file.read ( ( char* ) buffer, length );
         file.close();
-        // Data  constructor sets isgood
-        //isgood = true;
-        Font ( ( void* ) buffer, length );
+        bool retval = Load ( ( void* ) buffer, length );
         delete[] buffer;
+        return retval;
     }
 
     Font::~Font()

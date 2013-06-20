@@ -167,7 +167,8 @@ void Window::Initialize ( HINSTANCE hInstance )
     aeongui_logo->LoadFromFile ( "AeonGUILogoBlBkg.pcx" );
     //aeongui_logo->LoadFromFile ( "ScaleTest.pcx" );
 #endif
-    font = new AeonGUI::Font ( Vera.data, Vera.size );
+    font = new AeonGUI::Font;
+    font->Load ( Vera.data, Vera.size );
     renderer.Initialize ( );
     renderer.ChangeScreenSize ( width, height );
     renderer.SetFont ( font );
