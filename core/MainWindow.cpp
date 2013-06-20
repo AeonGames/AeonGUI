@@ -111,6 +111,16 @@ namespace AeonGUI
         delete minimize.GetPressedImage() ;
     }
 
+    void MainWindow::SetCaption ( std::wstring& newcaption )
+    {
+        caption = newcaption;
+    }
+
+    void MainWindow::SetCaption ( wchar_t* newcaption )
+    {
+        caption = newcaption;
+    }
+
     void MainWindow::OnRender ( Renderer* renderer )
     {
         Widget::OnRender ( renderer );

@@ -22,9 +22,7 @@ Copyright 2010-2012 Rodrigo Hernandez Cordoba
 
 namespace AeonGUI
 {
-    /*! \brief Top window with borders.
-        \todo Remove inlines, move implementation to source file.
-    */
+    /*! \brief Top window with borders and frame. */
     class MainWindow : public Widget, public MouseListener
     {
     public:
@@ -34,16 +32,13 @@ namespace AeonGUI
             \param newcaption Text for the caption.
             \todo Remove STL use.
         */
-        inline void SetCaption ( std::wstring& newcaption )
-        {
-            caption = newcaption;
-        }
+        void SetCaption ( std::wstring& newcaption );
         /*! \copydoc MainWindow::SetCaption(std::wstring&)*/
-        inline void SetCaption ( wchar_t* newcaption )
-        {
-            caption = newcaption;
-        }
+        void SetCaption ( wchar_t* newcaption );
+
+        /*! \copydoc Widget::OnRender */
         virtual void OnRender ( Renderer* renderer );
+
     protected:
         /* @} */
         /*!\name Mouse listener interface functions */
