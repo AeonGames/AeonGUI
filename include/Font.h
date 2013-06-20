@@ -22,7 +22,6 @@ namespace AeonGUI
 {
     /*! \brief Raster Font class.
         \note This class has to change to accomodate for multiple font formats.
-        \todo Remove inlines, move implementations to source file.
         \todo Remove constructor is initialization design.
     */
     class Font
@@ -53,84 +52,53 @@ namespace AeonGUI
         */
         Font ( const char* filename );
 
-        virtual ~Font()
-        {
-            if ( NULL != glyphdata )
-            {
-                delete[] glyphdata;
-            }
-            if ( NULL != glyphmap )
-            {
-                delete[] glyphmap;
-            }
-        }
+        virtual ~Font();
 
         /*! \brief Get number of glyphs in font.
             \return Glyph count.
         */
-        inline uint32_t GetGlyphCount()
-        {
-            return glyphcount;
-        }
+        uint32_t GetGlyphCount();
 
         /*! \brief Get font bitmap width.
             \return Font bitmap width.*/
-        inline uint32_t GetMapWidth()
-        {
-            return map_width;
-        }
+        uint32_t GetMapWidth();
+
         /*! \brief Get font bitmap height.
             \return Font bitmap height.*/
-        inline uint32_t GetMapHeight()
-        {
-            return map_height;
-        }
+        uint32_t GetMapHeight();
+
         /*! \brief Get font nominal width.
             \return Font bitmap width.*/
-        inline uint16_t GetNominalWidth()
-        {
-            return nominal_width;
-        }
+        uint16_t GetNominalWidth();
+
         /*! \brief Get font nominal height.
             \return Font bitmap height.*/
-        inline uint16_t GetNominalHeight()
-        {
-            return nominal_height;
-        }
+        uint16_t GetNominalHeight();
+
         /*! \brief Get font ascender value.
             \return Font ascender value.*/
-        inline int16_t GetAscender()
-        {
-            return ascender;
-        }
+        int16_t GetAscender();
+
         /*! \brief Get font descender value.
             \return Font descender value.*/
-        inline int16_t GetDescender() const
-        {
-            return descender;
-        }
+        int16_t GetDescender() const;
+
         /*! \brief Get font height or size.
             \return Font height.*/
-        inline uint16_t GetHeight() const
-        {
-            return height;
-        }
+        uint16_t GetHeight() const;
+
         /*! \brief Get font maximum advance.
             \return Font maximum advance.*/
-        inline int16_t GetMaxAdvance()
-        {
-            return max_advance;
-        }
+        int16_t GetMaxAdvance();
+
         /*! \brief Get a specific glyph.
             \param charcode Unicode character code.
             \return pointer to glyph structure or NULL if not found.*/
         Glyph* GetGlyph ( wchar_t charcode );
+
         /*! \brief Get glyph bitmap.
             \return pointer to glyph bitmap buffer.*/
-        inline const uint8_t* GetGlyphMap()
-        {
-            return glyphmap;
-        }
+        const uint8_t* GetGlyphMap();
     protected:
         bool isgood;            ///< Wether the constructor succeded in initializing the object.
         uint32_t glyphcount;    ///< Number of glyphs contained in the font.

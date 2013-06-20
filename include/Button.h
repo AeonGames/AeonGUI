@@ -41,57 +41,57 @@ namespace AeonGUI
         /*! \brief Set the image to be used for the default state.
             \param image [in] Pointer to the Image object to be used.
         */
-    void SetNormalImage ( Image* image );
+        void SetNormalImage ( Image* image );
 
-    /*! \brief Set the image to be used for the focused state.
-        \param image [in] Pointer to the Image object to be used.
-    */
-    void SetFocusedImage ( Image* image );
+        /*! \brief Set the image to be used for the focused state.
+            \param image [in] Pointer to the Image object to be used.
+        */
+        void SetFocusedImage ( Image* image );
 
-    /*! \brief Set the image to be used for the pressed state.
-        \param image [in] Pointer to the Image object to be used.
-    */
-    void SetPressedImage ( Image* image );
+        /*! \brief Set the image to be used for the pressed state.
+            \param image [in] Pointer to the Image object to be used.
+        */
+        void SetPressedImage ( Image* image );
 
-    /*! \brief Sets the caption text for the button.
-        \param newcaption [in] The caption text to be set.
-        \todo remove STL use.
-    */
-    void SetCaption ( std::wstring& newcaption );
+        /*! \brief Sets the caption text for the button.
+            \param newcaption [in] The caption text to be set.
+            \todo remove STL use.
+        */
+        void SetCaption ( std::wstring& newcaption );
 
-    /*! \brief Get the pointer to the current default state image.
-        \return Image object pointer.
-    */
-    Image* GetNormalImage();
+        /*! \brief Get the pointer to the current default state image.
+            \return Image object pointer.
+        */
+        Image* GetNormalImage();
 
-    /*! \brief Get the pointer to the current focused state image.
-        \return Image object pointer.
-    */
-    Image* GetFocusedImage();
+        /*! \brief Get the pointer to the current focused state image.
+            \return Image object pointer.
+        */
+        Image* GetFocusedImage();
 
-    /*! \brief Get the pointer to the current pressed state image.
-        \return Image object pointer.
-    */
-    Image* GetPressedImage();
+        /*! \brief Get the pointer to the current pressed state image.
+            \return Image object pointer.
+        */
+        Image* GetPressedImage();
 
-    /*! \brief Get the button's caption text.
-        \return The button's caption text.
-        \todo Remove STL use.
-    */
-    std::wstring& GetCaption();
+        /*! \brief Get the button's caption text.
+            \return The button's caption text.
+            \todo Remove STL use.
+        */
+        std::wstring& GetCaption();
 
-    /** \copydoc Widget::OnMouseButtonDown */
-    virtual void OnMouseButtonDown ( uint8_t button, uint16_t x, uint16_t y );
-    /** \copydoc Widget::OnMouseButtonUp */
-    virtual void OnMouseButtonUp ( uint8_t button, uint16_t x, uint16_t y );
-protected:
-    virtual void OnRender ( Renderer* renderer );
-    std::wstring caption; ///< Button Text.
-    Image* normal;        ///< Default state image pointer.
-    Image* highlighted;   ///< Highlighed state image pointer.
-    Image* focused;       ///< Focused state image pointer.
-    Image* pressed;       ///< Pressed state image pointer.
-    BUTTONSTATE state;    ///< The button's current state
-};
+        /** \copydoc Widget::OnMouseButtonDown */
+        virtual void OnMouseButtonDown ( uint8_t button, uint16_t x, uint16_t y );
+        /** \copydoc Widget::OnMouseButtonUp */
+        virtual void OnMouseButtonUp ( uint8_t button, uint16_t x, uint16_t y );
+    protected:
+        virtual void OnRender ( Renderer* renderer );
+        std::wstring caption; ///< Button Text.
+        Image* normal;        ///< Default state image pointer.
+        Image* highlighted;   ///< Highlighed state image pointer.
+        Image* focused;       ///< Focused state image pointer.
+        Image* pressed;       ///< Pressed state image pointer.
+        BUTTONSTATE state;    ///< The button's current state
+    };
 }
 #endif

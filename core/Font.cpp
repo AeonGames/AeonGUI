@@ -65,7 +65,7 @@ namespace AeonGUI
         memcpy ( glyphdata, ( ( ( unsigned char* ) data ) + sizeof ( FNTHeader ) ), sizeof ( Glyph ) *glyphcount );
         glyphmap = ( uint8_t* ) new uint8_t[map_width * map_height];
         memcpy ( glyphmap, ( ( ( unsigned char* ) data ) + sizeof ( FNTHeader ) + sizeof ( Glyph ) *glyphcount ), sizeof ( unsigned char ) *map_width * map_height );
-#if 1
+#if 0
         std::cout << "ID: " << header->id << std::endl;
         std::cout << "Glyph Count: " << glyphcount << std::endl;
         std::cout << "Map Width: " << map_width << std::endl;
@@ -131,6 +131,69 @@ namespace AeonGUI
         Font ( ( void* ) buffer, length );
         delete[] buffer;
     }
+
+    Font::~Font()
+    {
+        if ( NULL != glyphdata )
+        {
+            delete[] glyphdata;
+        }
+        if ( NULL != glyphmap )
+        {
+            delete[] glyphmap;
+        }
+    }
+
+    uint32_t Font::GetGlyphCount()
+    {
+        return glyphcount;
+    }
+
+    uint32_t Font::GetMapWidth()
+    {
+        return map_width;
+    }
+
+    uint32_t Font::GetMapHeight()
+    {
+        return map_height;
+    }
+
+    uint16_t Font::GetNominalWidth()
+    {
+        return nominal_width;
+    }
+
+    uint16_t Font::GetNominalHeight()
+    {
+        return nominal_height;
+    }
+
+    int16_t Font::GetAscender()
+    {
+        return ascender;
+    }
+
+    int16_t Font::GetDescender() const
+    {
+        return descender;
+    }
+
+    uint16_t Font::GetHeight() const
+    {
+        return height;
+    }
+
+    int16_t Font::GetMaxAdvance()
+    {
+        return max_advance;
+    }
+
+    const uint8_t* Font::GetGlyphMap()
+    {
+        return glyphmap;
+    }
+
     Font::Glyph* Font::GetGlyph ( wchar_t charcode )
     {
         return ( Glyph* ) bsearch ( ( void* ) ( &charcode ), glyphdata, glyphcount, sizeof ( Glyph ), glyphcompar );
