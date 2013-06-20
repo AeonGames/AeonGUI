@@ -17,7 +17,7 @@ Copyright 2010-2012 Rodrigo Hernandez Cordoba
 ******************************************************************************/
 #include "Widget.h"
 #include "Image.h"
-#include <string>
+#include <cstring>
 
 namespace AeonGUI
 {
@@ -55,9 +55,8 @@ namespace AeonGUI
 
         /*! \brief Sets the caption text for the button.
             \param newcaption [in] The caption text to be set.
-            \todo remove STL use.
         */
-        void SetCaption ( std::wstring& newcaption );
+        void SetCaption ( wchar_t* newcaption );
 
         /*! \brief Get the pointer to the current default state image.
             \return Image object pointer.
@@ -76,9 +75,8 @@ namespace AeonGUI
 
         /*! \brief Get the button's caption text.
             \return The button's caption text.
-            \todo Remove STL use.
         */
-        std::wstring& GetCaption();
+        const wchar_t* GetCaption();
 
         /** \copydoc Widget::OnMouseButtonDown */
         virtual void OnMouseButtonDown ( uint8_t button, uint16_t x, uint16_t y );
@@ -86,7 +84,7 @@ namespace AeonGUI
         virtual void OnMouseButtonUp ( uint8_t button, uint16_t x, uint16_t y );
     protected:
         virtual void OnRender ( Renderer* renderer );
-        std::wstring caption; ///< Button Text.
+        wchar_t* caption; ///< Button Text.
         Image* normal;        ///< Default state image pointer.
         Image* highlighted;   ///< Highlighed state image pointer.
         Image* focused;       ///< Focused state image pointer.

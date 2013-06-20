@@ -20,13 +20,20 @@ Copyright 2010-2012 Rodrigo Hernandez Cordoba
 namespace AeonGUI
 {
     Button::Button() :
+        caption ( NULL ),
         normal ( NULL ),
         highlighted ( NULL ),
         focused ( NULL ),
         pressed ( NULL ),
         state ( DEFAULT ) {}
 
-    Button::~Button() {}
+    Button::~Button()
+    {
+        if ( caption != NULL )
+        {
+            delete[] caption;
+        }
+    }
 
     void Button::SetNormalImage ( Image* image )
     {
@@ -43,9 +50,19 @@ namespace AeonGUI
         pressed = image;
     }
 
-    void Button::SetCaption ( std::wstring& newcaption )
+    void Button::SetCaption ( wchar_t* newcaption )
     {
-        caption = newcaption;
+        size_t len = wcslen ( newcaption );
+        if ( caption != NULL )
+        {
+            delete[] caption;
+        }
+        if ( len == 0 )
+        {
+            return;
+        }
+        caption = new wchar_t[len + 1];
+        wcscpy ( caption, newcaption );
     }
 
     Image* Button::GetNormalImage()
@@ -63,7 +80,7 @@ namespace AeonGUI
         return pressed;
     }
 
-    std::wstring& Button::GetCaption()
+    const wchar_t* Button::GetCaption()
     {
         return caption;
     }
@@ -98,9 +115,9 @@ namespace AeonGUI
             }
             break;
         }
-        if ( !caption.empty() )
+        if ( caption != NULL )
         {
-            DrawString ( renderer, textcolor, 0, 0, caption.c_str() );
+            DrawString ( renderer, textcolor, 0, 0, caption );
         }
     }
 
