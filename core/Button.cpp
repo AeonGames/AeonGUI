@@ -19,6 +19,55 @@ Copyright 2010-2012 Rodrigo Hernandez Cordoba
 
 namespace AeonGUI
 {
+    Button::Button() :
+        normal ( NULL ),
+        highlighted ( NULL ),
+        focused ( NULL ),
+        pressed ( NULL ),
+        state ( DEFAULT ) {}
+
+    Button::~Button() {}
+
+    void Button::SetNormalImage ( Image* image )
+    {
+        normal = image;
+    }
+
+    void Button::SetFocusedImage ( Image* image )
+    {
+        focused = image;
+    }
+
+    void Button::SetPressedImage ( Image* image )
+    {
+        pressed = image;
+    }
+
+    void Button::SetCaption ( std::wstring& newcaption )
+    {
+        caption = newcaption;
+    }
+
+    Image* Button::GetNormalImage()
+    {
+        return normal;
+    }
+
+    Image* Button::GetFocusedImage()
+    {
+        return focused;
+    }
+
+    Image* Button::GetPressedImage()
+    {
+        return pressed;
+    }
+
+    std::wstring& Button::GetCaption()
+    {
+        return caption;
+    }
+
     void Button::OnRender ( Renderer* renderer )
     {
         Widget::OnRender ( renderer );

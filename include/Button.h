@@ -21,8 +21,7 @@ Copyright 2010-2012 Rodrigo Hernandez Cordoba
 
 namespace AeonGUI
 {
-    /*! \brief Common push button.
-        \todo Remove inlines, move implementations to source file.*/
+    /*! \brief Common push button. */
     class Button : public Widget
     {
     public:
@@ -34,85 +33,65 @@ namespace AeonGUI
             FOCUSED,
             PRESSED
         };
-        Button() :
-            normal ( NULL ),
-            highlighted ( NULL ),
-            focused ( NULL ),
-            pressed ( NULL ),
-            state ( DEFAULT )
-        {}
-        virtual ~Button()
-        {}
+
+        Button();
+
+        virtual ~Button();
+
         /*! \brief Set the image to be used for the default state.
             \param image [in] Pointer to the Image object to be used.
         */
-        inline void SetNormalImage ( Image* image )
-        {
-            normal = image;
-        }
-        /*! \brief Set the image to be used for the focused state.
-            \param image [in] Pointer to the Image object to be used.
-        */
-        inline void SetFocusedImage ( Image* image )
-        {
-            focused = image;
-        }
-        /*! \brief Set the image to be used for the pressed state.
-            \param image [in] Pointer to the Image object to be used.
-        */
-        inline void SetPressedImage ( Image* image )
-        {
-            pressed = image;
-        }
-        /*! \brief Sets the caption text for the button.
-            \param newcaption [in] The caption text to be set.
-            \todo remove STL use.
-        */
-        inline void SetCaption ( std::wstring& newcaption )
-        {
-            caption = newcaption;
-        }
-        /*! \brief Get the pointer to the current default state image.
-            \return Image object pointer.
-        */
-        inline Image* GetNormalImage()
-        {
-            return normal;
-        }
-        /*! \brief Get the pointer to the current focused state image.
-            \return Image object pointer.
-        */
-        inline Image* GetFocusedImage()
-        {
-            return focused;
-        }
-        /*! \brief Get the pointer to the current pressed state image.
-            \return Image object pointer.
-        */
-        inline Image* GetPressedImage()
-        {
-            return pressed;
-        }
-        /*! \brief Get the button's caption text.
-            \return The button's caption text.
-            \todo Remove STL use.
-        */
-        inline std::wstring& GetCaption()
-        {
-            return caption;
-        }
-        /** \copydoc Widget::OnMouseButtonDown */
-        virtual void OnMouseButtonDown ( uint8_t button, uint16_t x, uint16_t y );
-        /** \copydoc Widget::OnMouseButtonUp */
-        virtual void OnMouseButtonUp ( uint8_t button, uint16_t x, uint16_t y );
-    protected:
-        virtual void OnRender ( Renderer* renderer );
-        std::wstring caption; ///< Button Text.
-        Image* normal;        ///< Default state image pointer.
-        Image* highlighted;   ///< Highlighed state image pointer.
-        Image* focused;       ///< Focused state image pointer.
-        Image* pressed;       ///< Pressed state image pointer.
-        BUTTONSTATE state;    ///< The button's current state
-    };
+    void SetNormalImage ( Image* image );
+
+    /*! \brief Set the image to be used for the focused state.
+        \param image [in] Pointer to the Image object to be used.
+    */
+    void SetFocusedImage ( Image* image );
+
+    /*! \brief Set the image to be used for the pressed state.
+        \param image [in] Pointer to the Image object to be used.
+    */
+    void SetPressedImage ( Image* image );
+
+    /*! \brief Sets the caption text for the button.
+        \param newcaption [in] The caption text to be set.
+        \todo remove STL use.
+    */
+    void SetCaption ( std::wstring& newcaption );
+
+    /*! \brief Get the pointer to the current default state image.
+        \return Image object pointer.
+    */
+    Image* GetNormalImage();
+
+    /*! \brief Get the pointer to the current focused state image.
+        \return Image object pointer.
+    */
+    Image* GetFocusedImage();
+
+    /*! \brief Get the pointer to the current pressed state image.
+        \return Image object pointer.
+    */
+    Image* GetPressedImage();
+
+    /*! \brief Get the button's caption text.
+        \return The button's caption text.
+        \todo Remove STL use.
+    */
+    std::wstring& GetCaption();
+
+    /** \copydoc Widget::OnMouseButtonDown */
+    virtual void OnMouseButtonDown ( uint8_t button, uint16_t x, uint16_t y );
+    /** \copydoc Widget::OnMouseButtonUp */
+    virtual void OnMouseButtonUp ( uint8_t button, uint16_t x, uint16_t y );
+protected:
+    virtual void OnRender ( Renderer* renderer );
+    std::wstring caption; ///< Button Text.
+    Image* normal;        ///< Default state image pointer.
+    Image* highlighted;   ///< Highlighed state image pointer.
+    Image* focused;       ///< Focused state image pointer.
+    Image* pressed;       ///< Pressed state image pointer.
+    BUTTONSTATE state;    ///< The button's current state
+};
 }
 #endif
