@@ -393,21 +393,20 @@ namespace AeonGUI
 
     void Widget::Render ( Renderer* renderer )
     {
-        OnRender ( renderer );
-        Widget* child = children;
-        while ( child != NULL )
+        if ( !hidden )
         {
-            child->Render ( renderer );
-            child = child->next;
+            OnRender ( renderer );
+            Widget* child = children;
+            while ( child != NULL )
+            {
+                child->Render ( renderer );
+                child = child->next;
+            }
         }
     }
 
     void Widget::OnRender ( Renderer* renderer )
     {
-        if ( hidden )
-        {
-            return;
-        }
         Rect local_rect ( 0, 0, rect.GetWidth(), rect.GetHeight() );
         assert ( renderer != NULL );
         if ( drawfilled )

@@ -21,6 +21,7 @@ Copyright 2010-2013 Rodrigo Hernandez Cordoba
 #include "Integer.h"
 namespace AeonGUI
 {
+    /// OpenGL Renderer class.
     class OpenGLRenderer : public Renderer
     {
     public:

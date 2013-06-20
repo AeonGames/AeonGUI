@@ -164,7 +164,7 @@ void Window::Initialize ( HINSTANCE hInstance )
 #ifdef USE_PNG
     aeongui_logo->LoadFromFile ( "AeonGUILogoBlBkg.png" );
 #else
-    aeongui_logo->LoadFromFile ( "AeonGUILogoBlBkg.9.pcx" );
+    aeongui_logo->LoadFromFile ( "AeonGUILogoBlBkg.pcx" );
     //aeongui_logo->LoadFromFile ( "ScaleTest.pcx" );
 #endif
     font = new AeonGUI::Font ( Vera.data, Vera.size );

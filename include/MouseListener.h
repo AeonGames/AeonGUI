@@ -20,6 +20,7 @@ Copyright 2010-2012 Rodrigo Hernandez Cordoba
 namespace AeonGUI
 {
     class Widget;
+    /// Mouse Listener interface.
     class MouseListener
     {
     public:

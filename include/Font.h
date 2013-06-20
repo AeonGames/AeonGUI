@@ -20,24 +20,39 @@ Copyright 2010-2012 Rodrigo Hernandez Cordoba
 #include "Integer.h"
 namespace AeonGUI
 {
+    /*! \brief Raster Font class.
+        \note This class has to change to accomodate for multiple font formats.
+        \todo Remove inlines, move implementations to source file.
+        \todo Remove constructor is initialization design.
+    */
     class Font
     {
     public:
+        /// Font Glyph data.
         struct Glyph
         {
-            uint32_t charcode;
-            uint16_t width;
-            uint16_t height;
-            uint16_t min[2];
-            uint16_t max[2];
-            float normalized_min[2];
-            float normalized_max[2];
-            int16_t top;
-            int16_t left;
-            int16_t advance[2];
+            uint32_t charcode; ///< Wide character character code.
+            uint16_t width;    ///< Glyph image width.
+            uint16_t height;   ///< Glyph image height.
+            uint16_t min[2];   ///< Bounding box minimums.
+            uint16_t max[2];   ///< Bounding box maximums.
+            float normalized_min[2]; ///< Bounding box normalized minimums.
+            float normalized_max[2]; ///< Bounding box normalized maximums.
+            int16_t top;             ///< Glyph top.
+            int16_t left;            ///< Glyph left.
+            int16_t advance[2];      ///< Glyph x and y advance.
         };
+        /*! \brief Constructor from memory buffer.
+            \param data Font file memory buffer.
+            \param size Font file memory buffer size in bytes.
+        */
         Font ( void* data, size_t size );
+
+        /*! \brief Constructor from file.
+            \param filename font file file path.
+        */
         Font ( const char* filename );
+
         virtual ~Font()
         {
             if ( NULL != glyphdata )
@@ -49,61 +64,87 @@ namespace AeonGUI
                 delete[] glyphmap;
             }
         }
+
+        /*! \brief Get number of glyphs in font.
+            \return Glyph count.
+        */
         inline uint32_t GetGlyphCount()
         {
             return glyphcount;
         }
+
+        /*! \brief Get font bitmap width.
+            \return Font bitmap width.*/
         inline uint32_t GetMapWidth()
         {
             return map_width;
         }
+        /*! \brief Get font bitmap height.
+            \return Font bitmap height.*/
         inline uint32_t GetMapHeight()
         {
             return map_height;
         }
+        /*! \brief Get font nominal width.
+            \return Font bitmap width.*/
         inline uint16_t GetNominalWidth()
         {
             return nominal_width;
         }
+        /*! \brief Get font nominal height.
+            \return Font bitmap height.*/
         inline uint16_t GetNominalHeight()
         {
             return nominal_height;
         }
+        /*! \brief Get font ascender value.
+            \return Font ascender value.*/
         inline int16_t GetAscender()
         {
             return ascender;
         }
+        /*! \brief Get font descender value.
+            \return Font descender value.*/
         inline int16_t GetDescender() const
         {
             return descender;
         }
+        /*! \brief Get font height or size.
+            \return Font height.*/
         inline uint16_t GetHeight() const
         {
             return height;
         }
+        /*! \brief Get font maximum advance.
+            \return Font maximum advance.*/
         inline int16_t GetMaxAdvance()
         {
             return max_advance;
         }
+        /*! \brief Get a specific glyph.
+            \param charcode Unicode character code.
+            \return pointer to glyph structure or NULL if not found.*/
         Glyph* GetGlyph ( wchar_t charcode );
+        /*! \brief Get glyph bitmap.
+            \return pointer to glyph bitmap buffer.*/
         inline const uint8_t* GetGlyphMap()
         {
             return glyphmap;
         }
     protected:
-        bool isgood;
-        uint32_t glyphcount;
-        uint32_t map_width;
-        uint32_t map_height;
-        uint16_t nominal_width;
-        uint16_t nominal_height;
-        int16_t ascender;
-        int16_t descender;
-        uint16_t height;
-        int16_t max_advance;
+        bool isgood;            ///< Wether the constructor succeded in initializing the object.
+        uint32_t glyphcount;    ///< Number of glyphs contained in the font.
+        uint32_t map_width;     ///< Font bitmap width.
+        uint32_t map_height;    ///< Font bitmap height.
+        uint16_t nominal_width; ///< Font nominal width.
+        uint16_t nominal_height;///< Font nominal height.
+        int16_t ascender;       ///< Font ascender.
+        int16_t descender;      ///< Font descender.
+        uint16_t height;        ///< Font height or size
+        int16_t max_advance;    ///< Font maximum advance.
 
-        Glyph* glyphdata;
-        uint8_t* glyphmap;
+        Glyph* glyphdata;       ///< Pointer to glyph data array.
+        uint8_t* glyphmap;      ///< The font bitmap buffer.
     };
 }
 #endif

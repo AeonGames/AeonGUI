@@ -18,6 +18,7 @@ Copyright 2010-2012 Rodrigo Hernandez Cordoba
 #include "Integer.h"
 namespace AeonGUI
 {
+    /// Keyboard Listener interface.
     class KeyListener
     {
     public:

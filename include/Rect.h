@@ -17,7 +17,9 @@ Copyright 2010-2012 Rodrigo Hernandez Cordoba
 ******************************************************************************/
 namespace AeonGUI
 {
-    /*! \brief Rectangle class. */
+    /*! \brief Rectangle class.
+        \todo Remove inlines, move implementations to source file.
+    */
     class Rect
     {
     public:
@@ -72,6 +74,20 @@ namespace AeonGUI
             width = right - left;
             height = bottom - top;
         }
+        /*! \brief Get X coordinate.
+            \return Value of the rect's X coordinate.
+        */
+        inline int32_t GetX()
+        {
+            return left;
+        }
+        /*! \brief Get X coordinate.
+            \return Value of the rect's X coordinate.
+        */
+        inline int32_t GetY()
+        {
+            return top;
+        }
         //@}
         /*! \name Setters */
         //@{
@@ -85,25 +101,19 @@ namespace AeonGUI
         {
             bottom = top + height;
         }
-        /// Set X coordinate.
+        /*! \brief Set X coordinate.
+            \param X Value to set the X coordinate of the rect to.
+        */
         inline void SetX ( int X )
         {
             right = X + right - left;
             left = X;
-        }
-        inline int32_t GetX()
-        {
-            return left;
         }
         /// Set Y coordinate
         inline void SetY ( int Y )
         {
             bottom = Y + bottom - top;
             top = Y;
-        }
-        inline int32_t GetY()
-        {
-            return top;
         }
 
         /// Set left bound.
@@ -137,6 +147,12 @@ namespace AeonGUI
             right = X2;
             bottom = Y2;
         }
+        /*! \brief Set Rect absolute position.
+            Unlike Rect::Move, this function sets the poisition without regard to the current values.
+            \param X Position's X coordinate.
+            \param Y Position's Y coordinate.
+            \sa Rect::Move
+        */
         inline void SetPosition ( int X, int Y )
         {
             right = X + right - left;
@@ -144,6 +160,13 @@ namespace AeonGUI
             left = X;
             top = Y;
         }
+        /*! \brief Set Rect relative position from current one.
+            Unlike Rect::SetPosition, this function sets the poisition with regard to the current values,
+            that is the new position is calculated relative to the current one.
+            \param X Position's X coordinate.
+            \param Y Position's Y coordinate.
+            \sa Rect::SetPosition
+        */
         inline void Move ( int X, int Y )
         {
             left += X;
@@ -151,12 +174,21 @@ namespace AeonGUI
             right += X;
             bottom += Y;
         }
+        /*! \brief Set the Rect's dimensions (Width and Height).
+            \param width Rect width.
+            \param height Rect height.
+        */
         inline void SetDimensions ( int width, int height )
         {
             right = left + width;
             bottom = top + height;
         }
         //@}
+        /*! \brief Test to find out if a point (x,y) lays inside the rect perimeter.
+            \param x Point's X coordinate.
+            \param y Point's Y coordinate.
+            \return Wether or not the point x,y lies inside the rect perimeter.
+        */
         inline bool IsPointInside ( int x, int y )
         {
             if ( ( x < left ) || ( y < top ) || ( x > right ) || ( y > bottom ) )

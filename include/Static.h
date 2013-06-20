@@ -21,6 +21,7 @@ Copyright 2010-2012 Rodrigo Hernandez Cordoba
 
 namespace AeonGUI
 {
+    /// Static control widget.
     class Static : public Widget
     {
     public:

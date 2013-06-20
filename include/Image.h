@@ -28,12 +28,13 @@ namespace AeonGUI
     class Image
     {
     public:
-
+        /// Type or size of each color element.
         enum Type
         {
             BYTE // one byte per color component
         };
 
+        /// Image data color element order.
         enum Format
         {
             RGB,
@@ -62,15 +63,18 @@ namespace AeonGUI
         a bare build of the library (no external dependencies), will only look for and process PCX images.
         \param filename Path to the file to load.
         \return true on success, false otherwise.
+        \sa Image::LoadFromFile
         */
         bool LoadFromFile ( const char* filename );
 
         /*!
         \brief Loads an image from a file in memory.
-        \copydoc Image::LoadFromFile
+        The function tries to guess the file format based on the file or memory magic number,
+        a bare build of the library (no external dependencies), will only look for and process PCX images.
         \param buffer_size Size in bytes of the provided buffer.
         \param buffer Pointer to the buffer containing image data.
         \return true on success, false otherwise.
+        \sa Image::Load
         */
         bool LoadFromMemory ( uint32_t buffer_size, void* buffer );
 
