@@ -32,9 +32,16 @@ public:
     const uint8_t* GetPixels();
     uint8_t GetNumBitPlanes();
     bool IsPatch9();
+    uint16_t GetXStartStretch();
+    uint16_t GetXEndStretch();
+    uint16_t GetXStartPad();
+    uint16_t GetXEndPad();
+    uint16_t GetYStartStretch();
+    uint16_t GetYEndStretch();
+    uint16_t GetYStartPad();
+    uint16_t GetYEndPad();
 private:
-    bool patch9;
-    uint32_t FillPixels ( uint32_t width, uint32_t height, void* buffer, uint32_t buffer_size );
+    uint32_t PadPixels ( uint32_t width, uint32_t height, void* buffer, uint32_t buffer_size );
     struct Header
     {
         uint8_t  Identifier;        // PCX Id Number (Always 0x0A)
@@ -54,7 +61,15 @@ private:
         uint16_t PaletteType;       // Palette Type
         uint16_t HorzScreenSize;    // Horizontal Screen Size
         uint16_t VertScreenSize;    // Vertical Screen Size
-        uint8_t  Reserved2[54];     // Reserved (Always 0)
+        uint16_t XStartStretch;      // Patch 9 start stretch coordinate (Unofficial feature)
+        uint16_t XEndStretch;        // Patch 9 end stretch coordinate (Unofficial feature)
+        uint16_t XStartPad;         // Patch 9 start Pad coordinate (Unofficial feature)
+        uint16_t XEndPad;           // Patch 9 end Pad coordinate (Unofficial feature)
+        uint16_t YStartStretch;      // Patch 9 start stretch coordinate (Unofficial feature)
+        uint16_t YEndStretch;        // Patch 9 end stretch coordinate (Unofficial feature)
+        uint16_t YStartPad;         // Patch 9 start Pad coordinate (Unofficial feature)
+        uint16_t YEndPad;           // Patch 9 end Pad coordinate (Unofficial feature)
+        uint8_t  Reserved2[38];     // Reserved (Always 0, should be 54, but 8 bytes are taken by the unofficial patch 9 support)
     };
     Header header;
     uint8_t* pixels;

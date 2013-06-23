@@ -105,9 +105,17 @@ namespace AeonGUI
         const Color* GetBitmap() const;
 
     private:
-        bool patch9;
         uint32_t width;
         uint32_t height;
+        //bool patch9;
+        uint32_t xstartstretch;     ///< Patch 9 start stretch coordinate.
+        uint32_t xendstretch;       ///< Patch 9 end stretch coordinate.
+        uint32_t xstartpad;         ///< Patch 9 start fill coordinate.
+        uint32_t xendpad;           ///< Patch 9 end fill coordinate.
+        uint32_t ystartstretch;     ///< Patch 9 start stretch coordinate.
+        uint32_t yendstretch;       ///< Patch 9 end stretch coordinate.
+        uint32_t ystartpad;         ///< Patch 9 start fill coordinate.
+        uint32_t yendpad;           ///< Patch 9 end fill coordinate.
         Color* bitmap;
     };
 }

@@ -18,7 +18,6 @@ Copyright 2010-2012 Rodrigo Hernandez Cordoba
 #include <fstream>
 
 Pcx::Pcx() :
-    patch9 ( false ),
     pixels ( NULL ),
     pixels_size ( 0 )
 {
@@ -27,7 +26,8 @@ Pcx::Pcx() :
 
 bool Pcx::IsPatch9()
 {
-    return patch9;
+    return ( ( header.XStartStretch != 0 ) || ( header.XEndStretch != 0 ) || ( header.XStartPad != 0 ) || ( header.XEndPad != 0 ) ||
+             ( header.YStartStretch != 0 ) || ( header.YEndStretch != 0 ) || ( header.YStartPad != 0 ) || ( header.YEndPad != 0 ) );
 }
 
 Pcx::~Pcx()
@@ -50,13 +50,13 @@ bool Pcx::Encode ( uint32_t width, uint32_t height, void* buffer, uint32_t buffe
     header.NumBitPlanes = 3;
     header.BytesPerLine = width;
     header.PaletteType = 1;
-    pixels_size = FillPixels ( width, height, buffer, buffer_size );
+    pixels_size = PadPixels ( width, height, buffer, buffer_size );
     pixels = new uint8_t[pixels_size];
-    FillPixels ( width, height, buffer, buffer_size );
+    PadPixels ( width, height, buffer, buffer_size );
     return true;
 }
 
-uint32_t Pcx::FillPixels ( uint32_t width, uint32_t height, void* buffer, uint32_t buffer_size )
+uint32_t Pcx::PadPixels ( uint32_t width, uint32_t height, void* buffer, uint32_t buffer_size )
 {
     // This function is untested
     uint32_t datasize = 0;
@@ -144,6 +144,40 @@ uint8_t Pcx::GetNumBitPlanes()
     return header.NumBitPlanes;
 }
 
+uint16_t Pcx::GetXStartStretch()
+{
+    return header.XStartStretch;
+}
+uint16_t Pcx::GetXEndStretch()
+{
+    return header.XEndStretch;
+}
+uint16_t Pcx::GetXStartPad()
+{
+    return header.XStartPad;
+}
+uint16_t Pcx::GetXEndPad()
+{
+    return header.XEndPad;
+}
+
+uint16_t Pcx::GetYStartStretch()
+{
+    return header.YStartStretch;
+}
+uint16_t Pcx::GetYEndStretch()
+{
+    return header.YEndStretch;
+}
+uint16_t Pcx::GetYStartPad()
+{
+    return header.YStartPad;
+}
+uint16_t Pcx::GetYEndPad()
+{
+    return header.YEndPad;
+}
+
 bool Pcx::Decode ( uint32_t buffer_size, void* buffer )
 {
     memcpy ( &header, buffer, sizeof ( Header ) );
@@ -152,16 +186,6 @@ bool Pcx::Decode ( uint32_t buffer_size, void* buffer )
         // Support only file format version 5 for now.
         Unload();
         return false;
-    }
-
-    // Check for special patch9 mark on reserved bytes.
-    if ( ( header.Reserved2[0] == '.' ) && ( header.Reserved2[1] == '9' ) )
-    {
-        patch9 = true;
-    }
-    else
-    {
-        patch9 = false;
     }
 
     uint32_t scanline_length = header.NumBitPlanes * header.BytesPerLine;

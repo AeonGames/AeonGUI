@@ -1,6 +1,6 @@
 SET(WGL_SOURCES WindowsOpenGL.cpp  ../common/logo.c ../common/Vera.c ../common/glcommon.c)
 SET(WGL_HEADERS ../common/logo.h ../common/Vera.h ../common/glcommon.h)
-SET(WGL_DEPENDENCIES ${CMAKE_CURRENT_BINARY_DIR}/AeonGUILogoBlBkg.pcx ${CMAKE_CURRENT_BINARY_DIR}/ScaleTest.pcx)
+SET(WGL_DEPENDENCIES ${CMAKE_CURRENT_BINARY_DIR}/AeonGUILogoBlBkg.pcx ${CMAKE_CURRENT_BINARY_DIR}/ScaleTest.pcx ${CMAKE_CURRENT_BINARY_DIR}/Patch9Test.pcx)
 
 if(USE_PNG)
 SET(WGL_DEPENDENCIES ${WGL_DEPENDENCIES} ${CMAKE_CURRENT_BINARY_DIR}/AeonGUILogoBlBkg.png)
@@ -27,6 +27,14 @@ add_custom_command(OUTPUT
                         ${CMAKE_CURRENT_SOURCE_DIR}/../common/ScaleTest.pcx
                     WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
                     COMMENT "Copying ScaleTest.pcx" VERBATIM)
+
+add_custom_command(OUTPUT 
+                        ${CMAKE_CURRENT_BINARY_DIR}/patch9test.pcx
+                    COMMAND cmake -E copy ${CMAKE_CURRENT_SOURCE_DIR}/../common/patch9test.pcx ${CMAKE_CURRENT_BINARY_DIR}/patch9test.pcx
+                    DEPENDS 
+                        ${CMAKE_CURRENT_SOURCE_DIR}/../common/patch9test.pcx
+                    WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
+                    COMMENT "Copying patch9test.pcx" VERBATIM)
 
 
 ADD_EXECUTABLE(WindowsOpenGL ${WGL_SOURCES} ${WGL_HEADERS} ${WGL_DEPENDENCIES})

@@ -58,53 +58,215 @@ namespace AeonGUI
     }
 #endif
     Image::Image () :
-        patch9 ( false ),
         width ( 0 ),
         height ( 0 ),
+        xstartstretch ( 0 ),
+        xendstretch ( 0 ),
+        xstartpad ( 0 ),
+        xendpad ( 0 ),
+        ystartstretch ( 0 ),
+        yendstretch ( 0 ),
+        ystartpad ( 0 ),
+        yendpad ( 0 ),
         bitmap ( NULL )
     {
+    }
+
+
+    static bool GetPatch9DimensionsFromFrame ( const uint8_t* buffer, uint32_t length, uint32_t pitch, Image::Format format, uint32_t& start, uint32_t& end )
+    {
+        const uint32_t bpp = ( format == Image::RGB || format == Image::BGR ) ? 3 : 4;
+        const uint8_t* bytes = buffer;
+
+        start = 0;
+        end = 0;
+
+        // First and Last Pixel MUST be white with 0 alpha
+        if ( ! ( ( bytes[0] == bytes[1] ) && ( bytes[1] == bytes[2] ) &&  ( bytes[2] == 255 ) && ( ( bpp == 4 ) ? bytes[3] == 0 : true ) ) )
+        {
+            return false;
+        }
+        bytes = ( buffer ) + ( ( length - 1 ) * pitch * bpp );
+        if ( ! ( ( bytes[0] == bytes[1] ) && ( bytes[1] == bytes[2] ) &&  ( bytes[2] == 255 ) && ( ( bpp == 4 ) ? bytes[3] == 0 : true ) ) )
+        {
+            return false;
+        }
+
+        for ( uint32_t i = 0; i < length; ++i )
+        {
+            bytes = ( buffer ) + ( i * pitch * bpp );
+
+            if ( ( ( bytes[0] == bytes[1] ) && ( bytes[1] == bytes[2] ) && ( bytes[2] == 0 ) && ( ( bpp == 4 ) ? bytes[3] == 255 : true ) ) )
+            {
+                // IF pixel is black with 255 alpha
+                if ( start == 0 )
+                {
+                    start = i;
+                }
+                else if ( end > 0 )
+                {
+                    // Black line restarts, not a patch 9 frame.
+                    start = 0;
+                    end = 0;
+                    return false;
+                }
+            }
+            else if ( ( ( bytes[0] == bytes[1] ) && ( bytes[1] == bytes[2] ) && ( bytes[2] == 255 ) && ( ( bpp == 4 ) ? bytes[3] == 0 : true ) ) )
+            {
+                // IF pixel is white with 0 alpha
+                if ( ( start > 0 ) && ( end == 0 ) )
+                {
+                    // Mark the end
+                    end = i;
+                }
+            }
+            else
+            {
+                start = 0;
+                end = 0;
+                return false;
+            }
+        }
+        if ( start == 0 && end == 0 )
+        {
+            // All white line, which is ok for Pad.
+            return false;
+        }
+        return true;
     }
 
     bool Image::Load ( uint32_t image_width, uint32_t image_height, Image::Format format, Image::Type type, const void* data )
     {
         assert ( data != NULL );
-        width = image_width;
-        height = image_height;
+        // Determine patch9 stretch and pad if any
+        bool haspatch9frame = true;
 
-        bitmap = new Color[width * height];
-
-        switch ( format )
+        if ( ( xstartstretch == 0 ) && ( ystartstretch == 0 ) && ( xendstretch == 0 ) && ( yendstretch == 0 ) && ( xstartpad == 0 ) && ( ystartpad == 0 ) && ( xendpad == 0 ) && ( yendpad == 0 ) )
         {
-        case RGB:
-            for ( uint32_t i = 0; i < ( width * height ); ++i )
+            // Stretch values are mandatory
+            haspatch9frame = GetPatch9DimensionsFromFrame ( reinterpret_cast<const uint8_t*> ( data ), image_width, 1, format, xstartstretch, xendstretch );
+            if ( haspatch9frame )
             {
-                bitmap[i].r = reinterpret_cast<const uint8_t*> ( data ) [ ( i * 3 ) + 0];
-                bitmap[i].g = reinterpret_cast<const uint8_t*> ( data ) [ ( i * 3 ) + 1];
-                bitmap[i].b = reinterpret_cast<const uint8_t*> ( data ) [ ( i * 3 ) + 2];
-                bitmap[i].a = 255;
+                haspatch9frame = GetPatch9DimensionsFromFrame ( reinterpret_cast<const uint8_t*> ( data ), image_height, image_width, format, ystartstretch, yendstretch );
             }
-            break;
-        case BGR:
-            for ( uint32_t i = 0; i < ( width * height ); ++i )
+            if ( haspatch9frame )
             {
-                bitmap[i].b = reinterpret_cast<const uint8_t*> ( data ) [ ( i * 3 ) + 0];
-                bitmap[i].g = reinterpret_cast<const uint8_t*> ( data ) [ ( i * 3 ) + 1];
-                bitmap[i].r = reinterpret_cast<const uint8_t*> ( data ) [ ( i * 3 ) + 2];
-                bitmap[i].a = 255;
+                // Pad values are optional (but the frame must still exist)
+                uint32_t bpp = ( format == RGB || format == BGR ) ? 3 : 4;
+                GetPatch9DimensionsFromFrame ( reinterpret_cast<const uint8_t*> ( data ) + ( ( image_width * ( image_height - 1 ) ) *bpp ), image_width, 1, format, xstartpad, xendpad );
+                GetPatch9DimensionsFromFrame ( reinterpret_cast<const uint8_t*> ( data ) + ( ( image_width - 1 ) *bpp ), image_height, image_width, format, ystartpad, yendpad );
             }
-            break;
-        case RGBA:
-            for ( uint32_t i = 0; i < ( width * height ); ++i )
+        }
+
+        if ( haspatch9frame )
+        {
+            // Adjust stretch and pad
+            xstartstretch -= 1;
+            xendstretch -= 1;
+            ystartstretch -= 1;
+            yendstretch -= 1;
+            xstartpad = ( xstartpad == 0 ) ? 0 : xstartpad - 1;
+            xendpad = ( xendpad == 0 ) ? 0 : xendpad - 1;
+            ystartpad = ( ystartpad == 0 ) ? 0 : ystartpad - 1;
+            yendpad = ( yendpad == 0 ) ? 0 : yendpad - 1;
+
+            // Adjust dimensions
+            width = image_width - 2;
+            height = image_height - 2;
+
+            bitmap = new Color[width * height];
+            switch ( format )
             {
-                bitmap[i].r = reinterpret_cast<const uint8_t*> ( data ) [ ( i * 4 ) + 0];
-                bitmap[i].g = reinterpret_cast<const uint8_t*> ( data ) [ ( i * 4 ) + 1];
-                bitmap[i].b = reinterpret_cast<const uint8_t*> ( data ) [ ( i * 4 ) + 2];
-                bitmap[i].a = reinterpret_cast<const uint8_t*> ( data ) [ ( i * 4 ) + 3];
+            case RGB:
+                for ( uint32_t sy = 1, dy = 0; sy <= height; ++sy, ++dy )
+                {
+                    for ( uint32_t sx = 1, dx = 0; sx <= width; ++sx, ++dx )
+                    {
+                        bitmap[ ( dy * width ) + ( dx )].r = reinterpret_cast<const uint8_t*> ( data ) [ ( ( sy * image_width * 3 ) + ( sx * 3 ) ) + 0];
+                        bitmap[ ( dy * width ) + ( dx )].g = reinterpret_cast<const uint8_t*> ( data ) [ ( ( sy * image_width * 3 ) + ( sx * 3 ) ) + 1];
+                        bitmap[ ( dy * width ) + ( dx )].b = reinterpret_cast<const uint8_t*> ( data ) [ ( ( sy * image_width * 3 ) + ( sx * 3 ) ) + 2];
+                        bitmap[ ( dy * width ) + ( dx )].a = 255;
+                    }
+                }
+                break;
+            case BGR:
+                for ( uint32_t sy = 1, dy = 0; sy <= height; ++sy, ++dy )
+                {
+                    for ( uint32_t sx = 1, dx = 0; sx <= width; ++sx, ++dx )
+                    {
+                        bitmap[ ( dy * width ) + ( dx )].b = reinterpret_cast<const uint8_t*> ( data ) [ ( ( sy * image_width * 3 ) + ( sx * 3 ) ) + 0];
+                        bitmap[ ( dy * width ) + ( dx )].g = reinterpret_cast<const uint8_t*> ( data ) [ ( ( sy * image_width * 3 ) + ( sx * 3 ) ) + 1];
+                        bitmap[ ( dy * width ) + ( dx )].r = reinterpret_cast<const uint8_t*> ( data ) [ ( ( sy * image_width * 3 ) + ( sx * 3 ) ) + 2];
+                        bitmap[ ( dy * width ) + ( dx )].a = 255;
+                    }
+                }
+                break;
+            case RGBA:
+                for ( uint32_t sy = 1, dy = 0; sy <= height; ++sy, ++dy )
+                {
+                    for ( uint32_t sx = 1, dx = 0; sx <= width; ++sx, ++dx )
+                    {
+                        bitmap[ ( dy * width ) + ( dx )].r = reinterpret_cast<const uint8_t*> ( data ) [ ( ( sy * image_width * 3 ) + ( sx * 3 ) ) + 0];
+                        bitmap[ ( dy * width ) + ( dx )].g = reinterpret_cast<const uint8_t*> ( data ) [ ( ( sy * image_width * 3 ) + ( sx * 3 ) ) + 1];
+                        bitmap[ ( dy * width ) + ( dx )].b = reinterpret_cast<const uint8_t*> ( data ) [ ( ( sy * image_width * 3 ) + ( sx * 3 ) ) + 2];
+                        bitmap[ ( dy * width ) + ( dx )].a = reinterpret_cast<const uint8_t*> ( data ) [ ( ( sy * image_width * 3 ) + ( sx * 3 ) ) + 3];
+                    }
+                }
+                break;
+            case BGRA:
+                for ( uint32_t sy = 1, dy = 0; sy <= height; ++sy, ++dy )
+                {
+                    for ( uint32_t sx = 1, dx = 0; sx <= width; ++sx, ++dx )
+                    {
+                        bitmap[ ( dy * width ) + ( dx )].b = reinterpret_cast<const uint8_t*> ( data ) [ ( ( sy * image_width * 3 ) + ( sx * 3 ) ) + 0];
+                        bitmap[ ( dy * width ) + ( dx )].g = reinterpret_cast<const uint8_t*> ( data ) [ ( ( sy * image_width * 3 ) + ( sx * 3 ) ) + 1];
+                        bitmap[ ( dy * width ) + ( dx )].r = reinterpret_cast<const uint8_t*> ( data ) [ ( ( sy * image_width * 3 ) + ( sx * 3 ) ) + 2];
+                        bitmap[ ( dy * width ) + ( dx )].a = reinterpret_cast<const uint8_t*> ( data ) [ ( ( sy * image_width * 3 ) + ( sx * 3 ) ) + 3];
+                    }
+                }
+                break;
             }
-            break;
-        case BGRA:
-            memcpy ( bitmap, data, sizeof ( Color ) * width * height );
-            break;
+        }
+        else
+        {
+            width = image_width;
+            height = image_height;
+
+            bitmap = new Color[width * height];
+
+            switch ( format )
+            {
+            case RGB:
+                for ( uint32_t i = 0; i < ( width * height ); ++i )
+                {
+                    bitmap[i].r = reinterpret_cast<const uint8_t*> ( data ) [ ( i * 3 ) + 0];
+                    bitmap[i].g = reinterpret_cast<const uint8_t*> ( data ) [ ( i * 3 ) + 1];
+                    bitmap[i].b = reinterpret_cast<const uint8_t*> ( data ) [ ( i * 3 ) + 2];
+                    bitmap[i].a = 255;
+                }
+                break;
+            case BGR:
+                for ( uint32_t i = 0; i < ( width * height ); ++i )
+                {
+                    bitmap[i].b = reinterpret_cast<const uint8_t*> ( data ) [ ( i * 3 ) + 0];
+                    bitmap[i].g = reinterpret_cast<const uint8_t*> ( data ) [ ( i * 3 ) + 1];
+                    bitmap[i].r = reinterpret_cast<const uint8_t*> ( data ) [ ( i * 3 ) + 2];
+                    bitmap[i].a = 255;
+                }
+                break;
+            case RGBA:
+                for ( uint32_t i = 0; i < ( width * height ); ++i )
+                {
+                    bitmap[i].r = reinterpret_cast<const uint8_t*> ( data ) [ ( i * 4 ) + 0];
+                    bitmap[i].g = reinterpret_cast<const uint8_t*> ( data ) [ ( i * 4 ) + 1];
+                    bitmap[i].b = reinterpret_cast<const uint8_t*> ( data ) [ ( i * 4 ) + 2];
+                    bitmap[i].a = reinterpret_cast<const uint8_t*> ( data ) [ ( i * 4 ) + 3];
+                }
+                break;
+            case BGRA:
+                memcpy ( bitmap, data, sizeof ( Color ) * width * height );
+                break;
+            }
         }
         return true;
     }
@@ -145,18 +307,7 @@ namespace AeonGUI
         uint32_t buffer_size = 0;
         bool retval;
         std::ifstream file;
-#ifdef WIN32
-        size_t fnamelen;
-        char fname[_MAX_FNAME];
-        _splitpath ( filename, NULL, NULL, fname, NULL );
-        fnamelen = strlen ( fname );
-        if ( ( fname[fnamelen - 1] == '9' ) && ( fname[fnamelen - 2] == '.' ) )
-        {
-            patch9 = true;
-        }
-#else
-        ///\todo Implement POSIX or otherwise _splitpath version here.
-#endif
+
         file.open ( filename, std::ios_base::in | std::ios_base::binary );
         if ( !file.is_open() )
         {
@@ -186,7 +337,17 @@ namespace AeonGUI
             {
                 return false;
             }
-            patch9 = pcx.IsPatch9();
+
+            // If the patch9 values are embeded into the image, get them.
+            xstartstretch = static_cast<int32_t> ( pcx.GetXStartStretch() );
+            xendstretch = static_cast<int32_t> ( pcx.GetXEndStretch() );
+            xstartpad = static_cast<int32_t> ( pcx.GetXStartPad() );
+            xendpad = static_cast<int32_t> ( pcx.GetXEndPad() );
+            ystartstretch = static_cast<int32_t> ( pcx.GetYStartStretch() );
+            yendstretch = static_cast<int32_t> ( pcx.GetYEndStretch() );
+            ystartpad = static_cast<int32_t> ( pcx.GetYStartPad() );
+            yendpad = static_cast<int32_t> ( pcx.GetYEndPad() );
+
             if ( pcx.GetNumBitPlanes() == 3 )
             {
                 return Load ( pcx.GetWidth(), pcx.GetHeight(), RGB, BYTE, pcx.GetPixels() );
