@@ -298,6 +298,14 @@ namespace AeonGUI
         uint32_t image_w = image->GetWidth();
         uint32_t image_h = image->GetHeight();
 
+        uint32_t stretch_start_x = image->GetStretchStartX();
+        uint32_t stretch_end_x = image->GetStretchEndX();
+        uint32_t stretch_width = stretch_end_x - stretch_start_x;
+
+        uint32_t stretch_start_y = image->GetStretchStartY();
+        uint32_t stretch_end_y = image->GetStretchEndY();
+        uint32_t stretch_height = stretch_end_y - stretch_start_y;
+
         switch ( algorithm )
         {
         case NEAREST:
@@ -345,7 +353,7 @@ namespace AeonGUI
                     {
                         if ( ( sx >= 0 ) && ( sx < screen_w ) )
                         {
-                            pixels[ ( ( sy * screen_w ) + sx )].Blend ( image_bitmap[ ( ( iy * w ) + ix )] );
+                            pixels[ ( ( sy * screen_w ) + sx )].Blend ( image_bitmap[ ( ( iy * image_w ) + ix )] );
                         }
                         ++ix;
                     }
@@ -400,25 +408,29 @@ namespace AeonGUI
         else
         {
             // Both Horizontaly and Vertically Scaled
+#if 0
+            float ratio_w = static_cast<float> ( stretch_width ) / static_cast<float> ( w - ( image_w - stretch_width ) );
+            float ratio_h = static_cast<float> ( stretch_height ) / static_cast<float> ( h - ( image_h - stretch_height ) );
+#else
             float ratio_w = static_cast<float> ( image_w ) / static_cast<float> ( w );
             float ratio_h = static_cast<float> ( image_h ) / static_cast<float> ( h );
-
-            int32_t iy = 0;
-            for ( int32_t sy = y1; sy < y2; ++sy )
+#endif
+            /*
+            sx,sy are Screen coordinates.
+            ix,iy are Scaled Image coordinates.
+            */
+            for ( int32_t sy = y1, iy = 0; sy < y2; ++sy, ++iy )
             {
                 if ( ( sy >= 0 ) && ( sy < screen_h ) )
                 {
-                    int32_t ix = 0;
-                    for ( int32_t sx = x1; sx < x2; ++sx )
+                    for ( int32_t sx = x1, ix = 0; sx < x2; ++sx, ++ix )
                     {
                         if ( ( sx >= 0 ) && ( sx < screen_w ) )
                         {
                             pixels[ ( ( sy * screen_w ) + sx )].Blend ( Function2DInterpolation ( ix * ratio_w, iy * ratio_h, image_w, image_h, image_bitmap ) );
                         }
-                        ++ix;
                     }
                 }
-                ++iy;
             }
         }
     }

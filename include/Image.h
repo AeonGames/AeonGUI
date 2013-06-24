@@ -104,10 +104,50 @@ namespace AeonGUI
         */
         const Color* GetBitmap() const;
 
+        /*!
+        \brief Retrieve Starting X coordinate for patch 9 stretch area.
+        \return The starting X coordinate for patch 9 stretching.
+        */
+        uint32_t GetStretchStartX();
+        /*!
+        \brief Retrieve Starting Y coordinate for patch 9 stretch area.
+        \return The starting Y coordinate for patch 9 stretching.
+        */
+        uint32_t GetStretchStartY();
+        /*!
+        \brief Retrieve Starting X coordinate for patch 9 pad area.
+        \return The starting X coordinate for patch 9 padding.
+        */
+        uint32_t GetPadStartX();
+        /*!
+        \brief Retrieve Starting Y coordinate for patch 9 pad area.
+        \return The starting Y coordinate for patch 9 padding.
+        */
+        uint32_t GetPadStartY();
+        /*!
+        \brief Retrieve Ending X coordinate for patch 9 stretch area.
+        \return The ending X coordinate for patch 9 stretching.
+        */
+        uint32_t GetStretchEndX();
+        /*!
+        \brief Retrieve Ending Y coordinate for patch 9 stretch area.
+        \return The ending Y coordinate for patch 9 stretching.
+        */
+        uint32_t GetStretchEndY();
+        /*!
+        \brief Retrieve Ending X coordinate for patch 9 pad area.
+        \return The ending X coordinate for patch 9 padding.
+        */
+        uint32_t GetPadEndX();
+        /*!
+        \brief Retrieve Ending Y coordinate for patch 9 pad area.
+        \return The ending Y coordinate for patch 9 padding.
+        */
+        uint32_t GetPadEndY();
+
     private:
         uint32_t width;
         uint32_t height;
-        //bool patch9;
         uint32_t xstartstretch;     ///< Patch 9 start stretch coordinate.
         uint32_t xendstretch;       ///< Patch 9 end stretch coordinate.
         uint32_t xstartpad;         ///< Patch 9 start fill coordinate.

@@ -229,8 +229,8 @@ namespace AeonGUI
         }
         else
         {
-            width = image_width;
-            height = image_height;
+            xendstretch = width = image_width;
+            yendstretch = height = image_height;
 
             bitmap = new Color[width * height];
 
@@ -299,6 +299,46 @@ namespace AeonGUI
     const Color* Image::GetBitmap() const
     {
         return bitmap;
+    }
+
+    uint32_t Image::GetStretchStartX()
+    {
+        return xstartstretch;
+    }
+
+    uint32_t Image::GetStretchStartY()
+    {
+        return ystartstretch;
+    }
+
+    uint32_t Image::GetPadStartX()
+    {
+        return xstartpad;
+    }
+
+    uint32_t Image::GetPadStartY()
+    {
+        return ystartpad;
+    }
+
+    uint32_t Image::GetStretchEndX()
+    {
+        return xendstretch;
+    }
+
+    uint32_t Image::GetStretchEndY()
+    {
+        return yendstretch;
+    }
+
+    uint32_t Image::GetPadEndX()
+    {
+        return xendpad;
+    }
+
+    uint32_t Image::GetPadEndY()
+    {
+        return yendpad;
     }
 
     bool Image::LoadFromFile ( const char* filename )

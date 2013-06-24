@@ -29,12 +29,12 @@ add_custom_command(OUTPUT
                     COMMENT "Copying ScaleTest.pcx" VERBATIM)
 
 add_custom_command(OUTPUT 
-                        ${CMAKE_CURRENT_BINARY_DIR}/patch9test.pcx
-                    COMMAND cmake -E copy ${CMAKE_CURRENT_SOURCE_DIR}/../common/patch9test.pcx ${CMAKE_CURRENT_BINARY_DIR}/patch9test.pcx
+                        ${CMAKE_CURRENT_BINARY_DIR}/Patch9Test.pcx
+                    COMMAND cmake -E copy ${CMAKE_CURRENT_SOURCE_DIR}/../common/Patch9Test.pcx ${CMAKE_CURRENT_BINARY_DIR}/Patch9Test.pcx
                     DEPENDS 
-                        ${CMAKE_CURRENT_SOURCE_DIR}/../common/patch9test.pcx
+                        ${CMAKE_CURRENT_SOURCE_DIR}/../common/Patch9Test.pcx
                     WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
-                    COMMENT "Copying patch9test.pcx" VERBATIM)
+                    COMMENT "Copying Patch9Test.pcx" VERBATIM)
 
 
 ADD_EXECUTABLE(WindowsOpenGL ${WGL_SOURCES} ${WGL_HEADERS} ${WGL_DEPENDENCIES})
