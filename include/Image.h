@@ -108,54 +108,54 @@ namespace AeonGUI
         \brief Retrieve Starting X coordinate for patch 9 stretch area.
         \return The starting X coordinate for patch 9 stretching.
         */
-        uint32_t GetStretchStartX();
+        uint32_t GetStretchX();
         /*!
         \brief Retrieve Starting Y coordinate for patch 9 stretch area.
         \return The starting Y coordinate for patch 9 stretching.
         */
-        uint32_t GetStretchStartY();
+        uint32_t GetStretchY();
         /*!
         \brief Retrieve Starting X coordinate for patch 9 pad area.
         \return The starting X coordinate for patch 9 padding.
         */
-        uint32_t GetPadStartX();
+        uint32_t GetPadX();
         /*!
         \brief Retrieve Starting Y coordinate for patch 9 pad area.
         \return The starting Y coordinate for patch 9 padding.
         */
-        uint32_t GetPadStartY();
+        uint32_t GetPadY();
         /*!
         \brief Retrieve Ending X coordinate for patch 9 stretch area.
         \return The ending X coordinate for patch 9 stretching.
         */
-        uint32_t GetStretchEndX();
+        uint32_t GetStretchWidth();
         /*!
         \brief Retrieve Ending Y coordinate for patch 9 stretch area.
         \return The ending Y coordinate for patch 9 stretching.
         */
-        uint32_t GetStretchEndY();
+        uint32_t GetStretchHeight();
         /*!
         \brief Retrieve Ending X coordinate for patch 9 pad area.
         \return The ending X coordinate for patch 9 padding.
         */
-        uint32_t GetPadEndX();
+        uint32_t GetPadWidth();
         /*!
         \brief Retrieve Ending Y coordinate for patch 9 pad area.
         \return The ending Y coordinate for patch 9 padding.
         */
-        uint32_t GetPadEndY();
+        uint32_t GetPadHeight();
 
     private:
         uint32_t width;
         uint32_t height;
-        uint32_t xstartstretch;     ///< Patch 9 start stretch coordinate.
-        uint32_t xendstretch;       ///< Patch 9 end stretch coordinate.
-        uint32_t xstartpad;         ///< Patch 9 start fill coordinate.
-        uint32_t xendpad;           ///< Patch 9 end fill coordinate.
-        uint32_t ystartstretch;     ///< Patch 9 start stretch coordinate.
-        uint32_t yendstretch;       ///< Patch 9 end stretch coordinate.
-        uint32_t ystartpad;         ///< Patch 9 start fill coordinate.
-        uint32_t yendpad;           ///< Patch 9 end fill coordinate.
+        uint32_t stretchx;     ///< Patch 9 start stretch coordinate.
+        uint32_t stretchwidth;       ///< Patch 9 end stretch coordinate.
+        uint32_t padx;         ///< Patch 9 start fill coordinate.
+        uint32_t padwidth;           ///< Patch 9 end fill coordinate.
+        uint32_t stretchy;     ///< Patch 9 start stretch coordinate.
+        uint32_t stretchheight;       ///< Patch 9 end stretch coordinate.
+        uint32_t pady;         ///< Patch 9 start fill coordinate.
+        uint32_t padheight;           ///< Patch 9 end fill coordinate.
         Color* bitmap;
     };
 }
