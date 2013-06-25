@@ -108,6 +108,20 @@ namespace AeonGUI
         */
         void DrawImage ( Image* image, int32_t x, int32_t y, int32_t w = 0, int32_t h = 0, ResizeAlgorithm algorithm = NEAREST );
 
+        /*! \brief Draws a sub area of an image in screen space.
+            \param image [in] Pointer to the image object to draw.
+            \param x [in] X screen coordinate to draw the image.
+            \param y [in] Y screen coordinate to draw the image.
+            \param subx [in] Starting X image coordinate of the sub area.
+            \param suby [in] Starting Y image coordinate of the sub area.
+            \param subw [in] Sub Area Width.
+            \param subh [in] Sub area Height.
+            \param w [in] Optional width of the image to draw, used for scaling, if 0, the image is drawn horizontaly unscaled.
+            \param h [in] Optional height of the image to draw, used for scaling, if 0, the image is drawn verticaly unscaled.
+            \param algorithm [in] Optional enumeration value for the resize algorithm to be used, NEAREST is used by default.
+        */
+        void DrawSubImage ( Image* image, int32_t x, int32_t y, int32_t subx = 0, int32_t suby = 0, int32_t subw = 0, int32_t subh = 0, int32_t w = 0, int32_t h = 0, ResizeAlgorithm algorithm = NEAREST );
+
         /*! \brief Draw a string of text.
             \param color [in] Color to draw the string with.
             \param x [in] X coordinate to draw the string at.

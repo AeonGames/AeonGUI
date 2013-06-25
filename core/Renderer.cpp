@@ -262,11 +262,11 @@ namespace AeonGUI
     static Color NearestNeighbor1DInterpolation ( float x, const Color* samples, int32_t sample_count, uint32_t sample_stride )
     {
         int32_t fx = static_cast<int32_t> ( floorf ( x ) );
-        if ( ( x - fx ) < 0.5 )
+        if ( ( x - fx ) > 0.5 )
         {
-            return samples[ fx * sample_stride];
+            ++fx;
         }
-        return samples[ ( fx + 1 ) * sample_stride];
+        return samples[ fx * sample_stride];
     }
 
     static Color NearestNeighbor2DInterpolation ( float x, float y, uint32_t w, uint32_t h, const Color* buffer )
@@ -290,6 +290,11 @@ namespace AeonGUI
 
     void Renderer::DrawImage ( Image* image, int32_t x, int32_t y, int32_t w, int32_t h, ResizeAlgorithm algorithm )
     {
+        DrawSubImage ( image, x, y, 0, 0, 0, 0, w, h, algorithm );
+    }
+
+    void Renderer::DrawSubImage ( Image* image, int32_t x, int32_t y, int32_t subx, int32_t suby, int32_t subw, int32_t subh, int32_t w, int32_t h, ResizeAlgorithm algorithm )
+    {
         assert ( image != NULL );
 
         Color ( *Function1DInterpolation ) ( float, const Color*, int32_t, uint32_t );
@@ -297,14 +302,6 @@ namespace AeonGUI
 
         uint32_t image_w = image->GetWidth();
         uint32_t image_h = image->GetHeight();
-
-        uint32_t stretch_start_x = image->GetStretchStartX();
-        uint32_t stretch_end_x = image->GetStretchEndX();
-        uint32_t stretch_width = stretch_end_x - stretch_start_x;
-
-        uint32_t stretch_start_y = image->GetStretchStartY();
-        uint32_t stretch_end_y = image->GetStretchEndY();
-        uint32_t stretch_height = stretch_end_y - stretch_start_y;
 
         switch ( algorithm )
         {
@@ -318,13 +315,21 @@ namespace AeonGUI
             break;
         }
 
+        if ( subw == 0 )
+        {
+            subw = image_w - subx;
+        }
+        if ( subh == 0 )
+        {
+            subh = image_h - suby;
+        }
         if ( w == 0 )
         {
-            w = image_w;
+            w = subw;
         }
         if ( h == 0 )
         {
-            h = image_h;
+            h = subh;
         }
         const Color* image_bitmap = image->GetBitmap();
         Color* pixels = reinterpret_cast<Color*> ( screen_bitmap );
@@ -340,94 +345,77 @@ namespace AeonGUI
             return;
         }
 
-        if ( ( w == image_w ) && ( h == image_h ) )
+        if ( ( w == subw ) && ( h == subh ) )
         {
-            // Same as original
-            int32_t iy = 0;
-            for ( int32_t sy = y1; sy < y2; ++sy )
+            // Same scale as original
+            for ( int32_t sy = y1, iy = suby; sy < y2; ++sy, ++iy )
             {
                 if ( ( sy >= 0 ) && ( sy < screen_h ) )
                 {
-                    int32_t ix = 0;
-                    for ( int32_t sx = x1; sx < x2; ++sx )
+                    for ( int32_t sx = x1, ix = subx; sx < x2; ++sx, ++ix )
                     {
                         if ( ( sx >= 0 ) && ( sx < screen_w ) )
                         {
                             pixels[ ( ( sy * screen_w ) + sx )].Blend ( image_bitmap[ ( ( iy * image_w ) + ix )] );
                         }
-                        ++ix;
                     }
                 }
-                ++iy;
             }
         }
-        else if ( w == image_w )
+        else if ( w == subw )
         {
             // Verticaly Scaled
-            float ratio_h = static_cast<float> ( image_h ) / static_cast<float> ( h );
-            int32_t iy = 0;
-            for ( int32_t sy = y1; sy < y2; ++sy )
+            float ratio_h = static_cast<float> ( subh ) / static_cast<float> ( h );
+            for ( int32_t sy = y1, stepy = 0; sy < y2; ++sy, ++stepy )
             {
                 if ( ( sy >= 0 ) && ( sy < screen_h ) )
                 {
-                    int32_t ix = 0;
-                    for ( int32_t sx = x1; sx < x2; ++sx )
+                    for ( int32_t sx = x1, ix = subx; sx < x2; ++sx, ++ix )
                     {
                         if ( ( sx >= 0 ) && ( sx < screen_w ) )
                         {
-                            pixels[ ( ( sy * screen_w ) + sx )].Blend ( Function1DInterpolation ( iy * ratio_h, image_bitmap + ( ix ), image_h, image_w ) );
+                            pixels[ ( ( sy * screen_w ) + sx )].Blend ( Function1DInterpolation ( suby + ( stepy * ratio_h ), image_bitmap + ( ix ), image_h, image_w ) );
                         }
-                        ++ix;
                     }
                 }
-                ++iy;
             }
         }
-        else if ( h == image_h )
+        else if ( h == subh )
         {
             // Horizontaly Scaled
-            float ratio_w = static_cast<float> ( image_w ) / static_cast<float> ( w );
-            int32_t iy = 0;
-            for ( int32_t sy = y1; sy < y2; ++sy )
+            float ratio_w = static_cast<float> ( subw ) / static_cast<float> ( w );
+            for ( int32_t sy = y1, iy = suby; sy < y2; ++sy, ++iy )
             {
                 if ( ( sy >= 0 ) && ( sy < screen_h ) )
                 {
-                    int32_t ix = 0;
-                    for ( int32_t sx = x1; sx < x2; ++sx )
+                    for ( int32_t sx = x1, stepx = 0; sx < x2; ++sx, ++stepx )
                     {
                         if ( ( sx >= 0 ) && ( sx < screen_w ) )
                         {
-                            pixels[ ( ( sy * screen_w ) + sx )].Blend ( Function1DInterpolation ( ix * ratio_w, image_bitmap + ( iy * image_w ), image_w, 1 ) );
+                            pixels[ ( ( sy * screen_w ) + sx )].Blend ( Function1DInterpolation ( subx + ( stepx * ratio_w ), image_bitmap + ( iy * image_w ), image_w, 1 ) );
                         }
-                        ++ix;
                     }
                 }
-                ++iy;
             }
         }
         else
         {
             // Both Horizontaly and Vertically Scaled
-#if 0
-            float ratio_w = static_cast<float> ( stretch_width ) / static_cast<float> ( w - ( image_w - stretch_width ) );
-            float ratio_h = static_cast<float> ( stretch_height ) / static_cast<float> ( h - ( image_h - stretch_height ) );
-#else
-            float ratio_w = static_cast<float> ( image_w ) / static_cast<float> ( w );
-            float ratio_h = static_cast<float> ( image_h ) / static_cast<float> ( h );
-#endif
+            float ratio_w = static_cast<float> ( subw ) / static_cast<float> ( w );
+            float ratio_h = static_cast<float> ( subh ) / static_cast<float> ( h );
             /*
             sx,sy are Screen coordinates.
             ix,iy are Scaled Image coordinates.
             */
-            for ( int32_t sy = y1, iy = 0; sy < y2; ++sy, ++iy )
+            for ( int32_t sy = y1, stepy = 0; sy < y2; ++sy, ++stepy )
             {
                 if ( ( sy >= 0 ) && ( sy < screen_h ) )
                 {
-                    for ( int32_t sx = x1, ix = 0; sx < x2; ++sx, ++ix )
+                    for ( int32_t sx = x1, stepx = 0; sx < x2; ++sx, ++stepx )
                     {
                         if ( ( sx >= 0 ) && ( sx < screen_w ) )
                         {
-                            pixels[ ( ( sy * screen_w ) + sx )].Blend ( Function2DInterpolation ( ix * ratio_w, iy * ratio_h, image_w, image_h, image_bitmap ) );
+                            pixels[ ( ( sy * screen_w ) + sx )].Blend ( Function2DInterpolation ( subx + ( stepx * ratio_w ), suby + ( stepy * ratio_h ), image_w, image_h, image_bitmap ) );
                         }
                     }
                 }
