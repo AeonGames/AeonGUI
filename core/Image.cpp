@@ -379,14 +379,14 @@ namespace AeonGUI
             }
 
             // If the patch9 values are embeded into the image, get them.
-            xstartstretch = static_cast<int32_t> ( pcx.GetXStartStretch() );
-            xendstretch = static_cast<int32_t> ( pcx.GetXEndStretch() );
-            xstartpad = static_cast<int32_t> ( pcx.GetXStartPad() );
-            xendpad = static_cast<int32_t> ( pcx.GetXEndPad() );
-            ystartstretch = static_cast<int32_t> ( pcx.GetYStartStretch() );
-            yendstretch = static_cast<int32_t> ( pcx.GetYEndStretch() );
-            ystartpad = static_cast<int32_t> ( pcx.GetYStartPad() );
-            yendpad = static_cast<int32_t> ( pcx.GetYEndPad() );
+            xstartstretch = static_cast<int32_t> ( pcx.GetStretchX() );
+            xendstretch = static_cast<int32_t> ( pcx.GetStretchWidth() );
+            xstartpad = static_cast<int32_t> ( pcx.GetPadX() );
+            xendpad = static_cast<int32_t> ( pcx.GetPadWidth() );
+            ystartstretch = static_cast<int32_t> ( pcx.GetStretchY() );
+            yendstretch = static_cast<int32_t> ( pcx.GetStretchHeight() );
+            ystartpad = static_cast<int32_t> ( pcx.GetPadY() );
+            yendpad = static_cast<int32_t> ( pcx.GetPadHeight() );
 
             if ( pcx.GetNumBitPlanes() == 3 )
             {

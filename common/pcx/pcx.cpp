@@ -24,11 +24,13 @@ Pcx::Pcx() :
     memset ( &header, 0, sizeof ( Header ) );
 }
 
+#if 0
 bool Pcx::IsPatch9()
 {
     return ( ( header.XStartStretch != 0 ) || ( header.XEndStretch != 0 ) || ( header.XStartPad != 0 ) || ( header.XEndPad != 0 ) ||
              ( header.YStartStretch != 0 ) || ( header.YEndStretch != 0 ) || ( header.YStartPad != 0 ) || ( header.YEndPad != 0 ) );
 }
+#endif
 
 Pcx::~Pcx()
 {
@@ -144,38 +146,39 @@ uint8_t Pcx::GetNumBitPlanes()
     return header.NumBitPlanes;
 }
 
-uint16_t Pcx::GetXStartStretch()
+uint16_t Pcx::GetStretchX()
 {
-    return header.XStartStretch;
-}
-uint16_t Pcx::GetXEndStretch()
-{
-    return header.XEndStretch;
-}
-uint16_t Pcx::GetXStartPad()
-{
-    return header.XStartPad;
-}
-uint16_t Pcx::GetXEndPad()
-{
-    return header.XEndPad;
+    return header.StretchX;
 }
 
-uint16_t Pcx::GetYStartStretch()
+uint16_t Pcx::GetStretchWidth()
 {
-    return header.YStartStretch;
+    return header.StretchWidth;
 }
-uint16_t Pcx::GetYEndStretch()
+uint16_t Pcx::GetPadX()
 {
-    return header.YEndStretch;
+    return header.PadX;
 }
-uint16_t Pcx::GetYStartPad()
+uint16_t Pcx::GetPadWidth()
 {
-    return header.YStartPad;
+    return header.PadWidth;
 }
-uint16_t Pcx::GetYEndPad()
+
+uint16_t Pcx::GetStretchY()
 {
-    return header.YEndPad;
+    return header.StretchY;
+}
+uint16_t Pcx::GetStretchHeight()
+{
+    return header.StretchHeight;
+}
+uint16_t Pcx::GetPadY()
+{
+    return header.PadY;
+}
+uint16_t Pcx::GetPadHeight()
+{
+    return header.PadHeight;
 }
 
 bool Pcx::Decode ( uint32_t buffer_size, void* buffer )
