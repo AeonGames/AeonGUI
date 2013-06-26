@@ -290,7 +290,23 @@ namespace AeonGUI
 
     void Renderer::DrawImage ( Image* image, int32_t x, int32_t y, int32_t w, int32_t h, ResizeAlgorithm algorithm )
     {
-        DrawSubImage ( image, x, y, 0, 0, 0, 0, w, h, algorithm );
+        uint32_t image_w = image->GetWidth();
+        uint32_t image_h = image->GetHeight();
+
+        uint32_t stretch_x = image->GetStretchX();
+        uint32_t stretch_y = image->GetStretchY();
+        uint32_t stretch_width = image->GetStretchWidth();
+        uint32_t stretch_height = image->GetStretchHeight();
+
+        if ( ( stretch_x == 0 ) && ( stretch_y == 0 ) && ( stretch_width == image_w ) && ( stretch_height == image_h ) )
+        {
+            DrawSubImage ( image, x, y, 0, 0, 0, 0, w, h, algorithm );
+            return;
+        }
+
+        // Draw each 9 patch
+        ///\todo Calculate scaled stretch width and height to draw remaining patches.
+        DrawSubImage ( image, x, y, 0, 0, stretch_x, stretch_y, 0, 0, algorithm );
     }
 
     void Renderer::DrawSubImage ( Image* image, int32_t x, int32_t y, int32_t subx, int32_t suby, int32_t subw, int32_t subh, int32_t w, int32_t h, ResizeAlgorithm algorithm )
@@ -498,7 +514,12 @@ namespace AeonGUI
 
     void Renderer::RemoveWidget ( Widget* widget )
     {
-        if ( widgets->next == NULL )
+        assert ( widget != NULL );
+        if ( widget == NULL )
+        {
+            return;
+        }
+        else if ( widgets->next == NULL )
         {
             widgets = NULL;
         }

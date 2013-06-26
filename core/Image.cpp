@@ -138,6 +138,10 @@ namespace AeonGUI
     bool Image::Load ( uint32_t image_width, uint32_t image_height, Image::Format format, Image::Type type, const void* data )
     {
         assert ( data != NULL );
+        if ( bitmap != NULL )
+        {
+            Unload();
+        }
         // Determine patch9 stretch and pad if any
         bool haspatch9frame = true;
 
@@ -278,6 +282,15 @@ namespace AeonGUI
             delete [] bitmap;
             width = 0;
             height = 0;
+            stretchx = 0;
+            stretchwidth = 0;
+            padx = 0;
+            padwidth = 0;
+            stretchy = 0;
+            stretchheight = 0;
+            pady = 0;
+            padheight = 0;
+            bitmap = NULL;
         }
     }
 

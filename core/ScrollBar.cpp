@@ -282,7 +282,7 @@ namespace AeonGUI
 
     void ScrollBar::OnMouseMove ( uint32_t X, uint32_t Y )
     {
-        int16_t move;
+        int16_t move = 0;
         Rect slider_rect;
         Rect back_rect;
         Rect forward_rect;
