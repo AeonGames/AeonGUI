@@ -262,10 +262,6 @@ namespace AeonGUI
     static Color NearestNeighbor1DInterpolation ( float x, const Color* samples, int32_t sample_count, uint32_t sample_stride )
     {
         int32_t fx = static_cast<int32_t> ( floorf ( x ) );
-        if ( ( x - fx ) > 0.5 )
-        {
-            ++fx;
-        }
         return samples[ fx * sample_stride];
     }
 
@@ -275,16 +271,6 @@ namespace AeonGUI
         assert ( y < h );
         int32_t fx = static_cast<int32_t> ( floorf ( x ) );
         int32_t fy = static_cast<int32_t> ( floorf ( y ) );
-        float   dx = ( x - fx );
-        float   dy = ( y - fy );
-        if ( dx > 0.5 )
-        {
-            ++fx;
-        }
-        if ( dy > 0.5 )
-        {
-            ++fy;
-        }
         return buffer[ ( fy * w ) + fx];
     }
 
@@ -305,8 +291,35 @@ namespace AeonGUI
         }
 
         // Draw each 9 patch
-        ///\todo Calculate scaled stretch width and height to draw remaining patches.
+        int32_t scaled_stretch_width = w - ( image_w - stretch_width );
+        int32_t scaled_stretch_height = h - ( image_h - stretch_height );
+        int32_t left_x = x + stretch_x;
+        int32_t right_x = left_x + scaled_stretch_width;
+        int32_t top_y = y + stretch_y;
+        int32_t bottom_y = top_y + scaled_stretch_height;
+        int32_t image_right_x = stretch_x + stretch_width;
+        int32_t image_right_width = image_w - image_right_x;
+        int32_t image_bottom_y = stretch_y + stretch_height;
+        int32_t image_bottom_height = image_h - image_bottom_y;
+
+        // Top Left
         DrawSubImage ( image, x, y, 0, 0, stretch_x, stretch_y, 0, 0, algorithm );
+        // Top
+        DrawSubImage ( image, left_x, y, stretch_x, 0, stretch_width, stretch_y, scaled_stretch_width, 0, algorithm );
+        // Top Right
+        DrawSubImage ( image, right_x, y, image_right_x, 0, image_right_width, stretch_y, 0, 0, algorithm );
+        // Right
+        DrawSubImage ( image, right_x, top_y, image_right_x, stretch_y, image_right_width, stretch_height, 0, scaled_stretch_height, algorithm );
+        // Bottom Right
+        DrawSubImage ( image, right_x, bottom_y, image_right_x, image_bottom_y, image_right_width, image_bottom_height, 0, 0, algorithm );
+        // Bottom
+        DrawSubImage ( image, left_x, bottom_y, stretch_x, image_bottom_y, stretch_width, image_bottom_height, scaled_stretch_width, 0, algorithm );
+        // Bottom Left
+        DrawSubImage ( image, x, bottom_y, 0, image_bottom_y, stretch_x, image_bottom_height, 0, 0, algorithm );
+        // Left
+        DrawSubImage ( image, x, top_y, 0, stretch_y, stretch_x, stretch_height, 0, scaled_stretch_height, algorithm );
+        // Center
+        DrawSubImage ( image, left_x, top_y, stretch_x, stretch_y, stretch_width, stretch_height, scaled_stretch_width, scaled_stretch_height, algorithm );
     }
 
     void Renderer::DrawSubImage ( Image* image, int32_t x, int32_t y, int32_t subx, int32_t suby, int32_t subw, int32_t subh, int32_t w, int32_t h, ResizeAlgorithm algorithm )
