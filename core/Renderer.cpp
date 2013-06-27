@@ -322,27 +322,24 @@ namespace AeonGUI
         DrawSubImage ( image, left_x, top_y, stretch_x, stretch_y, stretch_width, stretch_height, scaled_stretch_width, scaled_stretch_height, algorithm );
     }
 
+    static Color ( *OneDInterpolationFunctions[2] ) ( float, const Color*, int32_t, uint32_t ) =
+    {
+        NearestNeighbor1DInterpolation, // NEAREST == 0
+        Lanczos1DInterpolation          // LANCZOS == 1
+    };
+
+    static Color ( *TwoDInterpolationFunctions[2] ) ( float, float, uint32_t, uint32_t, const Color* ) =
+    {
+        NearestNeighbor2DInterpolation, // NEAREST == 0
+        Lanczos2DInterpolation          // LANCZOS == 1
+    };
+
     void Renderer::DrawSubImage ( Image* image, int32_t x, int32_t y, int32_t subx, int32_t suby, int32_t subw, int32_t subh, int32_t w, int32_t h, ResizeAlgorithm algorithm )
     {
         assert ( image != NULL );
 
-        Color ( *Function1DInterpolation ) ( float, const Color*, int32_t, uint32_t );
-        Color ( *Function2DInterpolation ) ( float, float, uint32_t, uint32_t, const Color* );
-
         uint32_t image_w = image->GetWidth();
         uint32_t image_h = image->GetHeight();
-
-        switch ( algorithm )
-        {
-        case NEAREST:
-            Function1DInterpolation = NearestNeighbor1DInterpolation;
-            Function2DInterpolation = NearestNeighbor2DInterpolation;
-            break;
-        case LANCZOS:
-            Function1DInterpolation = Lanczos1DInterpolation;
-            Function2DInterpolation = Lanczos2DInterpolation;
-            break;
-        }
 
         if ( subw == 0 )
         {
@@ -403,7 +400,7 @@ namespace AeonGUI
                     {
                         if ( ( sx >= 0 ) && ( sx < screen_w ) )
                         {
-                            pixels[ ( ( sy * screen_w ) + sx )].Blend ( Function1DInterpolation ( suby + ( stepy * ratio_h ), image_bitmap + ( ix ), image_h, image_w ) );
+                            pixels[ ( ( sy * screen_w ) + sx )].Blend ( OneDInterpolationFunctions[algorithm] ( suby + ( stepy * ratio_h ), image_bitmap + ( ix ), image_h, image_w ) );
                         }
                     }
                 }
@@ -421,7 +418,7 @@ namespace AeonGUI
                     {
                         if ( ( sx >= 0 ) && ( sx < screen_w ) )
                         {
-                            pixels[ ( ( sy * screen_w ) + sx )].Blend ( Function1DInterpolation ( subx + ( stepx * ratio_w ), image_bitmap + ( iy * image_w ), image_w, 1 ) );
+                            pixels[ ( ( sy * screen_w ) + sx )].Blend ( OneDInterpolationFunctions[algorithm] ( subx + ( stepx * ratio_w ), image_bitmap + ( iy * image_w ), image_w, 1 ) );
                         }
                     }
                 }
@@ -444,7 +441,7 @@ namespace AeonGUI
                     {
                         if ( ( sx >= 0 ) && ( sx < screen_w ) )
                         {
-                            pixels[ ( ( sy * screen_w ) + sx )].Blend ( Function2DInterpolation ( subx + ( stepx * ratio_w ), suby + ( stepy * ratio_h ), image_w, image_h, image_bitmap ) );
+                            pixels[ ( ( sy * screen_w ) + sx )].Blend ( TwoDInterpolationFunctions[algorithm] ( subx + ( stepx * ratio_w ), suby + ( stepy * ratio_h ), image_w, image_h, image_bitmap ) );
                         }
                     }
                 }
