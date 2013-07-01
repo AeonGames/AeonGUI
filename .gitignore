@@ -12,3 +12,7 @@
 *.tar.gz
 *.tar.bz2
 *.zip
+
+# Android local properties    #
+###############################
+local.properties
