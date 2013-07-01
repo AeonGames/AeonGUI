@@ -30,8 +30,8 @@ namespace AeonGUI
     class Widget;
     enum ResizeAlgorithm
     {
-        NEAREST,
-        LANCZOS
+        NEAREST = 0,
+        LANCZOS = 1
     };
     /*! \brief Renderer base class. */
     class Renderer
