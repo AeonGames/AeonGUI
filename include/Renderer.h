@@ -31,7 +31,8 @@ namespace AeonGUI
     enum ResizeAlgorithm
     {
         NEAREST = 0,
-        LANCZOS = 1
+        LANCZOS = 1,
+        TILE    = 2,
     };
     /*! \brief Renderer base class. */
     class Renderer
