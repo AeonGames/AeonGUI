@@ -31,7 +31,7 @@ namespace AeonGUI
         // Window members
         backgroundcolor ( 0xffffffff ),
         textcolor ( 0xffffffff ),
-        bordercolor ( 255, 128, 128, 128 ),
+        bordercolor ( 255u, 128u, 128u, 128u ),
         bordersize ( 2 ),
         wantsupdate ( true ),
         hasborder ( false ),

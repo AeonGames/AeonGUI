@@ -268,10 +268,43 @@ namespace AeonGUI
         return samples[ ix * sample_stride];
     }
 
+    static Color Linear1DInterpolation ( int32_t x, int32_t step, float ratio, const Color* samples, int32_t sample_width, uint32_t sample_stride )
+    {
+        float t;
+        float fx;
+        t = modf ( x + ( step * ratio ), &fx );
+        int32_t ixa = static_cast<int32_t> ( fx ) * sample_stride;
+        int32_t ixb = ixa + sample_stride;
+        Color result;
+        float colora[4] =
+        {
+            static_cast<float> ( samples[ ixa ].b ) / 255.0f,
+            static_cast<float> ( samples[ ixa ].g ) / 255.0f,
+            static_cast<float> ( samples[ ixa ].r ) / 255.0f,
+            static_cast<float> ( samples[ ixa ].a ) / 255.0f,
+        };
+        float colorb[4] =
+        {
+            static_cast<float> ( samples[ ixb ].b ) / 255.0f,
+            static_cast<float> ( samples[ ixb ].g ) / 255.0f,
+            static_cast<float> ( samples[ ixb ].r ) / 255.0f,
+            static_cast<float> ( samples[ ixb ].a ) / 255.0f,
+        };
+        float resultf[4] =
+        {
+            colora[0] + ( ( colorb[0] - colora[0] ) *t ),
+            colora[1] + ( ( colorb[1] - colora[1] ) *t ),
+            colora[2] + ( ( colorb[2] - colora[2] ) *t ),
+            colora[3] + ( ( colorb[3] - colora[3] ) *t ),
+        };
+        result.SetBGRA4f ( resultf[0] * 255.0f, resultf[1] * 255.0f, resultf[2] * 255.0f, resultf[3] * 255.0f );
+        return result;
+    }
+
     static Color NearestNeighbor1DInterpolation ( int32_t x, int32_t step, float ratio, const Color* samples, int32_t sample_width, uint32_t sample_stride )
     {
-        int32_t fx = static_cast<int32_t> ( floorf ( x + ( step * ratio ) ) );
-        return samples[ fx * sample_stride];
+        int32_t ix = static_cast<int32_t> ( floorf ( x + ( step * ratio ) ) );
+        return samples[ ix * sample_stride];
     }
 
     static Color Tile2DInterpolation ( int32_t x, int32_t xstep, float xratio, int32_t y, int32_t ystep, float yratio, int32_t w, int32_t h, int32_t pitch, const Color* buffer )
