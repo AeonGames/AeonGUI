@@ -304,12 +304,33 @@ namespace AeonGUI
         float ty = modff ( y + ( ystep * yratio ), &fy );
 
         int32_t ix = static_cast<int32_t> ( floorf ( fx ) );
+        int32_t ix1; // If not clampled should be ix+1
         int32_t iy = static_cast<int32_t> ( floorf ( fy ) );
+        int32_t iy1; // If not clampled should be iy+1
+
+        // clamp
+        if ( ix >= ( x + w - 1 ) )
+        {
+            ix1 = ix = ( x + w - 1 );
+        }
+        else
+        {
+            ix1 = ix + 1;
+        }
+        if ( iy >= ( y + h - 1 ) )
+        {
+            iy1 = iy = ( y + h - 1 );
+        }
+        else
+        {
+            iy1 = iy + 1;
+        }
 
         const Color* c00 = buffer + ( iy * pitch ) + ix;
-        const Color* c10 = buffer + ( iy * pitch ) + ix + 1;
-        const Color* c01 = buffer + ( ( iy + 1 ) * pitch ) + ix;
-        const Color* c11 = buffer + ( ( iy + 1 ) * pitch ) + ix + 1;
+        const Color* c10 = buffer + ( iy * pitch ) + ix1;
+        const Color* c01 = buffer + ( ( iy1 ) * pitch ) + ix;
+        const Color* c11 = buffer + ( ( iy1 ) * pitch ) + ix1;
+
         Color result;
         // c00 * (1-tx) * (1-ty) + c10 * tx*(1-ty) + c01*(1-tx)*ty+c11*tx*ty
         result.SetBGRA4f (
