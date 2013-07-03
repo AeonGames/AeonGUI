@@ -164,7 +164,7 @@ namespace AeonGUI
                 r += samples[x * sample_stride].r * kernel[i + 2];
                 a += samples[x * sample_stride].a * kernel[i + 2];
             }
-            else if ( ( ix + i ) >= ( x + sample_width ) )
+            else if ( ( ix + i ) >= ( x + sample_width ) - 1 )
             {
                 b += samples[ ( ( x + sample_width ) - 1 ) * sample_stride].b * kernel[i + 2];
                 g += samples[ ( ( x + sample_width ) - 1 ) * sample_stride].g * kernel[i + 2];
@@ -268,36 +268,25 @@ namespace AeonGUI
         return samples[ ix * sample_stride];
     }
 
-    static Color Linear1DInterpolation ( int32_t x, int32_t step, float ratio, const Color* samples, int32_t sample_width, uint32_t sample_stride )
+    static Color LinearInterpolation ( int32_t x, int32_t step, float ratio, const Color* samples, int32_t sample_width, uint32_t sample_stride )
     {
-        float t;
         float fx;
-        t = modf ( x + ( step * ratio ), &fx );
-        int32_t ixa = static_cast<int32_t> ( fx ) * sample_stride;
-        int32_t ixb = ixa + sample_stride;
+        float tx = modff ( x + ( step * ratio ), &fx );
+
+        int32_t ix = static_cast<int32_t> ( fx );
+        // clamp
+        if ( ix >= ( x + sample_width - 1 ) )
+        {
+            return samples [ ( x + sample_width - 1 ) * sample_stride ];
+        }
+        const Color* c0 = samples + ( ix * sample_stride );
+        const Color* c1 = samples + ( ( ix + 1 ) * sample_stride );
         Color result;
-        float colora[4] =
-        {
-            static_cast<float> ( samples[ ixa ].b ) / 255.0f,
-            static_cast<float> ( samples[ ixa ].g ) / 255.0f,
-            static_cast<float> ( samples[ ixa ].r ) / 255.0f,
-            static_cast<float> ( samples[ ixa ].a ) / 255.0f,
-        };
-        float colorb[4] =
-        {
-            static_cast<float> ( samples[ ixb ].b ) / 255.0f,
-            static_cast<float> ( samples[ ixb ].g ) / 255.0f,
-            static_cast<float> ( samples[ ixb ].r ) / 255.0f,
-            static_cast<float> ( samples[ ixb ].a ) / 255.0f,
-        };
-        float resultf[4] =
-        {
-            colora[0] + ( ( colorb[0] - colora[0] ) *t ),
-            colora[1] + ( ( colorb[1] - colora[1] ) *t ),
-            colora[2] + ( ( colorb[2] - colora[2] ) *t ),
-            colora[3] + ( ( colorb[3] - colora[3] ) *t ),
-        };
-        result.SetBGRA4f ( resultf[0] * 255.0f, resultf[1] * 255.0f, resultf[2] * 255.0f, resultf[3] * 255.0f );
+        result.SetBGRA4f (
+            c0->b * ( 1 - tx ) + c1->b * tx,
+            c0->g * ( 1 - tx ) + c1->g * tx,
+            c0->r * ( 1 - tx ) + c1->r * tx,
+            c0->a * ( 1 - tx ) + c1->a * tx );
         return result;
     }
 
@@ -305,6 +294,30 @@ namespace AeonGUI
     {
         int32_t ix = static_cast<int32_t> ( floorf ( x + ( step * ratio ) ) );
         return samples[ ix * sample_stride];
+    }
+
+    static Color BilinearInterpolation ( int32_t x, int32_t xstep, float xratio, int32_t y, int32_t ystep, float yratio, int32_t w, int32_t h, int32_t pitch, const Color* buffer )
+    {
+        float fx;
+        float fy;
+        float tx = modff ( x + ( xstep * xratio ), &fx );
+        float ty = modff ( y + ( ystep * yratio ), &fy );
+
+        int32_t ix = static_cast<int32_t> ( floorf ( fx ) );
+        int32_t iy = static_cast<int32_t> ( floorf ( fy ) );
+
+        const Color* c00 = buffer + ( iy * pitch ) + ix;
+        const Color* c10 = buffer + ( iy * pitch ) + ix + 1;
+        const Color* c01 = buffer + ( ( iy + 1 ) * pitch ) + ix;
+        const Color* c11 = buffer + ( ( iy + 1 ) * pitch ) + ix + 1;
+        Color result;
+        // c00 * (1-tx) * (1-ty) + c10 * tx*(1-ty) + c01*(1-tx)*ty+c11*tx*ty
+        result.SetBGRA4f (
+            c00->b * ( 1 - tx ) * ( 1 - ty ) + c10->b * tx * ( 1 - ty ) + c01->b * ( 1 - tx ) * ty + c11->b * tx * ty,
+            c00->g * ( 1 - tx ) * ( 1 - ty ) + c10->g * tx * ( 1 - ty ) + c01->g * ( 1 - tx ) * ty + c11->g * tx * ty,
+            c00->r * ( 1 - tx ) * ( 1 - ty ) + c10->r * tx * ( 1 - ty ) + c01->r * ( 1 - tx ) * ty + c11->r * tx * ty,
+            c00->a * ( 1 - tx ) * ( 1 - ty ) + c10->a * tx * ( 1 - ty ) + c01->a * ( 1 - tx ) * ty + c11->a * tx * ty );
+        return result;
     }
 
     static Color Tile2DInterpolation ( int32_t x, int32_t xstep, float xratio, int32_t y, int32_t ystep, float yratio, int32_t w, int32_t h, int32_t pitch, const Color* buffer )
@@ -375,14 +388,16 @@ namespace AeonGUI
     {
         NearestNeighbor1DInterpolation, // NEAREST == 0
         Lanczos1DInterpolation,         // LANCZOS == 1
-        Tile1DInterpolation             // TILE    == 2
+        Tile1DInterpolation,            // TILE    == 2
+        LinearInterpolation,          // LINEAR  == 3
     };
 
     static Color ( *TwoDInterpolationFunctions[] ) ( int32_t, int32_t, float, int32_t, int32_t, float, int32_t, int32_t, int32_t, const Color* ) =
     {
         NearestNeighbor2DInterpolation,  // NEAREST == 0
         Lanczos2DInterpolation,          // LANCZOS == 1
-        Tile2DInterpolation              // TILE == 2
+        Tile2DInterpolation,             // TILE == 2
+        BilinearInterpolation            // LINEAR  == 3
     };
 
     void Renderer::DrawSubImage ( Image* image, int32_t x, int32_t y, int32_t subx, int32_t suby, int32_t subw, int32_t subh, int32_t w, int32_t h, ResizeAlgorithm algorithm )

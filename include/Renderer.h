@@ -33,6 +33,7 @@ namespace AeonGUI
         NEAREST = 0,
         LANCZOS = 1,
         TILE    = 2,
+        LINEAR  = 3
     };
     /*! \brief Renderer base class. */
     class Renderer
