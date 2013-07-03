@@ -190,16 +190,6 @@ namespace AeonGUI
         */
         Color ( uint8_t A, uint8_t R, uint8_t G, uint8_t B );
 
-        /*! \brief Sets the values for the BGRA components as floating point values.
-            Each of the components is assumed to have a value between 0.0f and 1.0f,
-            if any value falls outside of that range it is clipped to the nearest end of the range.
-            \param A Alpha color value.
-            \param R Red color value.
-            \param G Green color value.
-            \param B Blue color value.
-        */
-        void SetBGRA4f ( float B, float G, float R, float A );
-
         uint32_t bgra; ///< 32 bit Unsigned integer color value.
         struct
         {

@@ -282,11 +282,10 @@ namespace AeonGUI
         const Color* c0 = samples + ( ix * sample_stride );
         const Color* c1 = samples + ( ( ix + 1 ) * sample_stride );
         Color result;
-        result.SetBGRA4f (
-            c0->b * ( 1 - tx ) + c1->b * tx,
-            c0->g * ( 1 - tx ) + c1->g * tx,
-            c0->r * ( 1 - tx ) + c1->r * tx,
-            c0->a * ( 1 - tx ) + c1->a * tx );
+        result.b = static_cast<uint8_t> ( c0->b * ( 1 - tx ) + c1->b * tx );
+        result.g = static_cast<uint8_t> ( c0->g * ( 1 - tx ) + c1->g * tx );
+        result.r = static_cast<uint8_t> ( c0->r * ( 1 - tx ) + c1->r * tx );
+        result.a = static_cast<uint8_t> ( c0->a * ( 1 - tx ) + c1->a * tx );
         return result;
     }
 
@@ -333,11 +332,10 @@ namespace AeonGUI
 
         Color result;
         // c00 * (1-tx) * (1-ty) + c10 * tx*(1-ty) + c01*(1-tx)*ty+c11*tx*ty
-        result.SetBGRA4f (
-            c00->b * ( 1 - tx ) * ( 1 - ty ) + c10->b * tx * ( 1 - ty ) + c01->b * ( 1 - tx ) * ty + c11->b * tx * ty,
-            c00->g * ( 1 - tx ) * ( 1 - ty ) + c10->g * tx * ( 1 - ty ) + c01->g * ( 1 - tx ) * ty + c11->g * tx * ty,
-            c00->r * ( 1 - tx ) * ( 1 - ty ) + c10->r * tx * ( 1 - ty ) + c01->r * ( 1 - tx ) * ty + c11->r * tx * ty,
-            c00->a * ( 1 - tx ) * ( 1 - ty ) + c10->a * tx * ( 1 - ty ) + c01->a * ( 1 - tx ) * ty + c11->a * tx * ty );
+        result.b = static_cast<uint8_t> ( c00->b * ( 1 - tx ) * ( 1 - ty ) + c10->b * tx * ( 1 - ty ) + c01->b * ( 1 - tx ) * ty + c11->b * tx * ty );
+        result.g = static_cast<uint8_t> ( c00->g * ( 1 - tx ) * ( 1 - ty ) + c10->g * tx * ( 1 - ty ) + c01->g * ( 1 - tx ) * ty + c11->g * tx * ty );
+        result.r = static_cast<uint8_t> ( c00->r * ( 1 - tx ) * ( 1 - ty ) + c10->r * tx * ( 1 - ty ) + c01->r * ( 1 - tx ) * ty + c11->r * tx * ty );
+        result.a = static_cast<uint8_t> ( c00->a * ( 1 - tx ) * ( 1 - ty ) + c10->a * tx * ( 1 - ty ) + c01->a * ( 1 - tx ) * ty + c11->a * tx * ty );
         return result;
     }
 

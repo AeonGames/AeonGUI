@@ -229,7 +229,10 @@ void Window::RenderLoop()
     renderer.RenderWidgets();
     renderer.DrawImage ( aeongames_logo, width - logo_width, height - logo_height );
     //renderer.DrawImage ( aeongui_logo, 0, height - aeongui_logo->GetHeight(), aeongui_logo->GetWidth() * 2 );
-    renderer.DrawImage ( aeongui_logo, 0, height - aeongui_logo->GetHeight() * 2, aeongui_logo->GetWidth() * 2 , aeongui_logo->GetHeight() * 2, AeonGUI::LINEAR );
+    renderer.DrawImage ( aeongui_logo, 0, height - aeongui_logo->GetHeight() * 2, aeongui_logo->GetWidth() * 2 , aeongui_logo->GetHeight() * 2, AeonGUI::NEAREST );
+    renderer.DrawImage ( aeongui_logo, aeongui_logo->GetWidth() * 2, height - aeongui_logo->GetHeight() * 2, aeongui_logo->GetWidth() * 2 , aeongui_logo->GetHeight() * 2, AeonGUI::TILE );
+    renderer.DrawImage ( aeongui_logo, aeongui_logo->GetWidth() * 4, height - aeongui_logo->GetHeight() * 2, aeongui_logo->GetWidth() * 2 , aeongui_logo->GetHeight() * 2, AeonGUI::LINEAR );
+    renderer.DrawImage ( aeongui_logo, aeongui_logo->GetWidth() * 6, height - aeongui_logo->GetHeight() * 2, aeongui_logo->GetWidth() * 2 , aeongui_logo->GetHeight() * 2, AeonGUI::LANCZOS );
     //renderer.DrawSubImage ( aeongui_logo, 0, height - aeongui_logo->GetHeight() * 2, 4, 4, 56, 56, 56, 56 * 2 );
     //renderer.DrawImage ( aeongui_logo, 0, height - 80, 80, 80 );
     renderer.EndRender();

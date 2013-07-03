@@ -22,14 +22,6 @@ namespace AeonGUI
     Color::Color ( uint8_t A, uint8_t R, uint8_t G, uint8_t B )
         : b ( B ), g ( G ), r ( R ), a ( A ) {}
 
-    void Color::SetBGRA4f ( float B, float G, float R, float A )
-    {
-        ( B < 0.0f ) ? b = 0 : ( B > 1.0f ) ? b = 255 : b = static_cast<uint8_t> ( B * 255.0f );
-        ( G < 0.0f ) ? g = 0 : ( G > 1.0f ) ? g = 255 : g = static_cast<uint8_t> ( G * 255.0f );
-        ( R < 0.0f ) ? r = 0 : ( R > 1.0f ) ? r = 255 : r = static_cast<uint8_t> ( R * 255.0f );
-        ( A < 0.0f ) ? a = 0 : ( A > 1.0f ) ? a = 255 : a = static_cast<uint8_t> ( A * 255.0f );
-    }
-
     void Color::Blend ( Color src )
     {
         if ( ( src.a == 255 ) )
