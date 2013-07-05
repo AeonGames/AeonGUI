@@ -8,13 +8,19 @@ INCLUDE(FindOpenGL)
 OPTION(USE_FREETYPE  "Use FreeType2 for font rendering")
 OPTION(USE_ZLIB "Use the zlib compression library")
 OPTION(USE_PNG "Enable PNG image support (Requires zlib)")
+OPTION(USE_CUDA "Enable CUDA support")
 
 OPTION(RELEASE_BUILD "Build for Release")
 
 set(HTTP_PROXY "" CACHE STRING "Specify a proxy server if required for downloads")
 
+if(USE_CUDA)
+include(FindCUDA)
+add_definitions(-DUSE_CUDA)
+endif(USE_CUDA)
+
 if(USE_FREETYPE)
-ADD_DEFINITIONS(-DUSE_FREETYPE)
+add_definitions(-DUSE_FREETYPE)
 include(FindFreetype)
 if(FREETYPE_FOUND)
 INCLUDE_DIRECTORIES(${FREETYPE_INCLUDE_DIR_ft2build} ${FREETYPE_INCLUDE_DIR_freetype2})
