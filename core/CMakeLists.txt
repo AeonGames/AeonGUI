@@ -13,6 +13,7 @@ SET(AEONGUI_HEADERS
 ../include/Rect.h
 ../include/Color.h
 )
+
 SET(AEONGUI_SOURCES
 Renderer.cpp
 Font.cpp
@@ -24,6 +25,17 @@ Image.cpp
 Rect.cpp
 Color.cpp
 )
+
+if(USE_CUDA)
+# Set Arch to sm_20 for printf inside kernel 
+set(CUDA_NVCC_FLAGS -arch=sm_20;${CUDA_NVCC_FLAGS})
+set(CUDA_KERNELS cuda/nearest.cu)
+cuda_compile(CUDA_WRAPPERS ${CUDA_KERNELS})
+set(AEONGUI_SOURCES ${AEONGUI_SOURCES} ${CUDA_KERNELS})
+source_group("CUDA Kernels" FILES ${CUDA_KERNELS})
+set(AEONGUI_LIBRARIES ${AEONGUI_LIBRARIES} ${CUDA_CUDART_LIBRARY})
+endif(USE_CUDA)
+
 SET(AEONGUI_RESOURCES
 resources/close.c
 resources/maximize.c
@@ -58,7 +70,8 @@ resources/maximize_down.h
 resources/minimize_down.h
 resources/restore_down.h
 )
-set(AEONGUI_LIBRARIES pcx)
+
+set(AEONGUI_LIBRARIES ${AEONGUI_LIBRARIES} pcx)
 if(USE_PNG)
 set(AEONGUI_LIBRARIES ${AEONGUI_LIBRARIES} ${PNG_LIBRARIES} ${ZLIB_LIBRARIES})
 endif(USE_PNG)

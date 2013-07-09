@@ -15,7 +15,8 @@ OPTION(RELEASE_BUILD "Build for Release")
 set(HTTP_PROXY "" CACHE STRING "Specify a proxy server if required for downloads")
 
 if(USE_CUDA)
-include(FindCUDA)
+message(STATUS "Looking for CUDA toolkit")
+find_package(CUDA)
 add_definitions(-DUSE_CUDA)
 endif(USE_CUDA)
 
