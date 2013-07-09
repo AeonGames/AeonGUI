@@ -19,6 +19,10 @@ Copyright 2010-2013 Rodrigo Hernandez Cordoba
 #include "Renderer.h"
 #include "Widget.h"
 
+#ifdef USE_CUDA
+#include "cuda_functions.h"
+#endif
+
 namespace AeonGUI
 {
 
@@ -292,6 +296,7 @@ namespace AeonGUI
     static Color NearestNeighbor1DInterpolation ( int32_t x, int32_t step, float ratio, const Color* samples, int32_t sample_width, uint32_t sample_stride )
     {
         int32_t ix = static_cast<int32_t> ( floorf ( x + ( step * ratio ) ) );
+        NearestNeighbour();
         return samples[ ix * sample_stride];
     }
 
