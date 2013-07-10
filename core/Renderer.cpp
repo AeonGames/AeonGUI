@@ -20,7 +20,7 @@ Copyright 2010-2013 Rodrigo Hernandez Cordoba
 #include "Widget.h"
 
 #ifdef USE_CUDA
-#include "cuda_functions.h"
+//#include "cuda_functions.h"
 #endif
 
 namespace AeonGUI
@@ -121,6 +121,55 @@ namespace AeonGUI
         }
     }
 
+    void Renderer::DrawImage ( Image* image, int32_t x, int32_t y, int32_t w, int32_t h, ResizeAlgorithm algorithm )
+    {
+        uint32_t image_w = image->GetWidth();
+        uint32_t image_h = image->GetHeight();
+
+        uint32_t stretch_x = image->GetStretchX();
+        uint32_t stretch_y = image->GetStretchY();
+        uint32_t stretch_width = image->GetStretchWidth();
+        uint32_t stretch_height = image->GetStretchHeight();
+
+        if ( ( stretch_x == 0 ) && ( stretch_y == 0 ) && ( stretch_width == image_w ) && ( stretch_height == image_h ) )
+        {
+            DrawSubImage ( image, x, y, 0, 0, 0, 0, w, h, algorithm );
+            return;
+        }
+
+        // Draw each 9 patch
+        int32_t scaled_stretch_width = w - ( image_w - stretch_width );
+        int32_t scaled_stretch_height = h - ( image_h - stretch_height );
+        int32_t left_x = x + stretch_x;
+        int32_t right_x = left_x + scaled_stretch_width;
+        int32_t top_y = y + stretch_y;
+        int32_t bottom_y = top_y + scaled_stretch_height;
+        int32_t image_right_x = stretch_x + stretch_width;
+        int32_t image_right_width = image_w - image_right_x;
+        int32_t image_bottom_y = stretch_y + stretch_height;
+        int32_t image_bottom_height = image_h - image_bottom_y;
+
+        // Top Left
+        DrawSubImage ( image, x, y, 0, 0, stretch_x, stretch_y, 0, 0, algorithm );
+        // Top
+        DrawSubImage ( image, left_x, y, stretch_x, 0, stretch_width, stretch_y, scaled_stretch_width, 0, algorithm );
+        // Top Right
+        DrawSubImage ( image, right_x, y, image_right_x, 0, image_right_width, stretch_y, 0, 0, algorithm );
+        // Right
+        DrawSubImage ( image, right_x, top_y, image_right_x, stretch_y, image_right_width, stretch_height, 0, scaled_stretch_height, algorithm );
+        // Bottom Right
+        DrawSubImage ( image, right_x, bottom_y, image_right_x, image_bottom_y, image_right_width, image_bottom_height, 0, 0, algorithm );
+        // Bottom
+        DrawSubImage ( image, left_x, bottom_y, stretch_x, image_bottom_y, stretch_width, image_bottom_height, scaled_stretch_width, 0, algorithm );
+        // Bottom Left
+        DrawSubImage ( image, x, bottom_y, 0, image_bottom_y, stretch_x, image_bottom_height, 0, 0, algorithm );
+        // Left
+        DrawSubImage ( image, x, top_y, 0, stretch_y, stretch_x, stretch_height, 0, scaled_stretch_height, algorithm );
+        // Center
+        DrawSubImage ( image, left_x, top_y, stretch_x, stretch_y, stretch_width, stretch_height, scaled_stretch_width, scaled_stretch_height, algorithm );
+    }
+
+#ifndef USE_CUDA
     static float LanczosKernel ( float  x )
     {
         const float filter = 3.0f;
@@ -296,7 +345,6 @@ namespace AeonGUI
     static Color NearestNeighbor1DInterpolation ( int32_t x, int32_t step, float ratio, const Color* samples, int32_t sample_width, uint32_t sample_stride )
     {
         int32_t ix = static_cast<int32_t> ( floorf ( x + ( step * ratio ) ) );
-        NearestNeighbour();
         return samples[ ix * sample_stride];
     }
 
@@ -358,54 +406,6 @@ namespace AeonGUI
         int32_t ix = static_cast<int32_t> ( floorf ( fx ) );
         int32_t iy = static_cast<int32_t> ( floorf ( fy ) );
         return buffer[ ( iy * pitch ) + ix];
-    }
-
-    void Renderer::DrawImage ( Image* image, int32_t x, int32_t y, int32_t w, int32_t h, ResizeAlgorithm algorithm )
-    {
-        uint32_t image_w = image->GetWidth();
-        uint32_t image_h = image->GetHeight();
-
-        uint32_t stretch_x = image->GetStretchX();
-        uint32_t stretch_y = image->GetStretchY();
-        uint32_t stretch_width = image->GetStretchWidth();
-        uint32_t stretch_height = image->GetStretchHeight();
-
-        if ( ( stretch_x == 0 ) && ( stretch_y == 0 ) && ( stretch_width == image_w ) && ( stretch_height == image_h ) )
-        {
-            DrawSubImage ( image, x, y, 0, 0, 0, 0, w, h, algorithm );
-            return;
-        }
-
-        // Draw each 9 patch
-        int32_t scaled_stretch_width = w - ( image_w - stretch_width );
-        int32_t scaled_stretch_height = h - ( image_h - stretch_height );
-        int32_t left_x = x + stretch_x;
-        int32_t right_x = left_x + scaled_stretch_width;
-        int32_t top_y = y + stretch_y;
-        int32_t bottom_y = top_y + scaled_stretch_height;
-        int32_t image_right_x = stretch_x + stretch_width;
-        int32_t image_right_width = image_w - image_right_x;
-        int32_t image_bottom_y = stretch_y + stretch_height;
-        int32_t image_bottom_height = image_h - image_bottom_y;
-
-        // Top Left
-        DrawSubImage ( image, x, y, 0, 0, stretch_x, stretch_y, 0, 0, algorithm );
-        // Top
-        DrawSubImage ( image, left_x, y, stretch_x, 0, stretch_width, stretch_y, scaled_stretch_width, 0, algorithm );
-        // Top Right
-        DrawSubImage ( image, right_x, y, image_right_x, 0, image_right_width, stretch_y, 0, 0, algorithm );
-        // Right
-        DrawSubImage ( image, right_x, top_y, image_right_x, stretch_y, image_right_width, stretch_height, 0, scaled_stretch_height, algorithm );
-        // Bottom Right
-        DrawSubImage ( image, right_x, bottom_y, image_right_x, image_bottom_y, image_right_width, image_bottom_height, 0, 0, algorithm );
-        // Bottom
-        DrawSubImage ( image, left_x, bottom_y, stretch_x, image_bottom_y, stretch_width, image_bottom_height, scaled_stretch_width, 0, algorithm );
-        // Bottom Left
-        DrawSubImage ( image, x, bottom_y, 0, image_bottom_y, stretch_x, image_bottom_height, 0, 0, algorithm );
-        // Left
-        DrawSubImage ( image, x, top_y, 0, stretch_y, stretch_x, stretch_height, 0, scaled_stretch_height, algorithm );
-        // Center
-        DrawSubImage ( image, left_x, top_y, stretch_x, stretch_y, stretch_width, stretch_height, scaled_stretch_width, scaled_stretch_height, algorithm );
     }
 
     static Color ( *OneDInterpolationFunctions[] ) ( int32_t, int32_t, float, const Color*, int32_t, uint32_t ) =
@@ -538,6 +538,7 @@ namespace AeonGUI
             }
         }
     }
+#endif
 
     void Renderer::DrawString ( Color color, int32_t x, int32_t y, const wchar_t* text )
     {

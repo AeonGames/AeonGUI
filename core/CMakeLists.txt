@@ -29,12 +29,11 @@ Color.cpp
 if(USE_CUDA)
 # Set Arch to sm_20 for printf inside kernel 
 set(CUDA_NVCC_FLAGS -arch=sm_20;${CUDA_NVCC_FLAGS})
-set(CUDA_KERNELS cuda/nearest.cu)
+set(CUDA_KERNELS cuda/Renderer.cu)
 cuda_compile(CUDA_WRAPPERS ${CUDA_KERNELS})
 set(AEONGUI_SOURCES ${AEONGUI_SOURCES} ${CUDA_KERNELS})
-set(AEONGUI_HEADERS ${AEONGUI_HEADERS} cuda/cuda_functions.h)
-source_group("CUDA Kernels" FILES ${CUDA_KERNELS} cuda/cuda_functions.h)
-include_directories(cuda)
+source_group("CUDA Kernels" FILES ${CUDA_KERNELS})
+include_directories(${CUDA_TOOLKIT_INCLUDE} cuda)
 set(AEONGUI_LIBRARIES ${AEONGUI_LIBRARIES} ${CUDA_CUDART_LIBRARY})
 endif(USE_CUDA)
 
