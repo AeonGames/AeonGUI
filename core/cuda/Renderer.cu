@@ -6,7 +6,10 @@ namespace AeonGUI
 {
     __global__ void blend ( Color* src, size_t src_pitch, uint32_t src_width, uint32_t src_height, Color* dst, size_t dst_pitch, uint32_t dst_width, uint32_t dst_height )
     {
-        dst[ ( blockIdx.x * blockDim.x ) + threadIdx.x] = src[ ( blockIdx.x * blockDim.x ) + threadIdx.x];
+        dst[ ( blockIdx.x * blockDim.x ) + threadIdx.x].a = src[ ( blockIdx.x * blockDim.x ) + threadIdx.x].a;
+        dst[ ( blockIdx.x * blockDim.x ) + threadIdx.x].b = src[ ( blockIdx.x * blockDim.x ) + threadIdx.x].b;
+        dst[ ( blockIdx.x * blockDim.x ) + threadIdx.x].g = src[ ( blockIdx.x * blockDim.x ) + threadIdx.x].g;
+        dst[ ( blockIdx.x * blockDim.x ) + threadIdx.x].r = src[ ( blockIdx.x * blockDim.x ) + threadIdx.x].r;
     }
 
     void Renderer::DrawSubImage ( Image* image, int32_t x, int32_t y, int32_t subx, int32_t suby, int32_t subw, int32_t subh, int32_t w, int32_t h, ResizeAlgorithm algorithm )
@@ -55,7 +58,7 @@ namespace AeonGUI
         {
             // Same scale as original
             cudaMallocPitch ( &d_screen_rect, &d_screen_pitch, w * sizeof ( Color ), h );
-            cudaMemcpy2D ( d_screen_rect, d_screen_pitch, pixels, screen_w * sizeof ( Color ), w, h, cudaMemcpyHostToDevice );
+            cudaMemcpy2D ( d_screen_rect, d_screen_pitch, pixels + ( ( y * screen_w ) + x ), screen_w * sizeof ( Color ), w * sizeof ( Color ), h, cudaMemcpyHostToDevice );
             cudaMallocPitch ( &d_image_rect, &d_image_pitch, image_w * sizeof ( Color ), image_h );
             cudaMemcpy2D ( d_image_rect, d_image_pitch, image_bitmap, image_w * sizeof ( Color ), image_w, image_h, cudaMemcpyHostToDevice );
             blend <<< h, w>>> ( d_image_rect, d_image_pitch, image_w, image_h, d_screen_rect, d_screen_pitch, w, h );
@@ -74,7 +77,7 @@ namespace AeonGUI
                 }
             }
 #endif
-            cudaMemcpy2D ( pixels, screen_w * sizeof ( Color ), d_screen_rect, d_screen_pitch, w, h, cudaMemcpyDeviceToHost );
+            cudaMemcpy2D ( pixels + ( ( y * screen_w ) + x ), screen_w * sizeof ( Color ), d_screen_rect, d_screen_pitch, w * sizeof ( Color ), h, cudaMemcpyDeviceToHost );
             cudaFree ( d_screen_rect );
             cudaFree ( d_image_rect );
         }
