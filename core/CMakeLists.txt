@@ -28,7 +28,7 @@ Color.cpp
 
 if(USE_CUDA)
 # Set Arch to sm_20 for printf inside kernel 
-set(CUDA_NVCC_FLAGS -arch=sm_20;${CUDA_NVCC_FLAGS})
+# set(CUDA_NVCC_FLAGS -arch=sm_20;${CUDA_NVCC_FLAGS})
 set(CUDA_KERNELS cuda/Renderer.cu)
 cuda_compile(CUDA_WRAPPERS ${CUDA_KERNELS})
 set(AEONGUI_SOURCES ${AEONGUI_SOURCES} ${CUDA_KERNELS})
