@@ -23,6 +23,7 @@ Copyright 2010-2012 Rodrigo Hernandez Cordoba
 #include <cstdint>
 #include <crtdbg.h>
 #include "wglext.h"
+#include "AeonGUI.h"
 #include "OpenGLRenderer.h"
 #include "MainWindow.h"
 #include "glcommon.h"
@@ -347,6 +348,10 @@ int WINAPI WinMain ( HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLi
     Window window;
     window.Initialize ( hInstance );
     MSG msg;
+    if ( !AeonGUI::Initialize() )
+    {
+        return -1;
+    }
     memset ( &msg, 0, sizeof ( MSG ) );
     while ( msg.message != WM_QUIT )
     {
@@ -364,6 +369,7 @@ int WINAPI WinMain ( HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLi
         }
     }
     assert ( msg.message == WM_QUIT );
+    AeonGUI::Finalize();
     window.Finalize();
     return static_cast<int> ( msg.wParam );
 }
