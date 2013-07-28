@@ -168,7 +168,7 @@ static uint32_t GetScancode ( KeySym keysym )
         KEY_DEL      = 0x53
 #endif
     }
-    return keysym;
+                   return keysym;
 }
 #endif
 
@@ -372,12 +372,13 @@ bool GLWindow::Create ( Display* dpy )
     mainwindow = new AeonGUI::MainWindow ();
     image = new AeonGUI::Image;
     image->Load ( logo_width, logo_height, AeonGUI::Image::RGBA, AeonGUI::Image::BYTE, logo_data );
-    font = new AeonGUI::Font ( Vera.data, Vera.size );
+    font = new AeonGUI::Font ();
+    font->Load ( Vera.data, Vera.size );
     renderer.Initialize ( );
     renderer.ChangeScreenSize ( 800, 600 );
     renderer.SetFont ( font );
     std::wstring hello ( L"Hello World" );
-    mainwindow->SetCaption ( hello );
+    mainwindow->SetCaption ( hello.c_str() );
     renderer.AddWidget ( mainwindow );
 
     timespec current_time;

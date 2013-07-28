@@ -51,7 +51,7 @@ namespace AeonGUI
         memcpy ( data, read_struct->pointer, real_length );
         if ( real_length < length )
         {
-            printf ( "%s Returning %u bytes instead of requested %u because of end of memory\n", __FUNCTION__, real_length, length );
+            printf ( "%s Returning %lu bytes instead of requested %lu because of end of memory\n", __FUNCTION__, real_length, length );
             memset ( data + real_length, 0, length - real_length );
         }
         read_struct->pointer += real_length;
@@ -441,7 +441,7 @@ namespace AeonGUI
             png_uint_32 image_width = png_get_image_width ( png_ptr, info_ptr );
             png_uint_32 image_height = png_get_image_height ( png_ptr, info_ptr );
             png_byte color_type = png_get_color_type ( png_ptr, info_ptr );
-            png_byte bit_depth = png_get_bit_depth ( png_ptr, info_ptr );
+            //png_byte bit_depth = png_get_bit_depth ( png_ptr, info_ptr );
 
             if ( ( color_type == PNG_COLOR_TYPE_RGB ) || ( color_type == PNG_COLOR_TYPE_RGBA ) )
             {
