@@ -19,10 +19,6 @@ Copyright 2010-2013 Rodrigo Hernandez Cordoba
 #include "Renderer.h"
 #include "Widget.h"
 
-#ifdef USE_CUDA
-//#include "cuda_functions.h"
-#endif
-
 namespace AeonGUI
 {
 
@@ -242,8 +238,8 @@ namespace AeonGUI
     static Color Lanczos2DInterpolation ( int32_t x, int32_t xstep, float xratio, int32_t y, int32_t ystep, float yratio, int32_t w, int32_t h, int32_t pitch, const Color* buffer )
     {
         const int32_t filter = 3;
-        float fx = x + ( xstep * xratio );
-        float fy = y + ( ystep * yratio );
+        float fx = ( x + ( xstep * xratio ) );
+        float fy = ( y + ( ystep * yratio ) );
         int32_t ix = static_cast<int32_t> ( floorf ( fx ) );
         int32_t iy = static_cast<int32_t> ( floorf ( fy ) );
         Color result = 0;
@@ -352,8 +348,8 @@ namespace AeonGUI
     {
         float fx;
         float fy;
-        float tx = modff ( x + ( xstep * xratio ), &fx );
-        float ty = modff ( y + ( ystep * yratio ), &fy );
+        float tx = modff ( ( x + ( xstep * xratio ) ), &fx );
+        float ty = modff ( ( y + ( ystep * yratio ) ), &fy );
 
         int32_t ix = static_cast<int32_t> ( floorf ( fx ) );
         int32_t ix1; // If not clampled should be ix+1
