@@ -351,12 +351,12 @@ namespace AeonGUI
         float tx = modff ( ( x + ( xstep * xratio ) ), &fx );
         float ty = modff ( ( y + ( ystep * yratio ) ), &fy );
 
-        int32_t ix = static_cast<int32_t> ( floorf ( fx ) );
+        int32_t ix = static_cast<int32_t> ( fx );
         int32_t ix1; // If not clampled should be ix+1
-        int32_t iy = static_cast<int32_t> ( floorf ( fy ) );
+        int32_t iy = static_cast<int32_t> ( fy );
         int32_t iy1; // If not clampled should be iy+1
 
-        // clamp
+        // clamp x
         if ( ix >= ( x + w - 1 ) )
         {
             ix1 = ix = ( x + w - 1 );
@@ -365,6 +365,7 @@ namespace AeonGUI
         {
             ix1 = ix + 1;
         }
+        // clamp y
         if ( iy >= ( y + h - 1 ) )
         {
             iy1 = iy = ( y + h - 1 );
