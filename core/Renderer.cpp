@@ -320,7 +320,7 @@ namespace AeonGUI
     static Color LinearInterpolation ( int32_t x, int32_t step, float ratio, const Color* samples, int32_t sample_width, uint32_t sample_stride )
     {
         float fx;
-        float tx = modff ( x + ( step * ratio ), &fx );
+        float tx = modff ( x + ( ( ( step + 0.5f ) * ratio ) - 0.5f ), &fx );
 
         int32_t ix = static_cast<int32_t> ( fx );
         // clamp
@@ -348,8 +348,8 @@ namespace AeonGUI
     {
         float fx;
         float fy;
-        float tx = modff ( ( x + ( xstep * xratio ) ), &fx );
-        float ty = modff ( ( y + ( ystep * yratio ) ), &fy );
+        float tx = modff ( x + ( ( ( xstep + 0.5f ) * xratio ) - 0.5f ), &fx );
+        float ty = modff ( y + ( ( ( ystep + 0.5f ) * yratio ) - 0.5f ), &fy );
 
         int32_t ix = static_cast<int32_t> ( fx );
         int32_t ix1; // If not clampled should be ix+1
@@ -361,14 +361,23 @@ namespace AeonGUI
         {
             ix1 = ix = ( x + w - 1 );
         }
+        else if ( ix < x )
+        {
+            ix1 = ix = x;
+        }
         else
         {
             ix1 = ix + 1;
         }
+
         // clamp y
         if ( iy >= ( y + h - 1 ) )
         {
             iy1 = iy = ( y + h - 1 );
+        }
+        else if ( iy < y )
+        {
+            iy1 = iy = y;
         }
         else
         {
