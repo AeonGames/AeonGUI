@@ -1,4 +1,4 @@
-#if defined(__GNUC__) && defined(__GNUC_MINOR__) 
+#if defined(__GNUC__) && defined(__GNUC_MINOR__)
 #if (__GNUC__ == 4) && (__GNUC_MINOR__ == 7)
 // This is a hack to make CUDA toolkit 5.0.x work with GCC 4.7.
 #undef _GLIBCXX_ATOMIC_BUILTINS

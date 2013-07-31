@@ -407,8 +407,8 @@ namespace AeonGUI
 
     static Color NearestNeighbor2DInterpolation ( int32_t x, int32_t xstep, float xratio, int32_t y, int32_t ystep, float yratio, int32_t w, int32_t h, int32_t pitch, const Color* buffer )
     {
-        float fx = x + ( xstep * xratio )+0.5f;
-        float fy = y + ( ystep * yratio )+0.5f;
+        float fx = x + ( xstep * xratio ) + 0.5f;
+        float fy = y + ( ystep * yratio ) + 0.5f;
         int32_t ix = static_cast<int32_t> ( floorf ( fx ) );
         int32_t iy = static_cast<int32_t> ( floorf ( fy ) );
         return buffer[ ( iy * pitch ) + ix];
