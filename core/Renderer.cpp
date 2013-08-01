@@ -191,20 +191,20 @@ namespace AeonGUI
         Color result = 0;
         float sum = 0;
         float b = 0, g = 0, r = 0, a = 0;
-        float kernel[ ( filter * 2 ) - 1];
+        float kernel[ ( filter * 2 ) ];
 
-        for ( int32_t i = -2; i < 3; ++i )
+        for ( int32_t i = -2; i <= 3; ++i )
         {
             sum += kernel[i + 2] = LanczosKernel ( fx - ( ix + i ) );
         }
 
         // Normalize
-        for ( int32_t i = 0; i < ( filter * 2 ) - 1; ++i )
+        for ( int32_t i = 0; i < ( filter * 2 ); ++i )
         {
             kernel[i] /= sum;
         }
 
-        for ( int32_t i = -2; i < 3; ++i )
+        for ( int32_t i = -2; i <= 3; ++i )
         {
             if ( ( ix + i ) < x )
             {
@@ -247,23 +247,23 @@ namespace AeonGUI
         float sumy = 0;
 
         float finalsums[4] = {0};
-        float kernelx[ ( filter * 2 ) - 1];
-        float kernely[ ( filter * 2 ) - 1];
+        float kernelx[ ( filter * 2 ) ];
+        float kernely[ ( filter * 2 ) ];
 
-        for ( int32_t i = -2; i < 3; ++i )
+        for ( int32_t i = -2; i <= 3; ++i )
         {
             sumx += kernelx[i + 2] = LanczosKernel ( fx - ( ix + i ) );
             sumy += kernely[i + 2] = LanczosKernel ( fy - ( iy + i ) );
         }
 
         // Normalize
-        for ( int32_t i = 0; i < ( filter * 2 ) - 1; ++i )
+        for ( int32_t i = 0; i < ( filter * 2 ); ++i )
         {
             kernelx[i] /= sumx;
             kernely[i] /= sumy;
         }
 
-        for ( int32_t yi = -2; yi < 3; ++yi )
+        for ( int32_t yi = -2; yi <= 3; ++yi )
         {
             int32_t row = iy + yi;
             if ( row < y )
@@ -276,7 +276,7 @@ namespace AeonGUI
             }
             float sums[4] = {0};
 
-            for ( int32_t xi = -2; xi < 3; ++xi )
+            for ( int32_t xi = -2; xi <= 3; ++xi )
             {
                 int32_t column = ix + xi;
                 if ( column < x )
