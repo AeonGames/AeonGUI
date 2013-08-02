@@ -15,10 +15,10 @@ Copyright 2010-2013 Rodrigo Hernandez Cordoba
    See the License for the specific language governing permissions and
    limitations under the License.
 ******************************************************************************/
+
 #include "Renderer.h"
-#include <map>
-#include <vector>
 #include "Integer.h"
+
 namespace AeonGUI
 {
     /// OpenGL Renderer class.

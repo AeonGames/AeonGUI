@@ -1,7 +1,7 @@
 #ifndef VERA_H
 #define VERA_H
 /******************************************************************************
-Copyright 2010-2012 Rodrigo Hernandez Cordoba
+Copyright 2010-2013 Rodrigo Hernandez Cordoba
 
    Licensed under the Apache License, Version 2.0 (the "License");
    you may not use this file except in compliance with the License.
@@ -15,11 +15,10 @@ Copyright 2010-2012 Rodrigo Hernandez Cordoba
    See the License for the specific language governing permissions and
    limitations under the License.
 ******************************************************************************/
-#ifdef __cplusplus
-#include <cstdint>
-extern "C" {
-#else
+
 #include <stdint.h>
+#ifdef __cplusplus
+extern "C" {
 #endif
 extern struct {
 uint32_t  size;

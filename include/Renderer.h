@@ -16,9 +16,7 @@ Copyright 2010-2013 Rodrigo Hernandez Cordoba
    limitations under the License.
 ******************************************************************************/
 
-#include <cstddef>
-#include <string>
-#include <map>
+#include <stddef.h>
 
 #include "Image.h"
 #include "Font.h"

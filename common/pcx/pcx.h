@@ -15,8 +15,8 @@ Copyright 2010-2012 Rodrigo Hernandez Cordoba
    See the License for the specific language governing permissions and
    limitations under the License.
 ******************************************************************************/
-#include <cstring>
-#include <cstdint>
+#include <string.h>
+#include <stdint.h>
 class Pcx
 {
 public:

@@ -111,7 +111,7 @@ set(FT_SOURCES
       ${CMAKE_SOURCE_DIR}/freetype-2.4.12/src/pshinter/pshinter.c #-- PS hinting module
       ${CMAKE_SOURCE_DIR}/freetype-2.4.12/src/psnames/psnames.c   #-- PostScript glyph names support
     )
-    
+
 add_library(freetype ${FT_SOURCES})
 set_target_properties(freetype PROPERTIES COMPILE_DEFINITIONS "FT2_BUILD_LIBRARY")
 #set_target_properties(freetype PROPERTIES COMPILE_FLAGS "-DFT2_BUILD_LIBRARY")
@@ -186,13 +186,14 @@ ENDIF(USE_PNG)
 # if FreeType is not requested we may use Xlib on Unix, or GDI on Windows... eventually.
 INCLUDE(FindX11)
 IF(CMAKE_COMPILER_IS_GNUCXX)
-SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++0x -Wall")
+# -std=c++0x is required to be able to include stdint.h as cstdint, weird, I know.
+# But then CUDA doesn't like c++0x, so stick to .h files until it does *sigh*
+SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall")
 IF(RELEASE_BUILD)
 SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -DNDEBUG -fomit-frame-pointer -O3")
 ELSE(RELEASE_BUILD)
 SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -DDEBUG -g -O0")
 ENDIF(RELEASE_BUILD)
-# -std=c++0x is required to be able to include stdint.h as cstdint, weird, I know.
 ENDIF(CMAKE_COMPILER_IS_GNUCXX)
 
 IF(CMAKE_COMPILER_IS_GNUC)

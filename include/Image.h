@@ -15,9 +15,9 @@ Copyright 2010-2012 Rodrigo Hernandez Cordoba
    See the License for the specific language governing permissions and
    limitations under the License.
 ******************************************************************************/
-#include <cstddef>
-#include <cassert>
-#include <cstring>
+#include <stddef.h>
+#include <assert.h>
+#include <string.h>
 #include "Integer.h"
 #include "Color.h"
 

@@ -5,8 +5,8 @@
 #undef _GLIBCXX_USE_INT128
 #endif
 #endif
-#include <cstdio>
-#include <cstdlib>
+#include <stdio.h>
+#include <stdlib.h>
 #include <cuda_runtime.h>
 #include <device_launch_parameters.h>
 #include <math_constants.h>

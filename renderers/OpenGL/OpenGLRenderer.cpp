@@ -41,10 +41,11 @@ Copyright 2010-2012 Rodrigo Hernandez Cordoba
     static glFunctionType glFunction = NULL
 
 
-#include <cassert>
-#include <cstdlib>
-#include <cwchar>
-#include <cmath>
+#include <assert.h>
+#include <stdlib.h>
+#include <stdio.h>
+#include <wchar.h>
+#include <math.h>
 #include <iostream>
 #include <algorithm>
 #include "Font.h"

@@ -1,8 +1,8 @@
-#include <cstdio>
-#include <cstdlib>
-#include <cstring>
-#include <cassert>
-#include <ctime>
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <assert.h>
+#include <time.h>
 #include <unistd.h>
 
 #include <X11/Xlib.h>
@@ -168,7 +168,7 @@ static uint32_t GetScancode ( KeySym keysym )
         KEY_DEL      = 0x53
 #endif
     }
-    return keysym;
+                   return keysym;
 }
 #endif
 
