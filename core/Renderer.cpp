@@ -186,12 +186,14 @@ namespace AeonGUI
     static Color Lanczos1DInterpolation ( int32_t x, int32_t step, float ratio, const Color* samples, int32_t sample_width, uint32_t sample_stride )
     {
         const int32_t filter = 3;
+        const int32_t filtertimes2 = filter * 2;
+        const int32_t negativefilterminus1 = - ( filter - 1 );
         float fx = ( x + ( ( ( step + 0.5f ) * ratio ) - 0.5f ) );
         int32_t ix = static_cast<int32_t> ( floorf ( fx ) );
         Color result = 0;
         float sum = 0;
         float b = 0, g = 0, r = 0, a = 0;
-        float kernel[ ( filter * 2 ) ];
+        float kernel[ filtertimes2 ];
 
         for ( int32_t i = -2; i <= 3; ++i )
         {
@@ -199,12 +201,12 @@ namespace AeonGUI
         }
 
         // Normalize
-        for ( int32_t i = 0; i < ( filter * 2 ); ++i )
+        for ( int32_t i = 0; i < filtertimes2; ++i )
         {
             kernel[i] /= sum;
         }
 
-        for ( int32_t i = -2; i <= 3; ++i )
+        for ( int32_t i = negativefilterminus1; i <= filter; ++i )
         {
             if ( ( ix + i ) < x )
             {
@@ -213,7 +215,7 @@ namespace AeonGUI
                 r += samples[x * sample_stride].r * kernel[i + 2];
                 a += samples[x * sample_stride].a * kernel[i + 2];
             }
-            else if ( ( ix + i ) >= ( x + sample_width ) - 1 )
+            else if ( ( ix + i ) > ( x + sample_width ) - 1 )
             {
                 b += samples[ ( ( x + sample_width ) - 1 ) * sample_stride].b * kernel[i + 2];
                 g += samples[ ( ( x + sample_width ) - 1 ) * sample_stride].g * kernel[i + 2];
@@ -328,6 +330,10 @@ namespace AeonGUI
         {
             return samples [ ( x + sample_width - 1 ) * sample_stride ];
         }
+        else if ( ix < x )
+        {
+            return samples [ x * sample_stride ];
+        }
         const Color* c0 = samples + ( ix * sample_stride );
         const Color* c1 = samples + ( ( ix + 1 ) * sample_stride );
         Color result;
@@ -340,7 +346,15 @@ namespace AeonGUI
 
     static Color NearestNeighbor1DInterpolation ( int32_t x, int32_t step, float ratio, const Color* samples, int32_t sample_width, uint32_t sample_stride )
     {
-        int32_t ix = static_cast<int32_t> ( floorf ( x + ( step * ratio ) + 0.5f ) );
+        int32_t ix = static_cast<int32_t> ( floorf ( x + ( ( step + 0.5f ) * ratio ) - 0.5f ) );
+        if ( ix >= ( x + sample_width - 1 ) )
+        {
+            ix = ( x + sample_width - 1 );
+        }
+        else if ( ix < x )
+        {
+            ix = x;
+        }
         return samples[ ix * sample_stride];
     }
 
@@ -407,10 +421,28 @@ namespace AeonGUI
 
     static Color NearestNeighbor2DInterpolation ( int32_t x, int32_t xstep, float xratio, int32_t y, int32_t ystep, float yratio, int32_t w, int32_t h, int32_t pitch, const Color* buffer )
     {
-        float fx = x + ( xstep * xratio ) + 0.5f;
-        float fy = y + ( ystep * yratio ) + 0.5f;
-        int32_t ix = static_cast<int32_t> ( floorf ( fx ) );
-        int32_t iy = static_cast<int32_t> ( floorf ( fy ) );
+
+        int32_t ix = static_cast<int32_t> ( floorf ( x + ( ( ( xstep + 0.5f ) * xratio ) - 0.5f ) + 0.5f ) );
+        int32_t iy = static_cast<int32_t> ( floorf ( y + ( ( ( ystep + 0.5f ) * yratio ) - 0.5f ) + 0.5f ) );
+
+        if ( ix > ( x + w - 1 ) )
+        {
+            ix = ( x + w - 1 );
+        }
+        else if ( ix < x )
+        {
+            ix = x;
+        }
+
+        if ( iy > ( y + h - 1 ) )
+        {
+            iy = ( y + h - 1 );
+        }
+        else if ( iy < y )
+        {
+            iy = y;
+        }
+
         return buffer[ ( iy * pitch ) + ix];
     }
 
