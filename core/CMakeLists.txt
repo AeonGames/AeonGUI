@@ -1,5 +1,6 @@
 SET(AEONGUI_HEADERS
 ../include/AeonGUI.h
+../include/Theme.h
 ../include/KeyListener.h
 ../include/MouseListener.h
 ../include/Widget.h
@@ -17,6 +18,7 @@ SET(AEONGUI_HEADERS
 
 SET(AEONGUI_SOURCES
 AeonGUI.cpp
+Theme.cpp
 Renderer.cpp
 Font.cpp
 Widget.cpp
