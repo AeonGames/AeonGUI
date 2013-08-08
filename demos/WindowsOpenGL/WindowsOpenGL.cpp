@@ -167,6 +167,7 @@ void Window::Initialize ( HINSTANCE hInstance )
 #else
     //aeongui_logo->LoadFromFile ( "AeonGUILogoBlBkg.pcx" );
     aeongui_logo->LoadFromFile ( "Patch9Test.pcx" );
+    //aeongui_logo->LoadFromFile ( "WindowFrame.pcx" );
     //aeongui_logo->LoadFromFile ( "ScaleTest.pcx" );
 #endif
     font = new AeonGUI::Font;

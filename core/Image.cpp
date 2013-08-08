@@ -210,10 +210,10 @@ namespace AeonGUI
                 {
                     for ( uint32_t sx = 1, dx = 0; sx <= width; ++sx, ++dx )
                     {
-                        bitmap[ ( dy * width ) + ( dx )].r = reinterpret_cast<const uint8_t*> ( data ) [ ( ( sy * image_width * 3 ) + ( sx * 3 ) ) + 0];
-                        bitmap[ ( dy * width ) + ( dx )].g = reinterpret_cast<const uint8_t*> ( data ) [ ( ( sy * image_width * 3 ) + ( sx * 3 ) ) + 1];
-                        bitmap[ ( dy * width ) + ( dx )].b = reinterpret_cast<const uint8_t*> ( data ) [ ( ( sy * image_width * 3 ) + ( sx * 3 ) ) + 2];
-                        bitmap[ ( dy * width ) + ( dx )].a = reinterpret_cast<const uint8_t*> ( data ) [ ( ( sy * image_width * 3 ) + ( sx * 3 ) ) + 3];
+                        bitmap[ ( dy * width ) + ( dx )].r = reinterpret_cast<const uint8_t*> ( data ) [ ( ( sy * image_width * 4 ) + ( sx * 4 ) ) + 0];
+                        bitmap[ ( dy * width ) + ( dx )].g = reinterpret_cast<const uint8_t*> ( data ) [ ( ( sy * image_width * 4 ) + ( sx * 4 ) ) + 1];
+                        bitmap[ ( dy * width ) + ( dx )].b = reinterpret_cast<const uint8_t*> ( data ) [ ( ( sy * image_width * 4 ) + ( sx * 4 ) ) + 2];
+                        bitmap[ ( dy * width ) + ( dx )].a = reinterpret_cast<const uint8_t*> ( data ) [ ( ( sy * image_width * 4 ) + ( sx * 4 ) ) + 3];
                     }
                 }
                 break;
@@ -222,10 +222,10 @@ namespace AeonGUI
                 {
                     for ( uint32_t sx = 1, dx = 0; sx <= width; ++sx, ++dx )
                     {
-                        bitmap[ ( dy * width ) + ( dx )].b = reinterpret_cast<const uint8_t*> ( data ) [ ( ( sy * image_width * 3 ) + ( sx * 3 ) ) + 0];
-                        bitmap[ ( dy * width ) + ( dx )].g = reinterpret_cast<const uint8_t*> ( data ) [ ( ( sy * image_width * 3 ) + ( sx * 3 ) ) + 1];
-                        bitmap[ ( dy * width ) + ( dx )].r = reinterpret_cast<const uint8_t*> ( data ) [ ( ( sy * image_width * 3 ) + ( sx * 3 ) ) + 2];
-                        bitmap[ ( dy * width ) + ( dx )].a = reinterpret_cast<const uint8_t*> ( data ) [ ( ( sy * image_width * 3 ) + ( sx * 3 ) ) + 3];
+                        bitmap[ ( dy * width ) + ( dx )].b = reinterpret_cast<const uint8_t*> ( data ) [ ( ( sy * image_width * 4 ) + ( sx * 4 ) ) + 0];
+                        bitmap[ ( dy * width ) + ( dx )].g = reinterpret_cast<const uint8_t*> ( data ) [ ( ( sy * image_width * 4 ) + ( sx * 4 ) ) + 1];
+                        bitmap[ ( dy * width ) + ( dx )].r = reinterpret_cast<const uint8_t*> ( data ) [ ( ( sy * image_width * 4 ) + ( sx * 4 ) ) + 2];
+                        bitmap[ ( dy * width ) + ( dx )].a = reinterpret_cast<const uint8_t*> ( data ) [ ( ( sy * image_width * 4 ) + ( sx * 4 ) ) + 3];
                     }
                 }
                 break;
