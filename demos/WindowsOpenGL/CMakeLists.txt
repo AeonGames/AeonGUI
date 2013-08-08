@@ -1,6 +1,11 @@
 SET(WGL_SOURCES WindowsOpenGL.cpp  ../common/logo.c ../common/Vera.c ../common/glcommon.c)
 SET(WGL_HEADERS ../common/logo.h ../common/Vera.h ../common/glcommon.h)
-SET(WGL_DEPENDENCIES ${CMAKE_CURRENT_BINARY_DIR}/AeonGUILogoBlBkg.pcx ${CMAKE_CURRENT_BINARY_DIR}/ScaleTest.pcx ${CMAKE_CURRENT_BINARY_DIR}/Patch9Test.pcx)
+SET(WGL_DEPENDENCIES 
+    ${CMAKE_CURRENT_BINARY_DIR}/AeonGUILogoBlBkg.pcx 
+    ${CMAKE_CURRENT_BINARY_DIR}/ScaleTest.pcx 
+    ${CMAKE_CURRENT_BINARY_DIR}/Patch9Test.pcx
+    ${CMAKE_CURRENT_BINARY_DIR}/WindowFrame.pcx
+    )
 
 if(USE_PNG)
 SET(WGL_DEPENDENCIES ${WGL_DEPENDENCIES} ${CMAKE_CURRENT_BINARY_DIR}/AeonGUILogoBlBkg.png)
