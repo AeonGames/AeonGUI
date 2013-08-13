@@ -324,52 +324,52 @@ namespace AeonGUI
         return stretchystart;
     }
 
-    uint32_t Image::GetPadXStart ( uint32_t width, uint32_t height ) const
+    uint32_t Image::GetPadXStart ( uint32_t width ) const
     {
         return padxstart;
     }
 
-    uint32_t Image::GetPadYStart ( uint32_t width, uint32_t height ) const
+    uint32_t Image::GetPadYStart ( uint32_t height ) const
     {
         return padystart;
     }
 
-    uint32_t Image::GetStretchXEnd ( uint32_t width, uint32_t height ) const
+    uint32_t Image::GetStretchXEnd ( uint32_t width ) const
     {
         return stretchxstart + stretchwidth;
     }
 
-    uint32_t Image::GetStretchYEnd ( uint32_t width, uint32_t height ) const
+    uint32_t Image::GetStretchYEnd ( uint32_t height ) const
     {
         return stretchystart + stretchheight;
     }
 
-    uint32_t Image::GetPadXEnd ( uint32_t width, uint32_t height ) const
+    uint32_t Image::GetPadXEnd ( uint32_t width ) const
     {
         return padxstart + padwidth;
     }
 
-    uint32_t Image::GetPadYEnd ( uint32_t width, uint32_t height ) const
+    uint32_t Image::GetPadYEnd ( uint32_t height ) const
     {
         return padystart + padheight;
     }
 
-    uint32_t Image::GetStretchWidth ( uint32_t width, uint32_t height ) const
+    uint32_t Image::GetStretchWidth ( uint32_t width ) const
     {
         return stretchwidth;
     }
 
-    uint32_t Image::GetStretchHeight ( uint32_t width, uint32_t height ) const
+    uint32_t Image::GetStretchHeight ( uint32_t height ) const
     {
         return stretchheight;
     }
 
-    uint32_t Image::GetPadWidth ( uint32_t width, uint32_t height ) const
+    uint32_t Image::GetPadWidth ( uint32_t width ) const
     {
         return padwidth;
     }
 
-    uint32_t Image::GetPadHeight ( uint32_t width, uint32_t height ) const
+    uint32_t Image::GetPadHeight (  uint32_t height ) const
     {
         return padheight;
     }
