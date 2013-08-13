@@ -122,8 +122,8 @@ namespace AeonGUI
         uint32_t image_w = image->GetWidth();
         uint32_t image_h = image->GetHeight();
 
-        uint32_t stretch_x = image->GetStretchX();
-        uint32_t stretch_y = image->GetStretchY();
+        uint32_t stretch_x = image->GetStretchXStart();
+        uint32_t stretch_y = image->GetStretchYStart();
         uint32_t stretch_width = image->GetStretchWidth();
         uint32_t stretch_height = image->GetStretchHeight();
 

@@ -135,8 +135,8 @@ namespace AeonGUI
             renderer->DrawImage ( frameimage, screenrect.GetX(), screenrect.GetY(), screenrect.GetWidth(), screenrect.GetHeight() );
             renderer->DrawString (
                 textcolor,
-                screenrect.GetX() + frameimage->GetPadX(),
-                screenrect.GetY() + renderer->GetFont()->GetHeight() + renderer->GetFont()->GetDescender() + frameimage->GetPadY(),
+                screenrect.GetX() + frameimage->GetPadXStart(),
+                screenrect.GetY() + renderer->GetFont()->GetHeight() + renderer->GetFont()->GetDescender() + frameimage->GetPadYStart(),
                 caption );
         }
     }
@@ -156,7 +156,7 @@ namespace AeonGUI
         int x = X;
         int y = Y;
         ScreenToClientCoords ( x, y );
-        if ( ( frameimage != NULL ) && ( y < static_cast<int32_t> ( frameimage->GetStretchY() ) ) )
+        if ( ( frameimage != NULL ) && ( y < static_cast<int32_t> ( frameimage->GetStretchYStart() ) ) )
         {
             std::cout << "Caption Down " << std::dec << static_cast<int> ( button ) << std::endl;
             moving = true;
@@ -170,7 +170,7 @@ namespace AeonGUI
         int x = X;
         int y = Y;
         ScreenToClientCoords ( x, y );
-        if ( ( frameimage != NULL ) && ( y < static_cast<int32_t> ( frameimage->GetStretchY() ) ) )
+        if ( ( frameimage != NULL ) && ( y < static_cast<int32_t> ( frameimage->GetStretchYStart() ) ) )
         {
             std::cout << "Caption Up " << std::dec << static_cast<int> ( button ) << std::endl;
             moving = false;
