@@ -1,5 +1,5 @@
 /******************************************************************************
-Copyright 2010-2012 Rodrigo Hernandez Cordoba
+Copyright 2010-2013 Rodrigo Hernandez Cordoba
 
    Licensed under the Apache License, Version 2.0 (the "License");
    you may not use this file except in compliance with the License.
@@ -157,13 +157,6 @@ namespace AeonGUI
         Rect wrect = *draw_rect;
         ClientToScreenRect ( &wrect );
         renderer->DrawRectOutline ( color, &wrect );
-    }
-
-    void Widget::DrawImage ( Renderer* renderer, Color color, int32_t x, int32_t y, Image* image )
-    {
-        Rect world_rect;
-        GetScreenRect ( &world_rect );
-        renderer->DrawImage ( image, world_rect.GetLeft(), world_rect.GetTop() );
     }
 
     void Widget::DrawString ( Renderer* renderer, Color color, int32_t x, int32_t y, const wchar_t* text )

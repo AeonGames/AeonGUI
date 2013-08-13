@@ -62,11 +62,10 @@ namespace AeonGUI
         /*! \copydoc Widget::OnMouseMove */
         virtual void OnMouseMove ( uint32_t x, uint32_t y );
 
-        Rect captionrect;               ///< Rect for caption box at top of the frame.
         const Image* frameimage;
         wchar_t* caption;               ///< Caption text.
-        uint32_t padding;               ///< Window content padding.
-        uint32_t captionheight;         ///< Caption height.
+        uint32_t padding;               ///< Window content padding. (to be removed)
+        uint32_t captionheight;         ///< Caption height. (to be removed)
         Color captioncolor;             ///< Caption text color.
         uint16_t xoffset;               ///< Mouse X offset for move operation.
         uint16_t yoffset;               ///< Mouse Y offset for move operation.

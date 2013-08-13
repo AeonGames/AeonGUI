@@ -35,17 +35,6 @@ namespace AeonGUI
         verticalscroll ( ScrollBar::VERTICAL ),
         horizontalscroll ( ScrollBar::HORIZONTAL )
     {
-#if 0
-        Font* font = renderer->GetFont();
-        if ( font != NULL )
-        {
-            captionheight = font->GetHeight() + ( padding * 2 );
-        }
-        else
-        {
-            captionheight = 16 + ( padding * 2 );
-        }
-#endif
         padding = 4;
         captionheight = 16 + ( padding * 2 );
         captioncolor.r = 64;
@@ -139,23 +128,16 @@ namespace AeonGUI
     void MainWindow::OnRender ( Renderer* renderer )
     {
         Widget::OnRender ( renderer );
+        Rect screenrect;
         if ( frameimage != NULL )
         {
-            GetClientRect ( captionrect );
-            //captionrect.Scale ( -static_cast<int32_t> ( bordersize ) );
-            //captionrect.SetHeight ( captionheight );
-            //DrawRect ( renderer, captioncolor, &captionrect );
-            renderer->DrawImage ( frameimage, captionrect.GetX(), captionrect.GetX(), captionrect.GetWidth(), captionrect.GetHeight() );
-#if 0
-            Rect textrect = captionrect;
-            textrect.Scale ( -static_cast<int32_t> ( padding ) );
-            DrawRect ( bordercolor, &textrect );
-#endif
-            DrawString ( renderer,
-                         textcolor,
-                         captionrect.GetLeft() + padding,
-                         captionrect.GetTop() + renderer->GetFont()->GetHeight() + renderer->GetFont()->GetDescender() + padding,
-                         caption );
+            GetScreenRect ( &screenrect );
+            renderer->DrawImage ( frameimage, screenrect.GetX(), screenrect.GetY(), screenrect.GetWidth(), screenrect.GetHeight() );
+            renderer->DrawString (
+                textcolor,
+                screenrect.GetX() + frameimage->GetPadX(),
+                screenrect.GetY() + renderer->GetFont()->GetHeight() + renderer->GetFont()->GetDescender() + frameimage->GetPadY(),
+                caption );
         }
     }
 
@@ -174,19 +156,13 @@ namespace AeonGUI
         int x = X;
         int y = Y;
         ScreenToClientCoords ( x, y );
-        if ( captionrect.IsPointInside ( x, y ) )
+        if ( ( frameimage != NULL ) && ( y < static_cast<int32_t> ( frameimage->GetStretchY() ) ) )
         {
             std::cout << "Caption Down " << std::dec << static_cast<int> ( button ) << std::endl;
             moving = true;
             xoffset = X - rect.GetLeft();
             yoffset = Y - rect.GetTop();
         }
-#if 0
-        else
-        {
-            std::cout << "MainWindow::OnButtonDown " << std::dec << static_cast<int> ( button ) << std::endl;
-        }
-#endif
     }
 
     void MainWindow::OnMouseButtonUp ( uint8_t button, uint32_t X, uint32_t Y )
@@ -194,18 +170,13 @@ namespace AeonGUI
         int x = X;
         int y = Y;
         ScreenToClientCoords ( x, y );
-        if ( captionrect.IsPointInside ( x, y ) )
+        if ( ( frameimage != NULL ) && ( y < static_cast<int32_t> ( frameimage->GetStretchY() ) ) )
         {
             std::cout << "Caption Up " << std::dec << static_cast<int> ( button ) << std::endl;
             moving = false;
         }
-#if 0
-        else
-        {
-            std::cout << "MainWindow::OnButtonUp " << std::dec << static_cast<int> ( button ) << std::endl;
-        }
-#endif
     }
+
     void MainWindow::OnMouseClick ( Widget* clicked_widget, uint8_t button, uint32_t x, uint32_t y )
     {
         if ( clicked_widget == &close )

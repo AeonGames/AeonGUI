@@ -242,14 +242,7 @@ namespace AeonGUI
             \param draw_rect [in] Pointer to the rect.
         */
         void DrawRectOutline ( Renderer* renderer, Color color, const Rect* draw_rect );
-        /*! \brief Draw an Image in widget space.
-            \param renderer [in] Pointer to the renderer to handle the drawing.
-            \param color [in] Pointer to the color to use for drawing.
-            \param x [in] x coordinate in screen space.
-            \param y [in] y coordinate in screen space.
-            \param image [in] Pointer to the image object to draw.
-        */
-        void DrawImage ( Renderer* renderer, Color color, int32_t x, int32_t y, Image* image );
+
         /*! \brief Draw text in widget space.
             \param renderer [in] Pointer to the renderer to handle the drawing.
             \param color [in] Pointer to the color to use for drawing.

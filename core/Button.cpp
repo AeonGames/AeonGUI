@@ -88,36 +88,38 @@ namespace AeonGUI
     void Button::OnRender ( Renderer* renderer )
     {
         Widget::OnRender ( renderer );
+        Rect screenrect;
+        GetScreenRect ( &screenrect );
         switch ( state )
         {
         case DEFAULT:
             if ( normal != NULL )
             {
-                DrawImage ( renderer, backgroundcolor, 0, 0, normal );
+                renderer->DrawImage ( normal, screenrect.GetX(), screenrect.GetY() );
             }
             break;
         case HIGHLIGHTED:
             if ( highlighted != NULL )
             {
-                DrawImage ( renderer, backgroundcolor, 0, 0, highlighted );
+                renderer->DrawImage ( highlighted, screenrect.GetX(), screenrect.GetY() );
             }
             break;
         case FOCUSED:
             if ( focused != NULL )
             {
-                DrawImage ( renderer, backgroundcolor, 0, 0, focused );
+                renderer->DrawImage ( focused, screenrect.GetX(), screenrect.GetY() );
             }
             break;
         case PRESSED:
             if ( pressed != NULL )
             {
-                DrawImage ( renderer, backgroundcolor, 0, 0, pressed );
+                renderer->DrawImage ( pressed, screenrect.GetX(), screenrect.GetY() );
             }
             break;
         }
         if ( caption != NULL )
         {
-            DrawString ( renderer, textcolor, 0, 0, caption );
+            DrawString ( renderer, textcolor, screenrect.GetX(), screenrect.GetY(), caption );
         }
     }
 
