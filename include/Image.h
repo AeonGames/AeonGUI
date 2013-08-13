@@ -88,14 +88,14 @@ namespace AeonGUI
         If no image data is loaded, the returned value will be zero.
         \return Image width, including guides for 9 patch images.
         */
-        int32_t GetWidth();
+        int32_t GetWidth() const;
 
         /*!
         \brief Get the height for the loaded image.
         If no image data is loaded, the returned value will be zero.
         \return Image height, including guides for 9 patch images.
         */
-        int32_t GetHeight();
+        int32_t GetHeight() const;
 
         /*!
         \brief Retrieve read only bitmap buffer for the image.
@@ -108,42 +108,42 @@ namespace AeonGUI
         \brief Retrieve Starting X coordinate for patch 9 stretch area.
         \return The starting X coordinate for patch 9 stretching.
         */
-        uint32_t GetStretchX();
+        uint32_t GetStretchX() const;
         /*!
         \brief Retrieve Starting Y coordinate for patch 9 stretch area.
         \return The starting Y coordinate for patch 9 stretching.
         */
-        uint32_t GetStretchY();
+        uint32_t GetStretchY() const;
         /*!
         \brief Retrieve Starting X coordinate for patch 9 pad area.
         \return The starting X coordinate for patch 9 padding.
         */
-        uint32_t GetPadX();
+        uint32_t GetPadX() const;
         /*!
         \brief Retrieve Starting Y coordinate for patch 9 pad area.
         \return The starting Y coordinate for patch 9 padding.
         */
-        uint32_t GetPadY();
+        uint32_t GetPadY() const;
         /*!
         \brief Retrieve Ending X coordinate for patch 9 stretch area.
         \return The ending X coordinate for patch 9 stretching.
         */
-        uint32_t GetStretchWidth();
+        uint32_t GetStretchWidth() const;
         /*!
         \brief Retrieve Ending Y coordinate for patch 9 stretch area.
         \return The ending Y coordinate for patch 9 stretching.
         */
-        uint32_t GetStretchHeight();
+        uint32_t GetStretchHeight() const;
         /*!
         \brief Retrieve Ending X coordinate for patch 9 pad area.
         \return The ending X coordinate for patch 9 padding.
         */
-        uint32_t GetPadWidth();
+        uint32_t GetPadWidth() const;
         /*!
         \brief Retrieve Ending Y coordinate for patch 9 pad area.
         \return The ending Y coordinate for patch 9 padding.
         */
-        uint32_t GetPadHeight();
+        uint32_t GetPadHeight() const;
 
     private:
         uint32_t width;

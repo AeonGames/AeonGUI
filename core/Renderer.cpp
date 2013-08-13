@@ -117,7 +117,7 @@ namespace AeonGUI
         }
     }
 
-    void Renderer::DrawImage ( Image* image, int32_t x, int32_t y, int32_t w, int32_t h, ResizeAlgorithm algorithm )
+    void Renderer::DrawImage ( const Image* image, int32_t x, int32_t y, int32_t w, int32_t h, ResizeAlgorithm algorithm )
     {
         uint32_t image_w = image->GetWidth();
         uint32_t image_h = image->GetHeight();
@@ -462,7 +462,7 @@ namespace AeonGUI
         BilinearInterpolation            // LINEAR  == 3
     };
 
-    void Renderer::DrawSubImage ( Image* image, int32_t x, int32_t y, int32_t subx, int32_t suby, int32_t subw, int32_t subh, int32_t w, int32_t h, ResizeAlgorithm algorithm )
+    void Renderer::DrawSubImage ( const Image* image, int32_t x, int32_t y, int32_t subx, int32_t suby, int32_t subw, int32_t subh, int32_t w, int32_t h, ResizeAlgorithm algorithm )
     {
         assert ( image != NULL );
 

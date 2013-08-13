@@ -176,6 +176,7 @@ void Window::Initialize ( HINSTANCE hInstance )
     renderer.ChangeScreenSize ( width, height );
     renderer.SetFont ( font );
     std::wstring hello ( L"Hello World" );
+    window->SetFrameImage ( aeongui_logo );
     window->SetCaption ( hello.c_str() );
     renderer.AddWidget ( window );
     ShowWindow ( hWnd, SW_SHOW );
