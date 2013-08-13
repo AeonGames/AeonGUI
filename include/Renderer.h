@@ -112,7 +112,7 @@ namespace AeonGUI
             \param algorithm [in] Optional enumeration value for the resize algorithm to be used, NEAREST is used by default.
             \sa Image::DrawSubImage
         */
-        void DrawImage ( Image* image, int32_t x, int32_t y, int32_t w = 0, int32_t h = 0, ResizeAlgorithm algorithm = NEAREST );
+        void DrawImage ( const Image* image, int32_t x, int32_t y, int32_t w = 0, int32_t h = 0, ResizeAlgorithm algorithm = NEAREST );
 
         /*! \brief Draws a sub area of an image in screen space.
 
@@ -131,7 +131,7 @@ namespace AeonGUI
             \param algorithm [in] Optional enumeration value for the resize algorithm to be used, NEAREST is used by default.
             \sa Image::DrawImage
         */
-        void DrawSubImage ( Image* image, int32_t x, int32_t y, int32_t subx = 0, int32_t suby = 0, int32_t subw = 0, int32_t subh = 0, int32_t w = 0, int32_t h = 0, ResizeAlgorithm algorithm = NEAREST );
+        void DrawSubImage ( const Image* image, int32_t x, int32_t y, int32_t subx = 0, int32_t suby = 0, int32_t subw = 0, int32_t subh = 0, int32_t w = 0, int32_t h = 0, ResizeAlgorithm algorithm = NEAREST );
 
         /*! \brief Draw a string of text.
             \param color [in] Color to draw the string with.

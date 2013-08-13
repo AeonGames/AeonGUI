@@ -166,8 +166,8 @@ void Window::Initialize ( HINSTANCE hInstance )
     aeongui_logo->LoadFromFile ( "AeonGUILogoBlBkg.png" );
 #else
     //aeongui_logo->LoadFromFile ( "AeonGUILogoBlBkg.pcx" );
-    aeongui_logo->LoadFromFile ( "Patch9Test.pcx" );
-    //aeongui_logo->LoadFromFile ( "WindowFrame.pcx" );
+    //aeongui_logo->LoadFromFile ( "Patch9Test.pcx" );
+    aeongui_logo->LoadFromFile ( "WindowFrame.pcx" );
     //aeongui_logo->LoadFromFile ( "ScaleTest.pcx" );
 #endif
     font = new AeonGUI::Font;
@@ -176,6 +176,7 @@ void Window::Initialize ( HINSTANCE hInstance )
     renderer.ChangeScreenSize ( width, height );
     renderer.SetFont ( font );
     std::wstring hello ( L"Hello World" );
+    window->SetFrameImage ( aeongui_logo );
     window->SetCaption ( hello.c_str() );
     renderer.AddWidget ( window );
     ShowWindow ( hWnd, SW_SHOW );

@@ -29,9 +29,14 @@ namespace AeonGUI
         MainWindow();
         virtual ~MainWindow();
         /*! \brief Set the window caption to be displayed on the window frame.
-            \param newcaption Text for the caption.
+            \param newcaption Text for the caption or NULL to unset.
         */
         void SetCaption ( const wchar_t* newcaption );
+
+        /*! \brief Set the window frame image.
+            \param newframe Pointer to new frame image or NULL to unset.
+        */
+        void SetFrameImage ( const Image* image );
 
         /*! \copydoc Widget::OnRender */
         virtual void OnRender ( Renderer* renderer );
@@ -58,13 +63,13 @@ namespace AeonGUI
         virtual void OnMouseMove ( uint32_t x, uint32_t y );
 
         Rect captionrect;               ///< Rect for caption box at top of the frame.
+        const Image* frameimage;
         wchar_t* caption;               ///< Caption text.
         uint32_t padding;               ///< Window content padding.
         uint32_t captionheight;         ///< Caption height.
         Color captioncolor;             ///< Caption text color.
         uint16_t xoffset;               ///< Mouse X offset for move operation.
         uint16_t yoffset;               ///< Mouse Y offset for move operation.
-        bool hascaption;                ///< Wether this window has a caption box or not.
         bool moving;                    ///< Wether the window is currently moving.
         Button close;                   ///< Close window button.
         Button maximize;                ///< Maximize window button.

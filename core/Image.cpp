@@ -299,12 +299,12 @@ namespace AeonGUI
         Unload();
     }
 
-    int32_t Image::GetWidth()
+    int32_t Image::GetWidth() const
     {
         return width;
     }
 
-    int32_t Image::GetHeight()
+    int32_t Image::GetHeight() const
     {
         return height;
     }
@@ -314,42 +314,42 @@ namespace AeonGUI
         return bitmap;
     }
 
-    uint32_t Image::GetStretchX()
+    uint32_t Image::GetStretchX() const
     {
         return stretchx;
     }
 
-    uint32_t Image::GetStretchY()
+    uint32_t Image::GetStretchY() const
     {
         return stretchy;
     }
 
-    uint32_t Image::GetPadX()
+    uint32_t Image::GetPadX() const
     {
         return padx;
     }
 
-    uint32_t Image::GetPadY()
+    uint32_t Image::GetPadY() const
     {
         return pady;
     }
 
-    uint32_t Image::GetStretchWidth()
+    uint32_t Image::GetStretchWidth() const
     {
         return stretchwidth;
     }
 
-    uint32_t Image::GetStretchHeight()
+    uint32_t Image::GetStretchHeight() const
     {
         return stretchheight;
     }
 
-    uint32_t Image::GetPadWidth()
+    uint32_t Image::GetPadWidth() const
     {
         return padwidth;
     }
 
-    uint32_t Image::GetPadHeight()
+    uint32_t Image::GetPadHeight() const
     {
         return padheight;
     }

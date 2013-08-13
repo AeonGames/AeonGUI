@@ -28,6 +28,7 @@ Copyright 2010-2012 Rodrigo Hernandez Cordoba
 namespace AeonGUI
 {
     MainWindow::MainWindow () :
+        frameimage ( NULL ),
         caption ( NULL ),
         xoffset ( 0 ),
         yoffset ( 0 ),
@@ -51,7 +52,6 @@ namespace AeonGUI
         captioncolor.g = 64;
         captioncolor.b = 255;
         captioncolor.a = 255;
-        hascaption = true;
         hasborder = true;
         moving = false;
         drawfilled = true;
@@ -131,15 +131,21 @@ namespace AeonGUI
         wcscpy ( caption, newcaption );
     }
 
+    void MainWindow::SetFrameImage ( const Image* image )
+    {
+        frameimage = image;
+    }
+
     void MainWindow::OnRender ( Renderer* renderer )
     {
         Widget::OnRender ( renderer );
-        if ( hascaption )
+        if ( frameimage != NULL )
         {
             GetClientRect ( captionrect );
-            captionrect.Scale ( -static_cast<int32_t> ( bordersize ) );
-            captionrect.SetHeight ( captionheight );
-            DrawRect ( renderer, captioncolor, &captionrect );
+            //captionrect.Scale ( -static_cast<int32_t> ( bordersize ) );
+            //captionrect.SetHeight ( captionheight );
+            //DrawRect ( renderer, captioncolor, &captionrect );
+            renderer->DrawImage ( frameimage, captionrect.GetX(), captionrect.GetX(), captionrect.GetWidth(), captionrect.GetHeight() );
 #if 0
             Rect textrect = captionrect;
             textrect.Scale ( -static_cast<int32_t> ( padding ) );
