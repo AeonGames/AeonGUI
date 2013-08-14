@@ -171,13 +171,13 @@ namespace AeonGUI
         uint32_t width;
         uint32_t height;
         uint32_t stretchxstart;     ///< Patch 9 start stretch coordinate.
-        uint32_t stretchwidth; ///< Patch 9 end stretch coordinate.
+        uint32_t stretchxend; ///< Patch 9 end stretch coordinate.
         uint32_t padxstart;         ///< Patch 9 start fill coordinate.
-        uint32_t padwidth;     ///< Patch 9 end fill coordinate.
+        uint32_t padxend;     ///< Patch 9 end fill coordinate.
         uint32_t stretchystart;     ///< Patch 9 start stretch coordinate.
-        uint32_t stretchheight;///< Patch 9 end stretch coordinate.
+        uint32_t stretchyend;///< Patch 9 end stretch coordinate.
         uint32_t padystart;         ///< Patch 9 start fill coordinate.
-        uint32_t padheight;    ///< Patch 9 end fill coordinate.
+        uint32_t padyend;    ///< Patch 9 end fill coordinate.
         Color* bitmap;
     };
 }

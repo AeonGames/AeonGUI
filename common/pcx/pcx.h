@@ -31,16 +31,17 @@ public:
     uint32_t GetHeight();
     const uint8_t* GetPixels();
     uint8_t GetNumBitPlanes();
-#if 0
-    bool IsPatch9();
-#endif
-    uint16_t GetStretchX();
+    uint16_t GetXStretchStart();
+    uint16_t GetXStretchEnd();
     uint16_t GetStretchWidth();
-    uint16_t GetPadX();
+    uint16_t GetXPadStart();
+    uint16_t GetXPadEnd();
     uint16_t GetPadWidth();
-    uint16_t GetStretchY();
+    uint16_t GetYStretchStart();
+    uint16_t GetYStretchEnd();
     uint16_t GetStretchHeight();
-    uint16_t GetPadY();
+    uint16_t GetYPadStart();
+    uint16_t GetYPadEnd();
     uint16_t GetPadHeight();
 private:
     uint32_t PadPixels ( uint32_t width, uint32_t height, void* buffer, uint32_t buffer_size );
@@ -63,14 +64,14 @@ private:
         uint16_t PaletteType;       // Palette Type
         uint16_t HorzScreenSize;    // Horizontal Screen Size
         uint16_t VertScreenSize;    // Vertical Screen Size
-        uint16_t StretchX;      // Patch 9 start stretch coordinate (Unofficial feature)
-        uint16_t StretchWidth;        // Patch 9 end stretch coordinate (Unofficial feature)
-        uint16_t PadX;         // Patch 9 start Pad coordinate (Unofficial feature)
-        uint16_t PadWidth;           // Patch 9 end Pad coordinate (Unofficial feature)
-        uint16_t StretchY;      // Patch 9 start stretch coordinate (Unofficial feature)
-        uint16_t StretchHeight;        // Patch 9 end stretch coordinate (Unofficial feature)
-        uint16_t PadY;         // Patch 9 start Pad coordinate (Unofficial feature)
-        uint16_t PadHeight;           // Patch 9 end Pad coordinate (Unofficial feature)
+        uint16_t XStretchStart;      // Patch 9 start stretch coordinate (Unofficial feature)
+        uint16_t XStretchEnd;        // Patch 9 end stretch coordinate (Unofficial feature)
+        uint16_t XPadStart;         // Patch 9 start Pad coordinate (Unofficial feature)
+        uint16_t XPadEnd;           // Patch 9 end Pad coordinate (Unofficial feature)
+        uint16_t YStretchStart;      // Patch 9 start stretch coordinate (Unofficial feature)
+        uint16_t YStretchEnd;        // Patch 9 end stretch coordinate (Unofficial feature)
+        uint16_t YPadStart;         // Patch 9 start Pad coordinate (Unofficial feature)
+        uint16_t YPadEnd;           // Patch 9 end Pad coordinate (Unofficial feature)
         uint8_t  Reserved2[38];     // Reserved (Always 0, should be 54, but 8 bytes are taken by the unofficial patch 9 support)
     };
     Header header;

@@ -61,13 +61,13 @@ namespace AeonGUI
         width ( 0 ),
         height ( 0 ),
         stretchxstart ( 0 ),
-        stretchwidth ( 0 ),
+        stretchxend ( 0 ),
         padxstart ( 0 ),
-        padwidth ( 0 ),
+        padxend ( 0 ),
         stretchystart ( 0 ),
-        stretchheight ( 0 ),
+        stretchyend ( 0 ),
         padystart ( 0 ),
-        padheight ( 0 ),
+        padyend ( 0 ),
         bitmap ( NULL )
     {
     }
@@ -145,20 +145,20 @@ namespace AeonGUI
         // Determine patch9 stretch and pad if any
         bool haspatch9frame = true;
 
-        if ( ( stretchxstart == 0 ) && ( stretchystart == 0 ) && ( stretchwidth == 0 ) && ( stretchheight == 0 ) && ( padxstart == 0 ) && ( padystart == 0 ) && ( padwidth == 0 ) && ( padheight == 0 ) )
+        if ( ( stretchxstart == 0 ) && ( stretchystart == 0 ) && ( stretchxend == 0 ) && ( stretchyend == 0 ) && ( padxstart == 0 ) && ( padystart == 0 ) && ( padxend == 0 ) && ( padyend == 0 ) )
         {
             // Stretch values are mandatory
-            haspatch9frame = GetPatch9DimensionsFromFrame ( reinterpret_cast<const uint8_t*> ( data ), image_width, 1, format, stretchxstart, stretchwidth );
+            haspatch9frame = GetPatch9DimensionsFromFrame ( reinterpret_cast<const uint8_t*> ( data ), image_width, 1, format, stretchxstart, stretchxend );
             if ( haspatch9frame )
             {
-                haspatch9frame = GetPatch9DimensionsFromFrame ( reinterpret_cast<const uint8_t*> ( data ), image_height, image_width, format, stretchystart, stretchheight );
+                haspatch9frame = GetPatch9DimensionsFromFrame ( reinterpret_cast<const uint8_t*> ( data ), image_height, image_width, format, stretchystart, stretchyend );
             }
             if ( haspatch9frame )
             {
                 // Pad values are optional (but the frame must still exist)
                 uint32_t bpp = ( format == RGB || format == BGR ) ? 3 : 4;
-                GetPatch9DimensionsFromFrame ( reinterpret_cast<const uint8_t*> ( data ) + ( ( image_width * ( image_height - 1 ) ) *bpp ), image_width, 1, format, padxstart, padwidth );
-                GetPatch9DimensionsFromFrame ( reinterpret_cast<const uint8_t*> ( data ) + ( ( image_width - 1 ) *bpp ), image_height, image_width, format, padystart, padheight );
+                GetPatch9DimensionsFromFrame ( reinterpret_cast<const uint8_t*> ( data ) + ( ( image_width * ( image_height - 1 ) ) *bpp ), image_width, 1, format, padxstart, padxend );
+                GetPatch9DimensionsFromFrame ( reinterpret_cast<const uint8_t*> ( data ) + ( ( image_width - 1 ) *bpp ), image_height, image_width, format, padystart, padyend );
             }
         }
 
@@ -166,13 +166,13 @@ namespace AeonGUI
         {
             // Adjust stretch and pad
             stretchxstart -= 1;
-            stretchwidth = ( stretchwidth - 1 ) - stretchxstart;
+            stretchxend -= 1;
             stretchystart -= 1;
-            stretchheight = ( stretchheight - 1 ) - stretchystart;
+            stretchyend -= 1;
             padxstart = ( padxstart == 0 ) ? 0 : padxstart - 1;
-            padwidth = ( padwidth == 0 ) ? 0 : padwidth - 1;
+            padxend = ( padxend == 0 ) ? 0 : padxend - 1;
             padystart = ( padystart == 0 ) ? 0 : padystart - 1;
-            padheight = ( padheight == 0 ) ? 0 : padheight - 1;
+            padyend = ( padyend == 0 ) ? 0 : padyend - 1;
 
             // Adjust dimensions
             width = image_width - 2;
@@ -233,8 +233,8 @@ namespace AeonGUI
         }
         else
         {
-            stretchwidth = width = image_width;
-            stretchheight = height = image_height;
+            width = image_width;
+            height = image_height;
 
             bitmap = new Color[width * height];
 
@@ -283,13 +283,9 @@ namespace AeonGUI
             width = 0;
             height = 0;
             stretchxstart = 0;
-            stretchwidth = 0;
             padxstart = 0;
-            padwidth = 0;
             stretchystart = 0;
-            stretchheight = 0;
             padystart = 0;
-            padheight = 0;
             bitmap = NULL;
         }
     }
@@ -324,54 +320,70 @@ namespace AeonGUI
         return stretchystart;
     }
 
-    uint32_t Image::GetPadXStart ( uint32_t width ) const
+    uint32_t Image::GetPadXStart ( uint32_t drawwidth ) const
     {
-        return padxstart;
+        if ( ( drawwidth == 0 ) || ( drawwidth == width ) || ( padxstart <= stretchxstart ) )
+        {
+            return padxstart;
+        }
+        return 0;
     }
 
-    uint32_t Image::GetPadYStart ( uint32_t height ) const
+    uint32_t Image::GetPadYStart ( uint32_t drawheight ) const
     {
-        return padystart;
+        if ( ( drawheight == 0 ) || ( drawheight == height ) || ( padystart <= stretchystart ) )
+        {
+            return padystart;
+        }
+        return 0;
     }
 
-    uint32_t Image::GetStretchXEnd ( uint32_t width ) const
+    uint32_t Image::GetStretchXEnd ( uint32_t drawwidth ) const
     {
-        return stretchxstart + stretchwidth;
+        return stretchxend;
     }
 
-    uint32_t Image::GetStretchYEnd ( uint32_t height ) const
+    uint32_t Image::GetStretchYEnd ( uint32_t drawheight ) const
     {
-        return stretchystart + stretchheight;
+        return stretchyend;
     }
 
-    uint32_t Image::GetPadXEnd ( uint32_t width ) const
+    uint32_t Image::GetPadXEnd ( uint32_t drawwidth ) const
     {
-        return padxstart + padwidth;
+        return padxend;
     }
 
-    uint32_t Image::GetPadYEnd ( uint32_t height ) const
+    uint32_t Image::GetPadYEnd ( uint32_t drawheight ) const
     {
-        return padystart + padheight;
+        return padyend;
     }
 
-    uint32_t Image::GetStretchWidth ( uint32_t width ) const
+    uint32_t Image::GetStretchWidth ( uint32_t drawwidth ) const
     {
-        return stretchwidth;
+        return stretchxend - stretchxstart;
     }
 
-    uint32_t Image::GetStretchHeight ( uint32_t height ) const
+    uint32_t Image::GetStretchHeight ( uint32_t drawheight ) const
     {
-        return stretchheight;
+        return stretchyend - stretchystart;
     }
 
-    uint32_t Image::GetPadWidth ( uint32_t width ) const
+    uint32_t Image::GetPadWidth ( uint32_t drawwidth ) const
     {
-        return padwidth;
+        if ( ( drawwidth == 0 ) || ( drawwidth == width ) )
+        {
+            return padxend - padxstart;
+        }
+        return 0;
     }
 
-    uint32_t Image::GetPadHeight (  uint32_t height ) const
+    uint32_t Image::GetPadHeight (  uint32_t drawheight ) const
     {
-        return padheight;
+        if ( ( drawheight == 0 ) || ( drawheight == height ) )
+        {
+            return padyend - padxstart;
+        }
+        return 0;
     }
 
     bool Image::LoadFromFile ( const char* filename )
@@ -412,14 +424,12 @@ namespace AeonGUI
             }
 
             // If the patch9 values are embeded into the image, get them.
-            stretchxstart = static_cast<int32_t> ( pcx.GetStretchX() );
-            stretchwidth = static_cast<int32_t> ( pcx.GetStretchWidth() );
-            padxstart = static_cast<int32_t> ( pcx.GetPadX() );
-            padwidth = static_cast<int32_t> ( pcx.GetPadWidth() );
-            stretchystart = static_cast<int32_t> ( pcx.GetStretchY() );
-            stretchheight = static_cast<int32_t> ( pcx.GetStretchHeight() );
-            padystart = static_cast<int32_t> ( pcx.GetPadY() );
-            padheight = static_cast<int32_t> ( pcx.GetPadHeight() );
+            stretchxstart = static_cast<int32_t> ( pcx.GetXStretchStart() );
+            padxstart = static_cast<int32_t> ( pcx.GetXPadStart() );
+            padxend = static_cast<int32_t> ( pcx.GetXPadEnd() );
+            stretchystart = static_cast<int32_t> ( pcx.GetYStretchStart() );
+            padystart = static_cast<int32_t> ( pcx.GetYPadStart() );
+            padyend = static_cast<int32_t> ( pcx.GetYPadEnd() );
 
             if ( pcx.GetNumBitPlanes() == 3 )
             {

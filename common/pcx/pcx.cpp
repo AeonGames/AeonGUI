@@ -1,5 +1,5 @@
 /******************************************************************************
-Copyright 2010-2012 Rodrigo Hernandez Cordoba
+Copyright 2010-2013 Rodrigo Hernandez Cordoba
 
    Licensed under the Apache License, Version 2.0 (the "License");
    you may not use this file except in compliance with the License.
@@ -23,14 +23,6 @@ Pcx::Pcx() :
 {
     memset ( &header, 0, sizeof ( Header ) );
 }
-
-#if 0
-bool Pcx::IsPatch9()
-{
-    return ( ( header.XStartStretch != 0 ) || ( header.XEndStretch != 0 ) || ( header.XStartPad != 0 ) || ( header.XEndPad != 0 ) ||
-             ( header.YStartStretch != 0 ) || ( header.YEndStretch != 0 ) || ( header.YStartPad != 0 ) || ( header.YEndPad != 0 ) );
-}
-#endif
 
 Pcx::~Pcx()
 {
@@ -146,39 +138,64 @@ uint8_t Pcx::GetNumBitPlanes()
     return header.NumBitPlanes;
 }
 
-uint16_t Pcx::GetStretchX()
+uint16_t Pcx::GetXStretchStart()
 {
-    return header.StretchX;
+    return header.XStretchStart;
+}
+
+uint16_t Pcx::GetXStretchEnd()
+{
+    return header.XStretchEnd;
 }
 
 uint16_t Pcx::GetStretchWidth()
 {
-    return header.StretchWidth;
-}
-uint16_t Pcx::GetPadX()
-{
-    return header.PadX;
-}
-uint16_t Pcx::GetPadWidth()
-{
-    return header.PadWidth;
+    return header.XStretchEnd - header.XStretchStart;
 }
 
-uint16_t Pcx::GetStretchY()
+uint16_t Pcx::GetXPadStart()
 {
-    return header.StretchY;
+    return header.XPadStart;
 }
+
+uint16_t Pcx::GetXPadEnd()
+{
+    return header.XPadEnd;
+}
+
+uint16_t Pcx::GetPadWidth()
+{
+    return header.XPadEnd - header.XPadStart;
+}
+
+uint16_t Pcx::GetYStretchStart()
+{
+    return header.YStretchStart;
+}
+
+uint16_t Pcx::GetYStretchEnd()
+{
+    return header.YStretchEnd;
+}
+
 uint16_t Pcx::GetStretchHeight()
 {
-    return header.StretchHeight;
+    return header.YStretchEnd - header.YStretchStart;
 }
-uint16_t Pcx::GetPadY()
+
+uint16_t Pcx::GetYPadStart()
 {
-    return header.PadY;
+    return header.YPadStart;
 }
+
+uint16_t Pcx::GetYPadEnd()
+{
+    return header.YPadEnd;
+}
+
 uint16_t Pcx::GetPadHeight()
 {
-    return header.PadHeight;
+    return header.YPadEnd - header.YPadStart;
 }
 
 bool Pcx::Decode ( uint32_t buffer_size, void* buffer )

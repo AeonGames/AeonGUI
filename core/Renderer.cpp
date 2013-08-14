@@ -119,15 +119,23 @@ namespace AeonGUI
 
     void Renderer::DrawImage ( const Image* image, int32_t x, int32_t y, int32_t w, int32_t h, ResizeAlgorithm algorithm )
     {
+        assert ( image != NULL );
+
         uint32_t image_w = image->GetWidth();
         uint32_t image_h = image->GetHeight();
+
+        if ( ( image == NULL ) || ( image_w == 0 ) || ( image_h == 0 ) )
+        {
+            // Invalid Image
+            return;
+        }
 
         uint32_t stretch_x = image->GetStretchXStart();
         uint32_t stretch_y = image->GetStretchYStart();
         uint32_t stretch_width = image->GetStretchWidth();
         uint32_t stretch_height = image->GetStretchHeight();
 
-        if ( ( stretch_x == 0 ) && ( stretch_y == 0 ) && ( stretch_width == image_w ) && ( stretch_height == image_h ) )
+        if ( ( stretch_x == 0 ) && ( stretch_y == 0 ) && ( stretch_width == 0 ) && ( stretch_height == 0 ) )
         {
             DrawSubImage ( image, x, y, 0, 0, 0, 0, w, h, algorithm );
             return;
@@ -468,6 +476,12 @@ namespace AeonGUI
 
         uint32_t image_w = image->GetWidth();
         uint32_t image_h = image->GetHeight();
+
+        if ( ( image == NULL ) || ( image_w == 0 ) || ( image_h == 0 ) )
+        {
+            // Invalid Image
+            return;
+        }
 
         if ( subw == 0 )
         {
