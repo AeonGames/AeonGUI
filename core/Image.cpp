@@ -326,7 +326,14 @@ namespace AeonGUI
         {
             return padxstart;
         }
-        return 0;
+        else if ( padxstart < stretchxend )
+        {
+            float swa = static_cast<float> ( GetStretchWidth() );
+            float swb = static_cast<float> ( GetStretchWidth ( drawwidth ) );
+            float pxs = static_cast<float> ( padxstart - stretchxstart );
+            return static_cast<uint32_t> ( ( ( swb * pxs ) / swa ) + 0.5f );
+        }
+        return stretchxstart + GetStretchWidth ( drawwidth ) + ( stretchxend - padxstart );
     }
 
     uint32_t Image::GetPadYStart ( uint32_t drawheight ) const
@@ -335,7 +342,14 @@ namespace AeonGUI
         {
             return padystart;
         }
-        return 0;
+        else if ( padystart < stretchyend )
+        {
+            float swa = static_cast<float> ( GetStretchHeight() );
+            float swb = static_cast<float> ( GetStretchHeight ( drawheight ) );
+            float pys = static_cast<float> ( padystart - stretchystart );
+            return static_cast<uint32_t> ( ( ( swb * pys ) / swa ) + 0.5f );
+        }
+        return stretchystart + GetStretchHeight ( drawheight ) + ( stretchyend - padystart );
     }
 
     uint32_t Image::GetStretchXEnd ( uint32_t drawwidth ) const
@@ -350,22 +364,62 @@ namespace AeonGUI
 
     uint32_t Image::GetPadXEnd ( uint32_t drawwidth ) const
     {
-        return padxend;
+        if ( ( drawwidth == 0 ) || ( drawwidth == width ) || ( padxend <= stretchxstart ) )
+        {
+            return padxend;
+        }
+        else if ( padxend < stretchxend )
+        {
+            float swa = static_cast<float> ( GetStretchWidth() );
+            float swb = static_cast<float> ( GetStretchWidth ( drawwidth ) );
+            float pxs = static_cast<float> ( padxend - stretchxstart );
+            return static_cast<uint32_t> ( ( ( swb * pxs ) / swa ) + 0.5f );
+        }
+        return stretchxstart + GetStretchWidth ( drawwidth ) + ( stretchxend - padxend );
     }
 
     uint32_t Image::GetPadYEnd ( uint32_t drawheight ) const
     {
-        return padyend;
+        if ( ( drawheight == 0 ) || ( drawheight == height ) || ( padyend <= stretchystart ) )
+        {
+            return padyend;
+        }
+        else if ( padyend < stretchyend )
+        {
+            float swa = static_cast<float> ( GetStretchHeight() );
+            float swb = static_cast<float> ( GetStretchHeight ( drawheight ) );
+            float pys = static_cast<float> ( padyend - stretchystart );
+            return static_cast<uint32_t> ( ( ( swb * pys ) / swa ) + 0.5f );
+        }
+        return stretchystart + GetStretchHeight ( drawheight ) + ( stretchyend - padyend );
     }
 
     uint32_t Image::GetStretchWidth ( uint32_t drawwidth ) const
     {
-        return stretchxend - stretchxstart;
+        uint32_t endwidth;
+        if ( ( drawwidth == 0 ) || ( drawwidth == width ) )
+        {
+            return stretchxend - stretchxstart;
+        }
+        else if ( drawwidth <= ( stretchxstart + ( endwidth = width - stretchxend ) ) )
+        {
+            return 0;
+        }
+        return ( drawwidth - stretchxstart ) - ( endwidth );
     }
 
     uint32_t Image::GetStretchHeight ( uint32_t drawheight ) const
     {
-        return stretchyend - stretchystart;
+        uint32_t endheight;
+        if ( ( drawheight == 0 ) || ( drawheight == height ) )
+        {
+            return stretchyend - stretchystart;
+        }
+        else if ( drawheight <= ( stretchystart + ( endheight = height - stretchyend ) ) )
+        {
+            return 0;
+        }
+        return ( drawheight - stretchystart ) - ( endheight );
     }
 
     uint32_t Image::GetPadWidth ( uint32_t drawwidth ) const
@@ -374,16 +428,16 @@ namespace AeonGUI
         {
             return padxend - padxstart;
         }
-        return 0;
+        return GetPadXEnd ( drawwidth ) - GetPadXStart ( drawwidth );
     }
 
     uint32_t Image::GetPadHeight (  uint32_t drawheight ) const
     {
         if ( ( drawheight == 0 ) || ( drawheight == height ) )
         {
-            return padyend - padxstart;
+            return padyend - padystart;
         }
-        return 0;
+        return GetPadYEnd ( drawheight ) - GetPadYStart ( drawheight );
     }
 
     bool Image::LoadFromFile ( const char* filename )

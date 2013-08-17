@@ -18,7 +18,7 @@ add_custom_command(OUTPUT
                     COMMENT "Copying AeonGUILogoBlBkg.png" VERBATIM)
 add_custom_command(OUTPUT
                         ${CMAKE_CURRENT_BINARY_DIR}/WindowFrame.png
-                    COMMAND cmake -E copy ${CMAKE_CURRENT_SOURCE_DIR}/../common/WindowFrame.png ${CMAKE_CURRENT_BINARY_DIR}/Patch9Test.png
+                    COMMAND cmake -E copy ${CMAKE_CURRENT_SOURCE_DIR}/../common/WindowFrame.png ${CMAKE_CURRENT_BINARY_DIR}/WindowFrame.png
                     DEPENDS 
                         ${CMAKE_CURRENT_SOURCE_DIR}/../common/WindowFrame.png
                     WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
@@ -50,7 +50,7 @@ add_custom_command(OUTPUT
                     
 add_custom_command(OUTPUT
                         ${CMAKE_CURRENT_BINARY_DIR}/WindowFrame.pcx
-                    COMMAND cmake -E copy ${CMAKE_CURRENT_SOURCE_DIR}/../common/WindowFrame.pcx ${CMAKE_CURRENT_BINARY_DIR}/Patch9Test.pcx
+                    COMMAND cmake -E copy ${CMAKE_CURRENT_SOURCE_DIR}/../common/WindowFrame.pcx ${CMAKE_CURRENT_BINARY_DIR}/WindowFrame.pcx
                     DEPENDS 
                         ${CMAKE_CURRENT_SOURCE_DIR}/../common/WindowFrame.pcx
                     WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
