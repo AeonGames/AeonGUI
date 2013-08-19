@@ -28,6 +28,15 @@ namespace AeonGUI
     class Image
     {
     public:
+
+        /// Alignment for image content.
+        enum Alignment
+        {
+            LEFT = 0,
+            RIGHT,
+            CENTER
+        };
+
         /// Type or size of each color element.
         enum Type
         {
@@ -166,6 +175,33 @@ namespace AeonGUI
         \return The ending Y coordinate for patch 9 padding.
         */
         uint32_t GetPadHeight ( uint32_t height = 0 ) const;
+
+        /*!
+        \brief Retrieve raster coordinates to draw image content with the provided dimensions inside the image padding area.
+        \param halign [in] Horizontal alignment.
+        \param width [in] The width of the extra content to be drawn inside the image padding area.
+        \param height [in] The height of the extra content to be drawn inside the image padding area.
+        \param valign [in] Vertical alignment.
+        \param x [out] Reference to the variable to receive the x coordinate for drawing.
+        \param y [out] Reference to the variable to receive the y coordinate for drawing.
+        */
+        void GetCoordsForDimensions ( Alignment halign, uint32_t width, Alignment valign, uint32_t height, int32_t& x, int32_t& y, uint32_t drawwidth = 0, uint32_t drawheight = 0 ) const;
+
+        /*!
+        \brief Retrieve raster X coordinate to draw image content with the provided width inside the image padding area.
+        \param halign [in] Horizontal alignment.
+        \param width [in] The width of the extra content to be drawn inside the image padding area.
+        \return The X coordinate for drawing.
+        */
+        int32_t GetXCoordForWidth ( Alignment halign, uint32_t width, uint32_t drawwidth = 0 ) const;
+
+        /*!
+        \brief Retrieve raster Y coordinate to draw image content with the provided width inside the image padding area.
+        \param halign [in] Horizontal alignment.
+        \param width [in] The width of the extra content to be drawn inside the image padding area.
+        \return The Y coordinate for drawing.
+        */
+        int32_t GetYCoordForHeight ( Alignment valign, uint32_t height, uint32_t drawheight = 0 ) const;
 
     private:
         uint32_t width;

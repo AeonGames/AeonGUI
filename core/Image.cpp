@@ -440,6 +440,44 @@ namespace AeonGUI
         return GetPadYEnd ( drawheight ) - GetPadYStart ( drawheight );
     }
 
+    int32_t Image::GetXCoordForWidth ( Alignment halign, uint32_t content_width, uint32_t drawwidth ) const
+    {
+        switch ( halign )
+        {
+        case LEFT:
+            return GetPadXStart ( drawwidth );
+        case RIGHT:
+            return GetPadXEnd ( drawwidth ) - content_width;
+            break;
+        case CENTER:
+            return ( GetPadXStart ( drawwidth ) + ( GetPadWidth() / 2 ) ) - ( content_width / 2 );
+            break;
+        }
+        return 0;
+    }
+
+    int32_t Image::GetYCoordForHeight ( Alignment valign, uint32_t content_height, uint32_t drawheight ) const
+    {
+        switch ( valign )
+        {
+        case LEFT:
+            return GetPadYStart ( drawheight );
+        case RIGHT:
+            return GetPadYEnd ( drawheight ) - content_height;
+            break;
+        case CENTER:
+            return ( GetPadYStart ( drawheight ) + ( GetPadHeight() / 2 ) ) - ( content_height / 2 );
+            break;
+        }
+        return 0;
+    }
+
+    void Image::GetCoordsForDimensions ( Alignment halign, uint32_t content_width, Alignment valign, uint32_t content_height, int32_t& x, int32_t& y, uint32_t drawwidth, uint32_t drawheight ) const
+    {
+        x = GetXCoordForWidth ( halign, content_width, drawwidth );
+        y = GetYCoordForHeight ( valign, content_height, drawheight );
+    }
+
     bool Image::LoadFromFile ( const char* filename )
     {
         uint8_t* buffer = NULL;
