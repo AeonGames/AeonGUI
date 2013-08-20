@@ -123,24 +123,39 @@ namespace AeonGUI
         virtual void OnMouseMove ( uint32_t x, uint32_t y ) {};
 
         /*!\brief Handles own Mouse Button Down event.
+            If the overriding function returns false, the parent's function will be called with the originating widget
+            as a parameter, and so on until no parent is found or one of the parent widgets returns false.
+            This behaviour is the way parent windows of push buttons handle button press events.
+           \note The default implementation simply returns true, consuming the event without cascading it down.
            \param button [in] The pressed button.
            \param x [in] absolute x coordinate for the event.
            \param y [in] absolute y coordinate for the event.
+           \return true if the event was handled and no further processing is needed, false if not.
         */
-        virtual void OnMouseButtonDown ( uint8_t button, uint32_t x, uint32_t y ) {};
+        virtual bool OnMouseButtonDown ( uint8_t button, uint32_t x, uint32_t y, Widget* widget = NULL );
 
         /*!\brief Handles own Mouse Button Up event.
+            If the overriding function returns false, the parent's function will be called with the originating widget
+            as a parameter, and so on until no parent is found or one of the parent widgets returns false.
+            This behaviour is the way parent windows of push buttons handle button press events.
+           \note The default implementation simply returns true, consuming the event without cascading it down.
            \param button [in] The pressed button.
            \param x [in] absolute x coordinate for the event.
            \param y [in] absolute y coordinate for the event.
+           \return true if the event was handled and no further processing is needed, false if not.
         */
-        virtual void OnMouseButtonUp ( uint8_t button, uint32_t x, uint32_t y ) {};
+        virtual bool OnMouseButtonUp ( uint8_t button, uint32_t x, uint32_t y, Widget* widget = NULL );
         /*!\brief Handles own Mouse Click event.
+            If the overriding function returns false, the parent's function will be called with the originating widget
+            as a parameter, and so on until no parent is found or one of the parent widgets returns false.
+            This behaviour is the way parent windows of push buttons handle button press events.
+           \note The default implementation simply returns true, consuming the event without cascading it down.
            \param button [in] The pressed button.
            \param x [in] absolute x coordinate for the event.
            \param y [in] absolute y coordinate for the event.
+           \return true if the event was handled and no further processing is needed, false if not.
         */
-        virtual void OnMouseClick ( uint8_t button, uint32_t x, uint32_t y ) {};
+        virtual bool OnMouseClick ( uint8_t button, uint32_t x, uint32_t y, Widget* widget = NULL );
         /* @} */
 
 

@@ -63,6 +63,21 @@ namespace AeonGUI
         SetParent ( NULL );
     }
 
+    bool Widget::OnMouseButtonDown ( uint8_t button, uint32_t x, uint32_t y, Widget* widget )
+    {
+        return true;
+    }
+
+    bool Widget::OnMouseButtonUp ( uint8_t button, uint32_t x, uint32_t y, Widget* widget )
+    {
+        return true;
+    }
+
+    bool Widget::OnMouseClick ( uint8_t button, uint32_t x, uint32_t y, Widget* widget )
+    {
+        return true;
+    }
+
     void Widget::SetKeyListener ( KeyListener* listener )
     {
         // Should Use local event handling functions for handling own events.
@@ -177,15 +192,24 @@ namespace AeonGUI
             }
             child = child->next;
         }
-        Widget* handler = ( mouseCaptured ) ? focusedWidget : this;
-        assert ( handler != NULL );
-        handler->OnMouseButtonDown ( button, x, y );
-        if ( handler->mouseListener != NULL )
+        if ( mouseCaptured )
         {
-            handler->mouseListener->OnMouseButtonDown ( this, button, x, y );
+            focusedWidget->OnMouseButtonDown ( button, x, y , focusedWidget );
+        }
+        else
+        {
+            child = this;
+            while ( child != NULL && !child->OnMouseButtonDown ( button, x, y, this ) )
+            {
+                child = child->parent;
+            }
+        }
+        if ( this->mouseListener != NULL )
+        {
+            this->mouseListener->OnMouseButtonDown ( this, button, x, y );
         }
         // keep or get focus.
-        handler->GetFocus();
+        this->GetFocus();
     }
 
     void Widget::MouseButtonUp ( uint8_t button, uint32_t x, uint32_t y )
@@ -200,19 +224,41 @@ namespace AeonGUI
             }
             child = child->next;
         }
-        Widget* handler = ( mouseCaptured ) ? focusedWidget : this;
-        assert ( handler != NULL );
-        handler->OnMouseButtonUp ( button, x, y );
-        if ( handler->mouseListener != NULL )
+
+        if ( mouseCaptured )
         {
-            handler->mouseListener->OnMouseButtonUp ( this, button, x, y );
+            focusedWidget->OnMouseButtonUp ( button, x, y , this );
+        }
+        else
+        {
+            child = this;
+            while ( child != NULL && !child->OnMouseButtonUp ( button, x, y, this ) )
+            {
+                child = child->parent;
+            }
+        }
+
+        if ( this->mouseListener != NULL )
+        {
+            this->mouseListener->OnMouseButtonUp ( this, button, x, y );
         }
         if ( HasFocus() )
         {
-            handler->OnMouseClick ( button, x, y );
-            if ( handler->mouseListener != NULL )
+            if ( mouseCaptured )
             {
-                handler->mouseListener->OnMouseClick ( this, button, x, y );
+                focusedWidget->OnMouseClick ( button, x, y , this );
+            }
+            else
+            {
+                child = this;
+                while ( child != NULL && !child->OnMouseClick ( button, x, y, this ) )
+                {
+                    child = child->parent;
+                }
+            }
+            if ( this->mouseListener != NULL )
+            {
+                this->mouseListener->OnMouseClick ( this, button, x, y );
             }
         }
     }

@@ -195,9 +195,6 @@ namespace AeonGUI
 
     void MainWindow::OnMouseMove ( uint32_t X, uint32_t Y )
     {
-#if 0
-        std::cout << "Mouse Moved " << X << " " << Y << " " << Xrel << " " << Yrel << std::endl;
-#endif
         if ( moving )
         {
             rect.SetPosition ( X - xoffset, Y - yoffset );

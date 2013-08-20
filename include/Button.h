@@ -79,9 +79,9 @@ namespace AeonGUI
         const wchar_t* GetCaption();
 
         /** \copydoc Widget::OnMouseButtonDown */
-        virtual void OnMouseButtonDown ( uint8_t button, uint32_t x, uint32_t y );
+        virtual bool OnMouseButtonDown ( uint8_t button, uint32_t x, uint32_t y, Widget* widget = NULL );
         /** \copydoc Widget::OnMouseButtonUp */
-        virtual void OnMouseButtonUp ( uint8_t button, uint32_t x, uint32_t y );
+        virtual bool OnMouseButtonUp ( uint8_t button, uint32_t x, uint32_t y, Widget* widget = NULL );
     protected:
         virtual void OnRender ( Renderer* renderer );
         wchar_t* caption; ///< Button Text.
