@@ -17,13 +17,12 @@ Copyright 2010-2012 Rodrigo Hernandez Cordoba
 ******************************************************************************/
 #include "Widget.h"
 #include "Button.h"
-#include "MouseListener.h"
 #include "ScrollBar.h"
 
 namespace AeonGUI
 {
     /*! \brief Top window with borders and frame. */
-    class MainWindow : public Widget, public MouseListener
+    class MainWindow : public Widget
     {
     public:
         MainWindow();
@@ -42,23 +41,14 @@ namespace AeonGUI
         virtual void OnRender ( Renderer* renderer );
 
     protected:
-        /* @} */
-        /*!\name Mouse listener interface functions */
-        /* @{ */
-        /*! \copydoc MouseListener::OnMouseButtonDown */
-        virtual void OnMouseButtonDown ( Widget* widget, uint8_t button, uint32_t x, uint32_t y );
-        /*! \copydoc MouseListener::OnMouseButtonUp */
-        virtual void OnMouseButtonUp ( Widget* widget, uint8_t button, uint32_t x, uint32_t y );
-        /*! \copydoc MouseListener::OnMouseClick */
-        virtual void OnMouseClick ( Widget* widget, uint8_t button, uint32_t x, uint32_t y );
-        /*! \copydoc MouseListener::OnMouseMove */
-        virtual void OnMouseMove ( Widget* widget, uint32_t x, uint32_t y ) {};
-        /* @} */
 
         /*! \copydoc Widget::OnMouseButtonDown */
         virtual void OnMouseButtonDown ( uint8_t button, uint32_t x, uint32_t y );
         /*! \copydoc Widget::OnMouseButtonUp */
         virtual void OnMouseButtonUp ( uint8_t button, uint32_t x, uint32_t y );
+        /*! \copydoc Widget::OnMouseClick */
+        virtual bool OnMouseClick ( uint8_t button, uint32_t x, uint32_t y, Widget* clicked_widget );
+
         /*! \copydoc Widget::OnMouseMove */
         virtual void OnMouseMove ( uint32_t x, uint32_t y );
 

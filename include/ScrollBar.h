@@ -21,7 +21,7 @@ Copyright 2010-2012 Rodrigo Hernandez Cordoba
 namespace AeonGUI
 {
     /*! \brief Scroll bar control. */
-    class ScrollBar : public Widget, public MouseListener
+    class ScrollBar : public Widget
     {
     public:
         /// Scroll bar orientation enumerator.
@@ -85,16 +85,12 @@ namespace AeonGUI
         int32_t GetMaximum();
 
     protected:
-        /*! \copydoc MouseListener::OnMouseButtonDown */
-        virtual void OnMouseButtonDown ( Widget* widget, uint8_t button, uint32_t x, uint32_t y );
-        /*! \copydoc MouseListener::OnMouseButtonUp */
-        virtual void OnMouseButtonUp ( Widget* widget, uint8_t button, uint32_t x, uint32_t y );
-        /*! \copydoc MouseListener::OnMouseMove */
-        virtual void OnMouseMove ( Widget* widget, uint32_t x, uint32_t y ) {};
+        /*! \copydoc Widget::OnMouseButtonDown */
+        virtual bool OnMouseButtonDown ( uint8_t button, uint32_t x, uint32_t y, Widget* widget = NULL );
+        /*! \copydoc Widget::OnMouseButtonUp */
+        virtual bool OnMouseButtonUp ( uint8_t button, uint32_t x, uint32_t y, Widget* widget = NULL );
         /*! \copydoc Widget::OnMouseClick */
-        virtual void OnMouseClick ( uint8_t button, uint32_t x, uint32_t y );
-        /*! \copydoc MouseListener::OnMouseClick */
-        virtual void OnMouseClick ( Widget* widget, uint8_t button, uint32_t x, uint32_t y );
+        virtual bool OnMouseClick ( uint8_t button, uint32_t x, uint32_t y, Widget* widget = NULL );
         /*! \copydoc Widget::OnMouseMove */
         virtual void OnMouseMove ( uint32_t x, uint32_t y );
         /*! \copydoc Widget::OnSize */

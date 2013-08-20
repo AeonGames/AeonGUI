@@ -138,4 +138,10 @@ namespace AeonGUI
         ReleaseMouse();
         return false;
     }
+
+    bool Button::OnMouseClick ( uint8_t button, uint32_t x, uint32_t y, Widget* widget )
+    {
+        /* Cascade event to parent */
+        return false;
+    }
 }

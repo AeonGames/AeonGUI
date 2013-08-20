@@ -43,10 +43,8 @@ namespace AeonGUI
         drawfilled = true;
 
         back.SetParent ( this );
-        back.SetMouseListener ( this );
 
         forward.SetParent ( this );
-        forward.SetMouseListener ( this );
 
         scrollup = new Image;
         scrollup->Load ( scrollup_width, scrollup_height, AeonGUI::Image::RGBA, AeonGUI::Image::BYTE, scrollup_data );
@@ -67,7 +65,6 @@ namespace AeonGUI
         scrollrightpressed->Load ( scrollrightpressed_width, scrollrightpressed_height, AeonGUI::Image::RGBA, AeonGUI::Image::BYTE, scrollrightpressed_data );
 
         slider.SetParent ( this );
-        slider.SetMouseListener ( this );
 
         slider.SetBackgroundColor ( 200, 200, 200, 255 );
         slider.SetBorderColor ( 220, 220, 220, 255 );
@@ -209,7 +206,7 @@ namespace AeonGUI
         return max;
     }
 
-    void ScrollBar::OnMouseButtonDown ( Widget* widget, uint8_t button, uint32_t X, uint32_t Y )
+    bool ScrollBar::OnMouseButtonDown ( uint8_t button, uint32_t X, uint32_t Y, Widget* widget )
     {
         Rect slider_rect;
         if ( widget == &slider )
@@ -227,48 +224,20 @@ namespace AeonGUI
                 break;
             }
         }
+        return true;
     }
 
-    void ScrollBar::OnMouseButtonUp ( Widget* widget, uint8_t button, uint32_t X, uint32_t Y )
+    bool ScrollBar::OnMouseButtonUp ( uint8_t button, uint32_t X, uint32_t Y, Widget* widget )
     {
         if ( sliderdrag )
         {
             ReleaseMouse();
             sliderdrag = false;
         }
+        return true;
     }
 
-    void ScrollBar::OnMouseClick ( uint8_t button, uint32_t x, uint32_t y )
-    {
-        int32_t lx = x;
-        int32_t ly = y;
-        ScreenToClientCoords ( lx, ly );
-        switch ( orientation )
-        {
-        case VERTICAL:
-            if ( ly > slider.GetY() )
-            {
-                SetValue ( value + pagestep );
-            }
-            else
-            {
-                SetValue ( value - pagestep );
-            }
-            break;
-        case HORIZONTAL:
-            if ( lx > slider.GetX() )
-            {
-                SetValue ( value + pagestep );
-            }
-            else
-            {
-                SetValue ( value - pagestep );
-            }
-            break;
-        }
-    }
-
-    void ScrollBar::OnMouseClick ( Widget* widget, uint8_t button, uint32_t X, uint32_t Y )
+    bool ScrollBar::OnMouseClick ( uint8_t button, uint32_t x, uint32_t y, Widget* widget )
     {
         if ( widget == &back )
         {
@@ -278,6 +247,36 @@ namespace AeonGUI
         {
             SetValue ( value + singlestep );
         }
+        else
+        {
+            int32_t lx = x;
+            int32_t ly = y;
+            ScreenToClientCoords ( lx, ly );
+            switch ( orientation )
+            {
+            case VERTICAL:
+                if ( ly > slider.GetY() )
+                {
+                    SetValue ( value + pagestep );
+                }
+                else
+                {
+                    SetValue ( value - pagestep );
+                }
+                break;
+            case HORIZONTAL:
+                if ( lx > slider.GetX() )
+                {
+                    SetValue ( value + pagestep );
+                }
+                else
+                {
+                    SetValue ( value - pagestep );
+                }
+                break;
+            }
+        }
+        return true;
     }
 
     void ScrollBar::OnMouseMove ( uint32_t X, uint32_t Y )

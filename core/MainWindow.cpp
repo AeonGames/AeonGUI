@@ -55,7 +55,6 @@ namespace AeonGUI
         image->Load ( close_down_width, close_down_height, AeonGUI::Image::RGBA, AeonGUI::Image::BYTE, close_down_data );
         close.SetPressedImage ( image );
         close.SetDimensions ( close_width, close_height );
-        close.SetMouseListener ( this );
 
         maximize.SetParent ( this );
         image = new Image;
@@ -66,7 +65,6 @@ namespace AeonGUI
         image->Load ( maximize_down_width, maximize_down_height, AeonGUI::Image::RGBA, AeonGUI::Image::BYTE, maximize_down_data );
         maximize.SetPressedImage ( image );
         maximize.SetDimensions ( maximize_width, maximize_height );
-        maximize.SetMouseListener ( this );
 
         minimize.SetParent ( this );
         image = new Image;
@@ -76,7 +74,6 @@ namespace AeonGUI
         image->Load ( minimize_down_width, minimize_down_height, AeonGUI::Image::RGBA, AeonGUI::Image::BYTE, minimize_down_data );
         minimize.SetPressedImage ( image );
         minimize.SetDimensions ( minimize_width, minimize_height );
-        minimize.SetMouseListener ( this );
 
         close.SetPosition ( ( rect.GetWidth() - ( 16 + padding ) ), padding );
         maximize.SetPosition ( ( rect.GetWidth() - ( 32 + padding * 2 ) ), padding );
@@ -141,16 +138,6 @@ namespace AeonGUI
         }
     }
 
-    void MainWindow::OnMouseButtonDown ( Widget* widget, uint8_t button, uint32_t X, uint32_t Y )
-    {
-
-    }
-
-    void MainWindow::OnMouseButtonUp ( Widget* widget, uint8_t button, uint32_t X, uint32_t Y )
-    {
-
-    }
-
     void MainWindow::OnMouseButtonDown ( uint8_t button, uint32_t X, uint32_t Y )
     {
         int x = X;
@@ -177,7 +164,7 @@ namespace AeonGUI
         }
     }
 
-    void MainWindow::OnMouseClick ( Widget* clicked_widget, uint8_t button, uint32_t x, uint32_t y )
+    bool MainWindow::OnMouseClick ( uint8_t button, uint32_t x, uint32_t y, Widget* clicked_widget )
     {
         if ( clicked_widget == &close )
         {
@@ -191,6 +178,7 @@ namespace AeonGUI
         {
             std::cout << "Maximize" << std::endl;
         }
+        return true;
     }
 
     void MainWindow::OnMouseMove ( uint32_t X, uint32_t Y )

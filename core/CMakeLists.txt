@@ -2,7 +2,6 @@ SET(AEONGUI_HEADERS
 ../include/AeonGUI.h
 ../include/Theme.h
 ../include/KeyListener.h
-../include/MouseListener.h
 ../include/Widget.h
 ../include/Button.h
 ../include/ScrollBar.h

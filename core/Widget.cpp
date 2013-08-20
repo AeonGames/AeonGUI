@@ -22,7 +22,6 @@ namespace AeonGUI
 
     Widget::Widget () :
         keyListener ( NULL ),
-        mouseListener ( NULL ),
         parent ( NULL ),
         next ( NULL ),
         children ( NULL ),
@@ -41,7 +40,6 @@ namespace AeonGUI
 
     Widget::Widget ( int32_t X, int32_t Y, uint32_t width, uint32_t height ) :
         keyListener ( NULL ),
-        mouseListener ( NULL ),
         parent ( NULL ),
         next ( NULL ),
         children ( NULL ),
@@ -83,13 +81,6 @@ namespace AeonGUI
         // Should Use local event handling functions for handling own events.
         assert ( static_cast<void*> ( listener ) != static_cast<void*> ( this ) );
         keyListener = listener;
-    }
-
-    void Widget::SetMouseListener ( MouseListener* listener )
-    {
-        // Should Use local event handling functions for handling own events.
-        assert ( static_cast<void*> ( listener ) != static_cast<void*> ( this ) );
-        mouseListener = listener;
     }
 
     void Widget::SetParent ( Widget* newparent )
@@ -204,10 +195,6 @@ namespace AeonGUI
                 child = child->parent;
             }
         }
-        if ( this->mouseListener != NULL )
-        {
-            this->mouseListener->OnMouseButtonDown ( this, button, x, y );
-        }
         // keep or get focus.
         this->GetFocus();
     }
@@ -238,10 +225,6 @@ namespace AeonGUI
             }
         }
 
-        if ( this->mouseListener != NULL )
-        {
-            this->mouseListener->OnMouseButtonUp ( this, button, x, y );
-        }
         if ( HasFocus() )
         {
             if ( mouseCaptured )
@@ -256,10 +239,6 @@ namespace AeonGUI
                     child = child->parent;
                 }
             }
-            if ( this->mouseListener != NULL )
-            {
-                this->mouseListener->OnMouseClick ( this, button, x, y );
-            }
         }
     }
 
@@ -267,10 +246,6 @@ namespace AeonGUI
     {
         /// \todo This currently just broadcasts the mouse movement, need to make it more specific.
         OnMouseMove ( x, y );
-        if ( mouseListener != NULL )
-        {
-            mouseListener->OnMouseMove ( this, x, y );
-        }
         Widget* child = children;
         while ( child != NULL )
         {

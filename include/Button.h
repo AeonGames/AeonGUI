@@ -82,6 +82,8 @@ namespace AeonGUI
         virtual bool OnMouseButtonDown ( uint8_t button, uint32_t x, uint32_t y, Widget* widget = NULL );
         /** \copydoc Widget::OnMouseButtonUp */
         virtual bool OnMouseButtonUp ( uint8_t button, uint32_t x, uint32_t y, Widget* widget = NULL );
+        /** \copydoc Widget::OnMouseClick */
+        virtual bool OnMouseClick ( uint8_t button, uint32_t x, uint32_t y, Widget* widget = NULL );
     protected:
         virtual void OnRender ( Renderer* renderer );
         wchar_t* caption; ///< Button Text.

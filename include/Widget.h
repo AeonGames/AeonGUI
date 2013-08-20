@@ -22,7 +22,6 @@ Copyright 2010-2012 Rodrigo Hernandez Cordoba
 #include "Renderer.h"
 #include "Rect.h"
 #include "KeyListener.h"
-#include "MouseListener.h"
 #include <algorithm>
 #include <string>
 
@@ -47,11 +46,6 @@ namespace AeonGUI
             \param listener Pointer to the listener object.
         */
         void SetKeyListener ( KeyListener* listener );
-
-        /*! \brief Set the listener object to receive mouse messages for this widget.
-            \param listener Pointer to the listener object.
-        */
-        void SetMouseListener ( MouseListener* listener );
 
         /*! \brief Set this widget's parent.
             If the widget is already parented it is removed from the current parent's children list,
@@ -335,7 +329,6 @@ namespace AeonGUI
         virtual void OnMove() {}
 
         KeyListener* keyListener;       ///< Pointer to this widget's key listener if any.
-        MouseListener* mouseListener;   ///< Pointer to this widget's mouse listener if any.
         Widget* parent;                 ///< Pointer to this widget's parent if any.
         Widget* next;                   ///< Pointer to this widget's sibling if any.
         Widget* children;               ///< Pointer to this widget's first child if any.
