@@ -123,14 +123,14 @@ namespace AeonGUI
         }
     }
 
-    void Button::OnMouseButtonDown ( uint8_t button, uint16_t X, uint16_t Y )
+    void Button::OnMouseButtonDown ( uint8_t button, uint32_t X, uint32_t Y )
     {
         //std::cout << "On Mouse Button Down " << X << " " << Y << std::endl;
         state = PRESSED;
         CaptureMouse();
     }
 
-    void Button::OnMouseButtonUp ( uint8_t button, uint16_t X, uint16_t Y )
+    void Button::OnMouseButtonUp ( uint8_t button, uint32_t X, uint32_t Y )
     {
         //std::cout << "On Mouse Button Up " << X << " " << Y << std::endl;
         state = DEFAULT;
