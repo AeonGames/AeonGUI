@@ -30,6 +30,7 @@ Copyright 2010-2012 Rodrigo Hernandez Cordoba
 #include "logo.h"
 #include "Vera.h"
 #include "Color.h"
+#include "Cursor.h"
 
 class Window
 {
@@ -71,6 +72,8 @@ private:
     AeonGUI::OpenGLRenderer renderer;
     AeonGUI::Image* aeongames_logo;
     AeonGUI::Image* aeongui_logo;
+    AeonGUI::Cursor cursor;
+    AeonGUI::Image cursor_image;
     AeonGUI::Font* font;
     AeonGUI::MainWindow* window;
 };
@@ -164,11 +167,13 @@ void Window::Initialize ( HINSTANCE hInstance )
     aeongui_logo = new AeonGUI::Image;
 #ifdef USE_PNG
     aeongui_logo->LoadFromFile ( "AeonGUILogoBlBkg.png" );
+    cursor_image.LoadFromFile ( "cursor.png" );
 #else
     //aeongui_logo->LoadFromFile ( "AeonGUILogoBlBkg.pcx" );
     //aeongui_logo->LoadFromFile ( "Patch9Test.pcx" );
     aeongui_logo->LoadFromFile ( "WindowFrame.pcx" );
     //aeongui_logo->LoadFromFile ( "ScaleTest.pcx" );
+    cursor_image.LoadFromFile ( "cursor.pcx" );
 #endif
     font = new AeonGUI::Font;
     font->Load ( Vera.data, Vera.size );
@@ -179,6 +184,8 @@ void Window::Initialize ( HINSTANCE hInstance )
     window->SetFrameImage ( aeongui_logo );
     window->SetCaption ( hello.c_str() );
     renderer.AddWidget ( window );
+    cursor.SetCursorImage ( &cursor_image );
+    renderer.SetCursor ( &cursor );
     ShowWindow ( hWnd, SW_SHOW );
 
 }

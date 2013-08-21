@@ -18,11 +18,12 @@ Copyright 2010-2013 Rodrigo Hernandez Cordoba
 #include <cmath>
 #include "Renderer.h"
 #include "Widget.h"
+#include "Cursor.h"
 
 namespace AeonGUI
 {
 
-    Renderer::Renderer() : font ( NULL ), screen_w ( 0 ), screen_h ( 0 ), screen_bitmap ( NULL ), widgets ( NULL )
+    Renderer::Renderer() : font ( NULL ), cursor ( NULL ), screen_w ( 0 ), screen_h ( 0 ), screen_bitmap ( NULL ), widgets ( NULL )
     {
     }
 
@@ -33,6 +34,20 @@ namespace AeonGUI
     bool Renderer::Initialize ( )
     {
         return true;
+    }
+
+    void Renderer::BeginRender()
+    {
+        ///\todo Setting the screen bitmap memory to zero may not always be necessary.
+        memset ( reinterpret_cast<void*> ( screen_bitmap ), 0x00, sizeof ( uint8_t ) * ( screen_w * screen_h * 4 ) );
+    }
+
+    void Renderer::EndRender()
+    {
+        if ( cursor != NULL )
+        {
+            cursor->Render ( this );
+        }
     }
 
     void Renderer::Finalize()
@@ -67,6 +82,16 @@ namespace AeonGUI
     const Font* Renderer::GetFont()
     {
         return font;
+    }
+
+    void Renderer::SetCursor ( Cursor* newcursor )
+    {
+        cursor = newcursor;
+    }
+
+    const Cursor* Renderer::GetCursor()
+    {
+        return cursor;
     }
 
     void Renderer::DrawRect ( Color color, const Rect* rect )

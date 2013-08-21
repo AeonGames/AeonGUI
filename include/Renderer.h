@@ -26,6 +26,8 @@ Copyright 2010-2013 Rodrigo Hernandez Cordoba
 namespace AeonGUI
 {
     class Widget;
+    class Cursor;
+
     enum ResizeAlgorithm
     {
         NEAREST = 0,
@@ -55,10 +57,10 @@ namespace AeonGUI
         virtual bool ChangeScreenSize ( int32_t screen_width, int32_t screen_height );
 
         /*! \brief Used to do any pre-rendering initialization. */
-        virtual void BeginRender() {};
+        virtual void BeginRender();
 
         /*! \brief Used to do any post-rendering cleanup. */
-        virtual void EndRender() {};
+        virtual void EndRender();
 
         /*! \brief Set default font.
             \param newfont [in] pointer to font object to set as default.
@@ -69,6 +71,16 @@ namespace AeonGUI
             \return Pointer to current font, may be null
         */
         const Font* GetFont();
+
+        /*! \brief Set default cursor.
+            \param newfont [in] pointer to cursor object to set as current.
+        */
+        void SetCursor ( Cursor* newcursor );
+
+        /*! \brief Get a pointer to the current cursor.
+            \return Pointer to current font, may be null
+        */
+        const Cursor* GetCursor();
 
         /*! \brief Add widget to widget rendering list.
             It is the user resposibility to allocate, initialize, manage and eventually deallocate the memory the widget object resides in.
@@ -144,6 +156,8 @@ namespace AeonGUI
     protected:
         /// Current font used to Render Text.
         Font* font;
+        /// Current cursor.
+        Cursor* cursor;
         /// Screen width.
         int32_t screen_w;
         /// Screen height.
