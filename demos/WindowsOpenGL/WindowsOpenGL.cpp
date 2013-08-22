@@ -298,6 +298,9 @@ LRESULT CALLBACK Window::WindowProc ( HWND hwnd, UINT uMsg, WPARAM wParam, LPARA
     case WM_LBUTTONUP:
         lresult = window_ptr->OnMouseButtonUp ( 1, GET_X_LPARAM ( lParam ), GET_Y_LPARAM ( lParam ) );
         break;
+    case WM_SETCURSOR:
+        SetCursor ( NULL );
+        break;
     default:
         lresult = DefWindowProc ( hwnd, uMsg, wParam, lParam );
     }
@@ -335,6 +338,7 @@ LRESULT Window::OnPaint()
 
 LRESULT Window::OnMouseMove ( int32_t x, int32_t y )
 {
+    cursor.SetPosition ( x, y );
     window->MouseMove ( x, y );
     return 0;
 }
