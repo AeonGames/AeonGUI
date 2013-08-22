@@ -232,6 +232,11 @@ void Window::RenderLoop()
     {
         delta = 1.0f / 30.0f;
     }
+    POINT point;
+    GetCursorPos ( &point );
+    ScreenToClient ( hWnd, &point );
+    cursor.SetPosition ( point.x, point.y );
+
     wglMakeCurrent ( hDC, hRC );
     glClear ( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT );
     const AeonGUI::Color color ( 0xFFFFFFFF );
@@ -299,7 +304,15 @@ LRESULT CALLBACK Window::WindowProc ( HWND hwnd, UINT uMsg, WPARAM wParam, LPARA
         lresult = window_ptr->OnMouseButtonUp ( 1, GET_X_LPARAM ( lParam ), GET_Y_LPARAM ( lParam ) );
         break;
     case WM_SETCURSOR:
-        SetCursor ( NULL );
+        if ( LOWORD ( lParam ) == HTCLIENT )
+        {
+            SetCursor ( NULL );
+            return 0;
+        }
+        else
+        {
+            return DefWindowProc ( hwnd, uMsg, wParam, lParam );
+        }
         break;
     default:
         lresult = DefWindowProc ( hwnd, uMsg, wParam, lParam );
@@ -338,7 +351,6 @@ LRESULT Window::OnPaint()
 
 LRESULT Window::OnMouseMove ( int32_t x, int32_t y )
 {
-    cursor.SetPosition ( x, y );
     window->MouseMove ( x, y );
     return 0;
 }
