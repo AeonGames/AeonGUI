@@ -16,3 +16,13 @@
 # Android local properties    #
 ###############################
 local.properties
+
+#External library directories #
+###############################
+zlib-1.2.8
+
+# Possible build directories   #
+###############################
+x64
+x32
+codeblocks
