@@ -18,6 +18,7 @@ Copyright 2010-2012 Rodrigo Hernandez Cordoba
 #include <stddef.h>
 #include <assert.h>
 #include <string.h>
+#include "Platform.h"
 #include "Integer.h"
 #include "Color.h"
 
@@ -25,7 +26,7 @@ namespace AeonGUI
 {
     /*! \brief Generic Image class.
     */
-    class Image
+    class DLL Image
     {
     public:
 

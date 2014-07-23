@@ -15,16 +15,17 @@ Copyright 2013 Rodrigo Hernandez Cordoba
    See the License for the specific language governing permissions and
    limitations under the License.
 ******************************************************************************/
+#include "Platform.h"
 namespace AeonGUI
 {
     /*! \brief Initializes extensions and global resources required by the library.
         \return true if initialization succeded, false if not.
         \sa Finalize
     */
-    bool Initialize();
+    bool DLL Initialize();
     /*! \brief Finalizes any global resources allocated by Initialize.
         \sa Initialize
     */
-    void Finalize();
+    void DLL Finalize();
 }
 #endif

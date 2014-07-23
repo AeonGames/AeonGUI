@@ -16,6 +16,7 @@ Copyright 2010-2012 Rodrigo Hernandez Cordoba
    limitations under the License.
 ******************************************************************************/
 
+#include "Platform.h"
 #include "Widget.h"
 #include "Image.h"
 

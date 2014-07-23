@@ -17,7 +17,7 @@ Copyright 2010-2013 Rodrigo Hernandez Cordoba
 ******************************************************************************/
 
 #include <stddef.h>
-
+#include "Platform.h"
 #include "Image.h"
 #include "Font.h"
 #include "Rect.h"
@@ -25,8 +25,8 @@ Copyright 2010-2013 Rodrigo Hernandez Cordoba
 
 namespace AeonGUI
 {
-    class Widget;
-    class Cursor;
+    class DLL Widget;
+    class DLL Cursor;
 
     enum ResizeAlgorithm
     {
@@ -36,7 +36,7 @@ namespace AeonGUI
         LINEAR  = 3
     };
     /*! \brief Renderer base class. */
-    class Renderer
+    class DLL Renderer
     {
     public:
         /// Standard constructor.

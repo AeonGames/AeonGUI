@@ -15,11 +15,12 @@ Copyright 2010-2012 Rodrigo Hernandez Cordoba
    See the License for the specific language governing permissions and
    limitations under the License.
 ******************************************************************************/
-#include <Integer.h>
+#include "Integer.h"
+#include "Platform.h"
 namespace AeonGUI
 {
     /*! \brief Rectangle class. */
-    class Rect
+    class DLL Rect
     {
     public:
         Rect();

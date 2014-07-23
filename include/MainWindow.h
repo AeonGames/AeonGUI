@@ -15,6 +15,7 @@ Copyright 2010-2012 Rodrigo Hernandez Cordoba
    See the License for the specific language governing permissions and
    limitations under the License.
 ******************************************************************************/
+#include "Platform.h"
 #include "Widget.h"
 #include "Button.h"
 #include "ScrollBar.h"
@@ -22,7 +23,7 @@ Copyright 2010-2012 Rodrigo Hernandez Cordoba
 namespace AeonGUI
 {
     /*! \brief Top window with borders and frame. */
-    class MainWindow : public Widget
+    class DLL MainWindow : public Widget
     {
     public:
         MainWindow();

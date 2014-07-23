@@ -16,13 +16,14 @@ Copyright 2010-2013 Rodrigo Hernandez Cordoba
    limitations under the License.
 ******************************************************************************/
 
+#include "Platform.h"
 #include "Renderer.h"
 #include "Integer.h"
 
 namespace AeonGUI
 {
     /// OpenGL Renderer class.
-    class OpenGLRenderer : public Renderer
+    class DLL OpenGLRenderer : public Renderer
     {
     public:
         OpenGLRenderer();

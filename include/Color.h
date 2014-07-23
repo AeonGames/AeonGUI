@@ -15,6 +15,7 @@ Copyright 2010-2012 Rodrigo Hernandez Cordoba
    See the License for the specific language governing permissions and
    limitations under the License.
 ******************************************************************************/
+#include "Platform.h"
 #include "Integer.h"
 namespace AeonGUI
 {
@@ -175,7 +176,7 @@ namespace AeonGUI
         The union type is also 32bits wide which makes it suitable to be passed as value or as reference.
         Wherever a Color variable can be passed it \a should be possible to pass a 32 bit unsigned integer value, but some compilers may complain depending on the set warning level.
     */
-    union Color
+    union DLL Color
     {
         Color();
         /*! \brief 32 bit Unsigned integer constructor.

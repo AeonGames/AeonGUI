@@ -16,12 +16,13 @@ Copyright 2010-2012 Rodrigo Hernandez Cordoba
    limitations under the License.
 ******************************************************************************/
 
+#include "Platform.h"
 #include "Button.h"
 
 namespace AeonGUI
 {
     /*! \brief Scroll bar control. */
-    class ScrollBar : public Widget
+    class DLL ScrollBar : public Widget
     {
     public:
         /// Scroll bar orientation enumerator.

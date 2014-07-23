@@ -15,6 +15,7 @@ Copyright 2010-2012 Rodrigo Hernandez Cordoba
    See the License for the specific language governing permissions and
    limitations under the License.
 ******************************************************************************/
+#include "Platform.h"
 #include "Widget.h"
 #include "Image.h"
 #include <cstring>
@@ -22,7 +23,7 @@ Copyright 2010-2012 Rodrigo Hernandez Cordoba
 namespace AeonGUI
 {
     /*! \brief Common push button. */
-    class Button : public Widget
+    class DLL Button : public Widget
     {
     public:
         /// The different states a button can be at.

@@ -18,6 +18,7 @@ Copyright 2010-2012 Rodrigo Hernandez Cordoba
 #include <cstddef>
 #include <climits>
 #include <cassert>
+#include "Platform.h"
 #include "Integer.h"
 #include "Renderer.h"
 #include "Rect.h"

@@ -18,14 +18,15 @@ Copyright 2010-2012 Rodrigo Hernandez Cordoba
 
 #include <stddef.h>
 #include <assert.h>
-
+#include "Platform.h"
 #include "Integer.h"
+
 namespace AeonGUI
 {
     /*! \brief Raster Font class.
         \note This class has to change to accomodate for multiple font formats.
     */
-    class Font
+    class DLL Font
     {
     public:
         /// Font Glyph data.

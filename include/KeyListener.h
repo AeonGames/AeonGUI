@@ -16,10 +16,11 @@ Copyright 2010-2012 Rodrigo Hernandez Cordoba
    limitations under the License.
 ******************************************************************************/
 #include "Integer.h"
+#include "Platform.h"
 namespace AeonGUI
 {
     /// Keyboard Listener interface.
-    class KeyListener
+    class DLL KeyListener
     {
     public:
         virtual ~KeyListener() {};
