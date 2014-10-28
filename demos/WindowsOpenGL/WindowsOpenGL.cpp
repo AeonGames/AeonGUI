@@ -233,16 +233,12 @@ void Window::RenderLoop()
     {
         delta = 1.0f / 30.0f;
     }
-    POINT point;
-    GetCursorPos ( &point );
-    ScreenToClient ( hWnd, &point );
-    cursor.SetPosition ( point.x, point.y );
-
-    wglMakeCurrent ( hDC, hRC );
+    //wglMakeCurrent ( hDC, hRC );
     glClear ( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT );
     const AeonGUI::Color color ( 0xFFFFFFFF );
     renderer.BeginRender();
     renderer.RenderWidgets();
+#if 0
     renderer.DrawImage ( aeongames_logo, width - logo_width, height - logo_height );
     //renderer.DrawImage ( aeongui_logo, 0, height - aeongui_logo->GetHeight(), aeongui_logo->GetWidth() * 2 );
     renderer.DrawImage ( aeongui_logo, 0, height - aeongui_logo->GetHeight() * 2, aeongui_logo->GetWidth() * 2 , aeongui_logo->GetHeight() * 2, AeonGUI::NEAREST );
@@ -251,6 +247,7 @@ void Window::RenderLoop()
     renderer.DrawImage ( aeongui_logo, aeongui_logo->GetWidth() * 6, height - aeongui_logo->GetHeight() * 4, aeongui_logo->GetWidth() * 4 , aeongui_logo->GetHeight() * 4, AeonGUI::LINEAR );
     //renderer.DrawSubImage ( aeongui_logo, 0, height - aeongui_logo->GetHeight() * 2, 4, 4, 56, 56, 56, 56 * 2 );
     //renderer.DrawImage ( aeongui_logo, 0, height - 80, 80, 80 );
+#endif
     renderer.EndRender();
     SwapBuffers ( hDC );
     last_time = this_time;
@@ -352,6 +349,7 @@ LRESULT Window::OnPaint()
 
 LRESULT Window::OnMouseMove ( int32_t x, int32_t y )
 {
+    cursor.SetPosition ( x, y );
     window->MouseMove ( x, y );
     return 0;
 }

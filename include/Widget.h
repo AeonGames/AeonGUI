@@ -334,7 +334,6 @@ namespace AeonGUI
         Widget* next;                   ///< Pointer to this widget's sibling if any.
         Widget* children;               ///< Pointer to this widget's first child if any.
         Rect rect;                      ///< The widget's rect.
-        // From Window:
         Rect clientrect;                ///< The widget's client rect.
         Color backgroundcolor;          ///< The widget's background color.
         Color textcolor;                ///< The widget's text color.
