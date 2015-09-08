@@ -58,7 +58,7 @@ namespace agg
     {
         if(m_num_items < 32)
         {
-            m_items[m_num_items].resize(strlen(text) + 1);
+            m_items[m_num_items].resize(static_cast<unsigned>(strlen(text) + 1));
             strcpy(&m_items[m_num_items][0], text);
             m_num_items++;
         }

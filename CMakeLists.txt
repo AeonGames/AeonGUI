@@ -59,5 +59,5 @@ if(MSVC)
 	add_definitions(-D_CRT_SECURE_NO_WARNINGS)
 endif(MSVC)
 
-include_directories(include common common/pcx demos/common core)
-subdirs(common/pcx core renderers tools demos)
+include_directories(include common common/pcx demos/common core agg/src agg/include)
+subdirs(common/pcx core renderers tools demos agg/src)

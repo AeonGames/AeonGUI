@@ -49,7 +49,7 @@ namespace agg
     //------------------------------------------------------------------------
     void cbox_ctrl_impl::label(const char* l)
     {
-        unsigned len = strlen(l);
+        size_t len = strlen(l);
         if(len > 127) len = 127;
         memcpy(m_label, l, len);
         m_label[len] = 0;

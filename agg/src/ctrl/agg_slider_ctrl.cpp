@@ -103,7 +103,7 @@ namespace agg
         m_label[0] = 0;
         if(fmt)
         {
-            unsigned len = strlen(fmt);
+            size_t len = strlen(fmt);
             if(len > 63) len = 63;
             memcpy(m_label, fmt, len);
             m_label[len] = 0;

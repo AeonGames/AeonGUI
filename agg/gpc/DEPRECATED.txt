@@ -1,0 +1,8 @@
+===DEPRECATION NOTICE===
+Due to the General Polygon Clipper library restrictive license
+against comercial use, the use of this library has been deemed deprecated
+and is to be removed and replaced with the Clipper library,
+an implementation of the same algorithm 
+released under the Boost Software License.
+
+http://www.angusj.com/delphi/clipper.php

@@ -1,5 +1,5 @@
 /******************************************************************************
-Copyright 2010-2012 Rodrigo Hernandez Cordoba
+Copyright 2010-2012,2015 Rodrigo Hernandez Cordoba
 
    Licensed under the Apache License, Version 2.0 (the "License");
    you may not use this file except in compliance with the License.
@@ -51,7 +51,7 @@ namespace AeonGUI
         memcpy ( data, read_struct->pointer, real_length );
         if ( real_length < length )
         {
-            printf ( "%s Returning %lu bytes instead of requested %lu because of end of memory\n", __FUNCTION__, real_length, length );
+            printf ( "%s Returning %zd bytes instead of requested %zd because of end of memory\n", __FUNCTION__, real_length, length );
             memset ( data + real_length, 0, length - real_length );
         }
         read_struct->pointer += real_length;
