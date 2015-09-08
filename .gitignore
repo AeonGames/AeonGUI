@@ -19,10 +19,17 @@ local.properties
 
 #External library directories #
 ###############################
-zlib-1.2.8
+zlib-*
+freetype-*
+libpng-*
+AStyle
 
 # Possible build directories   #
 ###############################
 x64
 x32
 codeblocks
+msvc64
+msvc32
+mingw32
+mingw64
