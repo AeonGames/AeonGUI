@@ -685,7 +685,7 @@ namespace agg
             {
                 app->m_specific->m_cur_y = int16(HIWORD(lParam));
             }
-            app->m_specific->m_input_flags = mouse_left | get_key_flags(wParam);
+            app->m_specific->m_input_flags = mouse_left | get_key_flags(static_cast<int>(wParam));
             
             app->m_ctrls.set_cur(app->m_specific->m_cur_x, 
                                  app->m_specific->m_cur_y);
@@ -734,7 +734,7 @@ namespace agg
             {
                 app->m_specific->m_cur_y = int16(HIWORD(lParam));
             }
-            app->m_specific->m_input_flags = mouse_left | get_key_flags(wParam);
+            app->m_specific->m_input_flags = mouse_left | get_key_flags(static_cast<int>(wParam));
 
             if(app->m_ctrls.on_mouse_button_up(app->m_specific->m_cur_x, 
                                                app->m_specific->m_cur_y))
@@ -766,7 +766,7 @@ namespace agg
             {
                 app->m_specific->m_cur_y = int16(HIWORD(lParam));
             }
-            app->m_specific->m_input_flags = mouse_right | get_key_flags(wParam);
+            app->m_specific->m_input_flags = mouse_right | get_key_flags(static_cast<int>(wParam));
             app->on_mouse_button_down(app->m_specific->m_cur_x, 
                                       app->m_specific->m_cur_y, 
                                       app->m_specific->m_input_flags);
@@ -790,7 +790,7 @@ namespace agg
             {
                 app->m_specific->m_cur_y = int16(HIWORD(lParam));
             }
-            app->m_specific->m_input_flags = mouse_right | get_key_flags(wParam);
+            app->m_specific->m_input_flags = mouse_right | get_key_flags(static_cast<int>(wParam));
             app->on_mouse_button_up(app->m_specific->m_cur_x, 
                                     app->m_specific->m_cur_y, 
                                     app->m_specific->m_input_flags);
@@ -813,7 +813,7 @@ namespace agg
             {
                 app->m_specific->m_cur_y = int16(HIWORD(lParam));
             }
-            app->m_specific->m_input_flags = get_key_flags(wParam);
+            app->m_specific->m_input_flags = get_key_flags(static_cast<int>(wParam));
 
 
             if(app->m_ctrls.on_mouse_move(
@@ -857,7 +857,7 @@ namespace agg
                     break;
 
                 default:
-                    app->m_specific->translate(wParam);
+                    app->m_specific->translate(static_cast<int>(wParam));
                     break;
             }
         
@@ -946,7 +946,7 @@ namespace agg
             {
                 app->on_key(app->m_specific->m_cur_x,
                             app->m_specific->m_cur_y,
-                            wParam,
+							static_cast<int>(wParam),
                             app->m_specific->m_input_flags);
             }
             break;
@@ -1138,7 +1138,7 @@ namespace agg
         {
             char fn[1024];
             strcpy(fn, file);
-            int len = strlen(fn);
+            size_t len = strlen(fn);
             if(len < 4 || stricmp(fn + len - 4, ".BMP") != 0)
             {
                 strcat(fn, ".bmp");
@@ -1265,7 +1265,7 @@ namespace agg
     //-----------------------------------------------------------------------
     inline int tokenizer::check_chr(const char *str, char chr)
     {
-        return int(strchr(str, chr));
+        return int(strchr(str, chr) != nullptr);
     }
 
 
@@ -1281,7 +1281,7 @@ namespace agg
         m_trim(trim),
         m_quote(quote),
         m_mask_chr(mask_chr),
-        m_sep_len(sep ? strlen(sep) : 0),
+        m_sep_len(sep ? static_cast<unsigned int>(strlen(sep)) : 0),
         m_sep_flag(sep ? sf : single)
     {
     }
