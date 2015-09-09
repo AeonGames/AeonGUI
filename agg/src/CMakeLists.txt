@@ -39,6 +39,11 @@ set(AGG_CTRL_SOURCES
 set(GPC_SOURCES
 	../gpc/gpc.c
 	)
+set(CLIPPER_SOURCES
+	../clipper/clipper.hpp
+	../clipper/clipper.cpp
+	)
+	
 set(AGG_HEADERS
 	../include/agg_alpha_mask_u8.h          ../include/agg_glyph_raster_bin.h          ../include/agg_span_allocator.h
 	../include/agg_arc.h                    ../include/agg_gsv_text.h                  ../include/agg_span_converter.h
@@ -88,5 +93,6 @@ source_group("AGG Sources" FILES ${AGG_SOURCES})
 source_group("AGG Headers" FILES ${AGG_HEADERS})
 source_group("AGG Control Sources" FILES ${AGG_CTRL_SOURCES})
 source_group("General Polygon Clipper" FILES ${GPC_SOURCES})
+source_group("Polygon Clipper" FILES ${CLIPPER_SOURCES})
 
-add_library(agg STATIC ${AGG_HEADERS} ${AGG_SOURCES} ${AGG_CTRL_SOURCES} ${GPC_SOURCES})
+add_library(agg STATIC ${AGG_HEADERS} ${AGG_SOURCES} ${AGG_CTRL_SOURCES} ${CLIPPER_SOURCES} ${GPC_SOURCES})
