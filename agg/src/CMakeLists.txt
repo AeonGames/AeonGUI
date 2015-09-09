@@ -1,3 +1,5 @@
+subdirs(platform)
+include_directories(../clipper)
 set(AGG_SOURCES
 	agg_arc.cpp
 	agg_arrowhead.cpp
@@ -36,9 +38,6 @@ set(AGG_CTRL_SOURCES
 	ctrl/agg_polygon_ctrl.cpp
 	ctrl/agg_bezier_ctrl.cpp
 	)
-set(GPC_SOURCES
-	../gpc/gpc.c
-	)
 set(CLIPPER_SOURCES
 	../clipper/clipper.hpp
 	../clipper/clipper.cpp
@@ -70,7 +69,7 @@ set(AGG_HEADERS
 	../include/agg_conv_contour.h           ../include/agg_rasterizer_scanline_aa.h    ../include/agg_trans_affine.h
 	../include/agg_conv_curve.h             ../include/agg_rasterizer_sl_clip.h        ../include/agg_trans_bilinear.h
 	../include/agg_conv_dash.h              ../include/agg_renderer_base.h             ../include/agg_trans_double_path.h
-	../include/agg_conv_gpc.h               ../include/agg_renderer_markers.h
+	../include/agg_renderer_markers.h
 	../include/agg_conv_marker.h            ../include/agg_renderer_mclip.h            ../include/agg_trans_perspective.h
 	../include/agg_conv_marker_adaptor.h    ../include/agg_renderer_outline_aa.h       ../include/agg_trans_single_path.h
 	../include/agg_conv_segmentator.h       ../include/agg_renderer_outline_image.h    ../include/agg_trans_viewport.h
@@ -92,7 +91,14 @@ set(AGG_HEADERS
 source_group("AGG Sources" FILES ${AGG_SOURCES})
 source_group("AGG Headers" FILES ${AGG_HEADERS})
 source_group("AGG Control Sources" FILES ${AGG_CTRL_SOURCES})
-source_group("General Polygon Clipper" FILES ${GPC_SOURCES})
 source_group("Polygon Clipper" FILES ${CLIPPER_SOURCES})
 
-add_library(agg STATIC ${AGG_HEADERS} ${AGG_SOURCES} ${AGG_CTRL_SOURCES} ${CLIPPER_SOURCES} ${GPC_SOURCES})
+add_library(agg STATIC ${AGG_HEADERS} ${AGG_SOURCES} ${AGG_CTRL_SOURCES} ${CLIPPER_SOURCES})
+
+set(CLIPPER_TEST_SOURCES 
+	../examples/clipper_test.cpp 
+	../examples/make_gb_poly.cpp
+	../examples/make_arrows.cpp
+	)
+add_executable(clipper_test WIN32 ${CLIPPER_TEST_SOURCES})
+target_link_libraries(clipper_test agg aggplatform)

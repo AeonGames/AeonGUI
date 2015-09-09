@@ -1,5 +1,4 @@
 #include <stdio.h>
-#include "agg_conv_gpc.h"
 #include "agg_basics.h"
 #include "agg_rendering_buffer.h"
 #include "agg_rasterizer_scanline_aa.h"
@@ -18,10 +17,10 @@
 #include "ctrl/agg_cbox_ctrl.h"
 #include "ctrl/agg_rbox_ctrl.h"
 
+#include "agg_conv_clipper.h"
+#include "windows.h"
 
 enum flip_y_e { flip_y = true };
-
-
 
 
 class spiral
@@ -111,8 +110,6 @@ namespace agg
 }
 
 
-
-
 void make_gb_poly(agg::path_storage& ps);
 void make_arrows(agg::path_storage& ps);
 
@@ -123,6 +120,12 @@ class the_application : public agg::platform_support
     agg::rbox_ctrl<agg::rgba8> m_operation;
     double m_x;
     double m_y;
+
+	virtual void on_key(int x, int y, unsigned key, unsigned flags)
+	{
+		if(key == agg::key_escape) exit(0);
+		
+	}
 
 public:
     the_application(agg::pix_format_e format, bool flip_y) :
@@ -149,43 +152,54 @@ public:
     }
 
 
-    template<class Scanline, class Ras, class Ren, class Gpc>
-    void perform_rendering(Scanline& sl, Ras& ras, Ren& ren, Gpc& gpc)
+    template<class Scanline, class Ras, class Ren, class Clp>
+    void perform_rendering(Scanline &sl, Ras &ras, Ren &ren, Clp &clp)
     {
         if(m_operation.cur_item() > 0)
         {
             ras.reset();
             switch(m_operation.cur_item())
             {
-                case 1: gpc.operation(agg::gpc_or);           break;
-                case 2: gpc.operation(agg::gpc_and);          break;
-                case 3: gpc.operation(agg::gpc_xor);          break;
-                case 4: gpc.operation(agg::gpc_a_minus_b);    break;
-                case 5: gpc.operation(agg::gpc_b_minus_a);    break;
+                case 1: clp.operation(agg::clipper_or);           break;
+                case 2: clp.operation(agg::clipper_and);          break;
+                case 3: clp.operation(agg::clipper_xor);          break;
+                case 4: clp.operation(agg::clipper_a_minus_b);    break;
+                case 5: clp.operation(agg::clipper_b_minus_a);    break;
             }
-            agg::conv_poly_counter<Gpc> counter(gpc);
+            agg::conv_poly_counter<Clp> counter(clp);
 
 
             start_timer();
             counter.rewind(0);
             double t1 = elapsed_time();
 
-            ras.reset();
+			agg::path_storage ps;
             double x;
             double y;
             unsigned cmd;
             start_timer();
             while(!agg::is_stop(cmd = counter.vertex(&x, &y)))
             {
-                ras.add_vertex(x, y, cmd);
-            }
-
-            ren.color(agg::rgba(0.5, 0.0, 0, 0.5));
+				if(agg::is_move_to(cmd)) 
+					ps.move_to(x, y);
+				else if(agg::is_line_to(cmd))
+					ps.line_to(x, y);
+				else if(agg::is_close(cmd))
+					ps.close_polygon();
+			}
+			ras.add_path(ps);
+            ren.color(agg::rgba(0.25, 0.9, 0.25, 0.65));
             agg::render_scanlines(ras, sl, ren);
             double t2 = elapsed_time();
 
+            agg::conv_stroke<agg::path_storage> stroke(ps);
+            stroke.width(0.4);
+            ras.add_path(stroke);
+            ren.color(agg::rgba(0, 0, 0));
+            agg::render_scanlines(ras, sl, ren);
+
             char buf[100];
-            sprintf(buf, "Contours: %d   Points: %d", counter.m_contours, counter.m_points);
+            sprintf_s(buf, "Contours: %d      Points: %d", counter.m_contours, counter.m_points);
             agg::gsv_text txt;
             agg::conv_stroke<agg::gsv_text> txt_stroke(txt);
             txt_stroke.width(1.5);
@@ -197,7 +211,7 @@ public:
             ren.color(agg::rgba(0.0, 0.0, 0.0));
             agg::render_scanlines(ras, sl, ren);
 
-            sprintf(buf, "GPC=%.3fms Render=%.3fms", t1, t2);
+            sprintf_s(buf, "Clipper=%.3fms Render=%.3fms", t1, t2);
             txt.start_point(250, 20);
             txt.text(buf);
             ras.add_path(txt_stroke);
@@ -208,7 +222,7 @@ public:
 
 
     template<class Scanline, class Ras>
-    unsigned render_gpc(Scanline& sl, Ras& ras)
+    unsigned render_clipper(Scanline& sl, Ras& ras)
     {
         agg::pixfmt_bgr24 pf(rbuf_window());
         agg::renderer_base<agg::pixfmt_bgr24> rb(pf);
@@ -225,7 +239,7 @@ public:
                 agg::path_storage ps1;
                 agg::path_storage ps2;
 
-                agg::conv_gpc<agg::path_storage, agg::path_storage> gpc(ps1, ps2);
+                agg::conv_clipper<agg::path_storage, agg::path_storage> clp(ps1, ps2, agg::clipper_or, agg::clipper_non_zero, agg::clipper_non_zero);
 
                 double x = m_x - initial_width()/2 + 100;
                 double y = m_y - initial_height()/2 + 100;
@@ -264,7 +278,7 @@ public:
                 ren.color(agg::rgba(0, 0.6, 0, 0.1));
                 agg::render_scanlines(ras, sl, ren);
 
-                perform_rendering(sl, ras, ren, gpc);
+                perform_rendering(sl, ras, ren, clp);
             }
             break;
 
@@ -278,8 +292,8 @@ public:
                 agg::conv_stroke<agg::path_storage> stroke(ps2);
                 stroke.width(10.0);
 
-                agg::conv_gpc<agg::path_storage, 
-                              agg::conv_stroke<agg::path_storage> > gpc(ps1, stroke);
+                agg::conv_clipper<agg::path_storage, 
+                              agg::conv_stroke<agg::path_storage> > clp(ps1, stroke, agg::clipper_or, agg::clipper_non_zero, agg::clipper_non_zero);
 
 
                 double x = m_x - initial_width()/2 + 100;
@@ -313,7 +327,7 @@ public:
                 ren.color(agg::rgba(0, 0.6, 0, 0.1));
                 agg::render_scanlines(ras, sl, ren);
 
-                perform_rendering(sl, ras, ren, gpc);
+                perform_rendering(sl, ras, ren, clp);
             }
             break;
 
@@ -340,8 +354,8 @@ public:
                 agg::conv_transform<agg::path_storage> trans_gb_poly(gb_poly, mtx1);
                 agg::conv_transform<agg::path_storage> trans_arrows(arrows, mtx2);
 
-                agg::conv_gpc<agg::conv_transform<agg::path_storage>, 
-                              agg::conv_transform<agg::path_storage> > gpc(trans_gb_poly, trans_arrows);
+                agg::conv_clipper<agg::conv_transform<agg::path_storage>, 
+                              agg::conv_transform<agg::path_storage> > clp(trans_gb_poly, trans_arrows, agg::clipper_or, agg::clipper_non_zero, agg::clipper_non_zero);
 
                 ras.add_path(trans_gb_poly);
                 ren.color(agg::rgba(0.5, 0.5, 0, 0.1));
@@ -357,7 +371,7 @@ public:
                 ren.color(agg::rgba(0.0, 0.5, 0.5, 0.1));
                 agg::render_scanlines(ras, sl, ren);
 
-                perform_rendering(sl, ras, ren, gpc);
+                perform_rendering(sl, ras, ren, clp);
             }
             break;
 
@@ -380,39 +394,8 @@ public:
 
                 agg::conv_transform<agg::path_storage> trans_gb_poly(gb_poly, mtx);
 
-                agg::conv_gpc<agg::conv_transform<agg::path_storage>, 
-                              agg::conv_stroke<spiral> > gpc(trans_gb_poly, stroke);
-
-
-/*
-FILE* fd = fopen("contours.txt", "w");
-if(fd)
-{
-    unsigned cmd;
-    double x, y;
-    trans_gb_poly.rewind(0);
-    while(!agg::is_stop(cmd = trans_gb_poly.vertex(&x, &y)))
-    {
-        if(agg::is_move_to(cmd))
-        {
-            fprintf(fd, "\npoly[] = {\n");
-        }
-        fprintf(fd, "   %.3f, %.3f,\n", x, y);
-    }
-
-    stroke.rewind(0);
-    while(!agg::is_stop(cmd = stroke.vertex(&x, &y)))
-    {
-        if(agg::is_move_to(cmd))
-        {
-            fprintf(fd, "\nspiral[] = {\n");
-        }
-        fprintf(fd, "   %.3f, %.3f,\n", x, y);
-    }
-
-    fclose(fd);
-}
-*/
+                agg::conv_clipper<agg::conv_transform<agg::path_storage>, 
+                              agg::conv_stroke<spiral> > clp(trans_gb_poly, stroke, agg::clipper_or, agg::clipper_non_zero, agg::clipper_non_zero);
 
                 ras.add_path(trans_gb_poly);
                 ren.color(agg::rgba(0.5, 0.5, 0, 0.1));
@@ -428,7 +411,7 @@ if(fd)
                 ren.color(agg::rgba(0.0, 0.5, 0.5, 0.1));
                 agg::render_scanlines(ras, sl, ren);
 
-                perform_rendering(sl, ras, ren, gpc);
+                perform_rendering(sl, ras, ren, clp);
             }
             break;
 
@@ -494,10 +477,10 @@ if(fd)
                 agg::conv_transform<agg::path_storage> trans(glyph, mtx);
                 agg::conv_curve<agg::conv_transform<agg::path_storage> > curve(trans);
 
-                agg::conv_gpc<agg::conv_stroke<spiral>, 
+                agg::conv_clipper<agg::conv_stroke<spiral>, 
                                  agg::conv_curve<
                                      agg::conv_transform<
-                                         agg::path_storage> > > gpc(stroke, curve);
+                                         agg::path_storage> > > clp(stroke, curve, agg::clipper_or, agg::clipper_non_zero, agg::clipper_non_zero);
 
                 ras.reset();
                 ras.add_path(stroke);
@@ -509,7 +492,7 @@ if(fd)
                 ren.color(agg::rgba(0, 0.6, 0, 0.1));
                 agg::render_scanlines(ras, sl, ren);
 
-                perform_rendering(sl, ras, ren, gpc);
+                perform_rendering(sl, ras, ren, clp);
             }
             break;
         }
@@ -535,103 +518,11 @@ if(fd)
         agg::scanline_u8 sl;
         agg::rasterizer_scanline_aa<> ras;
 
-        render_gpc(sl, ras);
+        render_clipper(sl, ras);
 
         agg::render_ctrl(ras, sl, ren_base, m_polygons);
         agg::render_ctrl(ras, sl, ren_base, m_operation);
     }
-
-
-/*
-// Stress-test.
-// Works quite well on random polygons, no crashes, no memory leaks! 
-// Sometimes takes long to produce the result
-
-    double random(double min, double max)
-    {
-        int r = (rand() << 15) | rand();
-        return ((r & 0xFFFFFFF) / double(0xFFFFFFF + 1)) * (max - min) + min;
-    }
-
-
-    virtual void on_mouse_button_down(int x, int y, unsigned flags)
-    {
-        agg::scanline_u8 sl;
-        agg::rasterizer_scanline_aa<> ras;
-
-        typedef agg::renderer_base<agg::pixfmt_bgr24> base_ren_type;
-        typedef agg::renderer_scanline_aa_solid<base_ren_type> renderer_solid;
-
-        agg::pixfmt_bgr24 pf(rbuf_window());
-        base_ren_type ren_base(pf);
-        renderer_solid ren_solid(ren_base);
-
-        agg::path_storage ps1;
-        agg::path_storage ps2;
-
-        agg::conv_gpc<agg::path_storage, agg::path_storage> gpc(ps1, ps2);
-
-        unsigned i;
-        for(i = 0; i < 1000; i++)
-        {
-            ren_base.clear(agg::rgba(1,1,1));
-
-            unsigned num_poly1 = rand() % 10 + 1;
-            unsigned num_poly2 = rand() % 10 + 1;
-            unsigned j;
-            
-            ps1.remove_all();
-            ps2.remove_all();
-
-            for(j = 0; j < num_poly1; j++)
-            {
-                ps1.move_to(random(0, width()), random(0, height()));
-                unsigned k;
-                unsigned np = rand() % 20 + 2;
-                for(k = 0; k < np; k++)
-                {
-                    ps1.line_to(random(0, width()), random(0, height()));
-                }
-            }
-
-            for(j = 0; j < num_poly2; j++)
-            {
-                ps2.move_to(random(0, width()), random(0, height()));
-                unsigned k;
-                unsigned np = rand() % 20 + 2;
-                for(k = 0; k < np; k++)
-                {
-                    ps2.line_to(random(0, width()), random(0, height()));
-                }
-            }
-
-            unsigned op = rand() % 5;
-            switch(op)
-            {
-                case 0: gpc.operation(agg::gpc_or);           break;
-                case 1: gpc.operation(agg::gpc_and);          break;
-                case 2: gpc.operation(agg::gpc_xor);          break;
-                case 3: gpc.operation(agg::gpc_a_minus_b);    break;
-                case 4: gpc.operation(agg::gpc_b_minus_a);    break;
-            }
-
-
-            ras.add_path(gpc);
-            ren_solid.color(agg::rgba(0.5, 0.0, 0, 0.5));
-            agg::render_scanlines(ras, sl, ren_solid);
-            update_window();
-
-        }
-
-        message("Done");
-    }
-*/
-
-
-
-
-
-
 
     virtual void on_mouse_button_down(int x, int y, unsigned flags)
     {
@@ -640,13 +531,6 @@ if(fd)
             m_x = x;
             m_y = y;
             force_redraw();
-        }
-
-        if(flags & agg::mouse_right)
-        {
-            char buf[100];
-            sprintf(buf, "%d %d", x, y);
-            message(buf);
         }
     }
 
@@ -666,17 +550,25 @@ if(fd)
 };
 
 
-
 int agg_main(int argc, char* argv[])
 {
     the_application app(agg::pix_format_bgr24, flip_y);
-    app.caption("AGG Example. General Polygon Clipping (GPC)");
+    app.caption("AGG Example. Clipper");
 
     if(app.init(640, 520, agg::window_resize))
     {
-        return app.run();
+		//replace the main window icon with Resource Icon #1 ...
+		HWND w = GetActiveWindow();
+		HMODULE m = GetModuleHandle(0); //hInstance
+		HANDLE small_ico = LoadImage(m, MAKEINTRESOURCE(1), IMAGE_ICON, 16, 16, 0);
+		HANDLE big_ico = LoadImage(m, MAKEINTRESOURCE(1), IMAGE_ICON, 32, 32, 0);
+		SendMessage(w, WM_SETICON, ICON_SMALL, (LPARAM)small_ico);
+		SendMessage(w, WM_SETICON, ICON_BIG, (LPARAM)big_ico);
+
+		//main message loop ...
+		return app.run();
     }
-    return 1;
+    return 0;
 }
 
 
