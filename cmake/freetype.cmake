@@ -2,7 +2,7 @@
 # Licensed under the terms of the MIT License.
 include(FindFreetype)
 if(FREETYPE_FOUND)
-INCLUDE_DIRECTORIES(${FREETYPE_INCLUDE_DIR_ft2build} ${FREETYPE_INCLUDE_DIR_freetype2})
+	INCLUDE_DIRECTORIES(${FREETYPE_INCLUDE_DIR_ft2build} ${FREETYPE_INCLUDE_DIR_freetype2})
 else(FREETYPE_FOUND)
 if(NOT EXISTS "${CMAKE_SOURCE_DIR}/freetype-2.4.12.tar.bz2")
 message(STATUS "Please wait while the freetype source package is downloaded...")
@@ -92,9 +92,9 @@ add_library(freetype2 ${FT_SOURCES})
 set_target_properties(freetype2 PROPERTIES COMPILE_DEFINITIONS "FT2_BUILD_LIBRARY")
 include_directories(${CMAKE_SOURCE_DIR}/freetype-2.4.12/include)
 
-set(FREETYPE_INCLUDE_DIRS "${CMAKE_SOURCE_DIR}/freetype-2.4.12/include")
-set(FREETYPE_FT2BUILD_INCLUDE_DIR "${FREETYPE_INCLUDE_DIRS}")
-set(FREETYPE_LIBRARIES freetype2)
-set(FREETYPE_FOUND 1)
+set(FREETYPE_INCLUDE_DIRS "${CMAKE_SOURCE_DIR}/freetype-2.4.12/include" CACHE INTERNAL "FreeType2 include directories" FORCE)
+set(FREETYPE_FT2BUILD_INCLUDE_DIR "${FREETYPE_INCLUDE_DIRS}" CACHE INTERNAL "FreeType2 build include directory" FORCE)
+set(FREETYPE_LIBRARY freetype2 CACHE INTERNAL "FreeType2 library" FORCE)
+set(FREETYPE_FOUND ON CACHE INTERNAL "Using localy compiled FT2" FORCE)
 
 endif(FREETYPE_FOUND)

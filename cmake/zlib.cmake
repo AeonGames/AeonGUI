@@ -1,5 +1,5 @@
 # Copyright 2015 AeonGames, Rodrigo Hernandez
-# Licensed under the terms of the MIT License.
+# Licensed under the terms of the Apache 2.0 License.
 include(FindZLIB)
 if(NOT ZLIB_FOUND)
 	if(NOT EXISTS "${CMAKE_SOURCE_DIR}/zlib-1.2.8.tar.gz")

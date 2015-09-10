@@ -36,11 +36,13 @@ if(USE_PNG)
 	include(libpng)
 endif(USE_PNG)
 
+include(libxml2)
+
 # if FreeType is not requested we may use Xlib on Unix, or GDI on Windows... eventually.
 include(FindX11)
 if(CMAKE_COMPILER_IS_GNUCXX)
 	# -std=c++0x is required to be able to include stdint.h as cstdint, weird, I know.
-	# But then CUDA doesn't like c++0x, so stick to .h files until it does *sigh*
+	# But then CUDA doesn't like c++11, so stick to .h files until it does *sigh*
 	set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall")
 	if(RELEASE_BUILD)
 		set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -DNDEBUG -fomit-frame-pointer -O3")
