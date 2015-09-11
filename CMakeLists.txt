@@ -37,7 +37,6 @@ if(USE_PNG)
 endif(USE_PNG)
 
 include(libxml2)
-include(libcss)
 
 # if FreeType is not requested we may use Xlib on Unix, or GDI on Windows... eventually.
 include(FindX11)
