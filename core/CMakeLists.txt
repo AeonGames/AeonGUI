@@ -1,6 +1,6 @@
 SET(AEONGUI_HEADERS
         ../include/AeonGUI.h
-        ../include/Theme.h
+        ../include/Overlay.h
         ../include/KeyListener.h
         ../include/Widget.h
         ../include/Button.h
@@ -18,7 +18,7 @@ SET(AEONGUI_HEADERS
 
 SET(AEONGUI_SOURCES
         AeonGUI.cpp
-        Theme.cpp
+        Overlay.cpp
         Renderer.cpp
         Font.cpp
         Widget.cpp
@@ -32,58 +32,63 @@ SET(AEONGUI_SOURCES
 )
 
 if(USE_CUDA)
-# Set Arch to sm_20 for printf inside kernel
-# set(CUDA_NVCC_FLAGS -arch=sm_20;${CUDA_NVCC_FLAGS})
-set(CUDA_KERNELS cuda/Renderer.cu)
-# set(CUDA_PROPAGATE_HOST_FLAGS OFF)
-cuda_compile(CUDA_WRAPPERS ${CUDA_KERNELS})
-set(AEONGUI_SOURCES ${AEONGUI_SOURCES} ${CUDA_WRAPPERS})
-source_group("CUDA Kernels" FILES ${CUDA_KERNELS})
-include_directories(${CUDA_TOOLKIT_INCLUDE} cuda)
-set(AEONGUI_LIBRARIES ${AEONGUI_LIBRARIES} ${CUDA_CUDART_LIBRARY})
+	# Set Arch to sm_20 for printf inside kernel
+	# set(CUDA_NVCC_FLAGS -arch=sm_20;${CUDA_NVCC_FLAGS})
+	set(CUDA_KERNELS cuda/Renderer.cu)
+	# set(CUDA_PROPAGATE_HOST_FLAGS OFF)
+	cuda_compile(CUDA_WRAPPERS ${CUDA_KERNELS})
+	set(AEONGUI_SOURCES ${AEONGUI_SOURCES} ${CUDA_WRAPPERS})
+	source_group("CUDA Kernels" FILES ${CUDA_KERNELS})
+	include_directories(${CUDA_TOOLKIT_INCLUDE} cuda)
+	set(AEONGUI_LIBRARIES ${AEONGUI_LIBRARIES} ${CUDA_CUDART_LIBRARY})
 endif(USE_CUDA)
 
 SET(AEONGUI_RESOURCES
-resources/close.c
-resources/maximize.c
-resources/minimize.c
-resources/restore.c
-resources/scrolldown.c
-resources/scrolldownpressed.c
-resources/scrollup.c
-resources/scrolluppressed.c
-resources/scrollleft.c
-resources/scrollleftpressed.c
-resources/scrollright.c
-resources/scrollrightpressed.c
-resources/close.h
-resources/maximize.h
-resources/minimize.h
-resources/restore.h
-resources/scrolldown.h
-resources/scrolldownpressed.h
-resources/scrollup.h
-resources/scrolluppressed.h
-resources/scrollleft.h
-resources/scrollleftpressed.h
-resources/scrollright.h
-resources/scrollrightpressed.h
-resources/close_down.c
-resources/maximize_down.c
-resources/minimize_down.c
-resources/restore_down.c
-resources/close_down.h
-resources/maximize_down.h
-resources/minimize_down.h
-resources/restore_down.h
+	resources/close.c
+	resources/maximize.c
+	resources/minimize.c
+	resources/restore.c
+	resources/scrolldown.c
+	resources/scrolldownpressed.c
+	resources/scrollup.c
+	resources/scrolluppressed.c
+	resources/scrollleft.c
+	resources/scrollleftpressed.c
+	resources/scrollright.c
+	resources/scrollrightpressed.c
+	resources/close.h
+	resources/maximize.h
+	resources/minimize.h
+	resources/restore.h
+	resources/scrolldown.h
+	resources/scrolldownpressed.h
+	resources/scrollup.h
+	resources/scrolluppressed.h
+	resources/scrollleft.h
+	resources/scrollleftpressed.h
+	resources/scrollright.h
+	resources/scrollrightpressed.h
+	resources/close_down.c
+	resources/maximize_down.c
+	resources/minimize_down.c
+	resources/restore_down.c
+	resources/close_down.h
+	resources/maximize_down.h
+	resources/minimize_down.h
+	resources/restore_down.h
 )
-
-set(AEONGUI_LIBRARIES ${AEONGUI_LIBRARIES} pcx)
+message(STATUS "${LIBXML2_INCLUDE_DIR}")
+include_directories(${LIBXML2_INCLUDE_DIR})
+set(AEONGUI_LIBRARIES ${LIBXML2_LIBRARIES} pcx)
 if(USE_PNG)
-set(AEONGUI_LIBRARIES ${AEONGUI_LIBRARIES} ${PNG_LIBRARIES} ${ZLIB_LIBRARIES})
+	set(AEONGUI_LIBRARIES ${AEONGUI_LIBRARIES} ${PNG_LIBRARIES} ${ZLIB_LIBRARIES})
 endif(USE_PNG)
 
 source_group("Resource Files" FILES ${AEONGUI_RESOURCES})
 add_library(AeonGUI SHARED ${AEONGUI_HEADERS} ${AEONGUI_SOURCES} ${AEONGUI_RESOURCES})
-set_target_properties(AeonGUI PROPERTIES COMPILE_FLAGS "${COMPILE_FLAGS} /DNOMINMAX /DDLL_EXPORT /D_CRT_SECURE_NO_WARNINGS")
-target_link_libraries(AeonGUI ${AEONGUI_LIBRARIES})
+set_target_properties(AeonGUI PROPERTIES COMPILE_FLAGS "-DNOMINMAX -DDLL_EXPORT -D_CRT_SECURE_NO_WARNINGS")
+target_link_libraries(AeonGUI ${AEONGUI_LIBRARIES} ${LIBXML2_LIBRARIES})
+
+if(BUILD_UNIT_TESTS)
+	subdirs(tests)
+endif()

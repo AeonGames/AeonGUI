@@ -1,7 +1,5 @@
-#ifndef AEONGAMES_THEME_H
-#define AEONGAMES_THEME_H
 /******************************************************************************
-Copyright 2013 Rodrigo Hernandez Cordoba
+Copyright 2015 Rodrigo Hernandez Cordoba
 
    Licensed under the Apache License, Version 2.0 (the "License");
    you may not use this file except in compliance with the License.
@@ -15,20 +13,18 @@ Copyright 2013 Rodrigo Hernandez Cordoba
    See the License for the specific language governing permissions and
    limitations under the License.
 ******************************************************************************/
+#include "Overlay.h"
+#include <libxml/xmlmemory.h>
+#include <libxml/parser.h>
+#include <libxml/parserInternals.h>
+#include <libxml/xpath.h>
 
-#include "Platform.h"
-#include "Image.h"
 namespace AeonGUI
 {
-    class Theme
+    Overlay::Overlay()
     {
-    public:
-        Theme();
-        ~Theme();
-        Image* GetCaptionedWindowImage();
-        void SetCaptionedWindowImage ( Image* image );
-    private:
-        Image* cwf_image; ///< The Image used for captioned window frames.
-    };
+    }
+    Overlay::~Overlay()
+    {
+    }
 }
-#endif

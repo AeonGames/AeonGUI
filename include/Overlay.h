@@ -1,5 +1,7 @@
+#ifndef AEONGUI_OVERLAY_H
+#define AEONGUI_OVERLAY_H
 /******************************************************************************
-Copyright 2013 Rodrigo Hernandez Cordoba
+Copyright 2015 Rodrigo Hernandez Cordoba
 
    Licensed under the Apache License, Version 2.0 (the "License");
    you may not use this file except in compliance with the License.
@@ -13,14 +15,15 @@ Copyright 2013 Rodrigo Hernandez Cordoba
    See the License for the specific language governing permissions and
    limitations under the License.
 ******************************************************************************/
-#include "Theme.h"
+#include "Platform.h"
 namespace AeonGUI
 {
-    Theme::Theme() :
-        cwf_image ( NULL )
+    /*! \brief Top window with borders and frame. */
+    class DLL Overlay
     {
-    }
-    Theme::~Theme()
-    {
-    }
+    public:
+        Overlay();
+        ~Overlay();
+    };
 }
+#endif

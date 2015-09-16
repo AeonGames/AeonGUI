@@ -1,5 +1,5 @@
 # Copyright 2015 AeonGames, Rodrigo Hernandez
-# Licensed under the terms of the MIT License.
+# Licensed under the terms of the Apache 2.0 License.
 if(NOT GMOCK_FOUND)
     # Download package.
     if(NOT EXISTS "${CMAKE_SOURCE_DIR}/gmock-1.7.0.zip")
@@ -25,7 +25,7 @@ if(NOT GMOCK_FOUND)
 	set(GMOCK_BOTH_LIBRARIES ${GMOCK_LIBRARIES} ${GMOCK_MAIN_LIBRARIES})
 	set(GMOCK_LIBRARY gmock CACHE PATH "gmock Library" FORCE)
 	set(GMOCK_INCLUDE_DIR "${CMAKE_SOURCE_DIR}/gmock-1.7.0/include" CACHE PATH "gmock Include path" FORCE)
-	set(GMOCK_MAIN_LIBRARY GMOCK_main CACHE PATH "gmock Main Function Library" FORCE)
+	set(GMOCK_MAIN_LIBRARY gmock_main CACHE PATH "gmock Main Function Library" FORCE)
 	set(GMOCK_SUBDIRECTORY ${CMAKE_SOURCE_DIR}/gmock-1.7.0 CACHE PATH "gmock Source Path" FORCE)
 endif()
 if(DEFINED GMOCK_SUBDIRECTORY)

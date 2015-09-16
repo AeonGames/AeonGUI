@@ -16,6 +16,7 @@ option(USE_FREETYPE  "Use FreeType2 for font rendering")
 option(USE_ZLIB "Use the zlib compression library")
 option(USE_PNG "Enable PNG image support (Requires zlib)")
 option(USE_CUDA "Enable CUDA support")
+option(BUILD_UNIT_TESTS "Enable Unit Tests using GTest/GMock")
 option(RELEASE_BUILD "Build for Release")
 set(HTTP_PROXY "" CACHE STRING "Specify a proxy server if required for downloads")
 
@@ -56,6 +57,10 @@ if(CMAKE_COMPILER_IS_GNUC)
 	set(CMAKE_C_FLAGS_DEBUG "-DDEBUG -g -O0")
 	set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -Wall")
 endif(CMAKE_COMPILER_IS_GNUC)
+
+if(BUILD_UNIT_TESTS)
+	include(gmock)
+endif()
 
 if(MSVC)
 	add_definitions(-D_CRT_SECURE_NO_WARNINGS)

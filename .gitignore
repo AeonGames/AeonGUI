@@ -23,6 +23,7 @@ zlib-*
 freetype-*
 libpng-*
 libxml2-*
+gmock-*
 AStyle
 
 # Possible build directories   #
