@@ -11,9 +11,8 @@ AUTHOR
 
 DESCRIPTION
 ===========
-The AeonGUI library is intended as a portable graphic user interface library
-to be used primarily on video games and interactive media.
-Its goals are to keep the rendering engine separated from widget logic to make things easier for
+AeonGUI is a graphic user interface library to be used primarily on video games and interactive media.
+It's goals are to keep the rendering engine separated from widget logic to make things easier for
 would be users (developers intending to use the library on their own product), 
 renderer writers (developers looking to implement support for a particular graphic API) and
 widget writers (developers looking to add new controls to the library).
