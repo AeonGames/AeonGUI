@@ -14,6 +14,7 @@ Copyright 2015 Rodrigo Hernandez Cordoba
    limitations under the License.
 ******************************************************************************/
 #include "Overlay.h"
+#include <iostream>
 #include <libxml/xmlmemory.h>
 #include <libxml/parser.h>
 #include <libxml/parserInternals.h>
@@ -21,10 +22,26 @@ Copyright 2015 Rodrigo Hernandez Cordoba
 
 namespace AeonGUI
 {
-    Overlay::Overlay()
+    Overlay::Overlay() : mDocument ( nullptr )
     {
     }
+
     Overlay::~Overlay()
     {
+        if ( nullptr != mDocument )
+        {
+            xmlFreeDoc ( mDocument );
+        }
+    }
+
+    bool Overlay::ReadFile ( const std::string & aFileName )
+    {
+        mDocument = xmlReadFile ( aFileName.c_str(), nullptr, 0 );
+        if ( nullptr == mDocument )
+        {
+            std::cout << "Error Loading File " << aFileName << std::endl;
+            return false;
+        }
+        return true;
     }
 }

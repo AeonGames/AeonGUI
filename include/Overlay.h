@@ -16,14 +16,21 @@ Copyright 2015 Rodrigo Hernandez Cordoba
    limitations under the License.
 ******************************************************************************/
 #include "Platform.h"
+/**@todo Perhaps change the overlay class so it uses the pimpl pattern
+    and we can do witout the libxml dependency at this level.*/
+#include <libxml/tree.h>
+#include <string>
 namespace AeonGUI
 {
     /*! \brief Top window with borders and frame. */
-    class DLL Overlay
+    class Overlay
     {
     public:
-        Overlay();
-        ~Overlay();
+        DLL Overlay();
+        DLL ~Overlay();
+        DLL bool ReadFile ( const std::string& aFileName );
+    private:
+        xmlDocPtr mDocument;
     };
 }
 #endif
