@@ -1,5 +1,5 @@
 # Copyright 2015 AeonGames, Rodrigo Hernandez
-# Licensed under the terms of the MIT License.
+# Licensed under the terms of the Apache 2.0 License.
 if(WIN32)
 # Download Windows Astyle binary.
 if(NOT EXISTS "${CMAKE_SOURCE_DIR}/AStyle_2.04_windows.zip")

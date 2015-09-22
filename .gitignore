@@ -25,6 +25,8 @@ libpng-*
 libxml2-*
 gmock-*
 AStyle
+v8
+depot_tools
 
 # Possible build directories   #
 ###############################
