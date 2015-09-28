@@ -10,6 +10,7 @@ SET(AEONGUI_HEADERS
         ../include/Image.h
         ../include/Font.h
         ../include/Renderer.h
+        ../include/Surface.h
         ../include/Integer.h
         ../include/Rect.h
         ../include/Color.h

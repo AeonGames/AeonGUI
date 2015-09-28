@@ -3,6 +3,7 @@
 
 #LIBXML2 Version 2.9.2 has a broken MSVC build system (missing configure.in from the distro)
 set(XML2_VERSION 2.9.1)
+set(LIBXML_CONFIG_PARAMS "")
 include(FindLibXml2)
 if(NOT LIBXML2_FOUND)
 	if(NOT EXISTS "${CMAKE_SOURCE_DIR}/libxml2-${XML2_VERSION}.tar.gz")
@@ -32,19 +33,14 @@ if(IS_DIRECTORY "${CMAKE_SOURCE_DIR}/libxml2-${XML2_VERSION}")
 		set(LIBXML2_XMLLINT_EXECUTABLE "${CMAKE_BINARY_DIR}/libxml2/bin/xmllint.exe" CACHE FILEPATH "LibXml2 include directory" FORCE)
 		string(REGEX REPLACE "/" "\\\\" WIN_CMAKE_BINARY_DIR ${CMAKE_BINARY_DIR})
 		message(STATUS "Configuring libxml2...")
-		# TODO this should set a variable with only zlib=yes
 		if(USE_ZLIB)
-			execute_process(COMMAND cscript configure.js debug=yes iconv=no zlib=yes prefix=${WIN_CMAKE_BINARY_DIR}\\libxml2 WORKING_DIRECTORY "${CMAKE_SOURCE_DIR}/libxml2-${XML2_VERSION}/win32")
-		else()
-			execute_process(COMMAND cscript configure.js debug=yes iconv=no prefix=${WIN_CMAKE_BINARY_DIR}\\libxml2 WORKING_DIRECTORY "${CMAKE_SOURCE_DIR}/libxml2-${XML2_VERSION}/win32")
+			set(LIBXML_CONFIG_PARAMS ${LIBXML_CONFIG_PARAMS} zlib=yes)
+			message(STATUS "LIBXML_CONFIG_PARAMS ${LIBXML_CONFIG_PARAMS}")
 		endif()
-		if(USE_ZLIB)
-			add_custom_target(libxml2 nmake install DEPENDS zlib WORKING_DIRECTORY "${CMAKE_SOURCE_DIR}/libxml2-${XML2_VERSION}/win32" COMMENT "Building LibXml2" VERBATIM)
-		else()
-			add_custom_target(libxml2 nmake install WORKING_DIRECTORY "${CMAKE_SOURCE_DIR}/libxml2-${XML2_VERSION}/win32" COMMENT "Building LibXml2" VERBATIM)
-		endif()
-	else(MSVC)
-		set(LIBXML2_INCLUDE_DIR "${CMAKE_BINARY_DIR}/libxml2/include/libxml2")
-		set(LIBXML2_LIBRARIES "xml2" CACHE STRING "LibXml2 Library" FORCE)
+		add_custom_target(libxml2
+			COMMAND cscript configure.js debug=yes iconv=no ${LIBXML_CONFIG_PARAMS} prefix=${WIN_CMAKE_BINARY_DIR}\\libxml2
+			COMMAND nmake install 
+			BYPRODUCTS ${LIBXML2_LIBRARIES}
+			WORKING_DIRECTORY "${CMAKE_SOURCE_DIR}/libxml2-${XML2_VERSION}/win32" COMMENT "Building LibXml2" VERBATIM)
 	endif(MSVC)
 endif()
