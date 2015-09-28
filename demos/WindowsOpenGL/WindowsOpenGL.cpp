@@ -138,7 +138,7 @@ void Window::Initialize ( HINSTANCE hInstance )
     hRC = wglCreateContext ( hDC );
     wglMakeCurrent ( hDC, hRC );
 
-    //---OpenGL 3.0 Context---//
+    //---OpenGL 3.2 Context---//
     wglGetExtensionsStringARB = ( PFNWGLGETEXTENSIONSSTRINGARBPROC ) wglGetProcAddress ( "wglGetExtensionsStringARB" );
     if ( wglGetExtensionsStringARB != NULL )
     {
@@ -159,7 +159,7 @@ void Window::Initialize ( HINSTANCE hInstance )
             wglMakeCurrent ( hDC, hRC );
         }
     }
-    //---OpenGL 3.0 Context---//
+    //---OpenGL 3.2 Context---//
     glClearColor ( 0, 0, 0, 0 );
     window = new AeonGUI::MainWindow();
     aeongames_logo = new AeonGUI::Image;
