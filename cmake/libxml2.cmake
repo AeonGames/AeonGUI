@@ -32,10 +32,10 @@ if(IS_DIRECTORY "${CMAKE_SOURCE_DIR}/libxml2-${XML2_VERSION}")
 		set(LIBXML2_INCLUDE_DIR "${CMAKE_BINARY_DIR}/libxml2/include/libxml2" CACHE PATH "LibXml2 include directory" FORCE)
 		set(LIBXML2_XMLLINT_EXECUTABLE "${CMAKE_BINARY_DIR}/libxml2/bin/xmllint.exe" CACHE FILEPATH "LibXml2 include directory" FORCE)
 		string(REGEX REPLACE "/" "\\\\" WIN_CMAKE_BINARY_DIR ${CMAKE_BINARY_DIR})
+		string(REGEX REPLACE "/" "\\\\" WIN_CMAKE_SOURCE_DIR ${CMAKE_SOURCE_DIR})
 		message(STATUS "Configuring libxml2...")
 		if(USE_ZLIB)
-			set(LIBXML_CONFIG_PARAMS ${LIBXML_CONFIG_PARAMS} zlib=yes)
-			message(STATUS "LIBXML_CONFIG_PARAMS ${LIBXML_CONFIG_PARAMS}")
+			set(LIBXML_CONFIG_PARAMS ${LIBXML_CONFIG_PARAMS} zlib=yes include="${WIN_CMAKE_BINARY_DIR}\\zlib-1.2.8;${WIN_CMAKE_SOURCE_DIR}\\zlib-1.2.8") # lib="${WIN_CMAKE_BINARY_DIR}\\bin\\Debug")
 		endif()
 		add_custom_target(libxml2
 			COMMAND cscript configure.js debug=yes iconv=no ${LIBXML_CONFIG_PARAMS} prefix=${WIN_CMAKE_BINARY_DIR}\\libxml2
