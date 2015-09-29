@@ -17,21 +17,10 @@ Copyright 2010-2012,2015 Rodrigo Hernandez Cordoba
 
 ATOM Window::atom = 0;
 
-Window::Window() :  hWnd ( NULL ), hDC ( NULL ), hRC ( NULL ), width ( 0 ), height ( 0 ),   mousex ( 0 ), mousey ( 0 )
-{
-}
 
-Window::~Window()
+Window::Window ( HINSTANCE hInstance, LONG aWidth, LONG aHeight ) : hWnd ( nullptr ), hDC ( nullptr ), hRC ( nullptr )
 {
-}
-
-void Window::Initialize ( HINSTANCE hInstance )
-{
-    width  = 800;
-    height = 600;
-    int pf;
-
-    RECT rect = {0, 0, width, height};
+    RECT rect = { 0, 0, aWidth, aHeight };
 
     PFNWGLGETEXTENSIONSSTRINGARBPROC wglGetExtensionsStringARB = NULL;
     PFNWGLCREATECONTEXTATTRIBSARBPROC wglCreateContextAttribsARB = NULL;
@@ -40,18 +29,20 @@ void Window::Initialize ( HINSTANCE hInstance )
     {
         Register ( hInstance );
     }
+
     AdjustWindowRectEx ( &rect, WS_OVERLAPPEDWINDOW | WS_CLIPSIBLINGS | WS_CLIPCHILDREN, FALSE, WS_EX_APPWINDOW | WS_EX_WINDOWEDGE );
     hWnd = CreateWindowEx ( WS_EX_APPWINDOW | WS_EX_WINDOWEDGE,
                             "AeonGUI", "AeonGUI",
                             WS_OVERLAPPEDWINDOW | WS_CLIPSIBLINGS | WS_CLIPCHILDREN,
                             0, 0, // Location
                             rect.right - rect.left, rect.bottom - rect.top, // dimensions
-                            NULL,
-                            NULL,
+                            nullptr,
+                            nullptr,
                             hInstance,
                             this );
     SetWindowLongPtr ( hWnd, 0, ( LONG_PTR ) this );
     hDC = GetDC ( hWnd );
+    PIXELFORMATDESCRIPTOR pfd;
     pfd.nSize = sizeof ( PIXELFORMATDESCRIPTOR );
     pfd.nVersion = 1;
     pfd.dwFlags = PFD_DRAW_TO_WINDOW | PFD_SUPPORT_OPENGL | PFD_DOUBLEBUFFER;
@@ -78,7 +69,7 @@ void Window::Initialize ( HINSTANCE hInstance )
     pfd.dwLayerMask = 0;
     pfd.dwVisibleMask = 0;
     pfd.dwDamageMask = 0;
-    pf = ChoosePixelFormat ( hDC, &pfd );
+    int pf = ChoosePixelFormat ( hDC, &pfd );
     SetPixelFormat ( hDC, pf, &pfd );
     hRC = wglCreateContext ( hDC );
     wglMakeCurrent ( hDC, hRC );
@@ -109,7 +100,7 @@ void Window::Initialize ( HINSTANCE hInstance )
     ShowWindow ( hWnd, SW_SHOW );
 }
 
-void Window::Finalize()
+Window::~Window()
 {
     wglMakeCurrent ( hDC, NULL );
     wglDeleteContext ( hRC );
@@ -184,17 +175,15 @@ LRESULT CALLBACK Window::WindowProc ( HWND hwnd, UINT uMsg, WPARAM wParam, LPARA
 
 LRESULT Window::OnSize ( WPARAM type, WORD newwidth, WORD newheight )
 {
-    width = static_cast<int32_t> ( newwidth );
-    height = static_cast<int32_t> ( newheight );
-    if ( height == 0 )
+    if ( newheight == 0 )
     {
-        height = 1;
+        newheight = 1;
     }
-    if ( width == 0 )
+    if ( newwidth == 0 )
     {
-        width = 1;
+        newwidth = 1;
     }
-    glViewport ( 0, 0, width, height );
+    glViewport ( 0, 0, newwidth, newheight );
     return 0;
 }
 
@@ -227,8 +216,7 @@ LRESULT Window::OnMouseButtonUp ( uint8_t button, int32_t x, int32_t y )
 
 int WINAPI WinMain ( HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nCmdShow )
 {
-    Window window;
-    window.Initialize ( hInstance );
+    Window window ( hInstance, 800, 600 );
     MSG msg;
     memset ( &msg, 0, sizeof ( MSG ) );
     while ( msg.message != WM_QUIT )

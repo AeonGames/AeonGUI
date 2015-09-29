@@ -30,10 +30,8 @@ Copyright 2010-2012,2015 Rodrigo Hernandez Cordoba
 class Window
 {
 public:
-    Window();
+    Window ( HINSTANCE hInstance, LONG aWidth, LONG aHeight );
     ~Window();
-    void Initialize ( HINSTANCE hInstance );
-    void Finalize ( );
     LRESULT OnSize ( WPARAM type, WORD newwidth, WORD newheight );
     LRESULT OnPaint();
     LRESULT OnMouseMove ( int32_t x, int32_t y );
@@ -47,10 +45,5 @@ private:
     HWND hWnd;
     HDC hDC;
     HGLRC hRC;
-    PIXELFORMATDESCRIPTOR pfd;
-    int32_t width;
-    int32_t height;
-    int32_t mousex;
-    int32_t mousey;
 };
 #endif
