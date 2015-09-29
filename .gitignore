@@ -26,6 +26,7 @@ libxml2-*
 gmock-*
 AStyle
 v8
+litehtml
 
 # Possible build directories   #
 ###############################

@@ -39,6 +39,7 @@ endif(USE_PNG)
 
 include(libxml2)
 include(v8)
+include(litehtml)
 
 # if FreeType is not requested we may use Xlib on Unix, or GDI on Windows... eventually.
 include(FindX11)
@@ -62,10 +63,6 @@ endif(CMAKE_COMPILER_IS_GNUC)
 if(BUILD_UNIT_TESTS)
 	include(gmock)
 endif()
-
-if(MSVC)
-	add_definitions(-D_CRT_SECURE_NO_WARNINGS)
-endif(MSVC)
 
 include_directories(include common common/pcx demos/common core agg/src agg/include)
 subdirs(common/pcx core renderers tools demos agg/src)

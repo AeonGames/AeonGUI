@@ -1,3 +1,4 @@
+add_definitions(-D_CRT_SECURE_NO_WARNINGS)
 subdirs(platform)
 include_directories(../clipper)
 set(AGG_SOURCES
