@@ -9,7 +9,7 @@ set(LIBRARY_OUTPUT_PATH  ${CMAKE_BINARY_DIR}/bin)
 set(CMAKE_MODULE_PATH ${CMAKE_SOURCE_DIR}/cmake)
 
 project(AeonGUI CXX)
-include(FindOpenGL)
+find_package(OpenGL)
 include(astyle)
 
 option(USE_FREETYPE  "Use FreeType2 for font rendering")
@@ -65,4 +65,4 @@ if(BUILD_UNIT_TESTS)
 endif()
 
 include_directories(include common common/pcx demos/common core agg/src agg/include)
-subdirs(common/pcx core renderers tools demos agg/src)
+subdirs(common/pcx core renderers tools agg/src demos)

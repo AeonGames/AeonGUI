@@ -20,9 +20,10 @@ Copyright 2010-2013 Rodrigo Hernandez Cordoba
 #ifdef __cplusplus
 extern "C" {
 #endif
-extern struct {
-uint32_t  size;
-uint8_t data[75812];
+extern struct
+{
+    uint32_t  size;
+    uint8_t data[75812];
 } Vera;
 #ifdef __cplusplus
 }
