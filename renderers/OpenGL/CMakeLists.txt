@@ -1,13 +1,19 @@
-SET(OPENGL_RENDERER_SOURCES OpenGLRenderer.cpp)
-include_directories(${CMAKE_CURRENT_SOURCE_DIR})
+set(OPENGL_RENDERER_SOURCES 
+	OpenGL.cpp
+	OpenGLContext.cpp
+	OpenGLRenderer.cpp
+	OpenGLSurface.cpp
+)
 set(OPENGL_RENDERER_HEADERS
     ../../include/Renderer.h 
     ../../include/OpenGLRenderer.h 
+    ../../include/OpenGLSurface.h 
     ../../common/fontstructs.h
+    ../../common/Log.h
+	OpenGL.h
     vertex_shader.h
     fragment_shader.h
     )
-
 
 add_library(OpenGLRenderer SHARED ${OPENGL_RENDERER_HEADERS} ${OPENGL_RENDERER_SOURCES})
 add_dependencies(OpenGLRenderer AeonGUI)

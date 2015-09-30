@@ -23,13 +23,8 @@ namespace AeonGUI
     class Surface
     {
     public:
-        /** Surface constructor.
-         * @param aWidth The new surface width, must be > 0.
-         * @param aHeight The new surface height, must be > 0.
-         */
-        virtual Surface ( uint32_t aWidth, uint32_t aHeight ) = 0;
         /// Virtual destructor.
-        virtual ~Surface() = 0;
+        virtual ~Surface() {};
         ///@name Getters
         ///@{
         /// Get the surface width in pixels.
