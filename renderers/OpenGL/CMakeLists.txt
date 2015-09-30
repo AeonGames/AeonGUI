@@ -2,12 +2,10 @@ set(OPENGL_RENDERER_SOURCES
 	OpenGL.cpp
 	OpenGLContext.cpp
 	OpenGLRenderer.cpp
-	OpenGLSurface.cpp
 )
 set(OPENGL_RENDERER_HEADERS
     ../../include/Renderer.h 
     ../../include/OpenGLRenderer.h 
-    ../../include/OpenGLSurface.h 
     ../../common/fontstructs.h
     ../../common/Log.h
 	OpenGL.h
@@ -20,7 +18,7 @@ add_dependencies(OpenGLRenderer AeonGUI)
 target_link_libraries(OpenGLRenderer AeonGUI ${OPENGL_gl_LIBRARY} ${OPENGL_glu_LIBRARY})
 if(WIN32)
 	set(CONVERT_SHADERS convert-shaders.bat)
-	set_target_properties(OpenGLRenderer PROPERTIES COMPILE_FLAGS "-DNOMINMAX -DDLL_EXPORT -DWIN32 -D_CRT_SECURE_NO_WARNINGS")
+	set_target_properties(OpenGLRenderer PROPERTIES COMPILE_FLAGS "-DDLL_EXPORT -DWIN32 -D_CRT_SECURE_NO_WARNINGS")
 endif(WIN32)
 if(UNIX)
 	set(CONVERT_SHADERS convert-shaders)

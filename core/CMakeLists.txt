@@ -2,34 +2,32 @@ SET(AEONGUI_HEADERS
         ../include/AeonGUI.h
         ../include/Overlay.h
         ../include/KeyListener.h
-        ../include/Widget.h
-        ../include/Button.h
-        ../include/ScrollBar.h
-        ../include/MainWindow.h
+        #../include/Widget.h
+        #../include/Button.h
+        #../include/ScrollBar.h
+        #../include/MainWindow.h
+        #../include/Cursor.h
         ../include/Static.h
         ../include/Image.h
         ../include/Font.h
         ../include/Renderer.h
-        ../include/Surface.h
         ../include/Integer.h
         ../include/Rect.h
         ../include/Color.h
-        ../include/Cursor.h
 )
 
 SET(AEONGUI_SOURCES
         AeonGUI.cpp
         Overlay.cpp
-        Renderer.cpp
         Font.cpp
-        Widget.cpp
-        Button.cpp
-        ScrollBar.cpp
-        MainWindow.cpp
+        #Widget.cpp
+        #Button.cpp
+        #ScrollBar.cpp
+        #MainWindow.cpp
+        #Cursor.cpp
         Image.cpp
         Rect.cpp
         Color.cpp
-        Cursor.cpp
 )
 
 if(USE_CUDA)

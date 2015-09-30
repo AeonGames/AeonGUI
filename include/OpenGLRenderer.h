@@ -22,31 +22,31 @@ Copyright 2010-2013 Rodrigo Hernandez Cordoba
 
 namespace AeonGUI
 {
-    /// OpenGL Renderer class.
-    class DLL OpenGLRenderer : public Renderer
+    /// OpenGL 3.2 Renderer class.
+    class OpenGLRenderer : public Renderer
     {
     public:
-        OpenGLRenderer();
-        ~OpenGLRenderer() {};
-        /*! \copydoc Renderer::ChangeScreenSize. */
-        bool ChangeScreenSize ( int32_t screen_width, int32_t screen_height );
+        DLL OpenGLRenderer();
+        DLL ~OpenGLRenderer();
+        /// No Copying allowed
+        OpenGLRenderer ( const OpenGLRenderer& ) = delete;
         /*! \copydoc Renderer::Initialize. */
-        bool Initialize ();
+        DLL bool Initialize () override final;
         /*! \copydoc Renderer::Finalize. */
-        void Finalize();
+        DLL void Finalize() override final;
         /*! \copydoc Renderer::BeginRender. */
-        void BeginRender();
+        DLL void BeginRender() override final;
         /*! \copydoc Renderer::EndRender. */
-        void EndRender();
+        DLL void EndRender() override final;
+        DLL uint32_t SurfaceWidth() const override final;
+        DLL uint32_t SurfaceHeight() const override final;
+        DLL void* MapMemory() override final;
+        DLL void UnmapMemory() override final;
+        DLL void ReSize ( uint32_t aWidth, uint32_t aHeight ) override final;
     private:
-        unsigned int screen_texture;
-        /// Card maximum texture size for texture atlas
-        int max_texture_size;
-        uint32_t vert_shader;
-        uint32_t frag_shader;
-        uint32_t shader_program;
-        uint32_t vertex_buffer_object;
-        uint32_t vertex_array_object;
+        uint32_t mShaderProgram;
+        uint32_t mVertexBufferObject;
+        uint32_t mVertexArrayObject;
     };
 }
 #endif

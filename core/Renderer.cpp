@@ -20,6 +20,18 @@ Copyright 2010-2013 Rodrigo Hernandez Cordoba
 #include "Widget.h"
 #include "Cursor.h"
 
+#error deprecated file do not compile!
+
+/**\file
+    This file is no longer necesary because
+    drawing responsibilities are going to be handled by AGG.
+    In addition a renderer should have a pure virtual interface
+    and have a much reduced responsibility.
+    Never the less, this file contains image scaling implementations
+    that may be of interest in the future.
+    This file should eventually be moved out of the repository.
+*/
+
 namespace AeonGUI
 {
 
