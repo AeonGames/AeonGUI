@@ -26,6 +26,7 @@ Copyright 2010-2012,2015 Rodrigo Hernandez Cordoba
 #include <cstdint>
 #include <crtdbg.h>
 #include "wglext.h"
+#include "OpenGLRenderer.h"
 
 class Window
 {
@@ -45,5 +46,6 @@ private:
     HWND hWnd;
     HDC hDC;
     HGLRC hRC;
+    AeonGUI::OpenGLRenderer GUIRenderer;
 };
 #endif

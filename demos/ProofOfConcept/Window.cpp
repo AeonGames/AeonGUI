@@ -96,12 +96,14 @@ Window::Window ( HINSTANCE hInstance, LONG aWidth, LONG aHeight ) : hWnd ( nullp
         }
     }
     //---OpenGL 3.2 Context---//
+    GUIRenderer.Initialize();
     glClearColor ( 0, 0, 0, 0 );
     ShowWindow ( hWnd, SW_SHOW );
 }
 
 Window::~Window()
 {
+    GUIRenderer.Finalize();
     wglMakeCurrent ( hDC, NULL );
     wglDeleteContext ( hRC );
     ReleaseDC ( hWnd, hDC );
@@ -184,6 +186,7 @@ LRESULT Window::OnSize ( WPARAM type, WORD newwidth, WORD newheight )
         newwidth = 1;
     }
     glViewport ( 0, 0, newwidth, newheight );
+    GUIRenderer.ReSize ( newwidth, newheight );
     return 0;
 }
 
@@ -252,6 +255,7 @@ void Window::RenderLoop()
     }
     //wglMakeCurrent ( hDC, hRC );
     glClear ( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT );
+    GUIRenderer.Render();
     SwapBuffers ( hDC );
     last_time = this_time;
 }

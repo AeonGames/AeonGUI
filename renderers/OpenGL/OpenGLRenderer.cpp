@@ -54,14 +54,18 @@ namespace AeonGUI
 #include "vertex_shader.h"
 #include "fragment_shader.h"
 
-    static char log_buffer[1024] = {0};
-
-    OpenGLRenderer::OpenGLRenderer()
+    OpenGLRenderer::OpenGLRenderer() :
+        mShaderProgram ( 0 ),
+        mVertexBufferObject ( 0 ),
+        mVertexArrayObject ( 0 ),
+        mTexture ( 0 ),
+        mPixelBuffer ( nullptr )
     {
     }
 
     OpenGLRenderer::~OpenGLRenderer()
     {
+        Finalize();
     }
 
     bool OpenGLRenderer::Initialize ()
@@ -140,7 +144,6 @@ namespace AeonGUI
         // Create Shader Program
         mShaderProgram = glCreateProgram();
         AEONGUI_OPENGL_CHECK_ERROR();
-        GLint link_status;
 
         glAttachShader ( mShaderProgram, lVertexShader );
         AEONGUI_OPENGL_CHECK_ERROR();
@@ -156,6 +159,7 @@ namespace AeonGUI
         glDeleteShader ( lFragmentShader );
         AEONGUI_OPENGL_CHECK_ERROR();
 
+        GLint link_status;
         glGetProgramiv ( mShaderProgram, GL_LINK_STATUS, &link_status );
         AEONGUI_OPENGL_CHECK_ERROR();
         glGetProgramiv ( mShaderProgram, GL_INFO_LOG_LENGTH, &info_log_length );
@@ -179,47 +183,66 @@ namespace AeonGUI
         // Generate VBO
         glGenBuffers ( 1, &mVertexBufferObject );
         AEONGUI_OPENGL_CHECK_ERROR();
+
+        // Generate Texture
+        glGenTextures ( 1, &mTexture );
+        AEONGUI_OPENGL_CHECK_ERROR();
+
         return true;
     }
 
     void OpenGLRenderer::Finalize()
     {
-#if 0
-        if ( screen_texture > 0 )
+        if ( mPixelBuffer != nullptr )
         {
-            glDeleteTextures ( 1, &screen_texture );
-            screen_texture = 0;
+            delete[] mPixelBuffer;
+            mPixelBuffer = nullptr;
         }
-#endif
-        // OpenGL Delete functions silently ignore invalid values
-        glDeleteProgram ( mShaderProgram );
-        AEONGUI_OPENGL_CHECK_ERROR();
-        mShaderProgram = 0;
 
-        glDeleteVertexArrays ( 1, &mVertexArrayObject );
-        AEONGUI_OPENGL_CHECK_ERROR();
-        mVertexArrayObject = 0;
+        if ( glIsTexture ( mTexture ) )
+        {
+            glDeleteTextures ( 1, &mTexture );
+            AEONGUI_OPENGL_CHECK_ERROR();
+            mTexture = 0;
+        }
 
-        glDeleteBuffers ( 1, &mVertexBufferObject );
-        AEONGUI_OPENGL_CHECK_ERROR();
-        mVertexBufferObject = 0;
+        if ( glIsProgram ( mShaderProgram ) )
+        {
+            glDeleteProgram ( mShaderProgram );
+            AEONGUI_OPENGL_CHECK_ERROR();
+            mShaderProgram = 0;
+        }
+
+        if ( glIsVertexArray ( mVertexArrayObject ) )
+        {
+            glDeleteVertexArrays ( 1, &mVertexArrayObject );
+            AEONGUI_OPENGL_CHECK_ERROR();
+            mVertexArrayObject = 0;
+        }
+
+        if ( glIsBuffer ( mVertexBufferObject ) )
+        {
+            glDeleteBuffers ( 1, &mVertexBufferObject );
+            AEONGUI_OPENGL_CHECK_ERROR();
+            mVertexBufferObject = 0;
+        }
     }
 
-    void OpenGLRenderer::BeginRender()
+    void OpenGLRenderer::Render()
     {
-    }
-
-    void OpenGLRenderer::EndRender()
-    {
+        if ( mPixelBuffer == nullptr )
+        {
+            return;
+        }
         glUseProgram ( mShaderProgram );
         AEONGUI_OPENGL_CHECK_ERROR();
 
         glBindVertexArray ( mVertexArrayObject );
         AEONGUI_OPENGL_CHECK_ERROR();
-
+#if 0
         glBindBuffer (  GL_ARRAY_BUFFER, mVertexBufferObject );
         AEONGUI_OPENGL_CHECK_ERROR();
-
+#endif
         glBlendFunc ( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
         AEONGUI_OPENGL_CHECK_ERROR();
 
@@ -228,31 +251,43 @@ namespace AeonGUI
 
         glDepthMask ( GL_FALSE );
         glDisable ( GL_DEPTH_TEST );
-#if 0
-        glBindTexture ( GL_TEXTURE_2D, screen_texture );
+
+        glBindTexture ( GL_TEXTURE_2D, mTexture );
         AEONGUI_OPENGL_CHECK_ERROR();
 
-        glTexSubImage2D ( GL_TEXTURE_2D, 0, 0, 0, aWidth, aHeight, GL_BGRA, GL_UNSIGNED_BYTE, screen_bitmap );
+        GLint width;
+        GLint height;
+        glGetTexLevelParameteriv ( GL_TEXTURE_2D, 0, GL_TEXTURE_WIDTH, &width );
+        AEONGUI_OPENGL_CHECK_ERROR();
+        glGetTexLevelParameteriv ( GL_TEXTURE_2D, 0, GL_TEXTURE_HEIGHT, &height );
+        AEONGUI_OPENGL_CHECK_ERROR();
+
+        glTexSubImage2D ( GL_TEXTURE_2D, 0, 0, 0, width, height, GL_BGRA, GL_UNSIGNED_INT_8_8_8_8_REV, mPixelBuffer );
         AEONGUI_OPENGL_CHECK_ERROR();
 
         glDrawArrays ( GL_TRIANGLE_STRIP, 0, 4 );
         AEONGUI_OPENGL_CHECK_ERROR();
-#endif
     }
 
     uint32_t AeonGUI::OpenGLRenderer::SurfaceWidth() const
     {
-        return 0;
+        GLint width;
+        glGetTexLevelParameteriv ( GL_TEXTURE_2D, 0, GL_TEXTURE_WIDTH, &width );
+        AEONGUI_OPENGL_CHECK_ERROR();
+        return width;
     }
 
     uint32_t OpenGLRenderer::SurfaceHeight() const
     {
-        return 0;
+        GLint height;
+        glGetTexLevelParameteriv ( GL_TEXTURE_2D, 0, GL_TEXTURE_HEIGHT, &height );
+        AEONGUI_OPENGL_CHECK_ERROR();
+        return height;
     }
 
     void * OpenGLRenderer::MapMemory()
     {
-        return nullptr;
+        return mPixelBuffer;
     }
 
     void OpenGLRenderer::UnmapMemory()
@@ -261,35 +296,28 @@ namespace AeonGUI
 
     void OpenGLRenderer::ReSize ( uint32_t aWidth, uint32_t aHeight )
     {
-#if 0
-        if ( screen_texture > 0 )
-        {
-            glDeleteTextures ( 1, &screen_texture );
-        }
-
+        GLint max_texture_size;
         glGetIntegerv ( GL_MAX_TEXTURE_SIZE, &max_texture_size );
         AEONGUI_OPENGL_CHECK_ERROR();
-        if ( ( aWidthidth > max_texture_size ) ||
-             ( aHeighteight > max_texture_size ) )
+        if ( ( aWidth > static_cast<uint32_t> ( max_texture_size ) ) ||
+             ( aHeight > static_cast<uint32_t> ( max_texture_size ) ) )
         {
-            AEONGUI_LOG_ERROR ( "Error: %s\n", "Screen texture dimensions surpass maximum allowed OpenGL texture size" );
+            AEONGUI_LOG_ERROR ( "Requested screen texture dimensions surpass maximum allowed OpenGL texture size" );
         }
 
-        glGenTextures ( 1, &screen_texture );
+        glBindTexture ( GL_TEXTURE_2D, mTexture );
         AEONGUI_OPENGL_CHECK_ERROR();
-        glBindTexture ( GL_TEXTURE_2D, screen_texture );
+        glTexImage2D ( GL_TEXTURE_2D, 0, GL_RGBA8, aWidth, aHeight, 0, GL_BGRA, GL_UNSIGNED_INT_8_8_8_8_REV, NULL );
         AEONGUI_OPENGL_CHECK_ERROR();
         glTexParameteri ( GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST );
         AEONGUI_OPENGL_CHECK_ERROR();
         glTexParameteri ( GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST );
         AEONGUI_OPENGL_CHECK_ERROR();
-        glTexParameteri ( GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP );
+        glTexParameteri ( GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE );
         AEONGUI_OPENGL_CHECK_ERROR();
-        glTexParameteri ( GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP );
+        glTexParameteri ( GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE );
         AEONGUI_OPENGL_CHECK_ERROR();
-        glTexImage2D ( GL_TEXTURE_2D, 0, GL_RGBA8, aWidthidth, aHeighteight, 0, GL_BGRA, GL_UNSIGNED_INT_8_8_8_8_REV, NULL );
-        AEONGUI_OPENGL_CHECK_ERROR();
-#endif
+
         const float pixel_offset = -0.375f;
         float width = float ( aWidth ) + pixel_offset;
         float height = float ( aHeight ) + pixel_offset;
@@ -344,9 +372,9 @@ namespace AeonGUI
         // Create VBO
         GLfloat vertices[16] =
         {
-            /* position */ 0.0f, 0.0f,                                                                /* uv */ 0.0f, 0.0f,
-            /* position */ static_cast<float> ( aWidth ), 0.0f,                                 /* uv */ 1.0f, 0.0f,
-            /* position */ 0.0f, static_cast<float> ( aHeight ),                                /* uv */ 0.0f, 1.0f,
+            /* position */ 0.0f, 0.0f,                                                    /* uv */ 0.0f, 0.0f,
+            /* position */ static_cast<float> ( aWidth ), 0.0f,                           /* uv */ 1.0f, 0.0f,
+            /* position */ 0.0f, static_cast<float> ( aHeight ),                          /* uv */ 0.0f, 1.0f,
             /* position */ static_cast<float> ( aWidth ), static_cast<float> ( aHeight ), /* uv */ 1.0f, 1.0f
         };
 
@@ -372,6 +400,11 @@ namespace AeonGUI
         AEONGUI_OPENGL_CHECK_ERROR();
         glEnableVertexAttribArray ( uv );
         AEONGUI_OPENGL_CHECK_ERROR();
-    }
 
+        if ( mPixelBuffer != nullptr )
+        {
+            delete[] mPixelBuffer;
+        }
+        mPixelBuffer = new uint8_t[aWidth * aHeight * 4];
+    }
 }

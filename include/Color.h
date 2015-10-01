@@ -176,20 +176,20 @@ namespace AeonGUI
         The union type is also 32bits wide which makes it suitable to be passed as value or as reference.
         Wherever a Color variable can be passed it \a should be possible to pass a 32 bit unsigned integer value, but some compilers may complain depending on the set warning level.
     */
-    union DLL Color
+    union Color
     {
-        Color();
+        DLL Color();
         /*! \brief 32 bit Unsigned integer constructor.
             \param value 32 bit color value.
         */
-        Color ( uint32_t value );
+        DLL Color ( uint32_t value );
         /*! \brief 4 8 bit Unsigned integer component constructor.
             \param A Alpha color value.
             \param R Red color value.
             \param G Green color value.
             \param B Blue color value.
         */
-        Color ( uint8_t A, uint8_t R, uint8_t G, uint8_t B );
+        DLL Color ( uint8_t A, uint8_t R, uint8_t G, uint8_t B );
 
         uint32_t bgra; ///< 32 bit Unsigned integer color value.
         struct
@@ -210,7 +210,7 @@ namespace AeonGUI
             To better handle transparency the blend function uses the source alpha as source factor
             and one minus source alpha as destination factor.
             \param src Incomming source color.*/
-        void Blend ( Color src );
+        DLL void Blend ( Color src );
     };
 }
 #endif

@@ -33,10 +33,8 @@ namespace AeonGUI
         virtual bool Initialize() = 0;
         /*! \brief Finalization Function. */
         virtual void Finalize() = 0;
-        /*! \brief Used to do any pre-rendering initialization. */
-        virtual void BeginRender() = 0;
         /*! \brief Used to do any post-rendering cleanup. */
-        virtual void EndRender() = 0;
+        virtual void Render() = 0;
         ///@name Rendering Surface Interface
         ///@{
         ///@name Getters

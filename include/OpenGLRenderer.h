@@ -34,10 +34,8 @@ namespace AeonGUI
         DLL bool Initialize () override final;
         /*! \copydoc Renderer::Finalize. */
         DLL void Finalize() override final;
-        /*! \copydoc Renderer::BeginRender. */
-        DLL void BeginRender() override final;
         /*! \copydoc Renderer::EndRender. */
-        DLL void EndRender() override final;
+        DLL void Render() override final;
         DLL uint32_t SurfaceWidth() const override final;
         DLL uint32_t SurfaceHeight() const override final;
         DLL void* MapMemory() override final;
@@ -47,6 +45,8 @@ namespace AeonGUI
         uint32_t mShaderProgram;
         uint32_t mVertexBufferObject;
         uint32_t mVertexArrayObject;
+        uint32_t mTexture;
+        uint8_t* mPixelBuffer;
     };
 }
 #endif
