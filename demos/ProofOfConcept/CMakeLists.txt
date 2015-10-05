@@ -1,3 +1,6 @@
 set(POC_SOURCES Window.h Window.cpp)
 add_executable(PoC ${POC_SOURCES})
+
+add_dependencies(PoC AeonGUI OpenGLRender litehtml)
+set_target_properties(PoC PROPERTIES COMPILE_FLAGS "-I${CMAKE_SOURCE_DIR}/litehtml/include -DNOMINMAX -D_CRT_SECURE_NO_WARNINGS")
 target_link_libraries(PoC AeonGUI OpenGLRenderer ${OPENGL_LIBRARIES})

@@ -1,6 +1,7 @@
 SET(AEONGUI_HEADERS
         ../include/AeonGUI.h
         ../include/Overlay.h
+        ../include/DocumentContainer.h
         ../include/KeyListener.h
         #../include/Widget.h
         #../include/Button.h
@@ -18,6 +19,7 @@ SET(AEONGUI_HEADERS
 
 SET(AEONGUI_SOURCES
         AeonGUI.cpp
+        DocumentContainer.cpp
         Overlay.cpp
         Font.cpp
         #Widget.cpp
@@ -83,9 +85,9 @@ endif(USE_PNG)
 
 source_group("Resource Files" FILES ${AEONGUI_RESOURCES})
 add_library(AeonGUI SHARED ${AEONGUI_HEADERS} ${AEONGUI_SOURCES} ${AEONGUI_RESOURCES})
-add_dependencies(AeonGUI pcx libxml2)
-set_target_properties(AeonGUI PROPERTIES COMPILE_FLAGS "-I${LIBXML2_INCLUDE_DIR} -DNOMINMAX -DDLL_EXPORT -D_CRT_SECURE_NO_WARNINGS")
-target_link_libraries(AeonGUI ${AEONGUI_LIBRARIES} ${LIBXML2_LIBRARIES})
+add_dependencies(AeonGUI pcx libxml2 litehtml)
+set_target_properties(AeonGUI PROPERTIES COMPILE_FLAGS "-I${LIBXML2_INCLUDE_DIR} -I${CMAKE_SOURCE_DIR}/litehtml/include -DNOMINMAX -DDLL_EXPORT -D_CRT_SECURE_NO_WARNINGS")
+target_link_libraries(AeonGUI litehtml ${AEONGUI_LIBRARIES} ${LIBXML2_LIBRARIES})
 
 if(BUILD_UNIT_TESTS)
 	subdirs(tests)

@@ -27,25 +27,30 @@ Copyright 2010-2012,2015 Rodrigo Hernandez Cordoba
 #include <crtdbg.h>
 #include "wglext.h"
 #include "OpenGLRenderer.h"
+#include "DocumentContainer.h"
 
-class Window
+namespace AeonGUI
 {
-public:
-    Window ( HINSTANCE hInstance, LONG aWidth, LONG aHeight );
-    ~Window();
-    LRESULT OnSize ( WPARAM type, WORD newwidth, WORD newheight );
-    LRESULT OnPaint();
-    LRESULT OnMouseMove ( int32_t x, int32_t y );
-    LRESULT OnMouseButtonDown ( uint8_t button, int32_t x, int32_t y );
-    LRESULT OnMouseButtonUp ( uint8_t button, int32_t x, int32_t y );
-    void RenderLoop();
-    static LRESULT CALLBACK WindowProc ( HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam );
-    static void Register ( HINSTANCE hInstance );
-private:
-    static ATOM atom;
-    HWND hWnd;
-    HDC hDC;
-    HGLRC hRC;
-    AeonGUI::OpenGLRenderer GUIRenderer;
-};
+    class Window
+    {
+    public:
+        Window ( HINSTANCE hInstance, LONG aWidth, LONG aHeight );
+        ~Window();
+        LRESULT OnSize ( WPARAM type, WORD newwidth, WORD newheight );
+        LRESULT OnPaint();
+        LRESULT OnMouseMove ( int32_t x, int32_t y );
+        LRESULT OnMouseButtonDown ( uint8_t button, int32_t x, int32_t y );
+        LRESULT OnMouseButtonUp ( uint8_t button, int32_t x, int32_t y );
+        void RenderLoop();
+        static LRESULT CALLBACK WindowProc ( HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam );
+        static void Register ( HINSTANCE hInstance );
+    private:
+        static ATOM atom;
+        HWND hWnd;
+        HDC hDC;
+        HGLRC hRC;
+        OpenGLRenderer mRenderer;
+        DocumentContainer mDocumentContainer;
+    };
+}
 #endif
