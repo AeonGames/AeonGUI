@@ -82,10 +82,10 @@ set(AEONGUI_LIBRARIES ${LIBXML2_LIBRARIES} pcx)
 if(USE_PNG)
 	set(AEONGUI_LIBRARIES ${AEONGUI_LIBRARIES} ${PNG_LIBRARIES} ${ZLIB_LIBRARIES})
 endif(USE_PNG)
-
 source_group("Resource Files" FILES ${AEONGUI_RESOURCES})
+include_directories(${FREETYPE_INCLUDE_DIR_freetype2} ${FREETYPE_INCLUDE_DIR_ft2build})
 add_library(AeonGUI SHARED ${AEONGUI_HEADERS} ${AEONGUI_SOURCES} ${AEONGUI_RESOURCES})
-add_dependencies(AeonGUI pcx libxml2 litehtml)
+add_dependencies(AeonGUI pcx libxml2 litehtml ${FREETYPE_LIBRARIES})
 set_target_properties(AeonGUI PROPERTIES COMPILE_FLAGS "-I${LIBXML2_INCLUDE_DIR} -I${CMAKE_SOURCE_DIR}/litehtml/include -DNOMINMAX -DDLL_EXPORT -D_CRT_SECURE_NO_WARNINGS")
 target_link_libraries(AeonGUI litehtml ${AEONGUI_LIBRARIES} ${LIBXML2_LIBRARIES})
 

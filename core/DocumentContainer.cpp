@@ -1,4 +1,7 @@
 #include "DocumentContainer.h"
+#include <ft2build.h>
+#include FT_FREETYPE_H
+#include FT_BDF_H
 
 namespace AeonGUI
 {

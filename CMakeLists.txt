@@ -26,16 +26,16 @@ if(USE_CUDA)
 	add_definitions(-DUSE_CUDA)
 endif(USE_CUDA)
 
-if(USE_FREETYPE)
-	include(freetype)
-endif(USE_FREETYPE)
-
 if(USE_ZLIB)
 	include(zlib)
 endif(USE_ZLIB)
 if(USE_PNG)
 	include(libpng)
 endif(USE_PNG)
+
+if(USE_FREETYPE)
+	include(freetype)
+endif(USE_FREETYPE)
 
 include(libxml2)
 include(v8)
@@ -65,4 +65,4 @@ if(BUILD_UNIT_TESTS)
 endif()
 
 include_directories(include common common/pcx demos/common core agg/src agg/include)
-subdirs(common/pcx core renderers tools agg/src demos)
+subdirs(agg/src common/pcx core renderers tools  demos)

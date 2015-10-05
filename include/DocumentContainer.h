@@ -10,6 +10,8 @@ namespace AeonGUI
     public:
         DLL DocumentContainer();
         DLL ~DocumentContainer();
+        ///@name litehtml::document_container Overrides
+        ///@{
         litehtml::uint_ptr  create_font ( const litehtml::tchar_t* faceName, int size, int weight, litehtml::font_style italic, unsigned int decoration, litehtml::font_metrics* fm ) override final;
         void                delete_font ( litehtml::uint_ptr hFont ) override final;
         int                 text_width ( const litehtml::tchar_t* text, litehtml::uint_ptr hFont ) override final;
@@ -39,6 +41,7 @@ namespace AeonGUI
 
         void                get_media_features ( litehtml::media_features& media ) const override final;
         void                get_language ( litehtml::tstring& language, litehtml::tstring & culture ) const override final;
+        ///@}
     private:
     };
 }
