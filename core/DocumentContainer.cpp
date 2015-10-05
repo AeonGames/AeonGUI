@@ -1,16 +1,24 @@
 #include "DocumentContainer.h"
-#include <ft2build.h>
-#include FT_FREETYPE_H
-#include FT_BDF_H
+#include "Log.h"
 
 namespace AeonGUI
 {
-    DocumentContainer::DocumentContainer()
+    DocumentContainer::DocumentContainer() : mFreeType ( nullptr )
     {
+        FT_Error ft_error;
+        if ( ( ft_error = FT_Init_FreeType ( &mFreeType ) ) != 0 )
+        {
+            AEONGUI_LOG_ERROR ( "FT_Init_FreeType returned error code 0x%02x", ft_error );
+        }
     }
 
     DocumentContainer::~DocumentContainer()
     {
+        FT_Error ft_error;
+        if ( ( ft_error = FT_Done_FreeType ( mFreeType ) ) != 0 )
+        {
+            AEONGUI_LOG_ERROR ( "FT_Done_FreeType returned error code 0x%02x", ft_error );
+        }
     }
 
     litehtml::uint_ptr DocumentContainer::create_font ( const litehtml::tchar_t * faceName, int size, int weight, litehtml::font_style italic, unsigned int decoration, litehtml::font_metrics * fm )

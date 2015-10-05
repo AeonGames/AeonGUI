@@ -2,6 +2,9 @@
 #define AEONGUI_DOCUMENTCONTAINER_H
 #include "Platform.h"
 #include "litehtml.h"
+#include <ft2build.h>
+#include FT_FREETYPE_H
+#include FT_BDF_H
 
 namespace AeonGUI
 {
@@ -43,6 +46,7 @@ namespace AeonGUI
         void                get_language ( litehtml::tstring& language, litehtml::tstring & culture ) const override final;
         ///@}
     private:
+        FT_Library mFreeType;
     };
 }
 #endif

@@ -87,7 +87,7 @@ include_directories(${FREETYPE_INCLUDE_DIR_freetype2} ${FREETYPE_INCLUDE_DIR_ft2
 add_library(AeonGUI SHARED ${AEONGUI_HEADERS} ${AEONGUI_SOURCES} ${AEONGUI_RESOURCES})
 add_dependencies(AeonGUI pcx libxml2 litehtml ${FREETYPE_LIBRARIES})
 set_target_properties(AeonGUI PROPERTIES COMPILE_FLAGS "-I${LIBXML2_INCLUDE_DIR} -I${CMAKE_SOURCE_DIR}/litehtml/include -DNOMINMAX -DDLL_EXPORT -D_CRT_SECURE_NO_WARNINGS")
-target_link_libraries(AeonGUI litehtml ${AEONGUI_LIBRARIES} ${LIBXML2_LIBRARIES})
+target_link_libraries(AeonGUI litehtml ${AEONGUI_LIBRARIES} ${LIBXML2_LIBRARIES} ${FREETYPE_LIBRARIES})
 
 if(BUILD_UNIT_TESTS)
 	subdirs(tests)
