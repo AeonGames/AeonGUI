@@ -1,8 +1,24 @@
 #include "DocumentContainer.h"
 #include "Log.h"
+#include <sstream>
+#include <iostream>
+#include <vector>
+#include <string>
+#include <Windows.h>
 
 namespace AeonGUI
 {
+#include "OpenSans_Bold_ttf.h"
+#include "OpenSans_Light_ttf.h"
+#include "OpenSans_BoldItalic_ttf.h"
+#include "OpenSans_LightItalic_ttf.h"
+#include "OpenSans_ExtraBold_ttf.h"
+#include "OpenSans_Regular_ttf.h"
+#include "OpenSans_ExtraBoldItalic_ttf.h"
+#include "OpenSans_Semibold_ttf.h"
+#include "OpenSans_Italic_ttf.h"
+#include "OpenSans_SemiboldItalic_ttf.h"
+
     DocumentContainer::DocumentContainer() : mFreeType ( nullptr )
     {
         FT_Error ft_error;
@@ -23,7 +39,7 @@ namespace AeonGUI
 
     litehtml::uint_ptr DocumentContainer::create_font ( const litehtml::tchar_t * faceName, int size, int weight, litehtml::font_style italic, unsigned int decoration, litehtml::font_metrics * fm )
     {
-        return litehtml::uint_ptr();
+        return NULL;
     }
 
     void DocumentContainer::delete_font ( litehtml::uint_ptr hFont )
@@ -41,7 +57,15 @@ namespace AeonGUI
 
     int DocumentContainer::pt_to_px ( int pt )
     {
-        return 0;
+        /*	This code is temporary.
+			Instead use DPI aware code:
+			https://msdn.microsoft.com/en-us/library/ms701681%28v=vs.85%29.aspx
+			https://msdn.microsoft.com/en-us/library/windows/desktop/dn469266%28v=vs.85%29.aspx	
+			and eventually find what the solution for Linux is.*/
+        HDC dc = GetDC ( NULL );
+        int ret = MulDiv ( pt, GetDeviceCaps ( dc, LOGPIXELSY ), 72 );
+        ReleaseDC ( NULL, dc );
+        return ret;
     }
 
     int DocumentContainer::get_default_font_size() const

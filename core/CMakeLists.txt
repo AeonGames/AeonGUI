@@ -44,7 +44,45 @@ if(USE_CUDA)
 	set(AEONGUI_LIBRARIES ${AEONGUI_LIBRARIES} ${CUDA_CUDART_LIBRARY})
 endif(USE_CUDA)
 
-SET(AEONGUI_RESOURCES
+add_custom_command(
+	OUTPUT 
+		${CMAKE_SOURCE_DIR}/open-sans/OpenSans_Bold_ttf.h
+		${CMAKE_SOURCE_DIR}/open-sans/OpenSans_Light_ttf.h
+		${CMAKE_SOURCE_DIR}/open-sans/OpenSans_BoldItalic_ttf.h
+		${CMAKE_SOURCE_DIR}/open-sans/OpenSans_LightItalic_ttf.h
+		${CMAKE_SOURCE_DIR}/open-sans/OpenSans_ExtraBold_ttf.h
+		${CMAKE_SOURCE_DIR}/open-sans/OpenSans_Regular_ttf.h
+		${CMAKE_SOURCE_DIR}/open-sans/OpenSans_ExtraBoldItalic_ttf.h
+		${CMAKE_SOURCE_DIR}/open-sans/OpenSans_Semibold_ttf.h
+		${CMAKE_SOURCE_DIR}/open-sans/OpenSans_Italic_ttf.h
+		${CMAKE_SOURCE_DIR}/open-sans/OpenSans_SemiboldItalic_ttf.h
+	COMMAND xxd ARGS -i ${CMAKE_SOURCE_DIR}/open-sans/OpenSans-Bold.ttf > ${CMAKE_SOURCE_DIR}/open-sans/OpenSans_Bold_ttf.h
+	COMMAND xxd ARGS -i ${CMAKE_SOURCE_DIR}/open-sans/OpenSans-Light.ttf > ${CMAKE_SOURCE_DIR}/open-sans/OpenSans_Light_ttf.h
+	COMMAND xxd ARGS -i ${CMAKE_SOURCE_DIR}/open-sans/OpenSans-BoldItalic.ttf > ${CMAKE_SOURCE_DIR}/open-sans/OpenSans_BoldItalic_ttf.h
+	COMMAND xxd ARGS -i ${CMAKE_SOURCE_DIR}/open-sans/OpenSans-LightItalic.ttf > ${CMAKE_SOURCE_DIR}/open-sans/OpenSans_LightItalic_ttf.h
+	COMMAND xxd ARGS -i ${CMAKE_SOURCE_DIR}/open-sans/OpenSans-ExtraBold.ttf > ${CMAKE_SOURCE_DIR}/open-sans/OpenSans_ExtraBold_ttf.h
+	COMMAND xxd ARGS -i ${CMAKE_SOURCE_DIR}/open-sans/OpenSans-Regular.ttf > ${CMAKE_SOURCE_DIR}/open-sans/OpenSans_Regular_ttf.h
+	COMMAND xxd ARGS -i ${CMAKE_SOURCE_DIR}/open-sans/OpenSans-ExtraBoldItalic.ttf > ${CMAKE_SOURCE_DIR}/open-sans/OpenSans_ExtraBoldItalic_ttf.h
+	COMMAND xxd ARGS -i ${CMAKE_SOURCE_DIR}/open-sans/OpenSans-Semibold.ttf > ${CMAKE_SOURCE_DIR}/open-sans/OpenSans_Semibold_ttf.h
+	COMMAND xxd ARGS -i ${CMAKE_SOURCE_DIR}/open-sans/OpenSans-Italic.ttf > ${CMAKE_SOURCE_DIR}/open-sans/OpenSans_Italic_ttf.h
+	COMMAND xxd ARGS -i ${CMAKE_SOURCE_DIR}/open-sans/OpenSans-SemiboldItalic.ttf > ${CMAKE_SOURCE_DIR}/open-sans/OpenSans_SemiboldItalic_ttf.h			
+	DEPENDS xxd
+	WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}/open-sans
+	COMMENT "Generating Open Sans font arrays" VERBATIM)
+	
+include_directories(${CMAKE_SOURCE_DIR}/open-sans)
+
+set(AEONGUI_RESOURCES
+	${CMAKE_SOURCE_DIR}/open-sans/OpenSans_Bold_ttf.h
+	${CMAKE_SOURCE_DIR}/open-sans/OpenSans_Light_ttf.h
+	${CMAKE_SOURCE_DIR}/open-sans/OpenSans_BoldItalic_ttf.h
+	${CMAKE_SOURCE_DIR}/open-sans/OpenSans_LightItalic_ttf.h
+	${CMAKE_SOURCE_DIR}/open-sans/OpenSans_ExtraBold_ttf.h
+	${CMAKE_SOURCE_DIR}/open-sans/OpenSans_Regular_ttf.h
+	${CMAKE_SOURCE_DIR}/open-sans/OpenSans_ExtraBoldItalic_ttf.h
+	${CMAKE_SOURCE_DIR}/open-sans/OpenSans_Semibold_ttf.h
+	${CMAKE_SOURCE_DIR}/open-sans/OpenSans_Italic_ttf.h
+	${CMAKE_SOURCE_DIR}/open-sans/OpenSans_SemiboldItalic_ttf.h
 	resources/close.c
 	resources/maximize.c
 	resources/minimize.c

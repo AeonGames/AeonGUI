@@ -5,6 +5,7 @@
 #include <ft2build.h>
 #include FT_FREETYPE_H
 #include FT_BDF_H
+#include <vector>
 
 namespace AeonGUI
 {
@@ -47,6 +48,7 @@ namespace AeonGUI
         ///@}
     private:
         FT_Library mFreeType;
+        std::vector<FT_Face> mFaces;
     };
 }
 #endif

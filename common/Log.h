@@ -125,7 +125,7 @@ namespace AEONGUI
             char buffer[1024];
             va_start ( args, fmt );
             vsprintf ( buffer, fmt, args );
-            MessageBox ( NULL, buffer, "AEONGUI Error", MB_OK | MB_ICONERROR );
+            MessageBox ( NULL, buffer, TEXT ( "AEONGUI Error" ), MB_OK | MB_ICONERROR );
             va_end ( args );
         }
 #endif

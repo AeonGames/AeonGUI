@@ -4,6 +4,6 @@
 include(functions)
 find_package(GIT REQUIRED)
 if(GIT_FOUND)
-	gitclone(https://github.com/Kwizatz/litehtml.git litehtml)
+	gitclone(https://github.com/Kwizatz/litehtml.git litehtml)	
 	subdirs(${CMAKE_SOURCE_DIR}/litehtml)
 endif(GIT_FOUND)

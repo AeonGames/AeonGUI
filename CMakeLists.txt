@@ -19,6 +19,18 @@ option(USE_CUDA "Enable CUDA support")
 option(BUILD_UNIT_TESTS "Enable Unit Tests using GTest/GMock")
 option(RELEASE_BUILD "Build for Release")
 set(HTTP_PROXY "" CACHE STRING "Specify a proxy server if required for downloads")
+set(HTTPS_PROXY "" CACHE STRING "Specify a proxy server if required for downloads")
+
+if(NOT "${HTTP_PROXY}" STREQUAL "")
+	set(ENV{http_proxy} "${HTTP_PROXY}")
+endif()
+if(NOT "${HTTPS_PROXY}" STREQUAL "")
+	set(ENV{https_proxy} "${HTTPS_PROXY}")
+endif()
+
+if(WIN32)
+	include(xxd)
+endif()
 
 if(USE_CUDA)
 	message(STATUS "Looking for CUDA toolkit")
@@ -34,11 +46,13 @@ if(USE_PNG)
 endif(USE_PNG)
 
 #if(USE_FREETYPE)
+	include(opensans)
 	include(freetype)
 #endif(USE_FREETYPE)
 
 include(libxml2)
 include(v8)
+add_definitions(-DLITEHTML_UTF8) # Force UTF on litehtml
 include(litehtml)
 
 # if FreeType is not requested we may use Xlib on Unix, or GDI on Windows... eventually.

@@ -27,6 +27,8 @@ gmock-*
 AStyle
 v8
 litehtml
+xxd-*
+open-sans*
 
 # Possible build directories   #
 ###############################
