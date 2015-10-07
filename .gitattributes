@@ -7,3 +7,5 @@
 vertex_shader text eol=lf
 fragment_shader text eol=lf
 
+*.tar.gz filter=lfs diff=lfs merge=lfs -text
+*.zip filter=lfs diff=lfs merge=lfs -text
