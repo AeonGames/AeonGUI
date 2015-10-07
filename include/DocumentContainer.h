@@ -48,7 +48,16 @@ namespace AeonGUI
         ///@}
     private:
         FT_Library mFreeType;
-        std::vector<FT_Face> mFaces;
+        struct Font
+        {
+            int size;
+            int weight;
+            litehtml::font_style italic;
+            FT_Face face;
+            bool operator< ( const Font& aRhs );
+            bool operator== ( const Font& aRhs );
+        };
+        std::vector<Font> mFonts;
     };
 }
 #endif

@@ -56,16 +56,16 @@ add_custom_command(
 		${CMAKE_SOURCE_DIR}/open-sans/OpenSans_Semibold_ttf.h
 		${CMAKE_SOURCE_DIR}/open-sans/OpenSans_Italic_ttf.h
 		${CMAKE_SOURCE_DIR}/open-sans/OpenSans_SemiboldItalic_ttf.h
-	COMMAND xxd ARGS -i ${CMAKE_SOURCE_DIR}/open-sans/OpenSans-Bold.ttf > ${CMAKE_SOURCE_DIR}/open-sans/OpenSans_Bold_ttf.h
-	COMMAND xxd ARGS -i ${CMAKE_SOURCE_DIR}/open-sans/OpenSans-Light.ttf > ${CMAKE_SOURCE_DIR}/open-sans/OpenSans_Light_ttf.h
-	COMMAND xxd ARGS -i ${CMAKE_SOURCE_DIR}/open-sans/OpenSans-BoldItalic.ttf > ${CMAKE_SOURCE_DIR}/open-sans/OpenSans_BoldItalic_ttf.h
-	COMMAND xxd ARGS -i ${CMAKE_SOURCE_DIR}/open-sans/OpenSans-LightItalic.ttf > ${CMAKE_SOURCE_DIR}/open-sans/OpenSans_LightItalic_ttf.h
-	COMMAND xxd ARGS -i ${CMAKE_SOURCE_DIR}/open-sans/OpenSans-ExtraBold.ttf > ${CMAKE_SOURCE_DIR}/open-sans/OpenSans_ExtraBold_ttf.h
-	COMMAND xxd ARGS -i ${CMAKE_SOURCE_DIR}/open-sans/OpenSans-Regular.ttf > ${CMAKE_SOURCE_DIR}/open-sans/OpenSans_Regular_ttf.h
-	COMMAND xxd ARGS -i ${CMAKE_SOURCE_DIR}/open-sans/OpenSans-ExtraBoldItalic.ttf > ${CMAKE_SOURCE_DIR}/open-sans/OpenSans_ExtraBoldItalic_ttf.h
-	COMMAND xxd ARGS -i ${CMAKE_SOURCE_DIR}/open-sans/OpenSans-Semibold.ttf > ${CMAKE_SOURCE_DIR}/open-sans/OpenSans_Semibold_ttf.h
-	COMMAND xxd ARGS -i ${CMAKE_SOURCE_DIR}/open-sans/OpenSans-Italic.ttf > ${CMAKE_SOURCE_DIR}/open-sans/OpenSans_Italic_ttf.h
-	COMMAND xxd ARGS -i ${CMAKE_SOURCE_DIR}/open-sans/OpenSans-SemiboldItalic.ttf > ${CMAKE_SOURCE_DIR}/open-sans/OpenSans_SemiboldItalic_ttf.h			
+	COMMAND xxd ARGS -i OpenSans-Bold.ttf > OpenSans_Bold_ttf.h
+	COMMAND xxd ARGS -i OpenSans-Light.ttf > OpenSans_Light_ttf.h
+	COMMAND xxd ARGS -i OpenSans-BoldItalic.ttf > OpenSans_BoldItalic_ttf.h
+	COMMAND xxd ARGS -i OpenSans-LightItalic.ttf > OpenSans_LightItalic_ttf.h
+	COMMAND xxd ARGS -i OpenSans-ExtraBold.ttf > OpenSans_ExtraBold_ttf.h
+	COMMAND xxd ARGS -i OpenSans-Regular.ttf > OpenSans_Regular_ttf.h
+	COMMAND xxd ARGS -i OpenSans-ExtraBoldItalic.ttf > OpenSans_ExtraBoldItalic_ttf.h
+	COMMAND xxd ARGS -i OpenSans-Semibold.ttf > OpenSans_Semibold_ttf.h
+	COMMAND xxd ARGS -i OpenSans-Italic.ttf > OpenSans_Italic_ttf.h
+	COMMAND xxd ARGS -i OpenSans-SemiboldItalic.ttf > OpenSans_SemiboldItalic_ttf.h			
 	DEPENDS xxd
 	WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}/open-sans
 	COMMENT "Generating Open Sans font arrays" VERBATIM)

@@ -31,19 +31,124 @@ namespace AeonGUI
     DocumentContainer::~DocumentContainer()
     {
         FT_Error ft_error;
+        for ( auto i = mFonts.begin(); i != mFonts.end(); ++i )
+        {
+            if ( ( ft_error = FT_Done_Face ( i->face ) ) != 0 )
+            {
+                AEONGUI_LOG_WARN ( "FT_Done_Face returned error code 0x%02x", ft_error );
+            }
+        }
         if ( ( ft_error = FT_Done_FreeType ( mFreeType ) ) != 0 )
         {
-            AEONGUI_LOG_ERROR ( "FT_Done_FreeType returned error code 0x%02x", ft_error );
+            AEONGUI_LOG_WARN ( "FT_Done_FreeType returned error code 0x%02x", ft_error );
         }
     }
 
     litehtml::uint_ptr DocumentContainer::create_font ( const litehtml::tchar_t * faceName, int size, int weight, litehtml::font_style italic, unsigned int decoration, litehtml::font_metrics * fm )
     {
-        return NULL;
+        /* Hardcoding any font request to OpenSans for now. */
+        Font font = {size, weight, italic, nullptr};
+        std::vector<Font>::iterator it = std::lower_bound ( mFonts.begin(), mFonts.end(), font );
+        if ( ( it != mFonts.end() ) && ( *it == font ) )
+        {
+            return reinterpret_cast<litehtml::uint_ptr> ( it->face );
+        }
+        unsigned char* buffer;
+        unsigned int  buffer_size;
+        switch ( italic )
+        {
+        case litehtml::fontStyleNormal:
+            if ( size < 400 )
+            {
+                buffer = OpenSans_Light_ttf;
+                buffer_size = OpenSans_Light_ttf_len;
+            }
+            else if ( size < 600 )
+            {
+                buffer = OpenSans_Regular_ttf;
+                buffer_size = OpenSans_Regular_ttf_len;
+            }
+            else if ( size < 700 )
+            {
+                buffer = OpenSans_Semibold_ttf;
+                buffer_size = OpenSans_Semibold_ttf_len;
+            }
+            else if ( size < 800 )
+            {
+                buffer = OpenSans_Bold_ttf;
+                buffer_size = OpenSans_Bold_ttf_len;
+            }
+            else
+            {
+                buffer = OpenSans_ExtraBold_ttf;
+                buffer_size = OpenSans_ExtraBold_ttf_len;
+            }
+            break;
+        case litehtml::fontStyleItalic:
+            if ( size < 400 )
+            {
+                buffer = OpenSans_LightItalic_ttf;
+                buffer_size = OpenSans_LightItalic_ttf_len;
+            }
+            else if ( size < 600 )
+            {
+                buffer = OpenSans_Italic_ttf;
+                buffer_size = OpenSans_Italic_ttf_len;
+            }
+            else if ( size < 700 )
+            {
+                buffer = OpenSans_SemiboldItalic_ttf;
+                buffer_size = OpenSans_SemiboldItalic_ttf_len;
+            }
+            else if ( size < 800 )
+            {
+                buffer = OpenSans_BoldItalic_ttf;
+                buffer_size = OpenSans_BoldItalic_ttf_len;
+            }
+            else
+            {
+                buffer = OpenSans_ExtraBoldItalic_ttf;
+                buffer_size = OpenSans_ExtraBoldItalic_ttf_len;
+            }
+            break;
+        }
+        FT_Error ft_error;
+        if ( ( ft_error = FT_New_Memory_Face ( mFreeType, buffer, buffer_size, 0, &font.face ) ) != 0 )
+        {
+            AEONGUI_LOG_ERROR ( "FT_New_Memory_Face returned error code 0x%02x", ft_error );
+            return NULL;
+        }
+        if ( ft_error = FT_Set_Pixel_Sizes ( font.face, 0, font.size ) )
+        {
+            AEONGUI_LOG_ERROR ( "FT_Set_Pixel_Sizes returned error code 0x%02x", ft_error );
+            FT_Done_Face ( font.face );
+            return NULL;
+        }
+        if ( fm != nullptr )
+        {
+            fm->height = font.face->height;
+            fm->ascent = font.face->ascender;
+            fm->descent = font.face->descender;
+        }
+        return reinterpret_cast<litehtml::uint_ptr> ( mFonts.insert ( it, font )->face );
     }
 
     void DocumentContainer::delete_font ( litehtml::uint_ptr hFont )
     {
+        std::vector<Font>::iterator it = std::remove_if ( mFonts.begin(), mFonts.end(),
+                                         [ = ] ( const Font & aFont )
+        {
+            return ( aFont.face == reinterpret_cast<FT_Face> ( hFont ) );
+        } );
+        if ( it != mFonts.end() )
+        {
+            mFonts.erase ( it, mFonts.end() );
+            FT_Error ft_error;
+            if ( ( ft_error = FT_Done_Face ( reinterpret_cast<FT_Face> ( hFont ) ) ) != 0 )
+            {
+                AEONGUI_LOG_ERROR ( "FT_Done_Face returned error code 0x%02x", ft_error );
+            }
+        }
     }
 
     int DocumentContainer::text_width ( const litehtml::tchar_t * text, litehtml::uint_ptr hFont )
@@ -57,11 +162,11 @@ namespace AeonGUI
 
     int DocumentContainer::pt_to_px ( int pt )
     {
-        /*	This code is temporary.
-			Instead use DPI aware code:
-			https://msdn.microsoft.com/en-us/library/ms701681%28v=vs.85%29.aspx
-			https://msdn.microsoft.com/en-us/library/windows/desktop/dn469266%28v=vs.85%29.aspx	
-			and eventually find what the solution for Linux is.*/
+        /*  This code is temporary.
+            Instead use DPI aware code:
+            https://msdn.microsoft.com/en-us/library/ms701681%28v=vs.85%29.aspx
+            https://msdn.microsoft.com/en-us/library/windows/desktop/dn469266%28v=vs.85%29.aspx
+            and eventually find what the solution for Linux is.*/
         HDC dc = GetDC ( NULL );
         int ret = MulDiv ( pt, GetDeviceCaps ( dc, LOGPIXELSY ), 72 );
         ReleaseDC ( NULL, dc );
@@ -70,12 +175,12 @@ namespace AeonGUI
 
     int DocumentContainer::get_default_font_size() const
     {
-        return 0;
+        return 400;
     }
 
     const litehtml::tchar_t * DocumentContainer::get_default_font_name() const
     {
-        return nullptr;
+        return TEXT ( "opensans" );
     }
 
     void DocumentContainer::draw_list_marker ( litehtml::uint_ptr hdc, const litehtml::list_marker & marker )
@@ -149,5 +254,29 @@ namespace AeonGUI
 
     void DocumentContainer::get_language ( litehtml::tstring & language, litehtml::tstring & culture ) const
     {
+    }
+
+    /*--------------------------------------------------------------------------------------------------------------------------------*/
+
+    bool DocumentContainer::Font::operator< ( const Font & aRhs )
+    {
+        if ( size < aRhs.size )
+        {
+            return true;
+        }
+        else if ( ( size == aRhs.size ) && ( weight < aRhs.weight ) )
+        {
+            return true;
+        }
+        else if ( ( size == aRhs.size ) && ( weight == aRhs.weight ) && ( italic < aRhs.italic ) )
+        {
+            return true;
+        }
+        return false;
+    }
+
+    bool DocumentContainer::Font::operator== ( const Font & aRhs )
+    {
+        return ( ( size == aRhs.size ) && ( size == aRhs.size ) && ( italic == aRhs.italic ) );
     }
 }
