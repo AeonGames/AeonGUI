@@ -19,6 +19,21 @@ namespace AeonGUI
 #include "OpenSans_Italic_ttf.h"
 #include "OpenSans_SemiboldItalic_ttf.h"
 
+    inline int32_t round ( FT_Pos x )
+    {
+        return ( x + 32 ) & -64;
+    }
+
+    inline int32_t floor ( FT_Pos x )
+    {
+        return x & -64;
+    }
+
+    inline int32_t ceiling ( FT_Pos x )
+    {
+        return ( x + 63 ) & -64;
+    }
+
     DocumentContainer::DocumentContainer() : mFreeType ( nullptr )
     {
         FT_Error ft_error;
@@ -126,9 +141,11 @@ namespace AeonGUI
         }
         if ( fm != nullptr )
         {
-            fm->height = font.face->height;
-            fm->ascent = font.face->ascender;
-            fm->descent = font.face->descender;
+            fm->height = ceiling ( font.face->bbox.yMax - font.face->bbox.yMin );
+            fm->ascent = ceiling ( font.face->bbox.yMax );
+            fm->descent = ceiling ( font.face->bbox.yMin );
+            FT_Load_Char ( font.face, 'x', FT_LOAD_NO_BITMAP );
+            fm->x_height = ceiling ( font.face->glyph->metrics.height );
         }
         return reinterpret_cast<litehtml::uint_ptr> ( mFonts.insert ( it, font )->face );
     }
@@ -153,7 +170,15 @@ namespace AeonGUI
 
     int DocumentContainer::text_width ( const litehtml::tchar_t * text, litehtml::uint_ptr hFont )
     {
-        return 0;
+        FT_Face face = reinterpret_cast<FT_Face> ( hFont );
+        size_t textlen = strlen ( text );
+        FT_Pos width = 0;
+        for ( size_t i = 0; i < textlen; ++i )
+        {
+            FT_Load_Char ( face, text[i], FT_LOAD_NO_BITMAP );
+            width += face->glyph->metrics.horiAdvance;
+        }
+        return ceiling ( width );
     }
 
     void DocumentContainer::draw_text ( litehtml::uint_ptr hdc, const litehtml::tchar_t * text, litehtml::uint_ptr hFont, litehtml::web_color color, const litehtml::position & pos )
