@@ -131,13 +131,13 @@ namespace AeonGUI
         if ( ( ft_error = FT_New_Memory_Face ( mFreeType, buffer, buffer_size, 0, &font.face ) ) != 0 )
         {
             AEONGUI_LOG_ERROR ( "FT_New_Memory_Face returned error code 0x%02x", ft_error );
-            return NULL;
+            return nullptr;
         }
         if ( ft_error = FT_Set_Pixel_Sizes ( font.face, 0, font.size ) )
         {
             AEONGUI_LOG_ERROR ( "FT_Set_Pixel_Sizes returned error code 0x%02x", ft_error );
             FT_Done_Face ( font.face );
-            return NULL;
+            return nullptr;
         }
         if ( fm != nullptr )
         {
@@ -147,7 +147,7 @@ namespace AeonGUI
             FT_Load_Char ( font.face, 'x', FT_LOAD_NO_BITMAP );
             fm->x_height = ceiling ( font.face->glyph->metrics.height );
         }
-        return reinterpret_cast<litehtml::uint_ptr> ( mFonts.insert ( it, font )->face );
+        return mFonts.insert ( it, font )->face;
     }
 
     void DocumentContainer::delete_font ( litehtml::uint_ptr hFont )
@@ -270,7 +270,8 @@ namespace AeonGUI
 
     std::shared_ptr<litehtml::element> DocumentContainer::create_element ( const litehtml::tchar_t * tag_name, const litehtml::string_map & attributes, const std::shared_ptr<litehtml::document>& doc )
     {
-        return std::shared_ptr<litehtml::element>();
+        /* Optional */
+        return nullptr;
     }
 
     void DocumentContainer::get_media_features ( litehtml::media_features & media ) const
@@ -279,6 +280,8 @@ namespace AeonGUI
 
     void DocumentContainer::get_language ( litehtml::tstring & language, litehtml::tstring & culture ) const
     {
+        language = _t ( "en" );
+        culture = _t ( "" );
     }
 
     /*--------------------------------------------------------------------------------------------------------------------------------*/

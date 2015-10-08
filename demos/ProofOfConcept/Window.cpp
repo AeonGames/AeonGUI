@@ -14,6 +14,8 @@ Copyright 2010-2012,2015 Rodrigo Hernandez Cordoba
    limitations under the License.
 ******************************************************************************/
 #include "Window.h"
+#include "agg_pixfmt_rgba.h"
+#include "agg_renderer_base.h"
 
 namespace AeonGUI
 {
@@ -98,7 +100,7 @@ namespace AeonGUI
         }
         //---OpenGL 3.2 Context---//
         mRenderer.Initialize();
-        glClearColor ( 0, 0, 0, 0 );
+        glClearColor ( 0, 0, 0, 255 );
         ShowWindow ( hWnd, SW_SHOW );
     }
 
@@ -232,6 +234,19 @@ namespace AeonGUI
         }
         //wglMakeCurrent ( hDC, hRC );
         glClear ( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT );
+
+        // Typedefs of the low level renderers to simplify the declarations.
+        // Here you can use any other pixel format renderer and
+        // agg::renderer_mclip if necessary.
+        //--------------------------
+        uint8_t* buffer = reinterpret_cast<uint8_t*> ( mRenderer.MapMemory() );
+        agg::rendering_buffer rbuf ( buffer, mRenderer.SurfaceWidth(), mRenderer.SurfaceHeight(), mRenderer.SurfaceWidth() * 4 );
+
+        agg::pixfmt_abgr32 pixf ( rbuf );
+        agg::renderer_base<agg::pixfmt_abgr32> rbase ( pixf );
+        rbase.clear ( agg::rgba8 ( 255, 0, 165, 255 ) );
+        mRenderer.UnmapMemory();
+
         mRenderer.Render();
         SwapBuffers ( hDC );
         last_time = this_time;
