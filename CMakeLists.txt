@@ -12,6 +12,8 @@ project(AeonGUI CXX)
 find_package(OpenGL)
 include(astyle)
 
+set_property(GLOBAL PROPERTY USE_FOLDERS ON)
+
 #option(USE_FREETYPE  "Use FreeType2 for font rendering")
 option(USE_ZLIB "Use the zlib compression library")
 option(USE_PNG "Enable PNG image support (Requires zlib)")
