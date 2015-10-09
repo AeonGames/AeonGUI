@@ -16,9 +16,15 @@ Copyright 2010-2012,2015 Rodrigo Hernandez Cordoba
 #include "Window.h"
 #include "agg_pixfmt_rgba.h"
 #include "agg_renderer_base.h"
+#include "agg_renderer_primitives.h"
 
 namespace AeonGUI
 {
+    template<typename T> inline int32_t to_24_8 ( T x )
+    {
+        return x * static_cast<T> ( 256 );
+    }
+
     ATOM Window::atom = 0;
 
     Window::Window ( HINSTANCE hInstance, LONG aWidth, LONG aHeight ) : hWnd ( nullptr ), hDC ( nullptr ), hRC ( nullptr )
@@ -239,14 +245,20 @@ namespace AeonGUI
         // Here you can use any other pixel format renderer and
         // agg::renderer_mclip if necessary.
         //--------------------------
-        uint8_t* buffer = reinterpret_cast<uint8_t*> ( mRenderer.MapMemory() );
+        uint8_t* buffer = mRenderer.MapMemory();
         agg::rendering_buffer rbuf ( buffer, mRenderer.SurfaceWidth(), mRenderer.SurfaceHeight(), mRenderer.SurfaceWidth() * 4 );
+        agg::pixfmt_bgra32 pixf ( rbuf );
+        agg::renderer_base<agg::pixfmt_bgra32> rbase ( pixf );
+        rbase.clear ( agg::rgba8 ( 255, 165, 0 ) );
+        agg::renderer_primitives<agg::renderer_base<agg::pixfmt_bgra32>> rprim ( rbase );
 
-        agg::pixfmt_abgr32 pixf ( rbuf );
-        agg::renderer_base<agg::pixfmt_abgr32> rbase ( pixf );
-        rbase.clear ( agg::rgba8 ( 255, 0, 165, 255 ) );
+        rprim.line_color ( agg::rgba8 ( 255, 0, 0 ) );
+        rprim.move_to ( to_24_8 ( 380 ), to_24_8 ( 280 ) );
+        rprim.line_to ( to_24_8 ( 420 ), to_24_8 ( 320 ) );
+        rprim.move_to ( to_24_8 ( 420 ), to_24_8 ( 280 ) );
+        rprim.line_to ( to_24_8 ( 380 ), to_24_8 ( 320 ) );
+
         mRenderer.UnmapMemory();
-
         mRenderer.Render();
         SwapBuffers ( hDC );
         last_time = this_time;

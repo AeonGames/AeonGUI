@@ -38,7 +38,7 @@ namespace AeonGUI
         DLL void Render() override final;
         DLL uint32_t SurfaceWidth() const override final;
         DLL uint32_t SurfaceHeight() const override final;
-        DLL void* MapMemory() override final;
+        DLL uint8_t* MapMemory() override final;
         DLL void UnmapMemory() override final;
         DLL void ReSize ( uint32_t aWidth, uint32_t aHeight ) override final;
     private:

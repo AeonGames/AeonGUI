@@ -52,7 +52,7 @@ namespace AeonGUI
         * @return A pointer to the mapped memory.
         * @note the mapped memory is assumed to be read/write enabled.
         * */
-        virtual void* MapMemory() = 0;
+        virtual uint8_t* MapMemory() = 0;
         /** Unmaps the surface buffer from user memory
         * and commits any changes made to it.
         * */

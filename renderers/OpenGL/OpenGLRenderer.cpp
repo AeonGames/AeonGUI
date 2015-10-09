@@ -285,7 +285,7 @@ namespace AeonGUI
         return height;
     }
 
-    void * OpenGLRenderer::MapMemory()
+    uint8_t * OpenGLRenderer::MapMemory()
     {
         return mPixelBuffer;
     }

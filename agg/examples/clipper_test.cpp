@@ -544,11 +544,7 @@ public:
             force_redraw();
         }
     }
-
-
-
 };
-
 
 int agg_main(int argc, char* argv[])
 {
