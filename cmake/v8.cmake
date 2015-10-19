@@ -1,7 +1,7 @@
 # Copyright 2015 AeonGames, Rodrigo Hernandez
 # Licensed under the terms of the Apache 2.0 License.
 include(functions)
-find_package(GIT REQUIRED)
+find_package(Git REQUIRED)
 
 if(GIT_FOUND)
 	gitclone(https://chromium.googlesource.com/v8/v8 v8)
