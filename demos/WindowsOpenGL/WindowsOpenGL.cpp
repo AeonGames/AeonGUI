@@ -1,18 +1,19 @@
-/******************************************************************************
-Copyright 2010-2012 Rodrigo Hernandez Cordoba
+/*
+Copyright (C) 2010-2012,2019 Rodrigo Jose Hernandez Cordoba
 
-   Licensed under the Apache License, Version 2.0 (the "License");
-   you may not use this file except in compliance with the License.
-   You may obtain a copy of the License at
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
 
-       http://www.apache.org/licenses/LICENSE-2.0
+http://www.apache.org/licenses/LICENSE-2.0
 
-   Unless required by applicable law or agreed to in writing, software
-   distributed under the License is distributed on an "AS IS" BASIS,
-   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-   See the License for the specific language governing permissions and
-   limitations under the License.
-******************************************************************************/
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+*/
+
 #define WIN32_LEAN_AND_MEAN
 #include <windows.h>
 #include <windowsx.h>
@@ -23,14 +24,7 @@ Copyright 2010-2012 Rodrigo Hernandez Cordoba
 #include <cstdint>
 #include <crtdbg.h>
 #include "wglext.h"
-#include "AeonGUI.h"
-#include "OpenGLRenderer.h"
-#include "MainWindow.h"
 #include "glcommon.h"
-#include "logo.h"
-#include "Vera.h"
-#include "Color.h"
-#include "Cursor.h"
 
 class Window
 {
@@ -42,11 +36,7 @@ public:
         width ( 0 ),
         height ( 0 ),
         mousex ( 0 ),
-        mousey ( 0 ),
-        aeongames_logo ( NULL ),
-        aeongui_logo ( NULL ),
-        font ( NULL ),
-        window ( NULL )
+        mousey ( 0 )
     {};
     ~Window() {};
     void Initialize ( HINSTANCE hInstance );
@@ -69,13 +59,6 @@ private:
     int32_t height;
     int32_t mousex;
     int32_t mousey;
-    AeonGUI::OpenGLRenderer renderer;
-    AeonGUI::Image* aeongames_logo;
-    AeonGUI::Image* aeongui_logo;
-    AeonGUI::Cursor cursor;
-    AeonGUI::Image cursor_image;
-    AeonGUI::Font* font;
-    AeonGUI::MainWindow* window;
 };
 
 ATOM Window::atom = 0;
@@ -161,60 +144,11 @@ void Window::Initialize ( HINSTANCE hInstance )
     }
     //---OpenGL 3.2 Context---//
     glClearColor ( 0, 0, 0, 0 );
-    window = new AeonGUI::MainWindow();
-    aeongames_logo = new AeonGUI::Image;
-    aeongames_logo->Load ( logo_width, logo_height, AeonGUI::Image::RGBA, AeonGUI::Image::BYTE, logo_data );
-    aeongui_logo = new AeonGUI::Image;
-#ifdef USE_PNG
-    //aeongui_logo->LoadFromFile("AeonGUILogoBlBkg.png");
-    aeongui_logo->LoadFromFile ( "WindowFrame.png" );
-    cursor_image.LoadFromFile ( "cursor.png" );
-#else
-    //aeongui_logo->LoadFromFile ( "AeonGUILogoBlBkg.pcx" );
-    //aeongui_logo->LoadFromFile ( "Patch9Test.pcx" );
-    aeongui_logo->LoadFromFile ( "WindowFrame.pcx" );
-    //aeongui_logo->LoadFromFile ( "ScaleTest.pcx" );
-    cursor_image.LoadFromFile ( "cursor.pcx" );
-#endif
-    font = new AeonGUI::Font;
-    font->Load ( Vera.data, Vera.size );
-    renderer.Initialize ( );
-    renderer.ChangeScreenSize ( width, height );
-    renderer.SetFont ( font );
-    std::wstring hello ( L"Hello World" );
-    window->SetFrameImage ( aeongui_logo );
-    window->SetCaption ( hello.c_str() );
-    renderer.AddWidget ( window );
-    cursor.SetCursorImage ( &cursor_image );
-    renderer.SetCursor ( &cursor );
     ShowWindow ( hWnd, SW_SHOW );
-
 }
 
 void Window::Finalize()
 {
-    if ( window != NULL )
-    {
-        renderer.RemoveWidget ( window );
-        delete window;
-        window = NULL;
-    }
-    if ( aeongames_logo != NULL )
-    {
-        delete aeongames_logo;
-        aeongames_logo = NULL;
-    }
-    if ( aeongui_logo != NULL )
-    {
-        delete aeongui_logo;
-        aeongui_logo = NULL;
-    }
-    if ( font != NULL )
-    {
-        delete font;
-        font = NULL;
-    }
-    renderer.Finalize();
     wglMakeCurrent ( hDC, NULL );
     wglDeleteContext ( hRC );
     ReleaseDC ( hWnd, hDC );
@@ -235,20 +169,6 @@ void Window::RenderLoop()
     }
     //wglMakeCurrent ( hDC, hRC );
     glClear ( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT );
-    const AeonGUI::Color color ( 0xFFFFFFFF );
-    renderer.BeginRender();
-    renderer.RenderWidgets();
-#if 0
-    renderer.DrawImage ( aeongames_logo, width - logo_width, height - logo_height );
-    //renderer.DrawImage ( aeongui_logo, 0, height - aeongui_logo->GetHeight(), aeongui_logo->GetWidth() * 2 );
-    renderer.DrawImage ( aeongui_logo, 0, height - aeongui_logo->GetHeight() * 2, aeongui_logo->GetWidth() * 2 , aeongui_logo->GetHeight() * 2, AeonGUI::NEAREST );
-    renderer.DrawImage ( aeongui_logo, aeongui_logo->GetWidth() * 2, height - aeongui_logo->GetHeight() * 2, aeongui_logo->GetWidth() * 2 , aeongui_logo->GetHeight() * 2, AeonGUI::TILE );
-    renderer.DrawImage ( aeongui_logo, aeongui_logo->GetWidth() * 4, height - aeongui_logo->GetHeight() * 2, aeongui_logo->GetWidth() * 2 , aeongui_logo->GetHeight() * 2, AeonGUI::LANCZOS );
-    renderer.DrawImage ( aeongui_logo, aeongui_logo->GetWidth() * 6, height - aeongui_logo->GetHeight() * 4, aeongui_logo->GetWidth() * 4 , aeongui_logo->GetHeight() * 4, AeonGUI::LINEAR );
-    //renderer.DrawSubImage ( aeongui_logo, 0, height - aeongui_logo->GetHeight() * 2, 4, 4, 56, 56, 56, 56 * 2 );
-    //renderer.DrawImage ( aeongui_logo, 0, height - 80, 80, 80 );
-#endif
-    renderer.EndRender();
     SwapBuffers ( hDC );
     last_time = this_time;
 }
@@ -331,7 +251,6 @@ LRESULT Window::OnSize ( WPARAM type, WORD newwidth, WORD newheight )
         width = 1;
     }
     glViewport ( 0, 0, width, height );
-    renderer.ChangeScreenSize ( width, height );
     return 0;
 }
 
@@ -349,20 +268,16 @@ LRESULT Window::OnPaint()
 
 LRESULT Window::OnMouseMove ( int32_t x, int32_t y )
 {
-    cursor.SetPosition ( x, y );
-    window->MouseMove ( x, y );
     return 0;
 }
 
 LRESULT Window::OnMouseButtonDown ( uint8_t button, int32_t x, int32_t y )
 {
-    window->MouseButtonDown ( button, x, y );
     return 0;
 }
 
 LRESULT Window::OnMouseButtonUp ( uint8_t button, int32_t x, int32_t y )
 {
-    window->MouseButtonUp ( button, x, y );
     return 0;
 }
 
@@ -372,10 +287,6 @@ int WINAPI WinMain ( HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLi
     Window window;
     window.Initialize ( hInstance );
     MSG msg;
-    if ( !AeonGUI::Initialize() )
-    {
-        return -1;
-    }
     memset ( &msg, 0, sizeof ( MSG ) );
     while ( msg.message != WM_QUIT )
     {
@@ -393,7 +304,6 @@ int WINAPI WinMain ( HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLi
         }
     }
     assert ( msg.message == WM_QUIT );
-    AeonGUI::Finalize();
     window.Finalize();
     return static_cast<int> ( msg.wParam );
 }

@@ -1,0 +1,113 @@
+#!/bin/sh
+
+if git rev-parse --verify HEAD >/dev/null 2>&1
+then
+	against=HEAD
+else
+	# Initial commit: diff against an empty tree object
+	against=4b825dc642cb6eb9a060e54bf8d69288fbee4904
+fi
+
+YEAR=`date +"%Y"`
+FILES=`git diff --cached $against --name-only --diff-filter=ACMR | grep -E "\.(c|cpp|h|hpp)$"`
+PYTHON_FILES=`git diff --cached $against --name-only --diff-filter=ACMR | grep -E "\.(py)$"`
+PROTO_FILES=`git diff --cached $against --name-only --diff-filter=ACMR | grep -E "\.(proto)$"`
+TEXT_FILES=`git diff --cached $against --name-only --diff-filter=ACMR | grep -E "\.(yml|txt|md)$"`
+CMAKE_FILES=`git diff --cached $against --name-only --diff-filter=ACMR | grep -E "(\.cmake|CMakeLists\.txt)$"`
+
+EXIT_CODE=0
+
+# Remove trailing spaces
+for FILE in $TEXT_FILES; do
+	"${SED_EXECUTABLE}" -i 's/[ \t]*$//' $FILE
+	if [ $? -ne 0 ]; then
+		echo "[!] $FILE" >&2
+        EXIT_CODE=1
+	fi
+done
+if [ $EXIT_CODE -ne 0 ]; then
+    echo "[!] sed failed when removing trailing spaces." >&2
+    exit 1
+fi
+
+# Format CMake Files only if the executable exists
+if [ -f "${CMAKE_FORMAT_EXECUTABLE}" ]; then
+	for FILE in $CMAKE_FILES; do
+		"${CMAKE_FORMAT_EXECUTABLE}" -i $FILE
+		if [ $? -ne 0 ]; then
+			echo "[!] $FILE" >&2
+			EXIT_CODE=1
+		fi
+	done
+fi
+if [ $EXIT_CODE -ne 0 ]; then
+    echo "[!] cmake-format failed." >&2
+    exit 1
+fi
+
+# Format Python Files only if the executable exists
+if [ -f "${AUTOPEP8_EXECUTABLE}" ]; then
+	for FILE in $PYTHON_FILES; do
+		"${AUTOPEP8_EXECUTABLE}" --in-place --aggressive --aggressive $FILE
+		if [ $? -ne 0 ]; then
+			echo "[!] $FILE" >&2
+			EXIT_CODE=1
+		fi
+	done
+fi
+if [ $EXIT_CODE -ne 0 ]; then
+    echo "[!] autopep8 failed." >&2
+    exit 1
+fi
+
+for FILE in $FILES; do
+	"${GREP_EXECUTABLE}" -qIl "Copyright (C) [0-9,-]*$YEAR" $FILE
+	if [ $? -ne 0 ]; then
+		echo "[!] $FILE" >&2
+        EXIT_CODE=1
+	fi
+done
+if [ $EXIT_CODE -ne 0 ]; then
+    echo "[!] have an out of date copyright notice," >&2
+    echo "[!] please update it to include the current year." >&2
+    echo "[!] For example: /* Copyright (C) $YEAR */." >&2
+    exit 1
+fi
+
+for FILE in $PYTHON_FILES; do
+	"${GREP_EXECUTABLE}" -qIl "Copyright (C) [0-9,-]*$YEAR" $FILE
+	if [ $? -ne 0 ]; then
+		echo "[!] $FILE" >&2
+        EXIT_CODE=1
+	fi
+done
+if [ $EXIT_CODE -ne 0 ]; then
+    echo "[!] have an out of date copyright notice," >&2
+    echo "[!] please update it to include the current year." >&2
+    echo "[!] For example: /* Copyright (C) $YEAR */." >&2
+    exit 1
+fi
+
+for FILE in $PROTO_FILES; do
+	"${GREP_EXECUTABLE}" -qIl "Copyright (C) [0-9,-]*$YEAR" $FILE
+	if [ $? -ne 0 ]; then
+		echo "[!] $FILE" >&2
+        EXIT_CODE=1
+	fi
+done
+if [ $EXIT_CODE -ne 0 ]; then
+    echo "[!] have an out of date copyright notice," >&2
+    echo "[!] please update it to include the current year." >&2
+    echo "[!] For example: /* Copyright (C) $YEAR */." >&2
+    exit 1
+fi
+
+for FILE in $FILES; do
+	${ASTYLE_EXECUTABLE} --quiet ${ASTYLE_OPTIONS} $FILE
+	if [ $? -ne 0 ]; then
+		echo "[!] Formating $FILE failed," >&2
+		echo "[!] is astyle installed?." >&2
+		exit 1
+	fi
+	git add $FILE
+done

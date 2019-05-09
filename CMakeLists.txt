@@ -9,7 +9,22 @@ set(LIBRARY_OUTPUT_PATH  ${CMAKE_BINARY_DIR}/bin)
 set(CMAKE_MODULE_PATH ${CMAKE_SOURCE_DIR}/cmake)
 
 project(AeonGUI CXX)
+
 find_package(OpenGL)
+find_package(Git)
+
+find_program(SED_EXECUTABLE sed
+             HINTS ENV
+                   MINGW_PREFIX
+                   MSYS2_PATH
+                   ProgramFiles
+             PATH_SUFFIXES bin usr/bin Git/usr/bin)
+find_program(GREP_EXECUTABLE grep
+             HINTS ENV
+                   MINGW_PREFIX
+                   MSYS2_PATH
+                   ProgramFiles
+             PATH_SUFFIXES usr/bin Git/usr/bin)
 
 if(WIN32)
   find_program(ASTYLE_EXECUTABLE astyle
@@ -22,6 +37,10 @@ else()
   find_program(FIND_EXECUTABLE find)
   find_program(ASTYLE_EXECUTABLE astyle)
 endif()
+
+set(ASTYLE_OPTIONS "--options=${CMAKE_SOURCE_DIR}/astylerc")
+configure_file("${CMAKE_SOURCE_DIR}/cmake/pre-commit.in"
+               "${CMAKE_SOURCE_DIR}/.git/hooks/pre-commit")
 
 find_program(XXD_EXECUTABLE xxd HINTS ENV ProgramData PATH_SUFFIXES /usr/bin chocolatey/bin)
 
@@ -95,3 +114,5 @@ endif()
 
 include_directories(include common common/pcx demos/common core)
 subdirs(common/pcx core tools demos)
+
+include(vscode)

@@ -1,6 +1,7 @@
 if(WIN32)
-#	subdirs(WindowsOpenGL ProofOfConcept)
+	subdirs(WindowsOpenGL)
 endif()
 if(UNIX)
 	subdirs(LinuxOpenGL)
 endif()
+
