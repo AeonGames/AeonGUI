@@ -66,7 +66,12 @@ if(LIBXML2_FOUND)
 	include_directories(${LIBXML2_INCLUDE_DIR})
 endif()
 
-include(FindX11)
+find_package(X11)
+
+set(CMAKE_CXX_STANDARD 17)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
+set(CMAKE_CXX_EXTENSIONS OFF)
+
 if(CMAKE_COMPILER_IS_GNUCXX)
 	# -std=c++0x is required to be able to include stdint.h as cstdint, weird, I know.
 	# But then CUDA doesn't like c++11, so stick to .h files until it does *sigh*
