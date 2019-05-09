@@ -2,7 +2,7 @@
 #define AEONGUI_PLATFORM_H
 #ifndef DLL
 #ifdef WIN32
-#ifdef DLL_EXPORT
+#ifdef AeonGUI_EXPORTS
 #define DLL __declspec( dllexport )
 #else
 #define DLL __declspec( dllimport )

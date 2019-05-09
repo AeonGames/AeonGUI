@@ -1,7 +1,6 @@
 SET(AEONGUI_HEADERS
         ../include/AeonGUI.h
         ../include/Overlay.h
-        ../include/DocumentContainer.h
         ../include/KeyListener.h
         #../include/Widget.h
         #../include/Button.h
@@ -19,7 +18,6 @@ SET(AEONGUI_HEADERS
 
 SET(AEONGUI_SOURCES
         AeonGUI.cpp
-        DocumentContainer.cpp
         Overlay.cpp
         Font.cpp
         #Widget.cpp
@@ -56,17 +54,17 @@ add_custom_command(
 		${CMAKE_SOURCE_DIR}/open-sans/OpenSans_Semibold_ttf.h
 		${CMAKE_SOURCE_DIR}/open-sans/OpenSans_Italic_ttf.h
 		${CMAKE_SOURCE_DIR}/open-sans/OpenSans_SemiboldItalic_ttf.h
-	COMMAND xxd ARGS -i OpenSans-Bold.ttf > OpenSans_Bold_ttf.h
-	COMMAND xxd ARGS -i OpenSans-Light.ttf > OpenSans_Light_ttf.h
-	COMMAND xxd ARGS -i OpenSans-BoldItalic.ttf > OpenSans_BoldItalic_ttf.h
-	COMMAND xxd ARGS -i OpenSans-LightItalic.ttf > OpenSans_LightItalic_ttf.h
-	COMMAND xxd ARGS -i OpenSans-ExtraBold.ttf > OpenSans_ExtraBold_ttf.h
-	COMMAND xxd ARGS -i OpenSans-Regular.ttf > OpenSans_Regular_ttf.h
-	COMMAND xxd ARGS -i OpenSans-ExtraBoldItalic.ttf > OpenSans_ExtraBoldItalic_ttf.h
-	COMMAND xxd ARGS -i OpenSans-Semibold.ttf > OpenSans_Semibold_ttf.h
-	COMMAND xxd ARGS -i OpenSans-Italic.ttf > OpenSans_Italic_ttf.h
-	COMMAND xxd ARGS -i OpenSans-SemiboldItalic.ttf > OpenSans_SemiboldItalic_ttf.h			
-	DEPENDS xxd
+	COMMAND ${XXD_EXECUTABLE} ARGS -i OpenSans-Bold.ttf > OpenSans_Bold_ttf.h
+	COMMAND ${XXD_EXECUTABLE} ARGS -i OpenSans-Light.ttf > OpenSans_Light_ttf.h
+	COMMAND ${XXD_EXECUTABLE} ARGS -i OpenSans-BoldItalic.ttf > OpenSans_BoldItalic_ttf.h
+	COMMAND ${XXD_EXECUTABLE} ARGS -i OpenSans-LightItalic.ttf > OpenSans_LightItalic_ttf.h
+	COMMAND ${XXD_EXECUTABLE} ARGS -i OpenSans-ExtraBold.ttf > OpenSans_ExtraBold_ttf.h
+	COMMAND ${XXD_EXECUTABLE} ARGS -i OpenSans-Regular.ttf > OpenSans_Regular_ttf.h
+	COMMAND ${XXD_EXECUTABLE} ARGS -i OpenSans-ExtraBoldItalic.ttf > OpenSans_ExtraBoldItalic_ttf.h
+	COMMAND ${XXD_EXECUTABLE} ARGS -i OpenSans-Semibold.ttf > OpenSans_Semibold_ttf.h
+	COMMAND ${XXD_EXECUTABLE} ARGS -i OpenSans-Italic.ttf > OpenSans_Italic_ttf.h
+	COMMAND ${XXD_EXECUTABLE} ARGS -i OpenSans-SemiboldItalic.ttf > OpenSans_SemiboldItalic_ttf.h			
+	DEPENDS ${XXD_EXECUTABLE}
 	WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}/open-sans
 	COMMENT "Generating Open Sans font arrays" VERBATIM)
 	
@@ -123,9 +121,9 @@ endif(USE_PNG)
 source_group("Resource Files" FILES ${AEONGUI_RESOURCES})
 include_directories(${FREETYPE_INCLUDE_DIR_freetype2} ${FREETYPE_INCLUDE_DIR_ft2build})
 add_library(AeonGUI SHARED ${AEONGUI_HEADERS} ${AEONGUI_SOURCES} ${AEONGUI_RESOURCES})
-add_dependencies(AeonGUI pcx libxml2 litehtml ${FREETYPE_LIBRARIES})
-set_target_properties(AeonGUI PROPERTIES COMPILE_FLAGS "-I${LIBXML2_INCLUDE_DIR} -I${CMAKE_SOURCE_DIR}/litehtml/include -DNOMINMAX -DDLL_EXPORT -D_CRT_SECURE_NO_WARNINGS")
-target_link_libraries(AeonGUI litehtml ${AEONGUI_LIBRARIES} ${LIBXML2_LIBRARIES} ${FREETYPE_LIBRARIES})
+add_dependencies(AeonGUI pcx)
+set_target_properties(AeonGUI PROPERTIES COMPILE_FLAGS "-DNOMINMAX -D_CRT_SECURE_NO_WARNINGS")
+target_link_libraries(AeonGUI ${AEONGUI_LIBRARIES} ${LIBXML2_LIBRARIES} ${FREETYPE_LIBRARIES})
 
 if(BUILD_UNIT_TESTS)
 	subdirs(tests)

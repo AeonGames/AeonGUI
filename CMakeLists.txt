@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 2.8.12.2)
+cmake_minimum_required(VERSION 3.0.2)
 
 if(COMMAND cmake_policy)
 	cmake_policy(SET CMP0003 NEW)
@@ -10,11 +10,24 @@ set(CMAKE_MODULE_PATH ${CMAKE_SOURCE_DIR}/cmake)
 
 project(AeonGUI CXX)
 find_package(OpenGL)
-include(astyle)
+
+if(WIN32)
+  find_program(ASTYLE_EXECUTABLE astyle
+               HINTS ENV ProgramData
+               PATH_SUFFIXES /usr/bin chocolatey/bin)
+  find_program(FIND_EXECUTABLE find
+               HINTS ENV ProgramFiles
+               PATH_SUFFIXES /usr/bin Git/usr/bin)
+else()
+  find_program(FIND_EXECUTABLE find)
+  find_program(ASTYLE_EXECUTABLE astyle)
+endif()
+
+find_program(XXD_EXECUTABLE xxd HINTS ENV ProgramData PATH_SUFFIXES /usr/bin chocolatey/bin)
+
 
 set_property(GLOBAL PROPERTY USE_FOLDERS ON)
 
-#option(USE_FREETYPE  "Use FreeType2 for font rendering")
 option(USE_ZLIB "Use the zlib compression library")
 option(USE_PNG "Enable PNG image support (Requires zlib)")
 option(USE_CUDA "Enable CUDA support")
@@ -30,10 +43,6 @@ if(NOT "${HTTPS_PROXY}" STREQUAL "")
 	set(ENV{https_proxy} "${HTTPS_PROXY}")
 endif()
 
-if(WIN32)
-	include(xxd)
-endif()
-
 if(USE_CUDA)
 	message(STATUS "Looking for CUDA toolkit")
 	find_package(CUDA)
@@ -41,23 +50,22 @@ if(USE_CUDA)
 endif(USE_CUDA)
 
 if(USE_ZLIB)
-	include(zlib)
+	find_package(zlib)
 endif(USE_ZLIB)
 if(USE_PNG)
-	include(libpng)
+	find_package(libpng)
 endif(USE_PNG)
 
-#if(USE_FREETYPE)
-	include(opensans)
-	include(freetype)
-#endif(USE_FREETYPE)
+include(opensans)
+find_package(FreeType)
+if(FREETYPE_FOUND)
+	include_directories(${FREETYPE_INCLUDE_DIRS})
+endif()
+find_package(LibXml2)
+if(LIBXML2_FOUND)
+	include_directories(${LIBXML2_INCLUDE_DIR})
+endif()
 
-include(libxml2)
-include(v8)
-add_definitions(-DLITEHTML_UTF8) # Force UTF on litehtml
-include(litehtml)
-
-# if FreeType is not requested we may use Xlib on Unix, or GDI on Windows... eventually.
 include(FindX11)
 if(CMAKE_COMPILER_IS_GNUCXX)
 	# -std=c++0x is required to be able to include stdint.h as cstdint, weird, I know.
@@ -80,5 +88,5 @@ if(BUILD_UNIT_TESTS)
 	include(gmock)
 endif()
 
-include_directories(include common common/pcx demos/common core agg/src agg/include)
-subdirs(agg/src common/pcx core renderers tools  demos)
+include_directories(include common common/pcx demos/common core)
+subdirs(common/pcx core tools demos)
