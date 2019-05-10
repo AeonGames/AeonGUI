@@ -18,28 +18,118 @@ limitations under the License.
 #include <windows.h>
 #include <windowsx.h>
 #include <GL/gl.h>
+#include <GL/glext.h>
 #include <GL/glu.h>
 #include <iostream>
+#include <sstream>
 #include <cassert>
 #include <cstdint>
 #include <crtdbg.h>
 #include "wglext.h"
 #include "glcommon.h"
 
+#define GLGETPROCADDRESS(glFunctionType,glFunction) \
+    if(glFunction==nullptr) { \
+        glFunction = (glFunctionType)wglGetProcAddress(#glFunction); \
+        if (glFunction == nullptr) { std::cerr << "OpenGL: Unable to load "<< #glFunction <<" function." << std::endl; }}
+#define GLDEFINEFUNCTION(glFunctionType,glFunction) glFunctionType glFunction = nullptr
+
+#define OPENGL_CHECK_ERROR \
+ { \
+     if (int glError = glGetError()) \
+     { \
+         const char* error_string = (glError == GL_INVALID_ENUM) ? "GL_INVALID_ENUM" : \
+             (glError == GL_INVALID_VALUE) ? "GL_INVALID_VALUE" : \
+             (glError == GL_INVALID_OPERATION) ? "GL_INVALID_OPERATION" : \
+             (glError == GL_STACK_OVERFLOW) ? "GL_STACK_OVERFLOW" : \
+             (glError == GL_STACK_UNDERFLOW) ? "GL_STACK_UNDERFLOW" : \
+             (glError == GL_OUT_OF_MEMORY) ? "GL_OUT_OF_MEMORY" : "Unknown Error Code"; \
+         std::ostringstream stream; \
+         stream << "OpenGL Error " << error_string << " (Code " << glError << " ) " << __FILE__ << ":" << __LINE__; \
+         std::cout << stream.str() << std::endl; \
+     } \
+ }
+
+
+const GLchar vertex_shader_code[] =
+    R"(#version 450 core
+layout (location = 0) in vec2 aPos;
+layout (location = 1) in vec2 aTexCoords;
+
+out vec2 Pos;
+out vec2 TexCoords;
+
+void main()
+{
+    gl_Position = vec4(aPos.x, aPos.y, 0.0, 1.0); 
+    Pos = aPos;
+    TexCoords = aTexCoords;
+}
+)";
+const GLint vertex_shader_len { sizeof(vertex_shader_code) /*/ sizeof(vertex_shader_code[0])*/};
+const GLchar* const vertex_shader_code_ptr = vertex_shader_code;
+
+const GLchar fragment_shader_code[] =
+R"(#version 450 core
+out vec4 FragColor;
+  
+in vec2 Pos;
+in vec2 TexCoords;
+
+layout (location = 0) uniform sampler2D screenTexture;
+
+void main()
+{ 
+    FragColor = vec4((Pos.x+1.0)/2,(Pos.y+1.0)/2,0,1);
+    //FragColor = texture(screenTexture, TexCoords);
+}
+)";
+const GLint fragment_shader_len { sizeof(fragment_shader_code) /*/ sizeof(fragment_shader_code[0])*/};
+const GLchar* const fragment_shader_code_ptr = fragment_shader_code;
+
+const float vertices[] = {  
+    // positions   // texCoords
+    -1.0f,  1.0f,  0.0f, 1.0f,
+    -1.0f, -1.0f,  0.0f, 0.0f,
+    1.0f, -1.0f,  1.0f, 0.0f,
+    1.0f,  1.0f,  1.0f, 1.0f
+};
+const GLuint vertex_size{sizeof(vertices)};
+
+GLDEFINEFUNCTION(PFNGLISPROGRAMPROC,glIsProgram);
+GLDEFINEFUNCTION(PFNGLISSHADERPROC,glIsShader);
+GLDEFINEFUNCTION(PFNGLCREATEPROGRAMPROC,glCreateProgram);
+GLDEFINEFUNCTION(PFNGLCREATESHADERPROC,glCreateShader);
+GLDEFINEFUNCTION(PFNGLCOMPILESHADERPROC,glCompileShader);
+GLDEFINEFUNCTION(PFNGLDETACHSHADERPROC,glDetachShader);
+GLDEFINEFUNCTION(PFNGLDELETESHADERPROC,glDeleteShader);
+GLDEFINEFUNCTION(PFNGLDELETEPROGRAMPROC,glDeleteProgram);
+GLDEFINEFUNCTION(PFNGLATTACHSHADERPROC,glAttachShader);
+GLDEFINEFUNCTION(PFNGLSHADERSOURCEPROC,glShaderSource);
+GLDEFINEFUNCTION(PFNGLUSEPROGRAMPROC,glUseProgram);
+GLDEFINEFUNCTION(PFNGLLINKPROGRAMPROC,glLinkProgram);
+GLDEFINEFUNCTION(PFNGLGENVERTEXARRAYSPROC,glGenVertexArrays);
+GLDEFINEFUNCTION(PFNGLBINDVERTEXARRAYPROC,glBindVertexArray);
+GLDEFINEFUNCTION(PFNGLGENBUFFERSPROC,glGenBuffers);
+GLDEFINEFUNCTION(PFNGLBINDBUFFERPROC,glBindBuffer);
+GLDEFINEFUNCTION(PFNGLBUFFERDATAPROC,glBufferData);
+GLDEFINEFUNCTION(PFNGLISBUFFERPROC,glIsBuffer);
+GLDEFINEFUNCTION(PFNGLISVERTEXARRAYPROC,glIsVertexArray);
+GLDEFINEFUNCTION(PFNGLDELETEBUFFERSPROC,glDeleteBuffers);
+GLDEFINEFUNCTION(PFNGLDELETEVERTEXARRAYSPROC,glDeleteVertexArrays);
+GLDEFINEFUNCTION(PFNGLACTIVETEXTUREPROC,glActiveTexture);
+GLDEFINEFUNCTION(PFNGLUNIFORM1IPROC,glUniform1i);
+GLDEFINEFUNCTION(PFNGLGETSHADERIVPROC,glGetShaderiv);
+GLDEFINEFUNCTION(PFNGLGETSHADERINFOLOGPROC,glGetShaderInfoLog);
+GLDEFINEFUNCTION(PFNGLENABLEVERTEXATTRIBARRAYPROC,glEnableVertexAttribArray);
+GLDEFINEFUNCTION(PFNGLVERTEXATTRIBPOINTERPROC,glVertexAttribPointer);
+
 class Window
 {
 public:
-    Window() :
-        hWnd ( NULL ),
-        hDC ( NULL ),
-        hRC ( NULL ),
-        width ( 0 ),
-        height ( 0 ),
-        mousex ( 0 ),
-        mousey ( 0 )
-    {};
+    Window() : hWnd ( NULL ), hDC ( NULL ), hRC ( NULL ){};
     ~Window() {};
-    void Initialize ( HINSTANCE hInstance );
+    void Initialize ( HINSTANCE hInstance, LONG aWidth, LONG aHeight );
     void Finalize ( );
     LRESULT OnSize ( WPARAM type, WORD newwidth, WORD newheight );
     LRESULT OnPaint();
@@ -54,22 +144,19 @@ private:
     HWND hWnd;
     HDC hDC;
     HGLRC hRC;
-    PIXELFORMATDESCRIPTOR pfd;
-    int32_t width;
-    int32_t height;
-    int32_t mousex;
-    int32_t mousey;
+    GLuint mProgram{};
+    GLuint mVAO{};
+    GLuint mScreenQuad{};
+    GLuint mScreenTexture{};
 };
 
 ATOM Window::atom = 0;
 
-void Window::Initialize ( HINSTANCE hInstance )
+void Window::Initialize ( HINSTANCE hInstance, LONG aWidth, LONG aHeight )
 {
-    width  = 800;
-    height = 600;
-    int pf;
-
-    RECT rect = {0, 0, width, height};
+    int pf{};
+    PIXELFORMATDESCRIPTOR pfd{};
+    RECT rect{0, 0, aWidth, aHeight};
 
     PFNWGLGETEXTENSIONSSTRINGARBPROC wglGetExtensionsStringARB = NULL;
     PFNWGLCREATECONTEXTATTRIBSARBPROC wglCreateContextAttribsARB = NULL;
@@ -121,7 +208,7 @@ void Window::Initialize ( HINSTANCE hInstance )
     hRC = wglCreateContext ( hDC );
     wglMakeCurrent ( hDC, hRC );
 
-    //---OpenGL 3.2 Context---//
+    //---OpenGL 4.5 Context---//
     wglGetExtensionsStringARB = ( PFNWGLGETEXTENSIONSSTRINGARBPROC ) wglGetProcAddress ( "wglGetExtensionsStringARB" );
     if ( wglGetExtensionsStringARB != NULL )
     {
@@ -129,8 +216,8 @@ void Window::Initialize ( HINSTANCE hInstance )
         {
             const int ctxAttribs[] =
             {
-                WGL_CONTEXT_MAJOR_VERSION_ARB, 3,
-                WGL_CONTEXT_MINOR_VERSION_ARB, 2,
+                WGL_CONTEXT_MAJOR_VERSION_ARB, 4,
+                WGL_CONTEXT_MINOR_VERSION_ARB, 5,
                 WGL_CONTEXT_PROFILE_MASK_ARB,  WGL_CONTEXT_CORE_PROFILE_BIT_ARB,
                 0
             };
@@ -142,13 +229,174 @@ void Window::Initialize ( HINSTANCE hInstance )
             wglMakeCurrent ( hDC, hRC );
         }
     }
-    //---OpenGL 3.2 Context---//
+    //---OpenGL 4.5 Context---//
+
+    GLGETPROCADDRESS(PFNGLISPROGRAMPROC,glIsProgram);
+    GLGETPROCADDRESS(PFNGLISSHADERPROC,glIsShader);
+    GLGETPROCADDRESS(PFNGLCREATEPROGRAMPROC,glCreateProgram);
+    GLGETPROCADDRESS(PFNGLCREATESHADERPROC,glCreateShader);
+    GLGETPROCADDRESS(PFNGLCOMPILESHADERPROC,glCompileShader);
+    GLGETPROCADDRESS(PFNGLDETACHSHADERPROC,glDetachShader);
+    GLGETPROCADDRESS(PFNGLDELETESHADERPROC,glDeleteShader);
+    GLGETPROCADDRESS(PFNGLDELETEPROGRAMPROC,glDeleteProgram);
+    GLGETPROCADDRESS(PFNGLATTACHSHADERPROC,glAttachShader);
+    GLGETPROCADDRESS(PFNGLSHADERSOURCEPROC,glShaderSource);
+    GLGETPROCADDRESS(PFNGLUSEPROGRAMPROC,glUseProgram);
+    GLGETPROCADDRESS(PFNGLLINKPROGRAMPROC,glLinkProgram);
+    GLGETPROCADDRESS(PFNGLGENVERTEXARRAYSPROC,glGenVertexArrays);
+    GLGETPROCADDRESS(PFNGLBINDVERTEXARRAYPROC,glBindVertexArray);
+    GLGETPROCADDRESS(PFNGLGENBUFFERSPROC,glGenBuffers);
+    GLGETPROCADDRESS(PFNGLBINDBUFFERPROC,glBindBuffer);
+    GLGETPROCADDRESS(PFNGLBUFFERDATAPROC,glBufferData);
+    GLGETPROCADDRESS(PFNGLISBUFFERPROC,glIsBuffer);
+    GLGETPROCADDRESS(PFNGLISVERTEXARRAYPROC,glIsVertexArray);
+    GLGETPROCADDRESS(PFNGLDELETEBUFFERSPROC,glDeleteBuffers);
+    GLGETPROCADDRESS(PFNGLDELETEVERTEXARRAYSPROC,glDeleteVertexArrays);
+    GLGETPROCADDRESS(PFNGLACTIVETEXTUREPROC,glActiveTexture);
+    GLGETPROCADDRESS(PFNGLUNIFORM1IPROC,glUniform1i);
+    GLGETPROCADDRESS(PFNGLGETSHADERIVPROC,glGetShaderiv);
+    GLGETPROCADDRESS(PFNGLGETSHADERINFOLOGPROC,glGetShaderInfoLog);
+    GLGETPROCADDRESS(PFNGLENABLEVERTEXATTRIBARRAYPROC,glEnableVertexAttribArray);
+    GLGETPROCADDRESS(PFNGLVERTEXATTRIBPOINTERPROC,glVertexAttribPointer);
+
     glClearColor ( 0, 0, 0, 0 );
+    glViewport ( 0, 0, aWidth, aHeight );
+    glBlendFunc ( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
+    OPENGL_CHECK_ERROR;
+    glEnable ( GL_BLEND );
+    OPENGL_CHECK_ERROR;
+
+
+    GLint compile_status{};
+    mProgram = glCreateProgram();
+    OPENGL_CHECK_ERROR;
+    GLuint vertex_shader = glCreateShader ( GL_VERTEX_SHADER );
+    OPENGL_CHECK_ERROR;
+    glShaderSource (vertex_shader,1,&vertex_shader_code_ptr,&vertex_shader_len );
+    OPENGL_CHECK_ERROR;
+    glCompileShader ( vertex_shader );
+    OPENGL_CHECK_ERROR;
+    glGetShaderiv ( vertex_shader, GL_COMPILE_STATUS, &compile_status );
+    OPENGL_CHECK_ERROR;
+    if ( compile_status != GL_TRUE )
+    {
+        GLint info_log_len;
+        glGetShaderiv ( vertex_shader, GL_INFO_LOG_LENGTH, &info_log_len );
+        OPENGL_CHECK_ERROR;
+        std::string log_string;
+        log_string.resize ( info_log_len );
+        if ( info_log_len > 1 )
+        {
+            glGetShaderInfoLog ( vertex_shader, info_log_len, nullptr, const_cast<GLchar*> ( log_string.data() ) );
+            OPENGL_CHECK_ERROR;
+            std::cout << vertex_shader_code << std::endl;
+            std::cout << log_string << std::endl;
+        }
+    }
+    glAttachShader ( mProgram, vertex_shader );OPENGL_CHECK_ERROR
+    //-------------------------
+    uint32_t fragment_shader = glCreateShader ( GL_FRAGMENT_SHADER );OPENGL_CHECK_ERROR
+    glShaderSource ( fragment_shader, 1, &fragment_shader_code_ptr, &fragment_shader_len );OPENGL_CHECK_ERROR
+    glCompileShader ( fragment_shader );
+    OPENGL_CHECK_ERROR;
+    glGetShaderiv ( fragment_shader, GL_COMPILE_STATUS, &compile_status );
+    OPENGL_CHECK_ERROR;
+    if ( compile_status != GL_TRUE )
+    {
+        GLint info_log_len;
+        glGetShaderiv ( fragment_shader, GL_INFO_LOG_LENGTH, &info_log_len );
+        OPENGL_CHECK_ERROR;
+        std::string log_string;
+        log_string.resize ( info_log_len );
+        if ( info_log_len > 1 )
+        {
+            glGetShaderInfoLog ( fragment_shader, info_log_len, nullptr, const_cast<GLchar*> ( log_string.data() ) );
+            OPENGL_CHECK_ERROR;
+            std::cout << fragment_shader_code << std::endl;
+            std::cout << log_string << std::endl;
+        }
+    }
+    glAttachShader ( mProgram, fragment_shader );
+    OPENGL_CHECK_ERROR;
+    //-------------------------
+    glLinkProgram ( mProgram );
+    OPENGL_CHECK_ERROR;
+    glDetachShader ( mProgram, vertex_shader );
+    OPENGL_CHECK_ERROR;
+    glDetachShader ( mProgram, fragment_shader );
+    OPENGL_CHECK_ERROR;
+    glDeleteShader ( vertex_shader );
+    OPENGL_CHECK_ERROR;
+    glDeleteShader ( fragment_shader );
+    OPENGL_CHECK_ERROR;
+    glUseProgram(mProgram);
+    OPENGL_CHECK_ERROR;
+    glUniform1i ( 0, 0 );
+    OPENGL_CHECK_ERROR;
+
+    //---------------------------------------------------------------------------
+    glGenVertexArrays ( 1, &mVAO );
+    OPENGL_CHECK_ERROR;
+    glBindVertexArray ( mVAO );
+    OPENGL_CHECK_ERROR;
+    glGenBuffers ( 1, &mScreenQuad );
+    OPENGL_CHECK_ERROR;
+    glBindBuffer ( GL_ARRAY_BUFFER, mScreenQuad );
+    OPENGL_CHECK_ERROR;
+    glBufferData ( GL_ARRAY_BUFFER, vertex_size, vertices, GL_STATIC_DRAW );
+    OPENGL_CHECK_ERROR;
+    glEnableVertexAttribArray ( 0 );
+    OPENGL_CHECK_ERROR;
+    glVertexAttribPointer ( 0, 2, GL_FLOAT, GL_FALSE, sizeof(float)*4, 0 );
+    OPENGL_CHECK_ERROR;
+    glEnableVertexAttribArray ( 1 );
+    OPENGL_CHECK_ERROR;
+    glVertexAttribPointer ( 1, 2, GL_FLOAT, GL_FALSE, sizeof(float)*4, reinterpret_cast<const void*>(sizeof(float)*2) );
+    OPENGL_CHECK_ERROR;
+
+    //---------------------------------------------------------------------------
+    glGenTextures ( 1, &mScreenTexture );
+    OPENGL_CHECK_ERROR;
+    glBindTexture ( GL_TEXTURE_2D, mScreenTexture );
+    OPENGL_CHECK_ERROR;
+    glTexImage2D ( GL_TEXTURE_2D,
+                    0,
+                    GL_RGBA,
+                    aWidth,
+                    aHeight,
+                    0,
+                    GL_RGBA,
+                    GL_UNSIGNED_BYTE,
+                    nullptr );
+    OPENGL_CHECK_ERROR;
+    glTexParameteri ( GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST );
+    OPENGL_CHECK_ERROR;
+    glTexParameteri ( GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST );
+    OPENGL_CHECK_ERROR;
+    glActiveTexture ( GL_TEXTURE0 );
+    OPENGL_CHECK_ERROR;
+
     ShowWindow ( hWnd, SW_SHOW );
 }
 
 void Window::Finalize()
 {
+    if(glIsBuffer(mScreenQuad))
+    {
+        glDeleteBuffers(1,&mScreenQuad);
+        mScreenQuad = 0;
+    }
+    if(glIsVertexArray(mVAO))
+    {
+        glDeleteVertexArrays(1,&mVAO);
+        mVAO = 0;
+    }
+    if(glIsProgram(mProgram))
+    {
+        glUseProgram(0);
+        glDeleteProgram(mProgram);
+        mProgram = 0;
+    }
     wglMakeCurrent ( hDC, NULL );
     wglDeleteContext ( hRC );
     ReleaseDC ( hWnd, hDC );
@@ -169,6 +417,13 @@ void Window::RenderLoop()
     }
     //wglMakeCurrent ( hDC, hRC );
     glClear ( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT );
+
+    glUseProgram(mProgram);  
+    glBindVertexArray(mVAO);
+    glDisable(GL_DEPTH_TEST);
+    glBindTexture(GL_TEXTURE_2D, mScreenTexture);
+    glDrawArrays(GL_TRIANGLE_FAN, 0, 4);  
+
     SwapBuffers ( hDC );
     last_time = this_time;
 }
@@ -240,8 +495,8 @@ LRESULT CALLBACK Window::WindowProc ( HWND hwnd, UINT uMsg, WPARAM wParam, LPARA
 
 LRESULT Window::OnSize ( WPARAM type, WORD newwidth, WORD newheight )
 {
-    width = static_cast<int32_t> ( newwidth );
-    height = static_cast<int32_t> ( newheight );
+    LONG width = static_cast<LONG> ( newwidth );
+    LONG height = static_cast<LONG> ( newheight );
     if ( height == 0 )
     {
         height = 1;
@@ -251,6 +506,17 @@ LRESULT Window::OnSize ( WPARAM type, WORD newwidth, WORD newheight )
         width = 1;
     }
     glViewport ( 0, 0, width, height );
+    OPENGL_CHECK_ERROR;
+    glTexImage2D ( GL_TEXTURE_2D,
+                    0,
+                    GL_RGBA,
+                    width,
+                    height,
+                    0,
+                    GL_RGBA,
+                    GL_UNSIGNED_BYTE,
+                    nullptr );
+    OPENGL_CHECK_ERROR;
     return 0;
 }
 
@@ -285,7 +551,7 @@ LRESULT Window::OnMouseButtonUp ( uint8_t button, int32_t x, int32_t y )
 int WINAPI WinMain ( HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nCmdShow )
 {
     Window window;
-    window.Initialize ( hInstance );
+    window.Initialize ( hInstance ,800,600);
     MSG msg;
     memset ( &msg, 0, sizeof ( MSG ) );
     while ( msg.message != WM_QUIT )
@@ -310,24 +576,6 @@ int WINAPI WinMain ( HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLi
 
 int main ( int argc, char *argv[] )
 {
-#ifdef _MSC_VER
-#if 0
-    _CrtSetBreakAlloc ( 346 );
-#endif
-#if 1
-    // Send all reports to STDOUT
-    _CrtSetReportMode ( _CRT_WARN, _CRTDBG_MODE_FILE );
-    _CrtSetReportFile ( _CRT_WARN, _CRTDBG_FILE_STDOUT );
-    _CrtSetReportMode ( _CRT_ERROR, _CRTDBG_MODE_FILE );
-    _CrtSetReportFile ( _CRT_ERROR, _CRTDBG_FILE_STDOUT );
-    _CrtSetReportMode ( _CRT_ASSERT, _CRTDBG_MODE_FILE );
-    _CrtSetReportFile ( _CRT_ASSERT, _CRTDBG_FILE_STDOUT );
-    // Use _CrtSetBreakAlloc( ) to set breakpoints on allocations.
-#endif
-#endif
     int ret = WinMain ( GetModuleHandle ( NULL ), NULL, NULL, 0 );
-#ifdef _MSC_VER
-    _CrtDumpMemoryLeaks();
-#endif
     return ret;
 }

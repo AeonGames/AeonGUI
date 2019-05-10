@@ -1,5 +1,5 @@
 ﻿/******************************************************************************
-Copyright 2010-2012 Rodrigo Hernandez Cordoba
+Copyright (C) 2010-2012,2019 Rodrigo Hernandez Cordoba
 
    Licensed under the Apache License, Version 2.0 (the "License");
    you may not use this file except in compliance with the License.
@@ -15,7 +15,7 @@ Copyright 2010-2012 Rodrigo Hernandez Cordoba
 ******************************************************************************/
 #define NOMINMAX
 #include "OpenGLRenderer.h"
-#ifdef WIN32
+#ifdef _WIN32
 #define WIN32_LEAN_AND_MEAN
 #include <windows.h>
 #include <windowsx.h>
