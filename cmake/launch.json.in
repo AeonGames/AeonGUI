@@ -2,7 +2,7 @@
     "version": "0.2.0",
     "configurations": [
         {
-            "name": "Demo",
+            "name": "OpenGL Demo",
             "type": "cppdbg",
             "request": "launch",
             "args": [],
@@ -15,7 +15,7 @@
                 }                    
             ],
             "externalConsole": ${USE_EXTERNAL_CONSOLE},
-                "program": "${CMAKE_BINARY_DIR}/bin/WindowsOpenGL${CMAKE_EXECUTABLE_SUFFIX}",
+                "program": "${CMAKE_BINARY_DIR}/bin/OpenGLDemo${CMAKE_EXECUTABLE_SUFFIX}",
                 "miDebuggerPath": "${GDB_EXECUTABLE}",
                 "MIMode": "gdb",
                 "setupCommands": [

@@ -18,15 +18,16 @@ limitations under the License.
 #include <windows.h>
 #include <windowsx.h>
 #include <GL/gl.h>
-#include <GL/glext.h>
+#include <GL/glcorearb.h>
 #include <GL/glu.h>
+#include <GL/wglext.h>
 #include <iostream>
 #include <sstream>
 #include <cassert>
 #include <cstdint>
 #include <crtdbg.h>
-#include "wglext.h"
 #include "glcommon.h"
+#include "aeongui/Workspace.h"
 
 #define GLGETPROCADDRESS(glFunctionType,glFunction) \
     if(glFunction==nullptr) { \
@@ -80,8 +81,8 @@ layout (location = 0) uniform sampler2D screenTexture;
 
 void main()
 { 
-    FragColor = vec4((Pos.x+1.0)/2,(Pos.y+1.0)/2,0,1);
-    //FragColor = texture(screenTexture, TexCoords);
+    //FragColor = vec4((Pos.x+1.0)/2,(Pos.y+1.0)/2,0,1);
+    FragColor = texture(screenTexture, TexCoords);
 }
 )";
 const GLint fragment_shader_len { sizeof(fragment_shader_code) /*/ sizeof(fragment_shader_code[0])*/};
@@ -89,10 +90,10 @@ const GLchar* const fragment_shader_code_ptr = fragment_shader_code;
 
 const float vertices[] = {  
     // positions   // texCoords
-    -1.0f,  1.0f,  0.0f, 1.0f,
-    -1.0f, -1.0f,  0.0f, 0.0f,
-    1.0f, -1.0f,  1.0f, 0.0f,
-    1.0f,  1.0f,  1.0f, 1.0f
+    -1.0f,  1.0f,  0.0f, 0.0f,
+    -1.0f, -1.0f,  0.0f, 1.0f,
+    1.0f, -1.0f,  1.0f, 1.0f,
+    1.0f,  1.0f,  1.0f, 0.0f
 };
 const GLuint vertex_size{sizeof(vertices)};
 
@@ -127,10 +128,8 @@ GLDEFINEFUNCTION(PFNGLVERTEXATTRIBPOINTERPROC,glVertexAttribPointer);
 class Window
 {
 public:
-    Window() : hWnd ( NULL ), hDC ( NULL ), hRC ( NULL ){};
-    ~Window() {};
-    void Initialize ( HINSTANCE hInstance, LONG aWidth, LONG aHeight );
-    void Finalize ( );
+    Window(HINSTANCE hInstance, LONG aWidth, LONG aHeight) : mWorkspace{static_cast<uint32_t>(aWidth),static_cast<uint32_t>(aHeight)} {Initialize ( hInstance, aWidth, aHeight );}
+    ~Window() {Finalize();}
     LRESULT OnSize ( WPARAM type, WORD newwidth, WORD newheight );
     LRESULT OnPaint();
     LRESULT OnMouseMove ( int32_t x, int32_t y );
@@ -141,19 +140,25 @@ public:
     void RenderLoop();
 private:
     static ATOM atom;
-    HWND hWnd;
-    HDC hDC;
-    HGLRC hRC;
+    void Initialize(HINSTANCE hInstance, LONG aWidth, LONG aHeight);
+    void Finalize();
+    HWND hWnd{};
+    HDC hDC{};
+    HGLRC hRC{};
     GLuint mProgram{};
     GLuint mVAO{};
     GLuint mScreenQuad{};
     GLuint mScreenTexture{};
+    AeonGUI::Workspace mWorkspace;
 };
 
 ATOM Window::atom = 0;
 
 void Window::Initialize ( HINSTANCE hInstance, LONG aWidth, LONG aHeight )
 {
+    std::cout << "Width: " << mWorkspace.GetWidth() << std::endl;
+    std::cout << "Height: " << mWorkspace.GetHeight() << std::endl;
+    std::cout << "Stride: " << mWorkspace.GetStride() << std::endl;
     int pf{};
     PIXELFORMATDESCRIPTOR pfd{};
     RECT rect{0, 0, aWidth, aHeight};
@@ -366,8 +371,8 @@ void Window::Initialize ( HINSTANCE hInstance, LONG aWidth, LONG aHeight )
                     aHeight,
                     0,
                     GL_RGBA,
-                    GL_UNSIGNED_BYTE,
-                    nullptr );
+                    GL_UNSIGNED_INT_8_8_8_8_REV,
+                    mWorkspace.GetData());
     OPENGL_CHECK_ERROR;
     glTexParameteri ( GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST );
     OPENGL_CHECK_ERROR;
@@ -417,13 +422,11 @@ void Window::RenderLoop()
     }
     //wglMakeCurrent ( hDC, hRC );
     glClear ( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT );
-
     glUseProgram(mProgram);  
     glBindVertexArray(mVAO);
     glDisable(GL_DEPTH_TEST);
     glBindTexture(GL_TEXTURE_2D, mScreenTexture);
     glDrawArrays(GL_TRIANGLE_FAN, 0, 4);  
-
     SwapBuffers ( hDC );
     last_time = this_time;
 }
@@ -476,6 +479,7 @@ LRESULT CALLBACK Window::WindowProc ( HWND hwnd, UINT uMsg, WPARAM wParam, LPARA
     case WM_LBUTTONUP:
         lresult = window_ptr->OnMouseButtonUp ( 1, GET_X_LPARAM ( lParam ), GET_Y_LPARAM ( lParam ) );
         break;
+#if 0
     case WM_SETCURSOR:
         if ( LOWORD ( lParam ) == HTCLIENT )
         {
@@ -487,6 +491,7 @@ LRESULT CALLBACK Window::WindowProc ( HWND hwnd, UINT uMsg, WPARAM wParam, LPARA
             return DefWindowProc ( hwnd, uMsg, wParam, lParam );
         }
         break;
+#endif
     default:
         lresult = DefWindowProc ( hwnd, uMsg, wParam, lParam );
     }
@@ -507,6 +512,10 @@ LRESULT Window::OnSize ( WPARAM type, WORD newwidth, WORD newheight )
     }
     glViewport ( 0, 0, width, height );
     OPENGL_CHECK_ERROR;
+    mWorkspace.Resize(static_cast<size_t>(newwidth),static_cast<size_t>(newheight));
+    std::cout << "Width: " << mWorkspace.GetWidth() << std::endl;
+    std::cout << "Height: " << mWorkspace.GetHeight() << std::endl;
+    std::cout << "Stride: " << mWorkspace.GetStride() << std::endl;
     glTexImage2D ( GL_TEXTURE_2D,
                     0,
                     GL_RGBA,
@@ -514,8 +523,8 @@ LRESULT Window::OnSize ( WPARAM type, WORD newwidth, WORD newheight )
                     height,
                     0,
                     GL_RGBA,
-                    GL_UNSIGNED_BYTE,
-                    nullptr );
+                    GL_UNSIGNED_INT_8_8_8_8_REV,
+                    mWorkspace.GetData() );
     OPENGL_CHECK_ERROR;
     return 0;
 }
@@ -550,8 +559,7 @@ LRESULT Window::OnMouseButtonUp ( uint8_t button, int32_t x, int32_t y )
 
 int WINAPI WinMain ( HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nCmdShow )
 {
-    Window window;
-    window.Initialize ( hInstance ,800,600);
+    Window window( hInstance ,800,600);
     MSG msg;
     memset ( &msg, 0, sizeof ( MSG ) );
     while ( msg.message != WM_QUIT )
@@ -570,7 +578,6 @@ int WINAPI WinMain ( HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLi
         }
     }
     assert ( msg.message == WM_QUIT );
-    window.Finalize();
     return static_cast<int> ( msg.wParam );
 }
 

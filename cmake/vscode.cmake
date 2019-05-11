@@ -2,7 +2,6 @@
 # Generate VS Code Environment
 #
 if(CMAKE_GENERATOR MATCHES "(MSYS|Unix) Makefiles")
-  find_program(BASH_EXECUTABLE bash HINTS ENV MINGW_PREFIX MSYS2_PATH)
   set(CODE_ZOOMLEVEL "0" CACHE STRING "window.zoomLevel for VS Code.")
   find_program(GDB_EXECUTABLE gdb HINTS ENV MINGW_PREFIX MSYS2_PATH)
   set(DEBUG_PATH "${CMAKE_BINARY_DIR}/bin")

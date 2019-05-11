@@ -10,9 +10,14 @@ set(CMAKE_MODULE_PATH ${CMAKE_SOURCE_DIR}/cmake)
 
 project(AeonGUI CXX)
 
+include(CheckIncludeFile)
+include(CheckIncludeFileCXX)
+include(CheckIncludeFiles)
+
 find_package(OpenGL)
 find_package(Git)
 
+find_program(BASH_EXECUTABLE bash HINTS ENV MINGW_PREFIX MSYS2_PATH)
 find_program(SED_EXECUTABLE sed
              HINTS ENV
                    MINGW_PREFIX
@@ -74,6 +79,26 @@ endif(USE_ZLIB)
 if(USE_PNG)
 	find_package(libpng)
 endif(USE_PNG)
+
+find_package(PkgConfig)
+if(PKG_CONFIG_FOUND AND BASH_EXECUTABLE AND MSYS)
+  # In order to properly use pkg-config in a msys2 environment we need to jump
+  # through some hoops. CMake seems to call pkg-config without any of the bash
+  # environment set up, so we need to set the proper pkg config path inside the
+  # cmake process address space.
+  execute_process(COMMAND ${BASH_EXECUTABLE} --login -c "echo $PKG_CONFIG_PATH"
+                  OUTPUT_VARIABLE PKG_CONFIG_PATH)
+  set(ENV{PKG_CONFIG_PATH} ${PKG_CONFIG_PATH})
+endif()
+if(PKG_CONFIG_FOUND)
+  pkg_check_modules(CAIRO cairo)
+endif()
+
+if(VCPKG_TARGET_TRIPLET AND NOT CAIRO_FOUND)
+	find_package(unofficial-cairo CONFIG REQUIRED)
+	set(CAIRO_LIBRARIES unofficial::cairo::cairo)
+	set(CAIRO_INCLUDE_DIRS "")
+endif()
 
 include(opensans)
 find_package(FreeType)
