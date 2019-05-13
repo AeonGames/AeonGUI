@@ -370,7 +370,7 @@ void Window::Initialize ( HINSTANCE hInstance, LONG aWidth, LONG aHeight )
                     aWidth,
                     aHeight,
                     0,
-                    GL_RGBA,
+                    GL_BGRA,
                     GL_UNSIGNED_INT_8_8_8_8_REV,
                     mWorkspace.GetData());
     OPENGL_CHECK_ERROR;
@@ -522,7 +522,7 @@ LRESULT Window::OnSize ( WPARAM type, WORD newwidth, WORD newheight )
                     width,
                     height,
                     0,
-                    GL_RGBA,
+                    GL_BGRA,
                     GL_UNSIGNED_INT_8_8_8_8_REV,
                     mWorkspace.GetData() );
     OPENGL_CHECK_ERROR;
