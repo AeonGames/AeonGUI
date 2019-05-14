@@ -16,7 +16,10 @@ limitations under the License.
 #ifndef AEONGUI_WORKSPACE_H
 #define AEONGUI_WORKSPACE_H
 #include <cstdint>
+#include <vector>
+#include <memory>
 #include "aeongui/Platform.h"
+#include "aeongui/Widget.h"
 
 namespace AeonGUI
 {
@@ -26,13 +29,17 @@ namespace AeonGUI
         DLL Workspace ( uint32_t aWidth, uint32_t aHeight );
         DLL ~Workspace();
         DLL void Resize ( uint32_t aWidth, uint32_t aHeight );
+        DLL void Draw() const;
         DLL const uint8_t* GetData() const;
         DLL size_t GetWidth() const;
         DLL size_t GetHeight() const;
         DLL size_t GetStride() const;
+        DLL Widget* AddWidget ( std::unique_ptr<Widget> aWidget );
+        DLL std::unique_ptr<Widget> RemoveWidget ( const Widget* aWidget );
     private:
         void* mCairoSurface{};
         void* mCairoContext{};
+        std::vector<std::unique_ptr<Widget>> mChildren{};
     };
 }
 #endif

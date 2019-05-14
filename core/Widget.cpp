@@ -1,5 +1,5 @@
 /******************************************************************************
-Copyright 2010-2013 Rodrigo Hernandez Cordoba
+Copyright (C) 2010-2013,2019 Rodrigo Hernandez Cordoba
 
    Licensed under the Apache License, Version 2.0 (the "License");
    you may not use this file except in compliance with the License.
@@ -13,10 +13,19 @@ Copyright 2010-2013 Rodrigo Hernandez Cordoba
    See the License for the specific language governing permissions and
    limitations under the License.
 ******************************************************************************/
-#include "Widget.h"
+#include "aeongui/Widget.h"
 
 namespace AeonGUI
 {
+    Widget::Widget ( const Rect& aRect ) :
+        mRect{aRect}
+    {}
+
+    const Rect& Widget::GetRect() const
+    {
+        return mRect;
+    }
+#if 0
     Widget* Widget::focusedWidget = NULL;
     bool Widget::mouseCaptured = false;
 
@@ -185,7 +194,7 @@ namespace AeonGUI
         }
         if ( mouseCaptured )
         {
-            focusedWidget->OnMouseButtonDown ( button, x, y , focusedWidget );
+            focusedWidget->OnMouseButtonDown ( button, x, y, focusedWidget );
         }
         else
         {
@@ -214,7 +223,7 @@ namespace AeonGUI
 
         if ( mouseCaptured )
         {
-            focusedWidget->OnMouseButtonUp ( button, x, y , this );
+            focusedWidget->OnMouseButtonUp ( button, x, y, this );
         }
         else
         {
@@ -229,7 +238,7 @@ namespace AeonGUI
         {
             if ( mouseCaptured )
             {
-                focusedWidget->OnMouseClick ( button, x, y , this );
+                focusedWidget->OnMouseClick ( button, x, y, this );
             }
             else
             {
@@ -469,4 +478,5 @@ namespace AeonGUI
         bordercolor.b = B;
         bordercolor.a = A;
     }
+#endif
 }

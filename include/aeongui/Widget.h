@@ -15,11 +15,15 @@ limitations under the License.
 */
 #include <cstdint>
 #include "aeongui/Platform.h"
+#include "aeongui/Rect.h"
 namespace AeonGUI
 {
     class Widget
     {
     public:
+        DLL Widget ( const Rect& aRect );
+        DLL const Rect& GetRect() const;
     private:
+        Rect mRect{};
     };
 }

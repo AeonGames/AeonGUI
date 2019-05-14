@@ -13,6 +13,7 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 */
+#include <algorithm>
 #include <cairo.h>
 #include "aeongui/Workspace.h"
 
@@ -22,11 +23,7 @@ namespace AeonGUI
         mCairoSurface{cairo_image_surface_create ( CAIRO_FORMAT_ARGB32, aWidth, aHeight ) },
         mCairoContext{cairo_create ( reinterpret_cast<cairo_surface_t*> ( mCairoSurface ) ) }
     {
-        cairo_select_font_face ( reinterpret_cast<cairo_t*> ( mCairoContext ), "serif", CAIRO_FONT_SLANT_NORMAL, CAIRO_FONT_WEIGHT_BOLD );
-        cairo_set_font_size ( reinterpret_cast<cairo_t*> ( mCairoContext ), 32.0 );
-        cairo_set_source_rgb ( reinterpret_cast<cairo_t*> ( mCairoContext ), 0.0, 0.0, 1.0 );
-        cairo_move_to ( reinterpret_cast<cairo_t*> ( mCairoContext ), 10.0, 50.0 );
-        cairo_show_text ( reinterpret_cast<cairo_t*> ( mCairoContext ), "Hello, world" );
+        Draw();
     }
     Workspace::~Workspace()
     {
@@ -52,17 +49,30 @@ namespace AeonGUI
         }
         mCairoSurface = cairo_image_surface_create ( CAIRO_FORMAT_ARGB32, aWidth, aHeight );
         mCairoContext = cairo_create ( reinterpret_cast<cairo_surface_t*> ( mCairoSurface ) );
-        cairo_select_font_face ( reinterpret_cast<cairo_t*> ( mCairoContext ), "serif", CAIRO_FONT_SLANT_NORMAL, CAIRO_FONT_WEIGHT_BOLD );
-        cairo_set_font_size ( reinterpret_cast<cairo_t*> ( mCairoContext ), 32.0 );
-        cairo_set_source_rgb ( reinterpret_cast<cairo_t*> ( mCairoContext ), 0.0, 0.0, 1.0 );
-        cairo_move_to ( reinterpret_cast<cairo_t*> ( mCairoContext ), 10.0, 50.0 );
-        cairo_show_text ( reinterpret_cast<cairo_t*> ( mCairoContext ), "Hello, world" );
+        Draw();
     }
 
     const uint8_t* Workspace::GetData() const
     {
         return cairo_image_surface_get_data ( reinterpret_cast<cairo_surface_t*> ( mCairoSurface ) );
     }
+
+    void Workspace::Draw() const
+    {
+        cairo_select_font_face ( reinterpret_cast<cairo_t*> ( mCairoContext ), "serif", CAIRO_FONT_SLANT_NORMAL, CAIRO_FONT_WEIGHT_BOLD );
+        cairo_set_font_size ( reinterpret_cast<cairo_t*> ( mCairoContext ), 32.0 );
+        cairo_set_source_rgb ( reinterpret_cast<cairo_t*> ( mCairoContext ), 0.0, 0.0, 1.0 );
+        cairo_move_to ( reinterpret_cast<cairo_t*> ( mCairoContext ), 10.0, 50.0 );
+        cairo_show_text ( reinterpret_cast<cairo_t*> ( mCairoContext ), "Hello, world" );
+        cairo_set_source_rgb ( reinterpret_cast<cairo_t*> ( mCairoContext ), 1.0, 1.0, 1.0 );
+        for ( auto& i : mChildren )
+        {
+            const auto& rect = i->GetRect();
+            cairo_rectangle ( reinterpret_cast<cairo_t*> ( mCairoContext ), rect.GetX(), rect.GetY(), rect.GetWidth(), rect.GetHeight() );
+            cairo_fill ( reinterpret_cast<cairo_t*> ( mCairoContext ) );
+        }
+    }
+
     size_t Workspace::GetWidth() const
     {
         return static_cast<size_t> ( cairo_image_surface_get_width ( reinterpret_cast<cairo_surface_t*> ( mCairoSurface ) ) );
@@ -74,5 +84,25 @@ namespace AeonGUI
     size_t Workspace::GetStride() const
     {
         return static_cast<size_t> ( cairo_image_surface_get_stride ( reinterpret_cast<cairo_surface_t*> ( mCairoSurface ) ) );
+    }
+
+    Widget* Workspace::AddWidget ( std::unique_ptr<Widget> aWidget )
+    {
+        return mChildren.emplace_back ( std::move ( aWidget ) ).get();
+    }
+
+    std::unique_ptr<Widget> Workspace::RemoveWidget ( const Widget* aWidget )
+    {
+        std::unique_ptr<Widget> result{};
+        auto i = std::find_if ( mChildren.begin(), mChildren.end(), [aWidget] ( const std::unique_ptr<Widget>& widget )
+        {
+            return aWidget == widget.get();
+        } );
+        if ( i != mChildren.end() )
+        {
+            result = std::move ( *i );
+            mChildren.erase ( std::remove ( i, mChildren.end(), *i ), mChildren.end() );
+        }
+        return result;
     }
 }

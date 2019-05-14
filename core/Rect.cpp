@@ -1,5 +1,5 @@
-/******************************************************************************
-Copyright 2010-2012 Rodrigo Hernandez Cordoba
+/*
+Copyright (C) 2010-2012,2019 Rodrigo Jose Hernandez Cordoba
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -12,127 +12,57 @@ distributed under the License is distributed on an "AS IS" BASIS,
 WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
-******************************************************************************/
+*/
 
-#include "Rect.h"
+#include "aeongui/Rect.h"
 
 namespace AeonGUI
 {
-    Rect::Rect() : left ( 0 ), top ( 0 ), right ( 0 ), bottom ( 0 ) {}
-
-    Rect::Rect ( int32_t X1, int32_t Y1, int32_t X2, int32_t Y2 ) : left ( X1 ), top ( Y1 ), right ( X2 ), bottom ( Y2 ) {}
-
-    int32_t Rect::GetWidth() const
+    Rect::Rect ( int32_t aX, int32_t aY, uint32_t aWidth, uint32_t aHeight ) : mX{aX}, mY{aY}, mWidth{aWidth}, mHeight{aHeight}
     {
-        return right - left;
+
     }
 
-    int32_t Rect::GetHeight() const
+    uint32_t Rect::GetWidth() const
     {
-        return bottom - top;
+        return mWidth;
     }
 
-    int32_t Rect::GetLeft() const
+    uint32_t Rect::GetHeight() const
     {
-        return left;
+        return mHeight;
     }
 
-
-    int32_t Rect::GetTop() const
+    int32_t Rect::GetX() const
     {
-        return top;
+        return mX;
     }
 
-    int32_t Rect::GetRight() const
+    int32_t Rect::GetY() const
     {
-        return right;
+        return mY;
     }
 
-    int32_t Rect::GetBottom() const
+    void Rect::SetWidth ( uint32_t aWidth )
     {
-        return bottom;
+        mWidth = aWidth;
     }
 
-    void Rect::GetPosition ( int32_t& x, int32_t& y ) const
+    void Rect::SetHeight ( uint32_t aHeight )
     {
-        x = left;
-        y = top;
+        mHeight = aHeight;
     }
 
-    void Rect::GetDimensions ( int32_t& width, int32_t& height )
+    void Rect::SetX ( int32_t aX )
     {
-        width = right - left;
-        height = bottom - top;
+        mX = aX;
     }
 
-    int32_t Rect::GetX()
+    void Rect::SetY ( int32_t aY )
     {
-        return left;
+        mY = aY;
     }
-
-    int32_t Rect::GetY()
-    {
-        return top;
-    }
-
-    void Rect::SetW ( int32_t width )
-    {
-        right = left + width;
-    }
-
-    void Rect::SetHeight ( int32_t height )
-    {
-        bottom = top + height;
-    }
-
-    void Rect::SetX ( int32_t X )
-    {
-        right = X + right - left;
-        left = X;
-    }
-
-    void Rect::SetY ( int32_t Y )
-    {
-        bottom = Y + bottom - top;
-        top = Y;
-    }
-
-    void Rect::SetLeft ( int32_t newleft )
-    {
-        left = newleft;
-    }
-
-    void Rect::SetTop ( int32_t newtop )
-    {
-        top = newtop;
-    }
-
-    void Rect::SetRight ( int32_t newright )
-    {
-        right = newright;
-    }
-
-    void Rect::SetBottom ( int32_t newbottom )
-    {
-        bottom = newbottom;
-    }
-
-    void Rect::Set ( int32_t X1, int32_t Y1, int32_t X2, int32_t Y2 )
-    {
-        left = X1;
-        top = Y1;
-        right = X2;
-        bottom = Y2;
-    }
-
-    void Rect::SetPosition ( int32_t X, int32_t Y )
-    {
-        right = X + right - left;
-        bottom = Y + bottom - top;
-        left = X;
-        top = Y;
-    }
-
+#if 0
     void Rect::Move ( int32_t X, int32_t Y )
     {
         left += X;
@@ -163,4 +93,5 @@ namespace AeonGUI
         right = right + amount;
         bottom = bottom + amount;
     }
+#endif
 }

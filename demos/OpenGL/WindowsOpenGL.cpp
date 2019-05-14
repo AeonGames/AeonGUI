@@ -159,6 +159,7 @@ void Window::Initialize ( HINSTANCE hInstance, LONG aWidth, LONG aHeight )
     std::cout << "Width: " << mWorkspace.GetWidth() << std::endl;
     std::cout << "Height: " << mWorkspace.GetHeight() << std::endl;
     std::cout << "Stride: " << mWorkspace.GetStride() << std::endl;
+    mWorkspace.AddWidget(std::make_unique<AeonGUI::Widget>(AeonGUI::Rect{100,100,100,100}));
     int pf{};
     PIXELFORMATDESCRIPTOR pfd{};
     RECT rect{0, 0, aWidth, aHeight};

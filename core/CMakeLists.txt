@@ -1,5 +1,6 @@
 set(AEONGUI_HEADERS
 		../include/aeongui/Platform.h
+        ../include/aeongui/Rect.h
         ../include/aeongui/Widget.h
 		../include/aeongui/Workspace.h
 		#../include/AeonGUI.h
@@ -20,16 +21,16 @@ set(AEONGUI_HEADERS
 
 SET(AEONGUI_SOURCES
 		Workspace.cpp
+        Rect.cpp
+        Widget.cpp
         #AeonGUI.cpp
         #Overlay.cpp
         #Font.cpp
-        #Widget.cpp
         #Button.cpp
         #ScrollBar.cpp
         #MainWindow.cpp
         #Cursor.cpp
         #Image.cpp
-        #Rect.cpp
         #Color.cpp
 )
 
