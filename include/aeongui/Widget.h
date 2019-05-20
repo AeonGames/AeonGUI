@@ -14,6 +14,9 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 #include <cstdint>
+#include <vector>
+#include <memory>
+#include <functional>
 #include "aeongui/Platform.h"
 #include "aeongui/Rect.h"
 namespace AeonGUI
@@ -23,7 +26,15 @@ namespace AeonGUI
     public:
         DLL Widget ( const Rect& aRect );
         DLL const Rect& GetRect() const;
+
+        DLL void TraverseDepthFirstPreOrder ( const std::function<void ( Widget& ) >& aAction );
+        DLL void TraverseDepthFirstPreOrder ( const std::function<void ( const Widget& ) >& aAction ) const;
+        DLL void TraverseDepthFirstPostOrder ( const std::function<void ( Widget& ) >& aAction );
+        DLL void TraverseDepthFirstPostOrder ( const std::function<void ( const Widget& ) >& aAction ) const;
     private:
         Rect mRect{};
+        Widget* mParent{};
+        mutable std::vector<std::unique_ptr<Widget>>::size_type mIterator{ 0 };
+        std::vector<std::unique_ptr<Widget>> mChildren{};
     };
 }

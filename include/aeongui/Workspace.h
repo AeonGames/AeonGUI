@@ -18,6 +18,7 @@ limitations under the License.
 #include <cstdint>
 #include <vector>
 #include <memory>
+#include <algorithm>
 #include "aeongui/Platform.h"
 #include "aeongui/Widget.h"
 
@@ -36,6 +37,10 @@ namespace AeonGUI
         DLL size_t GetStride() const;
         DLL Widget* AddWidget ( std::unique_ptr<Widget> aWidget );
         DLL std::unique_ptr<Widget> RemoveWidget ( const Widget* aWidget );
+        DLL void TraverseDepthFirstPreOrder ( const std::function<void ( Widget& ) >& aAction );
+        DLL void TraverseDepthFirstPreOrder ( const std::function<void ( const Widget& ) >& aAction ) const;
+        DLL void TraverseDepthFirstPostOrder ( const std::function<void ( Widget& ) >& aAction );
+        DLL void TraverseDepthFirstPostOrder ( const std::function<void ( const Widget& ) >& aAction ) const;
     private:
         void* mCairoSurface{};
         void* mCairoContext{};

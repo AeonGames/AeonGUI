@@ -25,6 +25,71 @@ namespace AeonGUI
     {
         return mRect;
     }
+
+    /*  This is ugly, but it is only way to use the same code for the const and the non const version
+        without having to add template or friend members to the class declaration. */
+#define TraverseDepthFirstPreOrder(...) \
+    void Widget::TraverseDepthFirstPreOrder ( const std::function<void ( __VA_ARGS__ Widget& ) >& aAction ) __VA_ARGS__ \
+    {\
+        /** @todo (EC++ Item 3) This code is the same as the constant overload,\
+        but can't easily be implemented in terms of that because of aAction's widget parameter\
+        need to also be const.\
+        */\
+        auto widget{this};\
+        aAction ( *widget );\
+        auto parent = mParent;\
+        while ( widget != parent )\
+        {\
+            if ( widget->mIterator < widget->mChildren.size() )\
+            {\
+                auto prev = widget;\
+                widget = widget->mChildren[widget->mIterator].get();\
+                aAction ( *widget );\
+                prev->mIterator++;\
+            }\
+            else\
+            {\
+                widget->mIterator = 0; /* Reset counter for next traversal.*/\
+                widget = widget->mParent;\
+            }\
+        }\
+    }
+
+    TraverseDepthFirstPreOrder ( const )
+    TraverseDepthFirstPreOrder( )
+#undef TraverseDepthFirstPreOrder
+
+#define TraverseDepthFirstPostOrder(...) \
+    void Widget::TraverseDepthFirstPostOrder ( const std::function<void ( __VA_ARGS__ Widget& ) >& aAction ) __VA_ARGS__ \
+    { \
+        /* \
+        This code implements a similar solution to this stackoverflow answer: \
+        http://stackoverflow.com/questions/5987867/traversing-a-n-ary-tree-without-using-recurrsion/5988138#5988138 \
+        */ \
+        auto node = this; \
+        auto parent = mParent; \
+        while ( node != parent ) \
+        { \
+            if ( node->mIterator < node->mChildren.size() ) \
+            { \
+                auto prev = node; \
+                node = node->mChildren[node->mIterator].get(); \
+                ++prev->mIterator; \
+            } \
+            else \
+            { \
+                aAction ( *node ); \
+                node->mIterator = 0; /* Reset counter for next traversal. */ \
+                node = node->mParent; \
+            } \
+        } \
+    }
+
+    TraverseDepthFirstPostOrder ( const )
+    TraverseDepthFirstPostOrder( )
+#undef TraverseDepthFirstPostOrder
+
+
 #if 0
     Widget* Widget::focusedWidget = NULL;
     bool Widget::mouseCaptured = false;

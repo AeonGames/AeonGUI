@@ -105,4 +105,36 @@ namespace AeonGUI
         }
         return result;
     }
+
+    void Workspace::TraverseDepthFirstPreOrder ( const std::function<void ( Widget& ) >& aAction )
+    {
+        for ( auto & mRootWidget : mChildren )
+        {
+            mRootWidget->TraverseDepthFirstPreOrder ( aAction );
+        }
+    }
+
+    void Workspace::TraverseDepthFirstPreOrder ( const std::function<void ( const Widget& ) >& aAction ) const
+    {
+        for ( const auto& mRootWidget : mChildren )
+        {
+            static_cast<const Widget*> ( mRootWidget.get() )->TraverseDepthFirstPreOrder ( aAction );
+        }
+    }
+
+    void Workspace::TraverseDepthFirstPostOrder ( const std::function<void ( Widget& ) >& aAction )
+    {
+        for ( auto & mRootWidget : mChildren )
+        {
+            mRootWidget->TraverseDepthFirstPostOrder ( aAction );
+        }
+    }
+
+    void Workspace::TraverseDepthFirstPostOrder ( const std::function<void ( const Widget& ) >& aAction ) const
+    {
+        for ( const auto& mRootWidget : mChildren )
+        {
+            static_cast<const Widget*> ( mRootWidget.get() )->TraverseDepthFirstPostOrder ( aAction );
+        }
+    }
 }
