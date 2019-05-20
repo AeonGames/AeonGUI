@@ -92,12 +92,18 @@ if(PKG_CONFIG_FOUND AND BASH_EXECUTABLE AND MSYS)
 endif()
 if(PKG_CONFIG_FOUND)
   pkg_check_modules(CAIRO cairo)
+  pkg_check_modules(LIBRSVG librsvg-2.0)
 endif()
 
 if(VCPKG_TARGET_TRIPLET AND NOT CAIRO_FOUND)
-	find_package(unofficial-cairo CONFIG REQUIRED)
-	set(CAIRO_LIBRARIES unofficial::cairo::cairo)
-	set(CAIRO_INCLUDE_DIRS "")
+  # cairo
+  find_package(unofficial-cairo CONFIG REQUIRED)
+  set(CAIRO_LIBRARIES unofficial::cairo::cairo)
+  set(CAIRO_INCLUDE_DIRS "")
+  # librsvg
+  find_package(unofficial-librsvg CONFIG REQUIRED)
+  set(LIBRSVG_LIBRARIES unofficial::librsvg::librsvg)
+  set(LIBRSVG_INCLUDE_DIRS "")
 endif()
 
 include(opensans)
