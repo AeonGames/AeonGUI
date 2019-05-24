@@ -67,8 +67,8 @@ namespace AeonGUI
         cairo_set_source_rgb ( reinterpret_cast<cairo_t*> ( mCairoContext ), 1.0, 1.0, 1.0 );
         for ( auto& i : mChildren )
         {
-            const auto& rect = i->GetRect();
-            cairo_rectangle ( reinterpret_cast<cairo_t*> ( mCairoContext ), rect.GetX(), rect.GetY(), rect.GetWidth(), rect.GetHeight() );
+            const auto aabb = i->GetTransform() * i->GetAABB();
+            cairo_rectangle ( reinterpret_cast<cairo_t*> ( mCairoContext ), aabb.GetX(), aabb.GetY(), aabb.GetWidth(), aabb.GetHeight() );
             cairo_fill ( reinterpret_cast<cairo_t*> ( mCairoContext ) );
         }
     }

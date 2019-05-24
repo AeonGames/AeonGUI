@@ -3,6 +3,11 @@ set(AEONGUI_HEADERS
         ../include/aeongui/Rect.h
         ../include/aeongui/Widget.h
 		../include/aeongui/Workspace.h
+		../include/aeongui/AABB.h
+		../include/aeongui/Matrix3x3.h
+		../include/aeongui/Matrix2x2.h
+		../include/aeongui/Transform.h
+		../include/aeongui/Vector2.h
 		#../include/AeonGUI.h
 		#../include/Overlay.h
         #../include/KeyListener.h
@@ -23,6 +28,11 @@ SET(AEONGUI_SOURCES
 		Workspace.cpp
         Rect.cpp
         Widget.cpp
+		Transform.cpp
+        Vector2.cpp
+        Matrix3x3.cpp
+        Matrix2x2.cpp
+        AABB.cpp
         #AeonGUI.cpp
         #Overlay.cpp
         #Font.cpp

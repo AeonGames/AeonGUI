@@ -17,13 +17,18 @@ Copyright (C) 2010-2013,2019 Rodrigo Hernandez Cordoba
 
 namespace AeonGUI
 {
-    Widget::Widget ( const Rect& aRect ) :
-        mRect{aRect}
+    Widget::Widget ( const Transform& aTransform, const AABB& aAABB ) :
+        mTransform{aTransform}, mAABB{aAABB}
     {}
 
-    const Rect& Widget::GetRect() const
+    const Transform& Widget::GetTransform() const
     {
-        return mRect;
+        return mTransform;
+    }
+
+    const AABB& Widget::GetAABB() const
+    {
+        return mAABB;
     }
 
     /*  This is ugly, but it is only way to use the same code for the const and the non const version

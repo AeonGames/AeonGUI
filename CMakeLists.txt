@@ -139,6 +139,8 @@ if(CMAKE_COMPILER_IS_GNUC)
 	set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -Wall")
 endif(CMAKE_COMPILER_IS_GNUC)
 
+add_definitions(-D_USE_MATH_DEFINES)
+
 if(BUILD_UNIT_TESTS)
 	include(gmock)
 endif()

@@ -18,21 +18,24 @@ limitations under the License.
 #include <memory>
 #include <functional>
 #include "aeongui/Platform.h"
-#include "aeongui/Rect.h"
+#include "aeongui/Transform.h"
+#include "aeongui/AABB.h"
 namespace AeonGUI
 {
     class Widget
     {
     public:
-        DLL Widget ( const Rect& aRect );
-        DLL const Rect& GetRect() const;
+        DLL Widget ( const Transform& aTransform, const AABB& aAABB );
+        DLL const Transform& GetTransform() const;
+        DLL const AABB& GetAABB() const;
 
         DLL void TraverseDepthFirstPreOrder ( const std::function<void ( Widget& ) >& aAction );
         DLL void TraverseDepthFirstPreOrder ( const std::function<void ( const Widget& ) >& aAction ) const;
         DLL void TraverseDepthFirstPostOrder ( const std::function<void ( Widget& ) >& aAction );
         DLL void TraverseDepthFirstPostOrder ( const std::function<void ( const Widget& ) >& aAction ) const;
     private:
-        Rect mRect{};
+        Transform mTransform{};
+        AABB mAABB{};
         Widget* mParent{};
         mutable std::vector<std::unique_ptr<Widget>>::size_type mIterator{ 0 };
         std::vector<std::unique_ptr<Widget>> mChildren{};
