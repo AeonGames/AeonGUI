@@ -36,7 +36,7 @@ namespace AeonGUI
     {
         return mVector2[1];
     }
-    const float& Vector2::operator[] ( size_t aIndex ) const
+    const float& Vector2::operator[] ( std::size_t aIndex ) const
     {
         return mVector2[aIndex];
     }

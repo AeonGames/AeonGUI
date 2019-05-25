@@ -15,6 +15,7 @@ limitations under the License.
 */
 #ifndef AEONGUI_TRANSFORM_H
 #define AEONGUI_TRANSFORM_H
+#include <cstdint>
 #include "aeongui/Platform.h"
 #include "aeongui/Vector2.h"
 #include "aeongui/Matrix3x3.h"

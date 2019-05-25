@@ -107,7 +107,7 @@ if(VCPKG_TARGET_TRIPLET AND NOT CAIRO_FOUND)
 endif()
 
 include(opensans)
-find_package(FreeType)
+find_package(Freetype)
 if(FREETYPE_FOUND)
 	include_directories(${FREETYPE_INCLUDE_DIRS})
 endif()

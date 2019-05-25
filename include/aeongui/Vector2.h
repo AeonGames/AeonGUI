@@ -27,7 +27,7 @@ namespace AeonGUI
         DLL Vector2 ( float aX, float aY );
         DLL float GetX() const;
         DLL float GetY() const;
-        DLL const float& operator[] ( size_t aIndex ) const;
+        DLL const float& operator[] ( std::size_t aIndex ) const;
         DLL Vector2& operator+= ( const Vector2& aRight );
         DLL Vector2& operator*= ( const Matrix2x2& aRight );
     private:
