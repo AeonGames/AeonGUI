@@ -19,7 +19,7 @@ limitations under the License.
 #include "aeongui/Platform.h"
 namespace AeonGUI
 {
-    class Matrix2x2;
+    class Matrix2x3;
     class Vector2
     {
     public:
@@ -29,11 +29,11 @@ namespace AeonGUI
         DLL float GetY() const;
         DLL const float& operator[] ( std::size_t aIndex ) const;
         DLL Vector2& operator+= ( const Vector2& aRight );
-        DLL Vector2& operator*= ( const Matrix2x2& aRight );
+        DLL Vector2& operator*= ( const Matrix2x3& aRight );
     private:
         float mVector2[2];
     };
     DLL Vector2 operator+ ( const Vector2& aLeft, const Vector2& aRight );
-    DLL Vector2 operator* ( const Vector2& aLeft, const Matrix2x2& aRight );
+    DLL Vector2 operator* ( const Vector2& aLeft, const Matrix2x3& aRight );
 }
 #endif

@@ -18,7 +18,7 @@ limitations under the License.
 #include <cstdint>
 #include "aeongui/Platform.h"
 #include "aeongui/Vector2.h"
-#include "aeongui/Matrix3x3.h"
+#include "aeongui/Matrix2x3.h"
 
 namespace AeonGUI
 {
@@ -31,7 +31,7 @@ namespace AeonGUI
         DLL const Vector2& GetScale() const;
         DLL float GetRotation() const;
         DLL const Vector2& GetTranslation() const;
-        DLL Matrix3x3 GetMatrix() const;
+        DLL Matrix2x3 GetMatrix() const;
 
         DLL void SetScale ( const Vector2& aScale );
         DLL void SetRotation ( float aRotation );

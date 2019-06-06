@@ -14,7 +14,7 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 #include "aeongui/Vector2.h"
-#include "aeongui/Matrix2x2.h"
+#include "aeongui/Matrix2x3.h"
 namespace AeonGUI
 {
     Vector2::Vector2()
@@ -53,7 +53,7 @@ namespace AeonGUI
         return Vector2 { aLeft } += aRight;
     }
 
-    Vector2& Vector2::operator*= ( const Matrix2x2& aRight )
+    Vector2& Vector2::operator*= ( const Matrix2x3& aRight )
     {
         Vector2 local{*this};
         mVector2[0] = local[0] * aRight[0] + local[1] * aRight[1];
@@ -61,7 +61,7 @@ namespace AeonGUI
         return *this;
     }
 
-    Vector2 operator* ( const Vector2& aLeft, const Matrix2x2& aRight )
+    Vector2 operator* ( const Vector2& aLeft, const Matrix2x3& aRight )
     {
         return Vector2 { aLeft } *= aRight;
     }

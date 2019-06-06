@@ -14,7 +14,7 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 #include "aeongui/Transform.h"
-#include "aeongui/Matrix2x2.h"
+#include "aeongui/Matrix2x3.h"
 #include "aeongui/AABB.h"
 
 namespace AeonGUI
@@ -40,9 +40,9 @@ namespace AeonGUI
         return mTranslation;
     }
 
-    Matrix3x3 Transform::GetMatrix() const
+    Matrix2x3 Transform::GetMatrix() const
     {
-        return Matrix3x3{};
+        return Matrix2x3{mScale, mRotation, mTranslation};
     }
 
     void Transform::SetScale ( const Vector2& aScale )
@@ -60,7 +60,7 @@ namespace AeonGUI
 
     Transform& Transform::operator *= ( const Transform& aRight )
     {
-        mTranslation += ( aRight.GetTranslation() * Matrix2x2 ( mRotation ) );
+        mTranslation += ( aRight.GetTranslation() * Matrix2x3 ( mRotation ) );
         mRotation += aRight.GetRotation();
         mScale *= aRight.GetScale();
         return *this;
@@ -73,7 +73,7 @@ namespace AeonGUI
 
     const AABB operator* ( const Transform & aLeft, const AABB & aRight )
     {
-        Matrix2x2 scale_rotation{aLeft.GetScale(), aLeft.GetRotation() };
+        Matrix2x3 scale_rotation{aLeft.GetScale(), aLeft.GetRotation() };
         return AABB
         {
             aLeft.GetTranslation() + ( aRight.GetCenter() * scale_rotation ),

@@ -14,6 +14,7 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 #include <algorithm>
+#include <cmath>
 #include <cairo.h>
 #include "aeongui/Workspace.h"
 
@@ -23,6 +24,7 @@ namespace AeonGUI
         mCairoSurface{cairo_image_surface_create ( CAIRO_FORMAT_ARGB32, aWidth, aHeight ) },
         mCairoContext{cairo_create ( reinterpret_cast<cairo_surface_t*> ( mCairoSurface ) ) }
     {
+        //cairo_rotate(reinterpret_cast<cairo_t*> ( mCairoContext ),45.0*(M_PI/180.0));
         Draw();
     }
     Workspace::~Workspace()
@@ -49,6 +51,7 @@ namespace AeonGUI
         }
         mCairoSurface = cairo_image_surface_create ( CAIRO_FORMAT_ARGB32, aWidth, aHeight );
         mCairoContext = cairo_create ( reinterpret_cast<cairo_surface_t*> ( mCairoSurface ) );
+        //cairo_rotate(reinterpret_cast<cairo_t*> ( mCairoContext ),45.0*(M_PI/180.0));
         Draw();
     }
 
@@ -59,16 +62,31 @@ namespace AeonGUI
 
     void Workspace::Draw() const
     {
+#if 0
         cairo_select_font_face ( reinterpret_cast<cairo_t*> ( mCairoContext ), "serif", CAIRO_FONT_SLANT_NORMAL, CAIRO_FONT_WEIGHT_BOLD );
         cairo_set_font_size ( reinterpret_cast<cairo_t*> ( mCairoContext ), 32.0 );
         cairo_set_source_rgb ( reinterpret_cast<cairo_t*> ( mCairoContext ), 0.0, 0.0, 1.0 );
         cairo_move_to ( reinterpret_cast<cairo_t*> ( mCairoContext ), 10.0, 50.0 );
         cairo_show_text ( reinterpret_cast<cairo_t*> ( mCairoContext ), "Hello, world" );
+#endif
         cairo_set_source_rgb ( reinterpret_cast<cairo_t*> ( mCairoContext ), 1.0, 1.0, 1.0 );
         for ( auto& i : mChildren )
         {
-            const auto aabb = i->GetTransform() * i->GetAABB();
-            cairo_rectangle ( reinterpret_cast<cairo_t*> ( mCairoContext ), aabb.GetX(), aabb.GetY(), aabb.GetWidth(), aabb.GetHeight() );
+            const auto& aabb = /* i->GetTransform() **/ i->GetAABB();
+            const auto matrix = i->GetTransform().GetMatrix();
+            cairo_matrix_t transform
+            {
+                matrix[0], matrix[1],
+                matrix[2], matrix[3],
+                matrix[4], matrix[5],
+            };
+            //cairo_get_matrix(reinterpret_cast<cairo_t*> ( mCairoContext ),&transform);
+            cairo_set_matrix ( reinterpret_cast<cairo_t*> ( mCairoContext ), &transform );
+            cairo_rectangle ( reinterpret_cast<cairo_t*> ( mCairoContext ),
+                              aabb.GetCenter() [0] - aabb.GetRadii() [0],
+                              aabb.GetCenter() [1] - aabb.GetRadii() [1],
+                              aabb.GetRadii() [0] * 2,
+                              aabb.GetRadii() [1] * 2 );
             cairo_fill ( reinterpret_cast<cairo_t*> ( mCairoContext ) );
         }
     }

@@ -4,8 +4,7 @@ set(AEONGUI_HEADERS
         ../include/aeongui/Widget.h
 		../include/aeongui/Workspace.h
 		../include/aeongui/AABB.h
-		../include/aeongui/Matrix3x3.h
-		../include/aeongui/Matrix2x2.h
+		../include/aeongui/Matrix2x3.h
 		../include/aeongui/Transform.h
 		../include/aeongui/Vector2.h
 		#../include/AeonGUI.h
@@ -30,8 +29,7 @@ SET(AEONGUI_SOURCES
         Widget.cpp
 		Transform.cpp
         Vector2.cpp
-        Matrix3x3.cpp
-        Matrix2x2.cpp
+        Matrix2x3.cpp
         AABB.cpp
         #AeonGUI.cpp
         #Overlay.cpp
