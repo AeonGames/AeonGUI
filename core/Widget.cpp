@@ -13,6 +13,7 @@ Copyright (C) 2010-2013,2019 Rodrigo Hernandez Cordoba
    See the License for the specific language governing permissions and
    limitations under the License.
 ******************************************************************************/
+#include <cairo.h>
 #include "aeongui/Widget.h"
 
 namespace AeonGUI
@@ -21,9 +22,25 @@ namespace AeonGUI
         mTransform{aTransform}, mAABB{aAABB}
     {}
 
-    const Transform& Widget::GetTransform() const
+    const Transform& Widget::GetLocalTransform() const
     {
         return mTransform;
+    }
+    void Widget::SetTransform ( const Transform& aTransform )
+    {
+        mTransform = aTransform;
+    }
+
+    const Transform Widget::GetGlobalTransform() const
+    {
+        Transform transform{mTransform};
+        Widget* parent = mParent;
+        while ( parent )
+        {
+            transform = parent->mTransform * transform;
+            parent = parent->mParent;
+        }
+        return transform;
     }
 
     const AABB& Widget::GetAABB() const
@@ -94,6 +111,45 @@ namespace AeonGUI
     TraverseDepthFirstPostOrder( )
 #undef TraverseDepthFirstPostOrder
 
+    void Widget::Draw ( void* aDrawingContext ) const
+    {
+        if ( mParent )
+        {
+            cairo_set_source_rgb ( reinterpret_cast<cairo_t*> ( aDrawingContext ), 1.0, 0.0, 0.0 );
+        }
+        else
+        {
+            cairo_set_source_rgb ( reinterpret_cast<cairo_t*> ( aDrawingContext ), 1.0, 1.0, 1.0 );
+        }
+        cairo_rectangle ( reinterpret_cast<cairo_t*> ( aDrawingContext ),
+                          mAABB.GetCenter() [0] - mAABB.GetRadii() [0],
+                          mAABB.GetCenter() [1] - mAABB.GetRadii() [1],
+                          mAABB.GetRadii() [0] * 2,
+                          mAABB.GetRadii() [1] * 2 );
+        cairo_fill ( reinterpret_cast<cairo_t*> ( aDrawingContext ) );
+    }
+
+    Widget* Widget::AddWidget ( std::unique_ptr<Widget> aWidget )
+    {
+        aWidget->mParent = this;
+        return mChildren.emplace_back ( std::move ( aWidget ) ).get();
+    }
+
+    std::unique_ptr<Widget> Widget::RemoveWidget ( const Widget* aWidget )
+    {
+        std::unique_ptr<Widget> result{};
+        auto i = std::find_if ( mChildren.begin(), mChildren.end(), [aWidget] ( const std::unique_ptr<Widget>& widget )
+        {
+            return aWidget == widget.get();
+        } );
+        if ( i != mChildren.end() )
+        {
+            result = std::move ( *i );
+            mChildren.erase ( std::remove ( i, mChildren.end(), *i ), mChildren.end() );
+        }
+        result->mParent = nullptr;
+        return result;
+    }
 
 #if 0
     Widget* Widget::focusedWidget = NULL;

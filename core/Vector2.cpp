@@ -56,8 +56,8 @@ namespace AeonGUI
     Vector2& Vector2::operator*= ( const Matrix2x3& aRight )
     {
         Vector2 local{*this};
-        mVector2[0] = local[0] * aRight[0] + local[1] * aRight[1];
-        mVector2[1] = local[0] * aRight[2] + local[1] * aRight[3];
+        mVector2[0] = local[0] * aRight[0] + local[1] * aRight[2] + aRight[4];
+        mVector2[1] = local[0] * aRight[1] + local[1] * aRight[3] + aRight[5];
         return *this;
     }
 

@@ -150,6 +150,7 @@ private:
     GLuint mScreenQuad{};
     GLuint mScreenTexture{};
     AeonGUI::Workspace mWorkspace;
+    AeonGUI::Widget* mWidget;
 };
 
 ATOM Window::atom = 0;
@@ -159,14 +160,23 @@ void Window::Initialize ( HINSTANCE hInstance, LONG aWidth, LONG aHeight )
     std::cout << "Width: " << mWorkspace.GetWidth() << std::endl;
     std::cout << "Height: " << mWorkspace.GetHeight() << std::endl;
     std::cout << "Stride: " << mWorkspace.GetStride() << std::endl;
-    mWorkspace.AddWidget(std::make_unique<AeonGUI::Widget>(
+    mWidget = mWorkspace.AddWidget(std::make_unique<AeonGUI::Widget>(
         AeonGUI::Transform{
             {1,1}, // No Scale
-            {}, // No Rotation
+            {0.0}, // rotation
             {128,128}  // Translate to 128,128
         },
         AeonGUI::AABB{{}, // Center at the Origin
-        {64.0f,128.0f}}   // 64x128 rectangle
+        {128.0f,128.0f}}   // Half width and height
+    ));
+    mWidget->AddWidget(std::make_unique<AeonGUI::Widget>(
+        AeonGUI::Transform{
+            {1.0,1.0}, // Scale
+            {0.0}, // rotation
+            {96,96}  // Translation
+        },
+        AeonGUI::AABB{{}, // Center at the Origin
+        {32.0f,32.0f}}   // 64x128 rectangle
     ));
     int pf{};
     PIXELFORMATDESCRIPTOR pfd{};
@@ -273,7 +283,7 @@ void Window::Initialize ( HINSTANCE hInstance, LONG aWidth, LONG aHeight )
     GLGETPROCADDRESS(PFNGLENABLEVERTEXATTRIBARRAYPROC,glEnableVertexAttribArray);
     GLGETPROCADDRESS(PFNGLVERTEXATTRIBPOINTERPROC,glVertexAttribPointer);
 
-    glClearColor ( 0, 0, 0, 0 );
+    glClearColor ( 0, 0, 0, 1 );
     glViewport ( 0, 0, aWidth, aHeight );
     glBlendFunc ( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
     OPENGL_CHECK_ERROR;
@@ -429,12 +439,23 @@ void Window::RenderLoop()
     {
         delta = 1.0f / 30.0f;
     }
-    //wglMakeCurrent ( hDC, hRC );
     glClear ( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT );
     glUseProgram(mProgram);  
     glBindVertexArray(mVAO);
     glDisable(GL_DEPTH_TEST);
+    auto& transform = mWidget->GetLocalTransform();
+    mWidget->SetTransform({transform.GetScale(),transform.GetRotation()+(delta*10),transform.GetTranslation()});
+    mWorkspace.Draw();
     glBindTexture(GL_TEXTURE_2D, mScreenTexture);
+    glTexImage2D ( GL_TEXTURE_2D,
+                    0,
+                    GL_RGBA,
+                    mWorkspace.GetWidth(),
+                    mWorkspace.GetHeight(),
+                    0,
+                    GL_BGRA,
+                    GL_UNSIGNED_INT_8_8_8_8_REV,
+                    mWorkspace.GetData() );
     glDrawArrays(GL_TRIANGLE_FAN, 0, 4);  
     SwapBuffers ( hDC );
     last_time = this_time;

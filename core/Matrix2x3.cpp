@@ -32,7 +32,7 @@ namespace AeonGUI
 
     Matrix2x3::Matrix2x3 ( double aRotation )
     {
-        double radians = aRotation * 180.0f / M_PI;
+        double radians = aRotation * ( M_PI / 180.0 ) ;
         mMatrix2x3[0] = mMatrix2x3[3] = std::cos ( radians );
         mMatrix2x3[1] = -std::sin ( radians );
         mMatrix2x3[2] = std::sin ( radians );

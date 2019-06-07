@@ -26,8 +26,14 @@ namespace AeonGUI
     {
     public:
         DLL Widget ( const Transform& aTransform, const AABB& aAABB );
-        DLL const Transform& GetTransform() const;
+        DLL const Transform& GetLocalTransform() const;
+        DLL void SetTransform ( const Transform& aTransform );
+        DLL const Transform GetGlobalTransform() const;
         DLL const AABB& GetAABB() const;
+        DLL void Draw ( void* aDrawingContext ) const; ///< This should be virtual, but keeping as regular in the meantime.
+
+        DLL Widget* AddWidget ( std::unique_ptr<Widget> aWidget );
+        DLL std::unique_ptr<Widget> RemoveWidget ( const Widget* aWidget );
 
         DLL void TraverseDepthFirstPreOrder ( const std::function<void ( Widget& ) >& aAction );
         DLL void TraverseDepthFirstPreOrder ( const std::function<void ( const Widget& ) >& aAction ) const;

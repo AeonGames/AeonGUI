@@ -68,27 +68,43 @@ namespace AeonGUI
         cairo_set_source_rgb ( reinterpret_cast<cairo_t*> ( mCairoContext ), 0.0, 0.0, 1.0 );
         cairo_move_to ( reinterpret_cast<cairo_t*> ( mCairoContext ), 10.0, 50.0 );
         cairo_show_text ( reinterpret_cast<cairo_t*> ( mCairoContext ), "Hello, world" );
-#endif
         cairo_set_source_rgb ( reinterpret_cast<cairo_t*> ( mCairoContext ), 1.0, 1.0, 1.0 );
-        for ( auto& i : mChildren )
+#endif
+        cairo_save ( reinterpret_cast<cairo_t*> ( mCairoContext ) );
+        //cairo_set_source_rgba (reinterpret_cast<cairo_t*> ( mCairoContext ), r, g, b, a);
+        cairo_set_operator ( reinterpret_cast<cairo_t*> ( mCairoContext ), CAIRO_OPERATOR_CLEAR );
+        cairo_paint ( reinterpret_cast<cairo_t*> ( mCairoContext ) );
+        cairo_restore ( reinterpret_cast<cairo_t*> ( mCairoContext ) );
+        TraverseDepthFirstPreOrder ( [this] ( const Widget & widget )
         {
-            const auto& aabb = /* i->GetTransform() **/ i->GetAABB();
-            const auto matrix = i->GetTransform().GetMatrix();
+            const auto matrix = widget.GetGlobalTransform().GetMatrix();
             cairo_matrix_t transform
             {
                 matrix[0], matrix[1],
                 matrix[2], matrix[3],
                 matrix[4], matrix[5],
             };
-            //cairo_get_matrix(reinterpret_cast<cairo_t*> ( mCairoContext ),&transform);
             cairo_set_matrix ( reinterpret_cast<cairo_t*> ( mCairoContext ), &transform );
-            cairo_rectangle ( reinterpret_cast<cairo_t*> ( mCairoContext ),
-                              aabb.GetCenter() [0] - aabb.GetRadii() [0],
-                              aabb.GetCenter() [1] - aabb.GetRadii() [1],
-                              aabb.GetRadii() [0] * 2,
-                              aabb.GetRadii() [1] * 2 );
-            cairo_fill ( reinterpret_cast<cairo_t*> ( mCairoContext ) );
-        }
+            widget.Draw ( mCairoContext );
+        } );
+#if 0
+        const auto& aabb = /* i->GetTransform() **/ i->GetAABB();
+        const auto matrix = i->GetTransform().GetMatrix();
+        cairo_matrix_t transform
+        {
+            matrix[0], matrix[1],
+            matrix[2], matrix[3],
+            matrix[4], matrix[5],
+        };
+        //cairo_get_matrix(reinterpret_cast<cairo_t*> ( mCairoContext ),&transform);
+        cairo_set_matrix ( reinterpret_cast<cairo_t*> ( mCairoContext ), &transform );
+        cairo_rectangle ( reinterpret_cast<cairo_t*> ( mCairoContext ),
+                          aabb.GetCenter() [0] - aabb.GetRadii() [0],
+                          aabb.GetCenter() [1] - aabb.GetRadii() [1],
+                          aabb.GetRadii() [0] * 2,
+                          aabb.GetRadii() [1] * 2 );
+        cairo_fill ( reinterpret_cast<cairo_t*> ( mCairoContext ) );
+#endif
     }
 
     size_t Workspace::GetWidth() const
