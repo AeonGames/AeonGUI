@@ -102,7 +102,7 @@ if(VCPKG_TARGET_TRIPLET AND NOT CAIRO_FOUND)
   set(CAIRO_INCLUDE_DIRS "")
   # librsvg
   find_package(unofficial-librsvg CONFIG REQUIRED)
-  set(LIBRSVG_LIBRARIES unofficial::librsvg::librsvg)
+  set(LIBRSVG_LIBRARIES unofficial::librsvg::rsvg-2.0)
   set(LIBRSVG_INCLUDE_DIRS "")
 endif()
 

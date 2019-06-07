@@ -8,7 +8,6 @@ set(AEONGUI_HEADERS
 		../include/aeongui/Transform.h
 		../include/aeongui/Vector2.h
 		#../include/AeonGUI.h
-		#../include/Overlay.h
         #../include/KeyListener.h
         #../include/Button.h
         #../include/ScrollBar.h
@@ -32,7 +31,6 @@ SET(AEONGUI_SOURCES
         Matrix2x3.cpp
         AABB.cpp
         #AeonGUI.cpp
-        #Overlay.cpp
         #Font.cpp
         #Button.cpp
         #ScrollBar.cpp
@@ -131,11 +129,11 @@ if(USE_PNG)
 	set(AEONGUI_LIBRARIES ${AEONGUI_LIBRARIES} ${PNG_LIBRARIES} ${ZLIB_LIBRARIES})
 endif(USE_PNG)
 source_group("Resource Files" FILES ${AEONGUI_RESOURCES})
-include_directories(${CAIRO_INCLUDE_DIRS} ${FREETYPE_INCLUDE_DIR_freetype2} ${FREETYPE_INCLUDE_DIR_ft2build})
+include_directories(${CAIRO_INCLUDE_DIRS} ${LIBRSVG_INCLUDE_DIRS} ${FREETYPE_INCLUDE_DIR_freetype2} ${FREETYPE_INCLUDE_DIR_ft2build})
 add_library(AeonGUI SHARED ${AEONGUI_HEADERS} ${AEONGUI_SOURCES} ${AEONGUI_RESOURCES})
 add_dependencies(AeonGUI pcx)
 set_target_properties(AeonGUI PROPERTIES COMPILE_FLAGS "-DNOMINMAX -D_CRT_SECURE_NO_WARNINGS")
-target_link_libraries(AeonGUI ${AEONGUI_LIBRARIES} ${CAIRO_LIBRARIES} ${LIBXML2_LIBRARIES} ${FREETYPE_LIBRARIES})
+target_link_libraries(AeonGUI ${AEONGUI_LIBRARIES} ${CAIRO_LIBRARIES} ${LIBRSVG_LIBRARIES} ${LIBXML2_LIBRARIES} ${FREETYPE_LIBRARIES})
 
 if(BUILD_UNIT_TESTS)
 	subdirs(tests)

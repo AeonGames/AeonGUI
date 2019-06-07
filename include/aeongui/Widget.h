@@ -26,6 +26,7 @@ namespace AeonGUI
     {
     public:
         DLL Widget ( const Transform& aTransform, const AABB& aAABB );
+        DLL ~Widget();
         DLL const Transform& GetLocalTransform() const;
         DLL void SetTransform ( const Transform& aTransform );
         DLL const Transform GetGlobalTransform() const;
@@ -45,5 +46,6 @@ namespace AeonGUI
         Widget* mParent{};
         mutable std::vector<std::unique_ptr<Widget>>::size_type mIterator{ 0 };
         std::vector<std::unique_ptr<Widget>> mChildren{};
+        void* mSvgHandle{}; /// This does not belong here, but its being used for tests
     };
 }
