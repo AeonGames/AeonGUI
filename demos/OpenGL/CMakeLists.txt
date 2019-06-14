@@ -83,6 +83,6 @@ if(WIN32)
     set(HAS_WGLEXT_H 1 CACHE INTERNAL "Downloaded header file" FORCE)
     endif()
 endif()
-                    
+
 add_executable(OpenGLDemo ${WGL_SOURCES} ${WGL_HEADERS} ${WGL_DEPENDENCIES})
 target_link_libraries(OpenGLDemo AeonGUI ${OPENGL_gl_LIBRARY} ${OPENGL_glu_LIBRARY})

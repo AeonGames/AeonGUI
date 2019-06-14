@@ -27,7 +27,7 @@ limitations under the License.
 #include <cstdint>
 #include <crtdbg.h>
 #include "glcommon.h"
-#include "aeongui/Workspace.h"
+#include "aeongui/Window.h"
 
 #define GLGETPROCADDRESS(glFunctionType,glFunction) \
     if(glFunction==nullptr) { \
@@ -128,7 +128,11 @@ GLDEFINEFUNCTION(PFNGLVERTEXATTRIBPOINTERPROC,glVertexAttribPointer);
 class Window
 {
 public:
-    Window(HINSTANCE hInstance, LONG aWidth, LONG aHeight) : mWorkspace{static_cast<uint32_t>(aWidth),static_cast<uint32_t>(aHeight)} {Initialize ( hInstance, aWidth, aHeight );}
+    Window(HINSTANCE hInstance, LPSTR aFilename, LONG aWidth, LONG aHeight) : 
+        mWindow{aFilename,static_cast<uint32_t>(aWidth),static_cast<uint32_t>(aHeight)}
+    {
+        Initialize ( hInstance, aWidth, aHeight );
+    }
     ~Window() {Finalize();}
     LRESULT OnSize ( WPARAM type, WORD newwidth, WORD newheight );
     LRESULT OnPaint();
@@ -149,18 +153,18 @@ private:
     GLuint mVAO{};
     GLuint mScreenQuad{};
     GLuint mScreenTexture{};
-    AeonGUI::Workspace mWorkspace;
-    AeonGUI::Widget* mWidget;
+    AeonGUI::Window mWindow;
 };
 
 ATOM Window::atom = 0;
 
 void Window::Initialize ( HINSTANCE hInstance, LONG aWidth, LONG aHeight )
 {
-    std::cout << "Width: " << mWorkspace.GetWidth() << std::endl;
-    std::cout << "Height: " << mWorkspace.GetHeight() << std::endl;
-    std::cout << "Stride: " << mWorkspace.GetStride() << std::endl;
-    mWidget = mWorkspace.AddWidget(std::make_unique<AeonGUI::Widget>(
+    std::cout << "Width: " << mWindow.GetWidth() << std::endl;
+    std::cout << "Height: " << mWindow.GetHeight() << std::endl;
+    std::cout << "Stride: " << mWindow.GetStride() << std::endl;
+#if 0
+    mWidget = mWindow.AddWidget(std::make_unique<AeonGUI::Widget>(
         AeonGUI::Transform{
             {1,1}, // No Scale
             {0.0}, // rotation
@@ -178,6 +182,7 @@ void Window::Initialize ( HINSTANCE hInstance, LONG aWidth, LONG aHeight )
         AeonGUI::AABB{{}, // Center at the Origin
         {32.0f,32.0f}}   // 64x128 rectangle
     ));
+#endif
     int pf{};
     PIXELFORMATDESCRIPTOR pfd{};
     RECT rect{0, 0, aWidth, aHeight};
@@ -391,7 +396,7 @@ void Window::Initialize ( HINSTANCE hInstance, LONG aWidth, LONG aHeight )
                     0,
                     GL_BGRA,
                     GL_UNSIGNED_INT_8_8_8_8_REV,
-                    mWorkspace.GetData());
+                    mWindow.GetPixels());
     OPENGL_CHECK_ERROR;
     glTexParameteri ( GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST );
     OPENGL_CHECK_ERROR;
@@ -443,19 +448,19 @@ void Window::RenderLoop()
     glUseProgram(mProgram);  
     glBindVertexArray(mVAO);
     glDisable(GL_DEPTH_TEST);
-    auto& transform = mWidget->GetLocalTransform();
-    mWidget->SetTransform({transform.GetScale(),transform.GetRotation()+(delta*10),transform.GetTranslation()});
-    mWorkspace.Draw();
+    //auto& transform = mWidget->GetLocalTransform();
+    //mWidget->SetTransform({transform.GetScale(),transform.GetRotation()+(delta*10),transform.GetTranslation()});
+    mWindow.Render();
     glBindTexture(GL_TEXTURE_2D, mScreenTexture);
     glTexImage2D ( GL_TEXTURE_2D,
                     0,
                     GL_RGBA,
-                    mWorkspace.GetWidth(),
-                    mWorkspace.GetHeight(),
+                    mWindow.GetWidth(),
+                    mWindow.GetHeight(),
                     0,
                     GL_BGRA,
                     GL_UNSIGNED_INT_8_8_8_8_REV,
-                    mWorkspace.GetData() );
+                    mWindow.GetPixels() );
     glDrawArrays(GL_TRIANGLE_FAN, 0, 4);  
     SwapBuffers ( hDC );
     last_time = this_time;
@@ -542,10 +547,10 @@ LRESULT Window::OnSize ( WPARAM type, WORD newwidth, WORD newheight )
     }
     glViewport ( 0, 0, width, height );
     OPENGL_CHECK_ERROR;
-    mWorkspace.Resize(static_cast<size_t>(newwidth),static_cast<size_t>(newheight));
-    std::cout << "Width: " << mWorkspace.GetWidth() << std::endl;
-    std::cout << "Height: " << mWorkspace.GetHeight() << std::endl;
-    std::cout << "Stride: " << mWorkspace.GetStride() << std::endl;
+    mWindow.ResizeViewport(static_cast<size_t>(newwidth),static_cast<size_t>(newheight));
+    std::cout << "Width: " << mWindow.GetWidth() << std::endl;
+    std::cout << "Height: " << mWindow.GetHeight() << std::endl;
+    std::cout << "Stride: " << mWindow.GetStride() << std::endl;
     glTexImage2D ( GL_TEXTURE_2D,
                     0,
                     GL_RGBA,
@@ -554,7 +559,7 @@ LRESULT Window::OnSize ( WPARAM type, WORD newwidth, WORD newheight )
                     0,
                     GL_BGRA,
                     GL_UNSIGNED_INT_8_8_8_8_REV,
-                    mWorkspace.GetData() );
+                    mWindow.GetPixels() );
     OPENGL_CHECK_ERROR;
     return 0;
 }
@@ -589,7 +594,7 @@ LRESULT Window::OnMouseButtonUp ( uint8_t button, int32_t x, int32_t y )
 
 int WINAPI WinMain ( HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nCmdShow )
 {
-    Window window( hInstance ,800,600);
+    Window window( hInstance ,lpCmdLine, 800,600);
     MSG msg;
     memset ( &msg, 0, sizeof ( MSG ) );
     while ( msg.message != WM_QUIT )
@@ -613,6 +618,6 @@ int WINAPI WinMain ( HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLi
 
 int main ( int argc, char *argv[] )
 {
-    int ret = WinMain ( GetModuleHandle ( NULL ), NULL, NULL, 0 );
+    int ret = WinMain ( GetModuleHandle ( NULL ), nullptr, (argc>1)?argv[1]:nullptr, 0 );
     return ret;
 }

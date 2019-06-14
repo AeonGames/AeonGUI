@@ -20,20 +20,29 @@ limitations under the License.
 #include <memory>
 #include <algorithm>
 #include <string>
+///@ Hide implementation details.
 #include <libxml/tree.h>
 #include <libxml/parser.h>
 #include "aeongui/Platform.h"
-#include "aeongui/Widget.h"
+///@todo Canvas should be selectable.
+#include "aeongui/CairoCanvas.h"
 
 namespace AeonGUI
 {
     class Window
     {
     public:
-        DLL Window ( const std::string aFilename );
+        DLL Window ( const std::string aFilename, uint32_t aWidth, uint32_t aHeight );
+        DLL void ResizeViewport ( uint32_t aWidth, uint32_t aHeight );
+        DLL const uint8_t* GetPixels() const;
+        DLL size_t GetWidth() const;
+        DLL size_t GetHeight() const;
+        DLL size_t GetStride() const;
+        DLL void Render();
         DLL ~Window();
     private:
-        xmlDocPtr mDocument;
+        xmlDocPtr mDocument{};
+        CairoCanvas mCanvas;
     };
 }
 #endif
