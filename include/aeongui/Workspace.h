@@ -20,6 +20,7 @@ limitations under the License.
 #include <memory>
 #include <algorithm>
 #include "aeongui/Platform.h"
+#include "aeongui/CairoCanvas.h"
 #include "aeongui/Widget.h"
 
 namespace AeonGUI
@@ -30,7 +31,7 @@ namespace AeonGUI
         DLL Workspace ( uint32_t aWidth, uint32_t aHeight );
         DLL ~Workspace();
         DLL void Resize ( uint32_t aWidth, uint32_t aHeight );
-        DLL void Draw() const;
+        DLL void Draw();
         DLL const uint8_t* GetData() const;
         DLL size_t GetWidth() const;
         DLL size_t GetHeight() const;
@@ -42,8 +43,7 @@ namespace AeonGUI
         DLL void TraverseDepthFirstPostOrder ( const std::function<void ( Widget& ) >& aAction );
         DLL void TraverseDepthFirstPostOrder ( const std::function<void ( const Widget& ) >& aAction ) const;
     private:
-        void* mCairoSurface{};
-        void* mCairoContext{};
+        CairoCanvas mCanvas;
         std::vector<std::unique_ptr<Widget>> mChildren{};
     };
 }

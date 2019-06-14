@@ -3,6 +3,9 @@ set(AEONGUI_HEADERS
         ../include/aeongui/Rect.h
         ../include/aeongui/Widget.h
 		../include/aeongui/Workspace.h
+		../include/aeongui/Window.h
+		../include/aeongui/Canvas.h
+		../include/aeongui/CairoCanvas.h
 		../include/aeongui/AABB.h
 		../include/aeongui/Matrix2x3.h
 		../include/aeongui/Transform.h
@@ -22,14 +25,17 @@ set(AEONGUI_HEADERS
         #../include/Color.h
 )
 
-SET(AEONGUI_SOURCES
-		Workspace.cpp
+set(AEONGUI_SOURCES
+        Window.cpp
+        Workspace.cpp
         Rect.cpp
         Widget.cpp
 		Transform.cpp
         Vector2.cpp
         Matrix2x3.cpp
         AABB.cpp
+        Canvas.cpp
+        CairoCanvas.cpp
         #AeonGUI.cpp
         #Font.cpp
         #Button.cpp

@@ -85,4 +85,4 @@ if(WIN32)
 endif()
                     
 add_executable(OpenGLDemo ${WGL_SOURCES} ${WGL_HEADERS} ${WGL_DEPENDENCIES})
-target_link_libraries(OpenGLDemo ${OPENGL_gl_LIBRARY} ${OPENGL_glu_LIBRARY} AeonGUI)
+target_link_libraries(OpenGLDemo AeonGUI ${OPENGL_gl_LIBRARY} ${OPENGL_glu_LIBRARY})

@@ -15,66 +15,32 @@ limitations under the License.
 */
 #include <algorithm>
 #include <cmath>
-#include <cairo.h>
 #include "aeongui/Workspace.h"
 
 namespace AeonGUI
 {
     Workspace::Workspace ( uint32_t aWidth, uint32_t aHeight ) :
-        mCairoSurface{cairo_image_surface_create ( CAIRO_FORMAT_ARGB32, aWidth, aHeight ) },
-        mCairoContext{cairo_create ( reinterpret_cast<cairo_surface_t*> ( mCairoSurface ) ) }
+        mCanvas{aWidth, aHeight}
     {
-        //cairo_rotate(reinterpret_cast<cairo_t*> ( mCairoContext ),45.0*(M_PI/180.0));
         Draw();
     }
-    Workspace::~Workspace()
-    {
-        if ( mCairoContext )
-        {
-            cairo_destroy ( reinterpret_cast<cairo_t*> ( mCairoContext ) );
-        }
-        if ( mCairoSurface )
-        {
-            cairo_surface_destroy ( reinterpret_cast<cairo_surface_t*> ( mCairoSurface ) );
-        }
-    }
+    Workspace::~Workspace() = default;
 
     void Workspace::Resize ( uint32_t aWidth, uint32_t aHeight )
     {
-        if ( mCairoContext )
-        {
-            cairo_destroy ( reinterpret_cast<cairo_t*> ( mCairoContext ) );
-        }
-        if ( mCairoSurface )
-        {
-            cairo_surface_destroy ( reinterpret_cast<cairo_surface_t*> ( mCairoSurface ) );
-        }
-        mCairoSurface = cairo_image_surface_create ( CAIRO_FORMAT_ARGB32, aWidth, aHeight );
-        mCairoContext = cairo_create ( reinterpret_cast<cairo_surface_t*> ( mCairoSurface ) );
-        //cairo_rotate(reinterpret_cast<cairo_t*> ( mCairoContext ),45.0*(M_PI/180.0));
+        mCanvas.ResizeViewport ( aWidth, aHeight );
         Draw();
     }
 
     const uint8_t* Workspace::GetData() const
     {
-        return cairo_image_surface_get_data ( reinterpret_cast<cairo_surface_t*> ( mCairoSurface ) );
+        return mCanvas.GetPixels();
     }
 
-    void Workspace::Draw() const
+    void Workspace::Draw()
     {
+        mCanvas.Clear();
 #if 0
-        cairo_select_font_face ( reinterpret_cast<cairo_t*> ( mCairoContext ), "serif", CAIRO_FONT_SLANT_NORMAL, CAIRO_FONT_WEIGHT_BOLD );
-        cairo_set_font_size ( reinterpret_cast<cairo_t*> ( mCairoContext ), 32.0 );
-        cairo_set_source_rgb ( reinterpret_cast<cairo_t*> ( mCairoContext ), 0.0, 0.0, 1.0 );
-        cairo_move_to ( reinterpret_cast<cairo_t*> ( mCairoContext ), 10.0, 50.0 );
-        cairo_show_text ( reinterpret_cast<cairo_t*> ( mCairoContext ), "Hello, world" );
-        cairo_set_source_rgb ( reinterpret_cast<cairo_t*> ( mCairoContext ), 1.0, 1.0, 1.0 );
-#endif
-        cairo_save ( reinterpret_cast<cairo_t*> ( mCairoContext ) );
-        //cairo_set_source_rgba (reinterpret_cast<cairo_t*> ( mCairoContext ), r, g, b, a);
-        cairo_set_operator ( reinterpret_cast<cairo_t*> ( mCairoContext ), CAIRO_OPERATOR_CLEAR );
-        cairo_paint ( reinterpret_cast<cairo_t*> ( mCairoContext ) );
-        cairo_restore ( reinterpret_cast<cairo_t*> ( mCairoContext ) );
         TraverseDepthFirstPreOrder ( [this] ( const Widget & widget )
         {
             const auto matrix = widget.GetGlobalTransform().GetMatrix();
@@ -87,37 +53,20 @@ namespace AeonGUI
             cairo_set_matrix ( reinterpret_cast<cairo_t*> ( mCairoContext ), &transform );
             widget.Draw ( mCairoContext );
         } );
-#if 0
-        const auto& aabb = /* i->GetTransform() **/ i->GetAABB();
-        const auto matrix = i->GetTransform().GetMatrix();
-        cairo_matrix_t transform
-        {
-            matrix[0], matrix[1],
-            matrix[2], matrix[3],
-            matrix[4], matrix[5],
-        };
-        //cairo_get_matrix(reinterpret_cast<cairo_t*> ( mCairoContext ),&transform);
-        cairo_set_matrix ( reinterpret_cast<cairo_t*> ( mCairoContext ), &transform );
-        cairo_rectangle ( reinterpret_cast<cairo_t*> ( mCairoContext ),
-                          aabb.GetCenter() [0] - aabb.GetRadii() [0],
-                          aabb.GetCenter() [1] - aabb.GetRadii() [1],
-                          aabb.GetRadii() [0] * 2,
-                          aabb.GetRadii() [1] * 2 );
-        cairo_fill ( reinterpret_cast<cairo_t*> ( mCairoContext ) );
 #endif
     }
 
     size_t Workspace::GetWidth() const
     {
-        return static_cast<size_t> ( cairo_image_surface_get_width ( reinterpret_cast<cairo_surface_t*> ( mCairoSurface ) ) );
+        return mCanvas.GetWidth();
     }
     size_t Workspace::GetHeight() const
     {
-        return static_cast<size_t> ( cairo_image_surface_get_height ( reinterpret_cast<cairo_surface_t*> ( mCairoSurface ) ) );
+        return mCanvas.GetHeight();
     }
     size_t Workspace::GetStride() const
     {
-        return static_cast<size_t> ( cairo_image_surface_get_stride ( reinterpret_cast<cairo_surface_t*> ( mCairoSurface ) ) );
+        return mCanvas.GetStride();
     }
 
     Widget* Workspace::AddWidget ( std::unique_ptr<Widget> aWidget )
