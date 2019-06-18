@@ -16,6 +16,7 @@ limitations under the License.
 #ifndef AEONGUI_CANVAS_H
 #define AEONGUI_CANVAS_H
 #include <cstdint>
+#include <cstddef>
 #include "aeongui/Platform.h"
 namespace AeonGUI
 {
