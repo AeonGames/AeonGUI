@@ -13,9 +13,11 @@ project(AeonGUI CXX)
 include(CheckIncludeFile)
 include(CheckIncludeFileCXX)
 include(CheckIncludeFiles)
+include(duktape)
 
 find_package(OpenGL)
 find_package(Git)
+aeongui_configure_duktape()
 
 find_program(BASH_EXECUTABLE bash HINTS ENV MINGW_PREFIX MSYS2_PATH)
 find_program(SED_EXECUTABLE sed

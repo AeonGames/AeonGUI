@@ -11,6 +11,7 @@
 ###############################
 *.tar.gz
 *.tar.bz2
+*.tar.xz
 *.zip
 
 # Android local properties    #
@@ -29,6 +30,7 @@ v8
 litehtml
 xxd-*
 open-sans*
+duktape-*
 
 # Possible build directories   #
 ###############################
