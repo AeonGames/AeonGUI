@@ -26,10 +26,10 @@ namespace AeonGUI
         DLL AABB ( const Vector2& aCenter, const Vector2& aRadii );
         DLL const Vector2& GetCenter() const;
         DLL const Vector2& GetRadii() const;
-        DLL float GetX() const;
-        DLL float GetY() const;
-        DLL float GetWidth() const;
-        DLL float GetHeight() const;
+        DLL double GetX() const;
+        DLL double GetY() const;
+        DLL double GetWidth() const;
+        DLL double GetHeight() const;
     private:
         Vector2 mCenter{};
         Vector2 mRadii{};

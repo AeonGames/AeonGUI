@@ -46,6 +46,5 @@ namespace AeonGUI
         Widget* mParent{};
         mutable std::vector<std::unique_ptr<Widget>>::size_type mIterator{ 0 };
         std::vector<std::unique_ptr<Widget>> mChildren{};
-        void* mSvgHandle{}; /// This does not belong here, but its being used for tests
     };
 }

@@ -18,19 +18,19 @@ namespace AeonGUI
 {
     AABB::AABB() = default;
     AABB::AABB ( const Vector2& aCenter, const Vector2& aRadii ) : mCenter{aCenter}, mRadii{aRadii} {}
-    float AABB::GetX() const
+    double AABB::GetX() const
     {
         return mCenter.GetX() - mRadii.GetX();
     }
-    float AABB::GetY() const
+    double AABB::GetY() const
     {
         return mCenter.GetY() - mRadii.GetY();
     }
-    float AABB::GetWidth() const
+    double AABB::GetWidth() const
     {
         return mRadii.GetX() * 2;
     }
-    float AABB::GetHeight() const
+    double AABB::GetHeight() const
     {
         return mRadii.GetY() * 2;
     }

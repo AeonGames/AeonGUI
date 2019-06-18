@@ -22,21 +22,21 @@ namespace AeonGUI
         mVector2[0] = 0.0f;
         mVector2[1] = 0.0f;
     }
-    Vector2::Vector2 ( float aX, float aY )
+    Vector2::Vector2 ( double aX, double aY )
     {
         mVector2[0] = aX;
         mVector2[1] = aY;
     }
 
-    float Vector2::GetX() const
+    double Vector2::GetX() const
     {
         return mVector2[0];
     }
-    float Vector2::GetY() const
+    double Vector2::GetY() const
     {
         return mVector2[1];
     }
-    const float& Vector2::operator[] ( std::size_t aIndex ) const
+    const double& Vector2::operator[] ( std::size_t aIndex ) const
     {
         return mVector2[aIndex];
     }

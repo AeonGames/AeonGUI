@@ -15,6 +15,7 @@ limitations under the License.
 */
 #ifndef AEONGUI_VECTOR2_H
 #define AEONGUI_VECTOR2_H
+#include <cstddef>
 #include <cstdint>
 #include "aeongui/Platform.h"
 namespace AeonGUI
@@ -24,14 +25,14 @@ namespace AeonGUI
     {
     public:
         DLL Vector2();
-        DLL Vector2 ( float aX, float aY );
-        DLL float GetX() const;
-        DLL float GetY() const;
-        DLL const float& operator[] ( std::size_t aIndex ) const;
+        DLL Vector2 ( double aX, double aY );
+        DLL double GetX() const;
+        DLL double GetY() const;
+        DLL const double& operator[] ( std::size_t aIndex ) const;
         DLL Vector2& operator+= ( const Vector2& aRight );
         DLL Vector2& operator*= ( const Matrix2x3& aRight );
     private:
-        float mVector2[2];
+        double mVector2[2];
     };
     DLL Vector2 operator+ ( const Vector2& aLeft, const Vector2& aRight );
     DLL Vector2 operator* ( const Vector2& aLeft, const Matrix2x3& aRight );

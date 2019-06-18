@@ -14,23 +14,15 @@ Copyright (C) 2010-2013,2019 Rodrigo Hernandez Cordoba
    limitations under the License.
 ******************************************************************************/
 #include <cairo.h>
-#include <librsvg/rsvg.h>
 #include "aeongui/Widget.h"
 
 namespace AeonGUI
 {
     Widget::Widget ( const Transform& aTransform, const AABB& aAABB ) :
-        mTransform{aTransform}, mAABB{aAABB}, mSvgHandle{rsvg_handle_new_from_file ( "images/aeongui.svg", nullptr ) }
+        mTransform{aTransform}, mAABB{aAABB}
     {}
 
-    Widget::~Widget()
-    {
-        if ( mSvgHandle )
-        {
-            g_object_unref ( reinterpret_cast<RsvgHandle*> ( mSvgHandle ) );
-            mSvgHandle = nullptr;
-        }
-    }
+    Widget::~Widget() = default;
 
     const Transform& Widget::GetLocalTransform() const
     {
@@ -123,8 +115,6 @@ namespace AeonGUI
 
     void Widget::Draw ( void* aDrawingContext ) const
     {
-        rsvg_handle_render_cairo ( reinterpret_cast<RsvgHandle*> ( mSvgHandle ),
-                                   reinterpret_cast<cairo_t*> ( aDrawingContext ) );
         if ( mParent )
         {
             cairo_set_source_rgb ( reinterpret_cast<cairo_t*> ( aDrawingContext ), 1.0, 0.0, 0.0 );
