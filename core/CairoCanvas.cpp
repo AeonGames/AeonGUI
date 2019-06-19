@@ -26,6 +26,10 @@ namespace AeonGUI
 
     void CairoCanvas::ResizeViewport ( uint32_t aWidth, uint32_t aHeight )
     {
+        if ( aWidth == GetWidth() && aHeight == GetHeight() )
+        {
+            return;
+        }
         if ( mCairoContext )
         {
             cairo_destroy ( mCairoContext );
