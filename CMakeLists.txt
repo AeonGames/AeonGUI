@@ -14,6 +14,7 @@ include(CheckIncludeFile)
 include(CheckIncludeFileCXX)
 include(CheckIncludeFiles)
 include(duktape)
+include(vscode)
 
 find_package(OpenGL)
 find_package(Git)
@@ -148,6 +149,13 @@ if(BUILD_UNIT_TESTS)
 endif()
 
 include_directories(include common common/pcx demos/common core)
-subdirs(common/pcx core tools demos)
+add_subdirectory(common/pcx)
+add_subdirectory(core)
+add_subdirectory(tools)
 
-include(vscode)
+if(WIN32)
+  add_subdirectory(demos/OpenGL)
+  configure_vscode(
+    ${CMAKE_SOURCE_DIR}/demos/OpenGL
+)
+endif()
