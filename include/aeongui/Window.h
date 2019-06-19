@@ -20,11 +20,9 @@ limitations under the License.
 #include <memory>
 #include <algorithm>
 #include <string>
-///@ Hide implementation details.
-#include <libxml/tree.h>
-#include <libxml/parser.h>
+#include "aeongui/Document.h"
 #include "aeongui/Platform.h"
-///@todo Canvas should be selectable.
+///@todo Canvas implementation should be selectable.
 #include "aeongui/CairoCanvas.h"
 
 namespace AeonGUI
@@ -39,9 +37,8 @@ namespace AeonGUI
         DLL size_t GetHeight() const;
         DLL size_t GetStride() const;
         DLL void Render();
-        DLL ~Window();
     private:
-        xmlDocPtr mDocument{};
+        Document mDocument;
         CairoCanvas mCanvas;
     };
 }

@@ -21,64 +21,11 @@ limitations under the License.
 
 namespace AeonGUI
 {
-    enum Element
-    {
-        unknown = 0,
-        svg,
-        g,
-        path,
-        rect,
-        line,
-        polyline,
-        polygon,
-        circle,
-        ellipse
-    };
-    static Element GetElementNameEnum ( const std::string& aElementName )
-    {
-        if ( aElementName == "g" )
-        {
-            return g;
-        }
-        else if ( aElementName == "path" )
-        {
-            return path;
-        }
-        else if ( aElementName == "rect" )
-        {
-            return rect;
-        }
-        else if ( aElementName == "line" )
-        {
-            return line;
-        }
-        else if ( aElementName == "polyline" )
-        {
-            return polyline;
-        }
-        else if ( aElementName == "polygon" )
-        {
-            return polygon;
-        }
-        else if ( aElementName == "circle" )
-        {
-            return circle;
-        }
-        else if ( aElementName == "ellipse" )
-        {
-            return ellipse;
-        }
-        return unknown;
-    }
 
     Window::Window ( const std::string aFilename, uint32_t aWidth, uint32_t aHeight ) :
-        mDocument{xmlReadFile ( aFilename.c_str(), nullptr, 0 ) },
+        mDocument{aFilename},
         mCanvas{aWidth, aHeight}
     {
-        if ( mDocument == nullptr )
-        {
-            throw std::runtime_error ( "Failed to parse file." );
-        }
     }
 
     void Window::ResizeViewport ( uint32_t aWidth, uint32_t aHeight )
@@ -104,53 +51,8 @@ namespace AeonGUI
         return mCanvas.GetStride();
     }
 
-    static void Render ( Canvas* aCanvas, xmlNodePtr aNode )
-    {
-        xmlNode *cur_node = nullptr;
-        for ( cur_node = aNode; cur_node; cur_node = cur_node->next )
-        {
-            if ( cur_node->type == XML_ELEMENT_NODE )
-            {
-                std::cout << "Element: " << cur_node->name << std::endl;
-                switch ( GetElementNameEnum ( reinterpret_cast<const std::string::value_type*> ( cur_node->name ) ) )
-                {
-                case unknown:
-                    std::cout << "Unknown Element: " << cur_node->name << std::endl;
-                    break;
-                case svg:
-                    break;
-                case g:
-                    break;
-                case path:
-                    break;
-                case rect:
-                    break;
-                case line:
-                    break;
-                case polyline:
-                    break;
-                case polygon:
-                    break;
-                case circle:
-                    break;
-                case ellipse:
-                    break;
-                }
-            }
-            Render ( aCanvas, cur_node->children );
-        }
-    }
-
     void Window::Render()
     {
         mCanvas.Clear();
-        AeonGUI::Render ( &mCanvas, xmlDocGetRootElement ( mDocument ) );
-    }
-    Window::~Window()
-    {
-        if ( mDocument != nullptr )
-        {
-            xmlFreeDoc ( mDocument );
-        }
     }
 }

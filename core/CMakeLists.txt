@@ -1,8 +1,8 @@
 set(AEONGUI_HEADERS
 		../include/aeongui/Platform.h
         ../include/aeongui/Rect.h
-        ../include/aeongui/Widget.h
-		../include/aeongui/Workspace.h
+        ../include/aeongui/Element.h
+		../include/aeongui/Document.h
 		../include/aeongui/Window.h
 		../include/aeongui/Canvas.h
 		../include/aeongui/CairoCanvas.h
@@ -27,9 +27,9 @@ set(AEONGUI_HEADERS
 
 set(AEONGUI_SOURCES
         Window.cpp
-        Workspace.cpp
+        Document.cpp
         Rect.cpp
-        Widget.cpp
+        Element.cpp
 		Transform.cpp
         Vector2.cpp
         Matrix2x3.cpp
