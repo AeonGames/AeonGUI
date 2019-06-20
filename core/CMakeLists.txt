@@ -2,6 +2,8 @@ set(AEONGUI_HEADERS
 		../include/aeongui/Platform.h
         ../include/aeongui/Rect.h
         ../include/aeongui/Element.h
+        ../include/aeongui/ElementFactory.h
+        ../include/aeongui/StringLiteral.h
 		../include/aeongui/Document.h
 		../include/aeongui/Window.h
 		../include/aeongui/Canvas.h
@@ -26,6 +28,8 @@ set(AEONGUI_HEADERS
 )
 
 set(AEONGUI_SOURCES
+        Factory.h
+        ElementFactory.cpp
         Window.cpp
         Document.cpp
         Rect.cpp
