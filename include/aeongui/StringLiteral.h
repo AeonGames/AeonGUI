@@ -38,14 +38,18 @@ namespace AeonGUI
         constexpr const char* GetString() const
         {
             return mString;
-        };
+        }
         constexpr size_t GetStringSize() const
         {
             return mStringSize;
-        };
-        constexpr bool operator == ( const StringLiteral &b ) const
+        }
+        constexpr bool operator == ( const StringLiteral& b ) const
         {
             return ( mString == b.mString ) || ( strcmp ( mString, b.mString ) == 0 );
+        }
+        constexpr bool operator == ( const char* b ) const
+        {
+            return ( strcmp ( mString, b ) == 0 );
         }
         bool operator == ( const std::string &b ) const
         {

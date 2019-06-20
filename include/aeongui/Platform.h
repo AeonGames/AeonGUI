@@ -27,12 +27,4 @@ limitations under the License.
 #define DLL
 #endif
 #endif
-
-#define FactoryDefinition(X) \
-    DLL std::unique_ptr<X> Construct##X ( const StringLiteral& aIdentifier );\
-    DLL std::unique_ptr<X> Construct##X ( const std::string& aIdentifier );\
-    DLL bool Register##X##Constructor ( const StringLiteral& aIdentifier, const std::function<std::unique_ptr<X>() >& aConstructor );\
-    DLL bool Unregister##X##Constructor ( const StringLiteral& aIdentifier );\
-    DLL void Enumerate##X##Constructors ( const std::function<bool ( const StringLiteral& ) >& aEnumerator );
-
 #endif

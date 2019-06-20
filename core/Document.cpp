@@ -19,6 +19,7 @@ limitations under the License.
 #include <libxml/tree.h>
 #include <libxml/parser.h>
 #include "aeongui/Document.h"
+#include "aeongui/ElementFactory.h"
 
 namespace AeonGUI
 {
@@ -117,7 +118,7 @@ namespace AeonGUI
         {
             if ( node->type == XML_ELEMENT_NODE )
             {
-                aDocument->AddElement ( std::make_unique<Element> ( reinterpret_cast<xmlElementPtr> ( node ) ) );
+                aDocument->AddElement ( Construct ( reinterpret_cast<xmlElementPtr> ( node ) ) );
             }
             AddElements ( aDocument, node->children );
         }

@@ -23,6 +23,10 @@ limitations under the License.
 #include "aeongui/StringLiteral.h"
 namespace AeonGUI
 {
-    FactoryDefinition ( Element );
+    //using Constructor = std::tuple<StringLiteral, std::function < std::unique_ptr<Element>(xmlElementPtr aXmlElementPtr) >>;
+    DLL std::unique_ptr<Element> Construct ( xmlElementPtr aXmlElementPtr );
+    DLL bool RegisterConstructor ( const StringLiteral& aIdentifier, const std::function < std::unique_ptr<Element> ( xmlElementPtr aXmlElementPtr ) > & aConstructor );
+    DLL bool UnregisterConstructor ( const StringLiteral& aIdentifier );
+    DLL void EnumerateConstructors ( const std::function<bool ( const StringLiteral& ) >& aEnumerator );
 }
 #endif

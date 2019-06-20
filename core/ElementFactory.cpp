@@ -13,10 +13,71 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 */
-#include "Factory.h"
+
+#include <vector>
+#include <functional>
+#include <memory>
+#include <utility>
+#include <tuple>
+#include <algorithm>
+#include <libxml/tree.h>
+#include "aeongui/StringLiteral.h"
+#include "aeongui/Element.h"
 #include "aeongui/ElementFactory.h"
 
 namespace AeonGUI
 {
-    FactoryImplementation ( Element );
+    using Constructor = std::tuple<StringLiteral, std::function < std::unique_ptr<Element> ( xmlElementPtr aXmlElementPtr ) >>;
+    static std::vector<Constructor> Constructors;
+    std::unique_ptr<Element> Construct ( xmlElementPtr aXmlElementPtr )
+    {
+        auto it = std::find_if ( Constructors.begin(), Constructors.end(),
+                                 [aXmlElementPtr] ( const Constructor & aConstructor )
+        {
+            return std::get<0> ( aConstructor ) == reinterpret_cast<const char*> ( aXmlElementPtr->name );
+        } );
+        if ( it != Constructors.end() )
+        {
+            return std::get<1> ( *it ) ( aXmlElementPtr );
+        }
+        return std::make_unique<Element> ( aXmlElementPtr );
+    }
+    bool RegisterConstructor ( const StringLiteral& aIdentifier, const std::function < std::unique_ptr<Element> ( xmlElementPtr aXmlElementPtr ) > & aConstructor )
+    {
+        auto it = std::find_if ( Constructors.begin(), Constructors.end(),
+                                 [aIdentifier] ( const Constructor & aConstructor )
+        {
+            return aIdentifier == std::get<0> ( aConstructor );
+        } );
+        if ( it == Constructors.end() )
+        {
+            Constructors.emplace_back ( aIdentifier, aConstructor );
+            return true;
+        }
+        return false;
+    }
+    bool UnregisterConstructor ( const StringLiteral& aIdentifier )
+    {
+        auto it = std::find_if ( Constructors.begin(), Constructors.end(),
+                                 [aIdentifier] ( const Constructor & aConstructor )
+        {
+            return aIdentifier == std::get<0> ( aConstructor );
+        } );
+        if ( it != Constructors.end() )
+        {
+            Constructors.erase ( it );
+            return true;
+        }
+        return false;
+    }
+    void EnumerateConstructors ( const std::function<bool ( const StringLiteral& ) >& aEnumerator )
+    {
+        for ( auto& i : Constructors )
+        {
+            if ( !aEnumerator ( std::get<0> ( i ) ) )
+            {
+                return;
+            }
+        }
+    }
 }

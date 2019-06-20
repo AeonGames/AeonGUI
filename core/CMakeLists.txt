@@ -28,7 +28,6 @@ set(AEONGUI_HEADERS
 )
 
 set(AEONGUI_SOURCES
-        Factory.h
         ElementFactory.cpp
         Window.cpp
         Document.cpp
