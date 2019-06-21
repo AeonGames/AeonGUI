@@ -39,6 +39,24 @@ set(AEONGUI_SOURCES
         AABB.cpp
         Canvas.cpp
         CairoCanvas.cpp
+        elements/SVG.cpp
+        elements/G.cpp
+        elements/Path.cpp
+        elements/Rect.cpp
+        elements/Line.cpp
+        elements/Polyline.cpp
+        elements/Polygon.cpp
+        elements/Circle.cpp
+        elements/Ellipse.cpp
+        elements/SVG.h
+        elements/G.h
+        elements/Path.h
+        elements/Rect.h
+        elements/Line.h
+        elements/Polyline.h
+        elements/Polygon.h
+        elements/Circle.h
+        elements/Ellipse.h
         #AeonGUI.cpp
         #Font.cpp
         #Button.cpp

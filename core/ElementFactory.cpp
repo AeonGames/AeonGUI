@@ -20,15 +20,91 @@ limitations under the License.
 #include <utility>
 #include <tuple>
 #include <algorithm>
+#include <iostream>
 #include <libxml/tree.h>
 #include "aeongui/StringLiteral.h"
 #include "aeongui/Element.h"
 #include "aeongui/ElementFactory.h"
+#include "elements/SVG.h"
+#include "elements/G.h"
+#include "elements/Path.h"
+#include "elements/Rect.h"
+#include "elements/Line.h"
+#include "elements/Polyline.h"
+#include "elements/Polygon.h"
+#include "elements/Circle.h"
+#include "elements/Ellipse.h"
 
 namespace AeonGUI
 {
     using Constructor = std::tuple<StringLiteral, std::function < std::unique_ptr<Element> ( xmlElementPtr aXmlElementPtr ) >>;
-    static std::vector<Constructor> Constructors;
+    static std::vector<Constructor> Constructors
+    {
+        {
+            "svg",
+            [] ( xmlElementPtr aXmlElementPtr )
+            {
+                return std::make_unique<SVG> ( aXmlElementPtr );
+            }
+        },
+        {
+            "g",
+            [] ( xmlElementPtr aXmlElementPtr )
+            {
+                return std::make_unique<G> ( aXmlElementPtr );
+            }
+        },
+        {
+            "path",
+            [] ( xmlElementPtr aXmlElementPtr )
+            {
+                return std::make_unique<Path> ( aXmlElementPtr );
+            }
+        },
+        {
+            "rect",
+            [] ( xmlElementPtr aXmlElementPtr )
+            {
+                return std::make_unique<Rect> ( aXmlElementPtr );
+            }
+        },
+        {
+            "line",
+            [] ( xmlElementPtr aXmlElementPtr )
+            {
+                return std::make_unique<Line> ( aXmlElementPtr );
+            }
+        },
+        {
+            "polyline",
+            [] ( xmlElementPtr aXmlElementPtr )
+            {
+                return std::make_unique<Polyline> ( aXmlElementPtr );
+            }
+        },
+        {
+            "polygon",
+            [] ( xmlElementPtr aXmlElementPtr )
+            {
+                return std::make_unique<Polygon> ( aXmlElementPtr );
+            }
+        },
+        {
+            "circle",
+            [] ( xmlElementPtr aXmlElementPtr )
+            {
+                return std::make_unique<Circle> ( aXmlElementPtr );
+            }
+        },
+        {
+            "ellipse",
+            [] ( xmlElementPtr aXmlElementPtr )
+            {
+                return std::make_unique<Ellipse> ( aXmlElementPtr );
+            }
+        },
+    };
+
     std::unique_ptr<Element> Construct ( xmlElementPtr aXmlElementPtr )
     {
         auto it = std::find_if ( Constructors.begin(), Constructors.end(),

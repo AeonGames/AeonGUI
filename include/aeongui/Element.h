@@ -31,6 +31,7 @@ extern "C"
 
 namespace AeonGUI
 {
+    class Canvas;
     class Element
     {
     public:
@@ -41,9 +42,14 @@ namespace AeonGUI
         DLL void TraverseDepthFirstPreOrder ( const std::function<void ( const Element& ) >& aAction ) const;
         DLL void TraverseDepthFirstPostOrder ( const std::function<void ( Element& ) >& aAction );
         DLL void TraverseDepthFirstPostOrder ( const std::function<void ( const Element& ) >& aAction ) const;
-        DLL const uint8_t* GetTagName() const;
-    private:
+        DLL const char* GetTagName() const;
+        DLL bool HasAttr ( const char* aAttrName ) const;
+        DLL const char* GetAttr ( const char* aAttrName ) const;
+        DLL virtual void Render ( Canvas& aCanvas ) const;
+        DLL virtual ~Element();
+    protected:
         xmlElementPtr mXmlElementPtr{};
+    private:
         Element* mParent{};
         std::vector<std::unique_ptr<Element>> mChildren{};
         mutable std::vector<std::unique_ptr<Element>>::size_type mIterator{ 0 };

@@ -32,9 +32,27 @@ namespace AeonGUI
         }
     }
 
-    const uint8_t* Element::GetTagName() const
+    Element::~Element() = default;
+
+    const char* Element::GetTagName() const
     {
-        return mXmlElementPtr->name;
+        return reinterpret_cast<const char*> ( mXmlElementPtr->name );
+    }
+
+    bool Element::HasAttr ( const char* aAttrName ) const
+    {
+        return xmlHasProp ( reinterpret_cast<xmlNodePtr> ( mXmlElementPtr ), reinterpret_cast<const xmlChar*> ( aAttrName ) );
+    }
+
+    const char* Element::GetAttr ( const char* aAttrName ) const
+    {
+        return reinterpret_cast<const char*> ( xmlGetProp ( reinterpret_cast<xmlNodePtr> ( mXmlElementPtr ), reinterpret_cast<const xmlChar*> ( aAttrName ) ) );
+    }
+
+    void Element::Render ( Canvas& aCanvas ) const
+    {
+        // Do nothing by default
+        ( void ) aCanvas;
     }
 
     /*  This is ugly, but it is only way to use the same code for the const and the non const version
