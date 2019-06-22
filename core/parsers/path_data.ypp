@@ -1,0 +1,124 @@
+/*
+Copyright (C) 2019 Rodrigo Jose Hernandez Cordoba
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+*/
+%{
+%}
+
+%define api.prefix {d}
+
+%union {
+  double Number;
+  uint64_t Command;
+}
+
+%token WSP COMMA_WSP NUMBER NONNEGATIVE_NUMBER FLAG
+
+%%
+
+svg-path:
+    WSP
+    | WSP moveto-drawto-command-groups WSP;
+moveto-drawto-command-groups:
+    moveto-drawto-command-group
+    |  moveto-drawto-command-groups moveto-drawto-command-group;
+moveto-drawto-command-group:
+    moveto WSP
+    | moveto WSP drawto-commands;
+drawto-commands:
+    drawto-command
+    | drawto-commands drawto-command;
+drawto-command:
+    closepath
+    | lineto
+    | horizontal-lineto
+    | vertical-lineto
+    | curveto
+    | smooth-curveto
+    | quadratic-bezier-curveto
+    | smooth-quadratic-bezier-curveto
+    | elliptical-arc;
+moveto:
+    'M' WSP moveto-argument-sequence
+    | 'm' WSP moveto-argument-sequence;
+moveto-argument-sequence:
+    coordinate-pair
+    | coordinate-pair COMMA_WSP lineto-argument-sequence;
+closepath:
+    'Z' | 'z';
+lineto:
+    'L' WSP lineto-argument-sequence
+    | 'l' WSP lineto-argument-sequence;
+lineto-argument-sequence:
+    coordinate-pair
+    | coordinate-pair COMMA_WSP lineto-argument-sequence;
+horizontal-lineto:
+    'H' WSP horizontal-lineto-argument-sequence
+    | 'h' WSP horizontal-lineto-argument-sequence;
+horizontal-lineto-argument-sequence:
+    coordinate
+    | coordinate COMMA_WSP horizontal-lineto-argument-sequence;
+vertical-lineto:
+    'V' WSP vertical-lineto-argument-sequence
+    | 'v' WSP vertical-lineto-argument-sequence;
+vertical-lineto-argument-sequence:
+    coordinate
+    | coordinate COMMA_WSP vertical-lineto-argument-sequence;
+curveto:
+    'C' WSP curveto-argument-sequence
+    | 'c' WSP curveto-argument-sequence;
+curveto-argument-sequence:
+    curveto-argument
+    | curveto-argument COMMA_WSP curveto-argument-sequence;
+curveto-argument:
+    coordinate-pair COMMA_WSP coordinate-pair COMMA_WSP coordinate-pair;
+smooth-curveto:
+    'S' WSP smooth-curveto-argument-sequence
+    | 's' WSP smooth-curveto-argument-sequence;
+smooth-curveto-argument-sequence:
+    smooth-curveto-argument
+    | smooth-curveto-argument COMMA_WSP smooth-curveto-argument-sequence;
+smooth-curveto-argument:
+    coordinate-pair COMMA_WSP coordinate-pair;
+quadratic-bezier-curveto:
+    'Q' WSP quadratic-bezier-curveto-argument-sequence
+    | 'q' WSP quadratic-bezier-curveto-argument-sequence;
+quadratic-bezier-curveto-argument-sequence:
+    quadratic-bezier-curveto-argument
+    | quadratic-bezier-curveto-argument COMMA_WSP 
+        quadratic-bezier-curveto-argument-sequence;
+quadratic-bezier-curveto-argument:
+    coordinate-pair COMMA_WSP coordinate-pair;
+smooth-quadratic-bezier-curveto:
+    'T' WSP smooth-quadratic-bezier-curveto-argument-sequence
+    | 't'  WSP smooth-quadratic-bezier-curveto-argument-sequence;
+smooth-quadratic-bezier-curveto-argument-sequence:
+    coordinate-pair
+    | coordinate-pair COMMA_WSP smooth-quadratic-bezier-curveto-argument-sequence;
+elliptical-arc:
+    'A' WSP elliptical-arc-argument-sequence
+    | 'a' WSP elliptical-arc-argument-sequence;
+elliptical-arc-argument-sequence:
+    elliptical-arc-argument
+    | elliptical-arc-argument COMMA_WSP elliptical-arc-argument-sequence;
+elliptical-arc-argument:
+    NONNEGATIVE_NUMBER COMMA_WSP NONNEGATIVE_NUMBER COMMA_WSP 
+        number COMMA_WSP FLAG COMMA_WSP FLAG COMMA_WSP coordinate-pair;
+coordinate-pair:
+    coordinate COMMA_WSP coordinate;
+coordinate:
+    number;
+number:
+    NONNEGATIVE_NUMBER | NUMBER;
+%%
