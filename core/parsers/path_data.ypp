@@ -1,3 +1,4 @@
+%{
 /*
 Copyright (C) 2019 Rodrigo Jose Hernandez Cordoba
 
@@ -13,10 +14,11 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 */
-%{
 #include <cstddef>
 #include <cstdint>
 #include <iostream>
+#include "../core/parsers/dstype.h"
+
 extern int dlex();
 extern "C"
 {
@@ -25,11 +27,6 @@ extern "C"
 %}
 
 %define api.prefix {d}
-
-%union {
-  double Number;
-  uint64_t Command;
-}
 
 %token NUMBER
 
@@ -59,8 +56,8 @@ drawto-command:
     | smooth-quadratic-bezier-curveto
     | elliptical-arc;
 moveto:
-    'M' moveto-argument-sequence
-    | 'm'  moveto-argument-sequence
+    'M' moveto-argument-sequence { std::cout << 'M' << std::endl; }
+    | 'm'  moveto-argument-sequence { std::cout << 'm' << std::endl; }
     ;
 moveto-argument-sequence:
     coordinate-pair
@@ -69,12 +66,13 @@ moveto-argument-sequence:
 closepath:
     'Z' | 'z';
 lineto:
-    'L' lineto-argument-sequence
-    | 'l'  lineto-argument-sequence
+    'L' lineto-argument-sequence { std::cout << 'L' << std::endl; }
+    | 'l'  lineto-argument-sequence { std::cout << 'l' << std::endl; }
     ;
 lineto-argument-sequence:
     coordinate-pair
-    | coordinate-pair ',' lineto-argument-sequence;
+    | lineto-argument-sequence ',' coordinate-pair
+    ; 
 horizontal-lineto:
     'H' horizontal-lineto-argument-sequence
     | 'h'  horizontal-lineto-argument-sequence
@@ -141,8 +139,8 @@ elliptical-arc-argument:
     NUMBER ',' NUMBER ',' 
         NUMBER ',' NUMBER ',' NUMBER ',' coordinate-pair;
 coordinate-pair:
-    coordinate ',' coordinate
-    | coordinate  coordinate
+    coordinate ',' coordinate {$$ = AeonGUI::Vector2(std::get<double>($1),std::get<double>($3));}
+    | coordinate coordinate {$$ = AeonGUI::Vector2(std::get<double>($1),std::get<double>($2));}
     ;
 coordinate:
     NUMBER;

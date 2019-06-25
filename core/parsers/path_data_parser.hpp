@@ -63,17 +63,7 @@ enum dtokentype
 
 /* Value type.  */
 #if ! defined DSTYPE && ! defined DSTYPE_IS_DECLARED
-union DSTYPE
-{
-#line 29 "C:/Code/AeonGUI/core/parsers/path_data.ypp"
-
-    double Number;
-    uint64_t Command;
-
-#line 74 "C:/Code/AeonGUI/mingw64/core/path_data_parser.hpp"
-
-};
-typedef union DSTYPE DSTYPE;
+typedef int DSTYPE;
 # define DSTYPE_IS_TRIVIAL 1
 # define DSTYPE_IS_DECLARED 1
 #endif

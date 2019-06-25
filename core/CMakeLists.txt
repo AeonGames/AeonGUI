@@ -141,7 +141,7 @@ if(FLEX_FOUND AND BISON_FOUND)
     bison_target(path_data_parser ${CMAKE_CURRENT_SOURCE_DIR}/parsers/path_data.ypp ${CMAKE_CURRENT_BINARY_DIR}/path_data_parser.cpp COMPILE_FLAGS "-v -d")
     flex_target(path_data_lexer ${CMAKE_CURRENT_SOURCE_DIR}/parsers/path_data.l ${CMAKE_CURRENT_BINARY_DIR}/path_data_lexer.cpp COMPILE_FLAGS "-Cf")
     add_flex_bison_dependency(path_data_lexer path_data_parser)
-    list(APPEND AEONGUI_SOURCES ${BISON_path_data_parser_OUTPUTS} ${FLEX_path_data_lexer_OUTPUTS})
+    list(APPEND AEONGUI_SOURCES ${BISON_path_data_parser_OUTPUTS} ${FLEX_path_data_lexer_OUTPUTS} parsers/dstype.h)
     add_custom_target(update-parser-code
         COMMAND
             ${CMAKE_COMMAND} -E copy_if_different ${BISON_path_data_parser_OUTPUTS} ${FLEX_path_data_lexer_OUTPUTS} ${CMAKE_SOURCE_DIR}/core/parsers
@@ -155,7 +155,8 @@ else()
     list(APPEND AEONGUI_SOURCES
         parsers/path_data_lexer.cpp
         parsers/path_data_parser.cpp
-        parsers/path_data_parser.hpp)
+        parsers/path_data_parser.hpp
+        parsers/dstype.h)
 endif()
 
 set(AEONGUI_LIBRARIES ${LIBXML2_LIBRARIES} pcx)

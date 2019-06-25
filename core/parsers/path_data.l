@@ -16,6 +16,8 @@ limitations under the License.
 */
 #include <cstddef>
 #include <cstdint>
+#include <cstdlib>
+#include "../core/parsers/dstype.h"
 #include "path_data_parser.hpp"
 %}
 
@@ -30,7 +32,10 @@ limitations under the License.
 number               -?([0-9]+|[0-9]*\.[0-9]+([eE][-+]?[0-9]+)?)
 
 %%
-{number}                return NUMBER;
+{number}                {
+							dlval = std::strtod(yytext,nullptr);
+							return NUMBER;
+						}
 ","                     return ',';
 "M"                     return 'M';
 "m"                     return 'm';
