@@ -25,11 +25,13 @@ namespace AeonGUI
         {
             throw std::runtime_error ( "XML Element is NULL" );
         }
+#if 0
         std::cout << mXmlElementPtr->name << std::endl;
         for ( auto* attribute = mXmlElementPtr->attributes; attribute; attribute = attribute->nexth )
         {
             std::cout << "\t" << attribute->name << " " << xmlGetProp ( reinterpret_cast<xmlNodePtr> ( mXmlElementPtr ), attribute->name ) << std::endl;
         }
+#endif
     }
 
     Element::~Element() = default;

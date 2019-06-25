@@ -14,25 +14,24 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 */
+#include <cstddef>
+#include <cstdint>
+#include "path_data_parser.hpp"
 %}
 
 %option nounput
 %option noreject
 %option nostdinit
+%option noyywrap
+%option noyylineno
+%option nodebug
 %option prefix="d"
 
 number               -?([0-9]+|[0-9]*\.[0-9]+([eE][-+]?[0-9]+)?)
-nonnegative-number   [^-]([0-9]+|[0-9]*\.[0-9]+([eE][-+]?[0-9]+)?)
-comma-wsp            ([\x20|\x9|\xD|\xA]+,?[\x20|\x9|\xD|\xA]*|,[\x20|\x9|\xD|\xA]*)
-flag                 ([\x20|\x9|\xD|\xA,][1|0])
-wsp                  [\x20|\x9|\xD|\xA]*
 
 %%
 {number}                return NUMBER;
-{nonnegative-number}    return NONNEGATIVE_NUMBER;
-{flag}                  return FLAG;
-{wsp}                   return WSP;
-{comma-wsp}             return COMMA_WSP;
+","                     return ',';
 "M"                     return 'M';
 "m"                     return 'm';
 "Z"                     return 'Z';
@@ -56,13 +55,13 @@ wsp                  [\x20|\x9|\xD|\xA]*
 .
 %%
 
-int dwrap(void)
+namespace AeonGUI
 {
-	return 1;
-}
-
-int main()
-{
- dlex() ;
- return 0;
+	int ParsePathData(const char* string)
+	{
+		YY_BUFFER_STATE state=d_scan_string(string);
+		d_switch_to_buffer(state);
+		BEGIN(INITIAL);
+		return dparse();
+	}
 }

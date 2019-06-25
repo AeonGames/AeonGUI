@@ -13,12 +13,21 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 */
+#include <iostream>
 #include "Path.h"
 
 namespace AeonGUI
 {
+    int ParsePathData ( const char* s );
     Path::Path ( xmlElementPtr aXmlElementPtr ) : Element ( aXmlElementPtr )
     {
+        if ( HasAttr ( "d" ) )
+        {
+            if ( int error = ParsePathData ( GetAttr ( "d" ) ) )
+            {
+                std::cerr << error << std::endl;
+            }
+        }
     }
     Path::~Path()
     {

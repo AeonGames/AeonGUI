@@ -1,3 +1,7 @@
+
+find_package(BISON)
+find_package(FLEX)
+
 set(AEONGUI_HEADERS
 		../include/aeongui/Platform.h
         ../include/aeongui/Rect.h
@@ -12,19 +16,6 @@ set(AEONGUI_HEADERS
 		../include/aeongui/Matrix2x3.h
 		../include/aeongui/Transform.h
 		../include/aeongui/Vector2.h
-		#../include/AeonGUI.h
-        #../include/KeyListener.h
-        #../include/Button.h
-        #../include/ScrollBar.h
-        #../include/MainWindow.h
-        #../include/Cursor.h
-        #../include/Static.h
-        #../include/Image.h
-        #../include/Font.h
-        #../include/Renderer.h
-        #../include/Integer.h
-        #../include/Rect.h
-        #../include/Color.h
 )
 
 set(AEONGUI_SOURCES
@@ -57,14 +48,6 @@ set(AEONGUI_SOURCES
         elements/Polygon.h
         elements/Circle.h
         elements/Ellipse.h
-        #AeonGUI.cpp
-        #Font.cpp
-        #Button.cpp
-        #ScrollBar.cpp
-        #MainWindow.cpp
-        #Cursor.cpp
-        #Image.cpp
-        #Color.cpp
 )
 
 if(USE_CUDA)
@@ -151,6 +134,30 @@ endif(USE_CUDA)
 #	resources/minimize_down.h
 #	resources/restore_down.h
 #)
+
+if(FLEX_FOUND AND BISON_FOUND)
+    message(STATUS "Parser code will be generated from Flex and Bison code.")
+    message(STATUS "Build the 'update-parser-code' target if you want to update the pre-generated code.")
+    bison_target(path_data_parser ${CMAKE_CURRENT_SOURCE_DIR}/parsers/path_data.ypp ${CMAKE_CURRENT_BINARY_DIR}/path_data_parser.cpp COMPILE_FLAGS "-v -d")
+    flex_target(path_data_lexer ${CMAKE_CURRENT_SOURCE_DIR}/parsers/path_data.l ${CMAKE_CURRENT_BINARY_DIR}/path_data_lexer.cpp COMPILE_FLAGS "-Cf")
+    add_flex_bison_dependency(path_data_lexer path_data_parser)
+    list(APPEND AEONGUI_SOURCES ${BISON_path_data_parser_OUTPUTS} ${FLEX_path_data_lexer_OUTPUTS})
+    add_custom_target(update-parser-code
+        COMMAND
+            ${CMAKE_COMMAND} -E copy_if_different ${BISON_path_data_parser_OUTPUTS} ${FLEX_path_data_lexer_OUTPUTS} ${CMAKE_SOURCE_DIR}/core/parsers
+        DEPENDS
+            path_data_parser
+            path_data_lexer
+        COMMENT "Updating pre-generated parser code.")
+else()
+    message(STATUS "Using pre-generated parser code.")
+    message(STATUS "Install Flex and Bison if you want to regenerate the parser code at build time.")
+    list(APPEND AEONGUI_SOURCES
+        parsers/path_data_lexer.cpp
+        parsers/path_data_parser.cpp
+        parsers/path_data_parser.hpp)
+endif()
+
 set(AEONGUI_LIBRARIES ${LIBXML2_LIBRARIES} pcx)
 if(USE_PNG)
 	set(AEONGUI_LIBRARIES ${AEONGUI_LIBRARIES} ${PNG_LIBRARIES} ${ZLIB_LIBRARIES})

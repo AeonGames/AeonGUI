@@ -14,6 +14,14 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 %{
+#include <cstddef>
+#include <cstdint>
+#include <iostream>
+extern int dlex();
+extern "C"
+{
+    int derror (const char *s);
+}
 %}
 
 %define api.prefix {d}
@@ -23,19 +31,20 @@ limitations under the License.
   uint64_t Command;
 }
 
-%token WSP COMMA_WSP NUMBER NONNEGATIVE_NUMBER FLAG
+%token NUMBER
 
 %%
 
 svg-path:
-    WSP
-    | WSP moveto-drawto-command-groups WSP;
+    | moveto-drawto-command-groups
+    ;
 moveto-drawto-command-groups:
     moveto-drawto-command-group
-    |  moveto-drawto-command-groups moveto-drawto-command-group;
+    | moveto-drawto-command-groups moveto-drawto-command-group;
 moveto-drawto-command-group:
-    moveto WSP
-    | moveto WSP drawto-commands;
+    moveto
+    | moveto drawto-commands
+    ;
 drawto-commands:
     drawto-command
     | drawto-commands drawto-command;
@@ -50,75 +59,100 @@ drawto-command:
     | smooth-quadratic-bezier-curveto
     | elliptical-arc;
 moveto:
-    'M' WSP moveto-argument-sequence
-    | 'm' WSP moveto-argument-sequence;
+    'M' moveto-argument-sequence
+    | 'm'  moveto-argument-sequence
+    ;
 moveto-argument-sequence:
     coordinate-pair
-    | coordinate-pair COMMA_WSP lineto-argument-sequence;
+    | coordinate-pair ',' lineto-argument-sequence
+    ;
 closepath:
     'Z' | 'z';
 lineto:
-    'L' WSP lineto-argument-sequence
-    | 'l' WSP lineto-argument-sequence;
+    'L' lineto-argument-sequence
+    | 'l'  lineto-argument-sequence
+    ;
 lineto-argument-sequence:
     coordinate-pair
-    | coordinate-pair COMMA_WSP lineto-argument-sequence;
+    | coordinate-pair ',' lineto-argument-sequence;
 horizontal-lineto:
-    'H' WSP horizontal-lineto-argument-sequence
-    | 'h' WSP horizontal-lineto-argument-sequence;
+    'H' horizontal-lineto-argument-sequence
+    | 'h'  horizontal-lineto-argument-sequence
+    ;
 horizontal-lineto-argument-sequence:
     coordinate
-    | coordinate COMMA_WSP horizontal-lineto-argument-sequence;
+    | coordinate ',' horizontal-lineto-argument-sequence;
 vertical-lineto:
-    'V' WSP vertical-lineto-argument-sequence
-    | 'v' WSP vertical-lineto-argument-sequence;
+    'V' vertical-lineto-argument-sequence
+    | 'v'  vertical-lineto-argument-sequence
+    ;
 vertical-lineto-argument-sequence:
     coordinate
-    | coordinate COMMA_WSP vertical-lineto-argument-sequence;
+    | coordinate ',' vertical-lineto-argument-sequence;
 curveto:
-    'C' WSP curveto-argument-sequence
-    | 'c' WSP curveto-argument-sequence;
+    'C' curveto-argument-sequence
+    | 'c'  curveto-argument-sequence
+    ;
 curveto-argument-sequence:
     curveto-argument
-    | curveto-argument COMMA_WSP curveto-argument-sequence;
+    | curveto-argument-sequence ',' curveto-argument
+    | curveto-argument-sequence  curveto-argument
+    ;
 curveto-argument:
-    coordinate-pair COMMA_WSP coordinate-pair COMMA_WSP coordinate-pair;
+    coordinate-pair ',' coordinate-pair ',' coordinate-pair
+    | coordinate-pair  coordinate-pair  coordinate-pair
+    ;
 smooth-curveto:
-    'S' WSP smooth-curveto-argument-sequence
-    | 's' WSP smooth-curveto-argument-sequence;
+    'S' smooth-curveto-argument-sequence
+    | 's'  smooth-curveto-argument-sequence
+    ;
 smooth-curveto-argument-sequence:
     smooth-curveto-argument
-    | smooth-curveto-argument COMMA_WSP smooth-curveto-argument-sequence;
+    | smooth-curveto-argument ',' smooth-curveto-argument-sequence;
 smooth-curveto-argument:
-    coordinate-pair COMMA_WSP coordinate-pair;
+    coordinate-pair ',' coordinate-pair;
 quadratic-bezier-curveto:
-    'Q' WSP quadratic-bezier-curveto-argument-sequence
-    | 'q' WSP quadratic-bezier-curveto-argument-sequence;
+    'Q' quadratic-bezier-curveto-argument-sequence
+    | 'q'  quadratic-bezier-curveto-argument-sequence
+    ;
 quadratic-bezier-curveto-argument-sequence:
     quadratic-bezier-curveto-argument
-    | quadratic-bezier-curveto-argument COMMA_WSP 
+    | quadratic-bezier-curveto-argument ',' 
         quadratic-bezier-curveto-argument-sequence;
 quadratic-bezier-curveto-argument:
-    coordinate-pair COMMA_WSP coordinate-pair;
+    coordinate-pair ',' coordinate-pair;
 smooth-quadratic-bezier-curveto:
-    'T' WSP smooth-quadratic-bezier-curveto-argument-sequence
-    | 't'  WSP smooth-quadratic-bezier-curveto-argument-sequence;
+    'T' smooth-quadratic-bezier-curveto-argument-sequence
+    | 't'  smooth-quadratic-bezier-curveto-argument-sequence
+    ;
 smooth-quadratic-bezier-curveto-argument-sequence:
     coordinate-pair
-    | coordinate-pair COMMA_WSP smooth-quadratic-bezier-curveto-argument-sequence;
+    | smooth-quadratic-bezier-curveto-argument-sequence ',' coordinate-pair;
 elliptical-arc:
-    'A' WSP elliptical-arc-argument-sequence
-    | 'a' WSP elliptical-arc-argument-sequence;
+    'A' elliptical-arc-argument-sequence
+    | 'a' elliptical-arc-argument-sequence
+    ;
 elliptical-arc-argument-sequence:
     elliptical-arc-argument
-    | elliptical-arc-argument COMMA_WSP elliptical-arc-argument-sequence;
+    | elliptical-arc-argument-sequence ',' elliptical-arc-argument
+    | elliptical-arc-argument-sequence  elliptical-arc-argument
+    ;
 elliptical-arc-argument:
-    NONNEGATIVE_NUMBER COMMA_WSP NONNEGATIVE_NUMBER COMMA_WSP 
-        number COMMA_WSP FLAG COMMA_WSP FLAG COMMA_WSP coordinate-pair;
+    NUMBER ',' NUMBER ',' 
+        NUMBER ',' NUMBER ',' NUMBER ',' coordinate-pair;
 coordinate-pair:
-    coordinate COMMA_WSP coordinate;
+    coordinate ',' coordinate
+    | coordinate  coordinate
+    ;
 coordinate:
-    number;
-number:
-    NONNEGATIVE_NUMBER | NUMBER;
+    NUMBER;
 %%
+
+extern "C"
+{
+    int derror (const char *s)
+    {
+        std::cerr << s << std::endl;
+        return 0;
+    }
+}

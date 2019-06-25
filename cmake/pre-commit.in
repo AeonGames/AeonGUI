@@ -61,7 +61,7 @@ if [ $EXIT_CODE -ne 0 ]; then
 fi
 
 for FILE in $FILES; do
-	"${GREP_EXECUTABLE}" -qIl "Copyright (C) [0-9,-]*$YEAR" $FILE
+	"${GREP_EXECUTABLE}" -qIl "Copyright (C) .*$YEAR" $FILE
 	if [ $? -ne 0 ]; then
 		echo "[!] $FILE" >&2
         EXIT_CODE=1
@@ -75,7 +75,7 @@ if [ $EXIT_CODE -ne 0 ]; then
 fi
 
 for FILE in $PYTHON_FILES; do
-	"${GREP_EXECUTABLE}" -qIl "Copyright (C) [0-9,-]*$YEAR" $FILE
+	"${GREP_EXECUTABLE}" -qIl "Copyright (C) .*$YEAR" $FILE
 	if [ $? -ne 0 ]; then
 		echo "[!] $FILE" >&2
         EXIT_CODE=1
@@ -89,7 +89,7 @@ if [ $EXIT_CODE -ne 0 ]; then
 fi
 
 for FILE in $PROTO_FILES; do
-	"${GREP_EXECUTABLE}" -qIl "Copyright (C) [0-9,-]*$YEAR" $FILE
+	"${GREP_EXECUTABLE}" -qIl "Copyright (C) .*$YEAR" $FILE
 	if [ $? -ne 0 ]; then
 		echo "[!] $FILE" >&2
         EXIT_CODE=1
