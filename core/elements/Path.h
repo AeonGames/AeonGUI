@@ -13,19 +13,26 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 */
-#ifndef AEONGUI_PATH_H
-#define AEONGUI_PATH_H
+#ifndef AEONGUI_ELEMENTS_PATH_H
+#define AEONGUI_ELEMENTS_PATH_H
 
+#include <vector>
 #include "aeongui/Element.h"
+#include "aeongui/DrawCommand.h"
 
 namespace AeonGUI
 {
-    class Path : public Element
+    namespace Elements
     {
-    public:
-        Path ( xmlElementPtr aXmlElementPtr );
-        ~Path() final;
-        void Render ( Canvas& aCanvas ) const final;
-    };
+        class Path : public Element
+        {
+        public:
+            Path ( xmlElementPtr aXmlElementPtr );
+            ~Path() final;
+            void Render ( Canvas& aCanvas ) const final;
+        private:
+            std::vector<DrawCommand> mPath{};
+        };
+    }
 }
 #endif

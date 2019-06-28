@@ -13,19 +13,22 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 */
-#ifndef AEONGUI_POLYGON_H
-#define AEONGUI_POLYGON_H
+#ifndef AEONGUI_ELEMENTS_POLYGON_H
+#define AEONGUI_ELEMENTS_POLYGON_H
 
 #include "aeongui/Element.h"
 
 namespace AeonGUI
 {
-    class Polygon : public Element
+    namespace Elements
     {
-    public:
-        Polygon ( xmlElementPtr aXmlElementPtr );
-        ~Polygon() final;
-        void Render ( Canvas& aCanvas ) const final;
-    };
+        class Polygon : public Element
+        {
+        public:
+            Polygon ( xmlElementPtr aXmlElementPtr );
+            ~Polygon() final;
+            void Render ( Canvas& aCanvas ) const final;
+        };
+    }
 }
 #endif

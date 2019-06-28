@@ -13,22 +13,27 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 */
-#include <functional>
-#include <memory>
-#include "Circle.h"
+#ifndef AEONGUI_DRAWCOMMAND_H
+#define AEONGUI_DRAWCOMMAND_H
+
+#include <cstdint>
+#include <cstddef>
+#include <vector>
+#include <initializer_list>
+#include "aeongui/Platform.h"
+#include "aeongui/Vector2.h"
 
 namespace AeonGUI
 {
-    namespace Elements
+    class DrawCommand
     {
-        Circle::Circle ( xmlElementPtr aXmlElementPtr ) : Element ( aXmlElementPtr )
-        {
-        }
-        Circle::~Circle()
-        {
-        }
-        void Circle::Render ( Canvas& aCanvas ) const
-        {
-        }
-    }
+    public:
+        DLL DrawCommand ( uint64_t aCommand, const Vector2& aVertex );
+        DLL uint64_t GetCommand() const;
+        DLL const Vector2& GetVertex() const;
+    private:
+        uint64_t mCommand;
+        Vector2  mVertex;
+    };
 }
+#endif

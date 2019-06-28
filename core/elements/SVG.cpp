@@ -18,14 +18,17 @@ limitations under the License.
 
 namespace AeonGUI
 {
-    SVG::SVG ( xmlElementPtr aXmlElementPtr ) : Element ( aXmlElementPtr )
+    namespace Elements
     {
-        std::cout << "This is a specialized implementation for the svg element." << std::endl;
-    }
-    SVG::~SVG()
-    {
-    }
-    void SVG::Render ( Canvas& aCanvas ) const
-    {
+        SVG::SVG ( xmlElementPtr aXmlElementPtr ) : Element ( aXmlElementPtr )
+        {
+            std::cout << "This is a specialized implementation for the svg element." << std::endl;
+        }
+        SVG::~SVG()
+        {
+        }
+        void SVG::Render ( Canvas& aCanvas ) const
+        {
+        }
     }
 }

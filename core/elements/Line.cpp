@@ -17,13 +17,17 @@ limitations under the License.
 
 namespace AeonGUI
 {
-    Line::Line ( xmlElementPtr aXmlElementPtr ) : Element ( aXmlElementPtr )
+    namespace Elements
     {
-    }
-    Line::~Line()
-    {
-    }
-    void Line::Render ( Canvas& aCanvas ) const
-    {
+
+        Line::Line ( xmlElementPtr aXmlElementPtr ) : Element ( aXmlElementPtr )
+        {
+        }
+        Line::~Line()
+        {
+        }
+        void Line::Render ( Canvas& aCanvas ) const
+        {
+        }
     }
 }

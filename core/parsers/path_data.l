@@ -17,6 +17,7 @@ limitations under the License.
 #include <cstddef>
 #include <cstdint>
 #include <cstdlib>
+#include "aeongui/DrawCommand.h"
 #include "../core/parsers/dstype.h"
 #include "path_data_parser.hpp"
 %}
@@ -62,11 +63,14 @@ number               -?([0-9]+|[0-9]*\.[0-9]+([eE][-+]?[0-9]+)?)
 
 namespace AeonGUI
 {
-	int ParsePathData(const char* string)
+	namespace Elements
 	{
-		YY_BUFFER_STATE state=d_scan_string(string);
-		d_switch_to_buffer(state);
-		BEGIN(INITIAL);
-		return dparse();
+		int ParsePathData(std::vector<DrawCommand>& aPath,const char* string)
+		{
+			YY_BUFFER_STATE state=d_scan_string(string);
+			d_switch_to_buffer(state);
+			BEGIN(INITIAL);
+			return dparse(aPath);
+		}
 	}
 }

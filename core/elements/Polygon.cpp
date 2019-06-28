@@ -17,13 +17,17 @@ limitations under the License.
 
 namespace AeonGUI
 {
-    Polygon::Polygon ( xmlElementPtr aXmlElementPtr ) : Element ( aXmlElementPtr )
+    namespace Elements
     {
-    }
-    Polygon::~Polygon()
-    {
-    }
-    void Polygon::Render ( Canvas& aCanvas ) const
-    {
+
+        Polygon::Polygon ( xmlElementPtr aXmlElementPtr ) : Element ( aXmlElementPtr )
+        {
+        }
+        Polygon::~Polygon()
+        {
+        }
+        void Polygon::Render ( Canvas& aCanvas ) const
+        {
+        }
     }
 }

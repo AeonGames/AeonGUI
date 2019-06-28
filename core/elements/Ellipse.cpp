@@ -17,13 +17,17 @@ limitations under the License.
 
 namespace AeonGUI
 {
-    Ellipse::Ellipse ( xmlElementPtr aXmlElementPtr ) : Element ( aXmlElementPtr )
+    namespace Elements
     {
-    }
-    Ellipse::~Ellipse()
-    {
-    }
-    void Ellipse::Render ( Canvas& aCanvas ) const
-    {
+
+        Ellipse::Ellipse ( xmlElementPtr aXmlElementPtr ) : Element ( aXmlElementPtr )
+        {
+        }
+        Ellipse::~Ellipse()
+        {
+        }
+        void Ellipse::Render ( Canvas& aCanvas ) const
+        {
+        }
     }
 }

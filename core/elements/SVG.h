@@ -13,19 +13,22 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 */
-#ifndef AEONGUI_SVG_H
-#define AEONGUI_SVG_H
+#ifndef AEONGUI_ELEMENTS_SVG_H
+#define AEONGUI_ELEMENTS_SVG_H
+
 #include "aeongui/Element.h"
 
 namespace AeonGUI
 {
-    class SVG : public Element
+    namespace Elements
     {
-    public:
-        SVG ( xmlElementPtr aXmlElementPtr );
-        ~SVG() final;
-        void Render ( Canvas& aCanvas ) const final;
-    };
+        class SVG : public Element
+        {
+        public:
+            SVG ( xmlElementPtr aXmlElementPtr );
+            ~SVG() final;
+            void Render ( Canvas& aCanvas ) const final;
+        };
+    }
 }
-
 #endif

@@ -17,13 +17,17 @@ limitations under the License.
 
 namespace AeonGUI
 {
-    Polyline::Polyline ( xmlElementPtr aXmlElementPtr ) : Element ( aXmlElementPtr )
+    namespace Elements
     {
-    }
-    Polyline::~Polyline()
-    {
-    }
-    void Polyline::Render ( Canvas& aCanvas ) const
-    {
+
+        Polyline::Polyline ( xmlElementPtr aXmlElementPtr ) : Element ( aXmlElementPtr )
+        {
+        }
+        Polyline::~Polyline()
+        {
+        }
+        void Polyline::Render ( Canvas& aCanvas ) const
+        {
+        }
     }
 }

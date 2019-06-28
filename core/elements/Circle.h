@@ -13,19 +13,22 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 */
-#ifndef AEONGUI_CIRCLE_H
-#define AEONGUI_CIRCLE_H
+#ifndef AEONGUI_ELEMENTS_CIRCLE_H
+#define AEONGUI_ELEMENTS_CIRCLE_H
 
 #include "aeongui/Element.h"
 
 namespace AeonGUI
 {
-    class Circle : public Element
+    namespace Elements
     {
-    public:
-        Circle ( xmlElementPtr aXmlElementPtr );
-        ~Circle() final;
-        void Render ( Canvas& aCanvas ) const final;
-    };
+        class Circle : public Element
+        {
+        public:
+            Circle ( xmlElementPtr aXmlElementPtr );
+            ~Circle() final;
+            void Render ( Canvas& aCanvas ) const final;
+        };
+    }
 }
 #endif

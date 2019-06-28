@@ -13,19 +13,23 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 */
-#ifndef AEONGUI_G_H
-#define AEONGUI_G_H
+#ifndef AEONGUI_ELEMENTS_G_H
+#define AEONGUI_ELEMENTS_G_H
 
 #include "aeongui/Element.h"
 
 namespace AeonGUI
 {
-    class G : public Element
+    namespace Elements
     {
-    public:
-        G ( xmlElementPtr aXmlElementPtr );
-        ~G() final;
-        void Render ( Canvas& aCanvas ) const final;
-    };
+
+        class G : public Element
+        {
+        public:
+            G ( xmlElementPtr aXmlElementPtr );
+            ~G() final;
+            void Render ( Canvas& aCanvas ) const final;
+        };
+    }
 }
 #endif

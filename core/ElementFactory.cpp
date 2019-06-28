@@ -44,63 +44,63 @@ namespace AeonGUI
             "svg",
             [] ( xmlElementPtr aXmlElementPtr )
             {
-                return std::make_unique<SVG> ( aXmlElementPtr );
+                return std::make_unique<Elements::SVG> ( aXmlElementPtr );
             }
         },
         {
             "g",
             [] ( xmlElementPtr aXmlElementPtr )
             {
-                return std::make_unique<G> ( aXmlElementPtr );
+                return std::make_unique<Elements::G> ( aXmlElementPtr );
             }
         },
         {
             "path",
             [] ( xmlElementPtr aXmlElementPtr )
             {
-                return std::make_unique<Path> ( aXmlElementPtr );
+                return std::make_unique<Elements::Path> ( aXmlElementPtr );
             }
         },
         {
             "rect",
             [] ( xmlElementPtr aXmlElementPtr )
             {
-                return std::make_unique<Rect> ( aXmlElementPtr );
+                return std::make_unique<Elements::Rect> ( aXmlElementPtr );
             }
         },
         {
             "line",
             [] ( xmlElementPtr aXmlElementPtr )
             {
-                return std::make_unique<Line> ( aXmlElementPtr );
+                return std::make_unique<Elements::Line> ( aXmlElementPtr );
             }
         },
         {
             "polyline",
             [] ( xmlElementPtr aXmlElementPtr )
             {
-                return std::make_unique<Polyline> ( aXmlElementPtr );
+                return std::make_unique<Elements::Polyline> ( aXmlElementPtr );
             }
         },
         {
             "polygon",
             [] ( xmlElementPtr aXmlElementPtr )
             {
-                return std::make_unique<Polygon> ( aXmlElementPtr );
+                return std::make_unique<Elements::Polygon> ( aXmlElementPtr );
             }
         },
         {
             "circle",
             [] ( xmlElementPtr aXmlElementPtr )
             {
-                return std::make_unique<Circle> ( aXmlElementPtr );
+                return std::make_unique<Elements::Circle> ( aXmlElementPtr );
             }
         },
         {
             "ellipse",
             [] ( xmlElementPtr aXmlElementPtr )
             {
-                return std::make_unique<Ellipse> ( aXmlElementPtr );
+                return std::make_unique<Elements::Ellipse> ( aXmlElementPtr );
             }
         },
     };

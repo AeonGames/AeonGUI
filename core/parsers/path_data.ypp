@@ -18,15 +18,17 @@ limitations under the License.
 #include <cstdint>
 #include <iostream>
 #include "../core/parsers/dstype.h"
+#include "aeongui/DrawCommand.h"
 
 extern int dlex();
 extern "C"
 {
-    int derror (const char *s);
+    int derror (std::vector<AeonGUI::DrawCommand>& aPath,const char *s);
 }
 %}
 
 %define api.prefix {d}
+%parse-param {std::vector<AeonGUI::DrawCommand>& aPath}
 
 %token NUMBER
 
@@ -56,45 +58,106 @@ drawto-command:
     | smooth-quadratic-bezier-curveto
     | elliptical-arc;
 moveto:
-    'M' moveto-argument-sequence { std::cout << 'M' << std::endl; }
-    | 'm'  moveto-argument-sequence { std::cout << 'm' << std::endl; }
-    ;
-moveto-argument-sequence:
-    coordinate-pair
-    | coordinate-pair ',' lineto-argument-sequence
+    'M' coordinate-pair 
+        {
+            aPath.emplace_back(AeonGUI::DrawCommand{'M',std::get<AeonGUI::Vector2>($2)});
+        }
+    | 'm' coordinate-pair 
+        {
+            aPath.emplace_back(AeonGUI::DrawCommand{'m',std::get<AeonGUI::Vector2>($2)});
+        }
+    | 'M' coordinate-pair lineto-argument-sequence 
+        {
+            auto& lineto_argument_sequence = std::get<std::vector<AeonGUI::Vector2>>($3);
+            aPath.reserve(aPath.size()+lineto_argument_sequence.size()+1);
+            aPath.emplace_back(AeonGUI::DrawCommand{'M',std::get<AeonGUI::Vector2>($2)});
+            for(auto &i: lineto_argument_sequence){aPath.emplace_back(AeonGUI::DrawCommand{'L',i});}
+        }
+    | 'm' coordinate-pair lineto-argument-sequence 
+        {
+            auto& lineto_argument_sequence = std::get<std::vector<AeonGUI::Vector2>>($3);
+            aPath.reserve(aPath.size()+lineto_argument_sequence.size()+1);
+            aPath.emplace_back(AeonGUI::DrawCommand{'m',std::get<AeonGUI::Vector2>($2)});
+            for(auto &i: lineto_argument_sequence){aPath.emplace_back(AeonGUI::DrawCommand{'l',i});}
+        }
+    | 'M' coordinate-pair ',' lineto-argument-sequence 
+        {
+            auto& lineto_argument_sequence = std::get<std::vector<AeonGUI::Vector2>>($4);
+            aPath.reserve(aPath.size()+lineto_argument_sequence.size()+1);
+            aPath.emplace_back(AeonGUI::DrawCommand{'M',std::get<AeonGUI::Vector2>($2)});
+            for(auto &i: lineto_argument_sequence){aPath.emplace_back(AeonGUI::DrawCommand{'L',i});}
+        }
+    | 'm' coordinate-pair ',' lineto-argument-sequence
+        {
+            auto& lineto_argument_sequence = std::get<std::vector<AeonGUI::Vector2>>($4);
+            aPath.reserve(aPath.size()+lineto_argument_sequence.size()+1);
+            aPath.emplace_back(AeonGUI::DrawCommand{'m',std::get<AeonGUI::Vector2>($2)});
+            for(auto &i: lineto_argument_sequence){aPath.emplace_back(AeonGUI::DrawCommand{'l',i});}
+        }
     ;
 closepath:
-    'Z' | 'z';
+    'Z' {aPath.emplace_back(AeonGUI::DrawCommand{'Z',{}});}
+    |'z' {aPath.emplace_back(AeonGUI::DrawCommand{'z',{}});}
+    ;
 lineto:
-    'L' lineto-argument-sequence { std::cout << 'L' << std::endl; }
-    | 'l'  lineto-argument-sequence { std::cout << 'l' << std::endl; }
+    'L' lineto-argument-sequence
+        {
+            auto& lineto_argument_sequence = std::get<std::vector<AeonGUI::Vector2>>($2);
+            aPath.reserve(aPath.size()+lineto_argument_sequence.size());
+            for(auto &i: lineto_argument_sequence)
+            {
+                aPath.emplace_back(AeonGUI::DrawCommand{'L',i});
+            }
+        }
+    | 'l' lineto-argument-sequence 
+        {
+            auto& lineto_argument_sequence = std::get<std::vector<AeonGUI::Vector2>>($2);
+            aPath.reserve(aPath.size()+lineto_argument_sequence.size());
+            for(auto &i: lineto_argument_sequence)
+            {
+                aPath.emplace_back(AeonGUI::DrawCommand{'l',i});
+            }
+        }
     ;
 lineto-argument-sequence:
-    coordinate-pair
+    coordinate-pair { $$ = std::vector<AeonGUI::Vector2>{std::get<AeonGUI::Vector2>($1)}; }
+    | lineto-argument-sequence coordinate-pair 
+        {
+            std::get<std::vector<AeonGUI::Vector2>>($1).emplace_back(std::get<AeonGUI::Vector2>($2)); 
+            $$ = std::move($1);
+        }
     | lineto-argument-sequence ',' coordinate-pair
-    ; 
+        {
+            std::get<std::vector<AeonGUI::Vector2>>($1).emplace_back(std::get<AeonGUI::Vector2>($3));
+            $$ = std::move($1);
+        }
+    ;
 horizontal-lineto:
     'H' horizontal-lineto-argument-sequence
     | 'h'  horizontal-lineto-argument-sequence
     ;
 horizontal-lineto-argument-sequence:
     coordinate
-    | coordinate ',' horizontal-lineto-argument-sequence;
+    | horizontal-lineto-argument-sequence coordinate
+    | horizontal-lineto-argument-sequence ',' coordinate
+    ;
 vertical-lineto:
     'V' vertical-lineto-argument-sequence
     | 'v'  vertical-lineto-argument-sequence
     ;
 vertical-lineto-argument-sequence:
     coordinate
-    | coordinate ',' vertical-lineto-argument-sequence;
+    | vertical-lineto-argument-sequence coordinate
+    | vertical-lineto-argument-sequence ',' coordinate
+    ;
 curveto:
     'C' curveto-argument-sequence
-    | 'c'  curveto-argument-sequence
+    | 'c' curveto-argument-sequence
     ;
 curveto-argument-sequence:
     curveto-argument
     | curveto-argument-sequence ',' curveto-argument
-    | curveto-argument-sequence  curveto-argument
+    | curveto-argument-sequence curveto-argument
     ;
 curveto-argument:
     coordinate-pair ',' coordinate-pair ',' coordinate-pair
@@ -148,7 +211,7 @@ coordinate:
 
 extern "C"
 {
-    int derror (const char *s)
+    int derror (std::vector<AeonGUI::DrawCommand>& aPath,const char *s)
     {
         std::cerr << s << std::endl;
         return 0;

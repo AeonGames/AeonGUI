@@ -17,13 +17,17 @@ limitations under the License.
 
 namespace AeonGUI
 {
-    Rect::Rect ( xmlElementPtr aXmlElementPtr ) : Element ( aXmlElementPtr )
+    namespace Elements
     {
-    }
-    Rect::~Rect()
-    {
-    }
-    void Rect::Render ( Canvas& aCanvas ) const
-    {
+
+        Rect::Rect ( xmlElementPtr aXmlElementPtr ) : Element ( aXmlElementPtr )
+        {
+        }
+        Rect::~Rect()
+        {
+        }
+        void Rect::Render ( Canvas& aCanvas ) const
+        {
+        }
     }
 }

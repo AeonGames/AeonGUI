@@ -18,21 +18,29 @@ limitations under the License.
 
 namespace AeonGUI
 {
-    int ParsePathData ( const char* s );
-    Path::Path ( xmlElementPtr aXmlElementPtr ) : Element ( aXmlElementPtr )
+    namespace Elements
     {
-        if ( HasAttr ( "d" ) )
+
+        int ParsePathData ( std::vector<DrawCommand>& aPath, const char* s );
+        Path::Path ( xmlElementPtr aXmlElementPtr ) : Element ( aXmlElementPtr ), mPath{}
         {
-            if ( int error = ParsePathData ( GetAttr ( "d" ) ) )
+            if ( HasAttr ( "d" ) )
             {
-                std::cerr << error << std::endl;
+                if ( int error = ParsePathData ( mPath, GetAttr ( "d" ) ) )
+                {
+                    std::cerr << error << std::endl;
+                }
+                for ( auto& i : mPath )
+                {
+                    std::cout << i.GetCommand() << " " << i.GetVertex() [0] << " " << i.GetVertex() [1] << std::endl;
+                }
             }
         }
-    }
-    Path::~Path()
-    {
-    }
-    void Path::Render ( Canvas& aCanvas ) const
-    {
+        Path::~Path()
+        {
+        }
+        void Path::Render ( Canvas& aCanvas ) const
+        {
+        }
     }
 }

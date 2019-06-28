@@ -13,19 +13,22 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 */
-#ifndef AEONGUI_POLYLINE_H
-#define AEONGUI_POLYLINE_H
+#ifndef AEONGUI_ELEMENTS_POLYLINE_H
+#define AEONGUI_ELEMENTS_POLYLINE_H
 
 #include "aeongui/Element.h"
 
 namespace AeonGUI
 {
-    class Polyline : public Element
+    namespace Elements
     {
-    public:
-        Polyline ( xmlElementPtr aXmlElementPtr );
-        ~Polyline() final;
-        void Render ( Canvas& aCanvas ) const final;
-    };
+        class Polyline : public Element
+        {
+        public:
+            Polyline ( xmlElementPtr aXmlElementPtr );
+            ~Polyline() final;
+            void Render ( Canvas& aCanvas ) const final;
+        };
+    }
 }
 #endif
