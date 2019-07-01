@@ -129,7 +129,7 @@ class Window
 {
 public:
     Window(HINSTANCE hInstance, LPSTR aFilename, LONG aWidth, LONG aHeight) : 
-        mWindow{aFilename,static_cast<uint32_t>(aWidth),static_cast<uint32_t>(aHeight)}
+        mWindow{aFilename?aFilename:"",static_cast<uint32_t>(aWidth),static_cast<uint32_t>(aHeight)}
     {
         Initialize ( hInstance, aWidth, aHeight );
     }

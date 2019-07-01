@@ -133,35 +133,114 @@ lineto-argument-sequence:
         }
     ;
 horizontal-lineto:
-    'H' horizontal-lineto-argument-sequence
-    | 'h'  horizontal-lineto-argument-sequence
+    'H' h-or-v-lineto-argument-sequence
+    {
+        auto& lineto_argument_sequence = std::get<std::vector<double>>($2);
+        aPath.reserve(aPath.size() + lineto_argument_sequence.size());
+        for(auto &i: lineto_argument_sequence)
+        {
+            aPath.emplace_back(AeonGUI::DrawCommand{'L',{i,0.0}});
+        }
+    }
+    | 'h'  h-or-v-lineto-argument-sequence
+    {
+        auto& lineto_argument_sequence = std::get<std::vector<double>>($2);
+        aPath.reserve(aPath.size() + lineto_argument_sequence.size());
+        for(auto &i: lineto_argument_sequence)
+        {
+            aPath.emplace_back(AeonGUI::DrawCommand{'l',{i,0.0}});
+        }
+    }
     ;
-horizontal-lineto-argument-sequence:
-    coordinate
-    | horizontal-lineto-argument-sequence coordinate
-    | horizontal-lineto-argument-sequence ',' coordinate
+h-or-v-lineto-argument-sequence:
+    coordinate { $$ = std::vector<double>{std::get<double>($1)}; }
+    | h-or-v-lineto-argument-sequence coordinate
+    {
+        std::get<std::vector<double>>($1).emplace_back(std::get<double>($2)); 
+        $$ = std::move($1);
+    }
+    | h-or-v-lineto-argument-sequence ',' coordinate
+    {
+        std::get<std::vector<double>>($1).emplace_back(std::get<double>($3)); 
+        $$ = std::move($1);
+    }
     ;
 vertical-lineto:
-    'V' vertical-lineto-argument-sequence
-    | 'v'  vertical-lineto-argument-sequence
-    ;
-vertical-lineto-argument-sequence:
-    coordinate
-    | vertical-lineto-argument-sequence coordinate
-    | vertical-lineto-argument-sequence ',' coordinate
+    'V' h-or-v-lineto-argument-sequence
+    {
+        auto& lineto_argument_sequence = std::get<std::vector<double>>($2);
+        aPath.reserve(aPath.size() + lineto_argument_sequence.size());
+        for(auto &i: lineto_argument_sequence)
+        {
+            aPath.emplace_back(AeonGUI::DrawCommand{'L',{0.0,i}});
+        }
+    }
+    | 'v'  h-or-v-lineto-argument-sequence
+    {
+        auto& lineto_argument_sequence = std::get<std::vector<double>>($2);
+        aPath.reserve(aPath.size() + lineto_argument_sequence.size());
+        for(auto &i: lineto_argument_sequence)
+        {
+            aPath.emplace_back(AeonGUI::DrawCommand{'l',{0.0,i}});
+        }
+    }
     ;
 curveto:
     'C' curveto-argument-sequence
+    {
+        auto& right = std::get<std::vector<AeonGUI::Vector2>>($2);
+        aPath.reserve(aPath.size() + right.size());
+        for(auto &i: right)
+        {
+            aPath.emplace_back(AeonGUI::DrawCommand{'C',i});
+        }
+    }
     | 'c' curveto-argument-sequence
+    {
+        auto& right = std::get<std::vector<AeonGUI::Vector2>>($2);
+        aPath.reserve(aPath.size() + right.size());
+        for(auto &i: right)
+        {
+            aPath.emplace_back(AeonGUI::DrawCommand{'c',i});
+        }
+    }
     ;
 curveto-argument-sequence:
-    curveto-argument
-    | curveto-argument-sequence ',' curveto-argument
+    curveto-argument { $$ = $1; }
     | curveto-argument-sequence curveto-argument
+    {
+        auto& left = std::get<std::vector<AeonGUI::Vector2>>($1);
+        auto& right = std::get<std::vector<AeonGUI::Vector2>>($2);
+        left.insert(left.end(),right.begin(),right.end());
+        $$ = std::move($1);
+    }
+    | curveto-argument-sequence ',' curveto-argument
+    {
+        auto& left = std::get<std::vector<AeonGUI::Vector2>>($1);
+        auto& right = std::get<std::vector<AeonGUI::Vector2>>($3);
+        left.insert(left.end(),right.begin(),right.end());
+        $$ = std::move($1);
+    }
     ;
 curveto-argument:
     coordinate-pair ',' coordinate-pair ',' coordinate-pair
-    | coordinate-pair  coordinate-pair  coordinate-pair
+    {
+        $$ = std::vector<AeonGUI::Vector2>
+        {
+            std::get<AeonGUI::Vector2>($1),
+            std::get<AeonGUI::Vector2>($3),
+            std::get<AeonGUI::Vector2>($5)
+        };
+    }
+    | coordinate-pair coordinate-pair coordinate-pair
+    {
+        $$ = std::vector<AeonGUI::Vector2>
+        {
+            std::get<AeonGUI::Vector2>($1),
+            std::get<AeonGUI::Vector2>($2),
+            std::get<AeonGUI::Vector2>($3)
+        };
+    }
     ;
 smooth-curveto:
     'S' smooth-curveto-argument-sequence

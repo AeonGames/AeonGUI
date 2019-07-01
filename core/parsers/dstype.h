@@ -18,6 +18,6 @@ limitations under the License.
 #include <variant>
 #include <vector>
 #include "aeongui/Vector2.h"
-using dstype = std::variant<std::vector<AeonGUI::Vector2>, AeonGUI::Vector2, double>;
+using dstype = std::variant<std::vector<AeonGUI::Vector2>, std::vector<double>, AeonGUI::Vector2, double>;
 #define DSTYPE dstype
 #endif
