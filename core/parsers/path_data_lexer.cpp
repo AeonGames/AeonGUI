@@ -1301,10 +1301,11 @@ limitations under the License.
 #include <cstddef>
 #include <cstdint>
 #include <cstdlib>
+#include "aeongui/DrawCommand.h"
 #include "../core/parsers/dstype.h"
 #include "path_data_parser.hpp"
-#line 1304 "C:/Code/AeonGUI/mingw64/core/path_data_lexer.cpp"
 #line 1305 "C:/Code/AeonGUI/mingw64/core/path_data_lexer.cpp"
+#line 1306 "C:/Code/AeonGUI/mingw64/core/path_data_lexer.cpp"
 
 #define INITIAL 0
 
@@ -1526,9 +1527,9 @@ YY_DECL
     }
 
     {
-#line 34 "C:/Code/AeonGUI/core/parsers/path_data.l"
+#line 35 "C:/Code/AeonGUI/core/parsers/path_data.l"
 
-#line 1522 "C:/Code/AeonGUI/mingw64/core/path_data_lexer.cpp"
+#line 1523 "C:/Code/AeonGUI/mingw64/core/path_data_lexer.cpp"
 
         while ( /*CONSTCOND*/1 )        /* loops until end-of-file is reached */
         {
@@ -1576,7 +1577,7 @@ do_action:  /* This label is used only to access EOF actions. */
 
             case 1:
                 YY_RULE_SETUP
-#line 35 "C:/Code/AeonGUI/core/parsers/path_data.l"
+#line 36 "C:/Code/AeonGUI/core/parsers/path_data.l"
                 {
                     dlval = std::strtod ( yytext, nullptr );
                     return NUMBER;
@@ -1584,120 +1585,120 @@ do_action:  /* This label is used only to access EOF actions. */
                 YY_BREAK
             case 2:
                 YY_RULE_SETUP
-#line 39 "C:/Code/AeonGUI/core/parsers/path_data.l"
+#line 40 "C:/Code/AeonGUI/core/parsers/path_data.l"
                 return ',';
                 YY_BREAK
             case 3:
                 YY_RULE_SETUP
-#line 40 "C:/Code/AeonGUI/core/parsers/path_data.l"
+#line 41 "C:/Code/AeonGUI/core/parsers/path_data.l"
                 return 'M';
                 YY_BREAK
             case 4:
                 YY_RULE_SETUP
-#line 41 "C:/Code/AeonGUI/core/parsers/path_data.l"
+#line 42 "C:/Code/AeonGUI/core/parsers/path_data.l"
                 return 'm';
                 YY_BREAK
             case 5:
                 YY_RULE_SETUP
-#line 42 "C:/Code/AeonGUI/core/parsers/path_data.l"
+#line 43 "C:/Code/AeonGUI/core/parsers/path_data.l"
                 return 'Z';
                 YY_BREAK
             case 6:
                 YY_RULE_SETUP
-#line 43 "C:/Code/AeonGUI/core/parsers/path_data.l"
+#line 44 "C:/Code/AeonGUI/core/parsers/path_data.l"
                 return 'z';
                 YY_BREAK
             case 7:
                 YY_RULE_SETUP
-#line 44 "C:/Code/AeonGUI/core/parsers/path_data.l"
+#line 45 "C:/Code/AeonGUI/core/parsers/path_data.l"
                 return 'L';
                 YY_BREAK
             case 8:
                 YY_RULE_SETUP
-#line 45 "C:/Code/AeonGUI/core/parsers/path_data.l"
+#line 46 "C:/Code/AeonGUI/core/parsers/path_data.l"
                 return 'l';
                 YY_BREAK
             case 9:
                 YY_RULE_SETUP
-#line 46 "C:/Code/AeonGUI/core/parsers/path_data.l"
+#line 47 "C:/Code/AeonGUI/core/parsers/path_data.l"
                 return 'H';
                 YY_BREAK
             case 10:
                 YY_RULE_SETUP
-#line 47 "C:/Code/AeonGUI/core/parsers/path_data.l"
+#line 48 "C:/Code/AeonGUI/core/parsers/path_data.l"
                 return 'h';
                 YY_BREAK
             case 11:
                 YY_RULE_SETUP
-#line 48 "C:/Code/AeonGUI/core/parsers/path_data.l"
+#line 49 "C:/Code/AeonGUI/core/parsers/path_data.l"
                 return 'V';
                 YY_BREAK
             case 12:
                 YY_RULE_SETUP
-#line 49 "C:/Code/AeonGUI/core/parsers/path_data.l"
+#line 50 "C:/Code/AeonGUI/core/parsers/path_data.l"
                 return 'v';
                 YY_BREAK
             case 13:
                 YY_RULE_SETUP
-#line 50 "C:/Code/AeonGUI/core/parsers/path_data.l"
+#line 51 "C:/Code/AeonGUI/core/parsers/path_data.l"
                 return 'C';
                 YY_BREAK
             case 14:
                 YY_RULE_SETUP
-#line 51 "C:/Code/AeonGUI/core/parsers/path_data.l"
+#line 52 "C:/Code/AeonGUI/core/parsers/path_data.l"
                 return 'c';
                 YY_BREAK
             case 15:
                 YY_RULE_SETUP
-#line 52 "C:/Code/AeonGUI/core/parsers/path_data.l"
+#line 53 "C:/Code/AeonGUI/core/parsers/path_data.l"
                 return 'S';
                 YY_BREAK
             case 16:
                 YY_RULE_SETUP
-#line 53 "C:/Code/AeonGUI/core/parsers/path_data.l"
+#line 54 "C:/Code/AeonGUI/core/parsers/path_data.l"
                 return 's';
                 YY_BREAK
             case 17:
                 YY_RULE_SETUP
-#line 54 "C:/Code/AeonGUI/core/parsers/path_data.l"
+#line 55 "C:/Code/AeonGUI/core/parsers/path_data.l"
                 return 'Q';
                 YY_BREAK
             case 18:
                 YY_RULE_SETUP
-#line 55 "C:/Code/AeonGUI/core/parsers/path_data.l"
+#line 56 "C:/Code/AeonGUI/core/parsers/path_data.l"
                 return 'q';
                 YY_BREAK
             case 19:
                 YY_RULE_SETUP
-#line 56 "C:/Code/AeonGUI/core/parsers/path_data.l"
+#line 57 "C:/Code/AeonGUI/core/parsers/path_data.l"
                 return 'T';
                 YY_BREAK
             case 20:
                 YY_RULE_SETUP
-#line 57 "C:/Code/AeonGUI/core/parsers/path_data.l"
+#line 58 "C:/Code/AeonGUI/core/parsers/path_data.l"
                 return 't';
                 YY_BREAK
             case 21:
                 YY_RULE_SETUP
-#line 58 "C:/Code/AeonGUI/core/parsers/path_data.l"
+#line 59 "C:/Code/AeonGUI/core/parsers/path_data.l"
                 return 'A';
                 YY_BREAK
             case 22:
                 YY_RULE_SETUP
-#line 59 "C:/Code/AeonGUI/core/parsers/path_data.l"
+#line 60 "C:/Code/AeonGUI/core/parsers/path_data.l"
                 return 'a';
                 YY_BREAK
             case 23:
                 YY_RULE_SETUP
-#line 60 "C:/Code/AeonGUI/core/parsers/path_data.l"
+#line 61 "C:/Code/AeonGUI/core/parsers/path_data.l"
 
                 YY_BREAK
             case 24:
                 YY_RULE_SETUP
-#line 61 "C:/Code/AeonGUI/core/parsers/path_data.l"
+#line 62 "C:/Code/AeonGUI/core/parsers/path_data.l"
                 ECHO;
                 YY_BREAK
-#line 1690 "C:/Code/AeonGUI/mingw64/core/path_data_lexer.cpp"
+#line 1691 "C:/Code/AeonGUI/mingw64/core/path_data_lexer.cpp"
             case YY_STATE_EOF ( INITIAL ) :
                 yyterminate();
 
@@ -2737,16 +2738,20 @@ void yyfree ( void * ptr )
 
 #define YYTABLES_NAME "yytables"
 
-#line 61 "C:/Code/AeonGUI/core/parsers/path_data.l"
+#line 62 "C:/Code/AeonGUI/core/parsers/path_data.l"
 
 
 namespace AeonGUI
 {
-    int ParsePathData ( const char* string )
+    namespace Elements
     {
-        YY_BUFFER_STATE state = d_scan_string ( string );
-        d_switch_to_buffer ( state );
-        BEGIN ( INITIAL );
-        return dparse();
+        int ParsePathData ( std::vector<DrawCommand>& aPath, const char* string )
+        {
+            YY_BUFFER_STATE state = d_scan_string ( string );
+            d_switch_to_buffer ( state );
+            BEGIN ( INITIAL );
+            return dparse ( aPath );
+        }
     }
 }
+

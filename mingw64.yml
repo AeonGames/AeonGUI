@@ -1,0 +1,32 @@
+version: 'aeongui-mingw64-{branch}-{build}'
+branches:
+  only:
+  - master
+image: Visual Studio 2017
+configuration: Release
+platform: x64
+before_build:
+- cmd: >-
+    set PATH=c:\msys64\mingw64\bin;c:\msys64\usr\bin
+
+    set MSYSTEM=MINGW64
+
+    set CHERE_INVOKING=1
+
+    mkdir build
+
+    cd build
+
+    rem C:\msys64\usr\bin\bash.exe -lc "pacman -R --noconfirm catgets libcatgets"
+
+    C:\msys64\usr\bin\bash.exe -lc "pacman -Syu --noconfirm"
+
+    C:\msys64\usr\bin\bash.exe -lc "pacman -Syuu --noconfirm"
+
+    C:\msys64\usr\bin\bash.exe -lc "pacman -S --needed --noconfirm mingw-w64-x86_64-make mingw-w64-x86_64-cmake mingw-w64-x86_64-python2 mingw-w64-x86_64-python2-pip mingw-w64-x86_64-python2-yaml mingw-w64-x86_64-flex mingw-w64-x86_64-bison mingw-w64-x86_64-zlib mingw-w64-x86_64-libpng mingw-w64-x86_64-cairo"
+
+    C:\msys64\usr\bin\bash.exe -lc "cmake -G\"MSYS Makefiles\" .."
+
+build_script:
+- cmd: >-
+    C:\msys64\usr\bin\bash.exe -lc "make VERBOSE=1"

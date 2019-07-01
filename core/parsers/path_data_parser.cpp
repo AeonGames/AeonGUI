@@ -96,14 +96,15 @@ limitations under the License.
 #include <cstdint>
 #include <iostream>
 #include "../core/parsers/dstype.h"
+#include "aeongui/DrawCommand.h"
 
 extern int dlex();
 extern "C"
 {
-    int derror ( const char *s );
+    int derror ( std::vector<AeonGUI::DrawCommand>& aPath, const char *s );
 }
 
-#line 107 "C:/Code/AeonGUI/mingw64/core/path_data_parser.cpp"
+#line 108 "C:/Code/AeonGUI/mingw64/core/path_data_parser.cpp"
 
 # ifndef YY_NULLPTR
 #  if defined __cplusplus
@@ -164,7 +165,7 @@ typedef int DSTYPE;
 
 extern DSTYPE dlval;
 
-int dparse ( void );
+int dparse ( std::vector<AeonGUI::DrawCommand>& aPath );
 
 #endif /* !YY_D_C_CODE_AEONGUI_MINGW64_CORE_PATH_DATA_PARSER_HPP_INCLUDED  */
 
@@ -401,18 +402,18 @@ union yyalloc
 #endif /* !YYCOPY_NEEDED */
 
 /* YYFINAL -- State number of the termination state.  */
-#define YYFINAL  12
+#define YYFINAL  11
 /* YYLAST -- Last index in YYTABLE.  */
-#define YYLAST   130
+#define YYLAST   132
 
 /* YYNTOKENS -- Number of terminals.  */
 #define YYNTOKENS  25
 /* YYNNTS -- Number of nonterminals.  */
-#define YYNNTS  31
+#define YYNNTS  29
 /* YYNRULES -- Number of rules.  */
-#define YYNRULES  66
+#define YYNRULES  68
 /* YYNSTATES -- Number of states.  */
-#define YYNSTATES  115
+#define YYNSTATES  117
 
 #define YYUNDEFTOK  2
 #define YYMAXUTOK   258
@@ -456,15 +457,15 @@ static const yytype_uint8 yytranslate[] =
 
 #if DDEBUG
 /* YYRLINE[YYN] -- Source line where rule number YYN was defined.  */
-static const yytype_uint8 yyrline[] =
+static const yytype_uint16 yyrline[] =
 {
-    0,    35,    35,    36,    39,    40,    42,    43,    46,    47,
-    49,    50,    51,    52,    53,    54,    55,    56,    57,    59,
-    60,    63,    64,    67,    67,    69,    70,    73,    74,    77,
-    78,    81,    82,    84,    85,    88,    89,    91,    92,    95,
-    96,    97,   100,   101,   104,   105,   108,   109,   111,   113,
-    114,   117,   118,   121,   123,   124,   127,   128,   130,   131,
-    134,   135,   136,   139,   142,   143,   146
+    0,    37,    37,    38,    41,    42,    44,    45,    48,    49,
+    51,    52,    53,    54,    55,    56,    57,    58,    59,    61,
+    65,    69,    76,    83,    90,    99,   100,   103,   112,   123,
+    124,   129,   136,   145,   156,   157,   162,   169,   178,   189,
+    198,   209,   210,   217,   226,   235,   246,   247,   250,   251,
+    253,   255,   256,   259,   260,   263,   265,   266,   269,   270,
+    272,   273,   276,   277,   278,   281,   284,   285,   288
 };
 #endif
 
@@ -477,11 +478,9 @@ static const char *const yytname[] =
     "'z'", "'L'", "'l'", "'H'", "'h'", "'V'", "'v'", "'C'", "'c'", "'S'",
     "'s'", "'Q'", "'q'", "'T'", "'t'", "'A'", "'a'", "$accept", "svg-path",
     "moveto-drawto-command-groups", "moveto-drawto-command-group",
-    "drawto-commands", "drawto-command", "moveto",
-    "moveto-argument-sequence", "closepath", "lineto",
+    "drawto-commands", "drawto-command", "moveto", "closepath", "lineto",
     "lineto-argument-sequence", "horizontal-lineto",
-    "horizontal-lineto-argument-sequence", "vertical-lineto",
-    "vertical-lineto-argument-sequence", "curveto",
+    "h-or-v-lineto-argument-sequence", "vertical-lineto", "curveto",
     "curveto-argument-sequence", "curveto-argument", "smooth-curveto",
     "smooth-curveto-argument-sequence", "smooth-curveto-argument",
     "quadratic-bezier-curveto", "quadratic-bezier-curveto-argument-sequence",
@@ -503,10 +502,10 @@ static const yytype_uint16 yytoknum[] =
 };
 # endif
 
-#define YYPACT_NINF -54
+#define YYPACT_NINF -64
 
 #define yypact_value_is_default(Yystate) \
-  (!!((Yystate) == (-54)))
+  (!!((Yystate) == (-64)))
 
 #define YYTABLE_NINF -1
 
@@ -517,18 +516,18 @@ static const yytype_uint16 yytoknum[] =
    STATE-NUM.  */
 static const yytype_int8 yypact[] =
 {
-    4,    18,    18,    29,     4,   -54,   106,   -54,   -54,    34,
-    16,   -54,   -54,   -54,   -54,   -54,    18,    18,    18,    18,
-    18,    18,    18,    18,    18,    18,    18,    18,    18,    18,
-    38,    38,   106,   -54,   -54,   -54,   -54,   -54,   -54,   -54,
-    -54,   -54,   -54,    18,    18,   -54,    37,   -54,    37,   -54,
-    39,   -54,   -54,    40,   -54,    27,   -54,    28,    27,   -54,
-    41,    42,   -54,   -54,    43,    44,   -54,    45,   -54,    45,
-    46,    32,   -54,    32,   -54,    37,   -54,    18,    18,    18,
-    18,   -54,    18,    18,    18,    18,    18,    18,    18,    50,
-    38,   -54,   -54,   -54,   -54,   -54,    48,   -54,   -54,   -54,
-    -54,   -54,   -54,    49,   -54,    18,    54,   -54,    52,    56,
-    55,    57,    60,    18,   -54
+    1,     7,     7,    17,     1,   -64,   108,   -64,     9,    13,
+    26,   -64,   -64,   -64,   -64,     7,     7,     7,     7,     7,
+    7,     7,     7,     7,     7,     7,     7,     7,     7,    49,
+    49,   108,   -64,   -64,   -64,   -64,   -64,   -64,   -64,   -64,
+    -64,   -64,     7,    38,   -64,     7,   -64,     7,    38,    38,
+    38,    40,   -64,    40,    40,    40,    47,   -64,    48,    47,
+    -64,    12,    54,   -64,   -64,    55,    56,   -64,    57,   -64,
+    57,    61,    53,   -64,    53,   -64,    38,     7,   -64,   -64,
+    38,     7,   -64,     7,   -64,     7,     7,     7,     7,     7,
+    7,     7,    65,    49,   -64,   -64,   -64,   -64,    63,   -64,
+    -64,   -64,   -64,   -64,   -64,    71,   -64,     7,    68,   -64,
+    72,    77,    75,    80,    85,     7,   -64
 };
 
 /* YYDEFACT[STATE-NUM] -- Default reduction number in state STATE-NUM.
@@ -536,36 +535,34 @@ static const yytype_int8 yypact[] =
    means the default is an error.  */
 static const yytype_uint8 yydefact[] =
 {
-    2,     0,     0,     0,     3,     4,     6,    66,    19,    21,
-    0,    20,     1,     5,    23,    24,     0,     0,     0,     0,
+    2,     0,     0,     0,     3,     4,     6,    68,    19,     0,
+    20,     1,     5,    25,    26,     0,     0,     0,     0,     0,
     0,     0,     0,     0,     0,     0,     0,     0,     0,     0,
-    0,     0,     7,     8,    10,    11,    12,    13,    14,    15,
-    16,    17,    18,     0,     0,    65,    25,    27,    26,    29,
-    31,    30,    33,    35,    34,    37,    39,     0,    38,    44,
-    46,     0,    45,    49,    51,     0,    50,    54,    56,    55,
-    0,    58,    60,    59,     9,    22,    64,     0,     0,     0,
-    0,    41,     0,     0,     0,     0,     0,     0,     0,     0,
-    0,    62,    28,    32,    36,    40,     0,    43,    47,    48,
-    52,    53,    57,     0,    61,     0,     0,    42,     0,     0,
-    0,     0,     0,     0,    63
+    0,     7,     8,    10,    11,    12,    13,    14,    15,    16,
+    17,    18,     0,    21,    29,     0,    67,     0,    22,    27,
+    28,    32,    34,    33,    37,    38,    39,    41,     0,    40,
+    46,    48,     0,    47,    51,    53,     0,    52,    56,    58,
+    57,     0,    60,    62,    61,     9,    23,     0,    30,    66,
+    24,     0,    35,     0,    42,     0,     0,     0,     0,     0,
+    0,     0,     0,     0,    64,    31,    36,    43,     0,    45,
+    49,    50,    54,    55,    59,     0,    63,     0,     0,    44,
+    0,     0,     0,     0,     0,     0,    65
 };
 
 /* YYPGOTO[NTERM-NUM].  */
 static const yytype_int8 yypgoto[] =
 {
-    -54,   -54,   -54,    63,   -54,    12,   -54,    66,   -54,   -54,
-        -11,   -54,   -16,   -54,   -14,   -54,    51,   -41,   -54,   -21,
-        -54,   -54,   -22,   -54,   -54,    59,   -54,    47,   -53,    -1,
-        -8
+    -64,   -64,   -64,    88,   -64,    62,   -64,   -64,   -64,    -2,
+        -64,    15,   -64,   -64,    73,   -52,   -64,   -22,   -64,   -64,
+        -23,   -64,   -64,    66,   -64,    67,   -63,    -1,    19
     };
 
 /* YYDEFGOTO[NTERM-NUM].  */
 static const yytype_int8 yydefgoto[] =
 {
-    -1,     3,     4,     5,    32,    33,     6,     8,    34,    35,
-        46,    36,    49,    37,    52,    38,    55,    56,    39,    59,
-        60,    40,    63,    64,    41,    67,    42,    71,    72,    57,
-        10
+    -1,     3,     4,     5,    31,    32,     6,    33,    34,    43,
+        35,    51,    36,    37,    56,    57,    38,    60,    61,    39,
+        64,    65,    40,    68,    41,    72,    73,    44,     9
     };
 
 /* YYTABLE[YYPACT[STATE-NUM]] -- What to do in state STATE-NUM.  If
@@ -573,56 +570,56 @@ static const yytype_int8 yydefgoto[] =
    number is the opposite.  If YYTABLE_NINF, syntax error.  */
 static const yytype_uint8 yytable[] =
 {
-    9,     9,    45,    51,    62,    66,    48,    54,     1,     2,
-    50,    50,    53,    53,    81,    47,    47,    81,    91,     7,
-    91,     7,    44,    61,    61,    65,    65,    68,    68,    12,
-    7,     7,    75,    80,    82,    70,    76,   104,    90,    95,
-    43,    70,    47,    77,    74,    78,    79,    84,    85,    86,
-    87,    88,    89,   103,   105,   106,    83,   108,   109,   110,
-    112,   111,    93,    98,   100,    94,   113,    13,    11,     0,
-    50,    53,     0,     0,    58,     0,    92,     0,    73,     0,
-    0,    96,    97,    61,    99,    65,   101,   102,    69,     0,
-    0,     0,     0,     0,     0,     0,     0,     0,     0,     0,
-    0,     0,     0,     0,   107,     0,     0,     0,     0,     0,
-    0,     0,   114,    14,    15,    16,    17,    18,    19,    20,
-    21,    22,    23,    24,    25,    26,    27,    28,    29,    30,
-    31
+    8,    10,    63,    67,    84,     1,     2,    84,    48,    94,
+    7,    94,     7,    49,    50,    42,     7,    11,    87,    45,
+    58,    58,    62,    62,    66,    66,    69,    69,    46,     7,
+    106,    97,    47,    53,    54,    55,    52,    52,    52,    52,
+    76,     7,    78,     7,    77,    80,    81,    78,    78,    78,
+    7,     7,    71,    83,    85,    58,    71,    86,    58,    93,
+    88,    89,    90,    91,    79,   100,   102,    92,   105,   107,
+    82,   110,    82,    82,    82,    78,    95,   108,   111,    78,
+    112,   113,    58,   114,    98,    99,    62,   101,    66,   103,
+    104,   115,    12,    75,    70,    59,     0,    74,     0,     0,
+    96,     0,     0,     0,     0,     0,   109,     0,     0,     0,
+    0,     0,     0,     0,   116,    13,    14,    15,    16,    17,
+    18,    19,    20,    21,    22,    23,    24,    25,    26,    27,
+    28,    29,    30
 };
 
 static const yytype_int8 yycheck[] =
 {
-    1,     2,    10,    19,    25,    27,    17,    21,     4,     5,
-    18,    19,    20,    21,    55,    16,    17,    58,    71,     3,
-    73,     3,     6,    24,    25,    26,    27,    28,    29,     0,
-    3,     3,    43,     6,     6,     3,    44,    90,     6,    80,
-    6,     3,    43,     6,    32,     6,     6,     6,     6,     6,
-    6,     6,     6,     3,     6,     6,    57,     3,     6,     3,
-    3,     6,    78,    84,    86,    79,     6,     4,     2,    -1,
-    78,    79,    -1,    -1,    23,    -1,    77,    -1,    31,    -1,
-    -1,    82,    83,    84,    85,    86,    87,    88,    29,    -1,
-    -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,
-    -1,    -1,    -1,    -1,   105,    -1,    -1,    -1,    -1,    -1,
-    -1,    -1,   113,     7,     8,     9,    10,    11,    12,    13,
-    14,    15,    16,    17,    18,    19,    20,    21,    22,    23,
-    24
+    1,     2,    24,    26,    56,     4,     5,    59,    10,    72,
+    3,    74,     3,    15,    16,     6,     3,     0,     6,     6,
+    21,    22,    23,    24,    25,    26,    27,    28,     9,     3,
+    93,    83,     6,    18,    19,    20,    17,    18,    19,    20,
+    42,     3,    43,     3,     6,    47,     6,    48,    49,    50,
+    3,     3,     3,     6,     6,    56,     3,    58,    59,     6,
+    6,     6,     6,     6,    45,    87,    89,     6,     3,     6,
+    51,     3,    53,    54,    55,    76,    77,     6,     6,    80,
+    3,     6,    83,     3,    85,    86,    87,    88,    89,    90,
+    91,     6,     4,    31,    28,    22,    -1,    30,    -1,    -1,
+    81,    -1,    -1,    -1,    -1,    -1,   107,    -1,    -1,    -1,
+    -1,    -1,    -1,    -1,   115,     7,     8,     9,    10,    11,
+    12,    13,    14,    15,    16,    17,    18,    19,    20,    21,
+    22,    23,    24
 };
 
 /* YYSTOS[STATE-NUM] -- The (internal number of the) accessing
    symbol of state STATE-NUM.  */
 static const yytype_uint8 yystos[] =
 {
-    0,     4,     5,    26,    27,    28,    31,     3,    32,    54,
-    55,    32,     0,    28,     7,     8,     9,    10,    11,    12,
-    13,    14,    15,    16,    17,    18,    19,    20,    21,    22,
-    23,    24,    29,    30,    33,    34,    36,    38,    40,    43,
-    46,    49,    51,     6,     6,    55,    35,    54,    35,    37,
-    55,    37,    39,    55,    39,    41,    42,    54,    41,    44,
-    45,    54,    44,    47,    48,    54,    47,    50,    54,    50,
-    3,    52,    53,    52,    30,    35,    55,     6,     6,     6,
-    6,    42,     6,    54,     6,     6,     6,     6,     6,     6,
-    6,    53,    54,    37,    39,    42,    54,    54,    44,    54,
-    47,    54,    54,     3,    53,     6,     6,    54,     3,     6,
-    3,     6,     3,     6,    54
+    0,     4,     5,    26,    27,    28,    31,     3,    52,    53,
+    52,     0,    28,     7,     8,     9,    10,    11,    12,    13,
+    14,    15,    16,    17,    18,    19,    20,    21,    22,    23,
+    24,    29,    30,    32,    33,    35,    37,    38,    41,    44,
+    47,    49,     6,    34,    52,     6,    53,     6,    34,    34,
+    34,    36,    53,    36,    36,    36,    39,    40,    52,    39,
+    42,    43,    52,    42,    45,    46,    52,    45,    48,    52,
+    48,     3,    50,    51,    50,    30,    34,     6,    52,    53,
+    34,     6,    53,     6,    40,     6,    52,     6,     6,     6,
+    6,     6,     6,     6,    51,    52,    53,    40,    52,    52,
+    42,    52,    45,    52,    52,     3,    51,     6,     6,    52,
+    3,     6,     3,     6,     3,     6,    52
 };
 
 /* YYR1[YYN] -- Symbol number of symbol that rule YYN derives.  */
@@ -630,11 +627,11 @@ static const yytype_uint8 yyr1[] =
 {
     0,    25,    26,    26,    27,    27,    28,    28,    29,    29,
     30,    30,    30,    30,    30,    30,    30,    30,    30,    31,
-    31,    32,    32,    33,    33,    34,    34,    35,    35,    36,
-    36,    37,    37,    38,    38,    39,    39,    40,    40,    41,
-    41,    41,    42,    42,    43,    43,    44,    44,    45,    46,
-    46,    47,    47,    48,    49,    49,    50,    50,    51,    51,
-    52,    52,    52,    53,    54,    54,    55
+    31,    31,    31,    31,    31,    32,    32,    33,    33,    34,
+    34,    34,    35,    35,    36,    36,    36,    37,    37,    38,
+    38,    39,    39,    39,    40,    40,    41,    41,    42,    42,
+    43,    44,    44,    45,    45,    46,    47,    47,    48,    48,
+    49,    49,    50,    50,    50,    51,    52,    52,    53
 };
 
 /* YYR2[YYN] -- Number of symbols on the right hand side of rule YYN.  */
@@ -642,11 +639,11 @@ static const yytype_uint8 yyr2[] =
 {
     0,     2,     0,     1,     1,     2,     1,     2,     1,     2,
     1,     1,     1,     1,     1,     1,     1,     1,     1,     2,
-    2,     1,     3,     1,     1,     2,     2,     1,     3,     2,
-    2,     1,     3,     2,     2,     1,     3,     2,     2,     1,
-    3,     2,     5,     3,     2,     2,     1,     3,     3,     2,
-    2,     1,     3,     3,     2,     2,     1,     3,     2,     2,
-    1,     3,     2,    11,     3,     2,     1
+    2,     3,     3,     4,     4,     1,     1,     2,     2,     1,
+    2,     3,     2,     2,     1,     2,     3,     2,     2,     2,
+    2,     1,     2,     3,     5,     3,     2,     2,     1,     3,
+    3,     2,     2,     1,     3,     3,     2,     2,     1,     3,
+    2,     2,     1,     3,     2,    11,     3,     2,     1
 };
 
 
@@ -674,7 +671,7 @@ static const yytype_uint8 yyr2[] =
       }                                                           \
     else                                                          \
       {                                                           \
-        yyerror (YY_("syntax error: cannot back up")); \
+        yyerror (aPath, YY_("syntax error: cannot back up")); \
         YYERROR;                                                  \
       }                                                           \
   while (0)
@@ -711,7 +708,7 @@ do {                                                                      \
     {                                                                     \
       YYFPRINTF (stderr, "%s ", Title);                                   \
       yy_symbol_print (stderr,                                            \
-                  Type, Value); \
+                  Type, Value, aPath); \
       YYFPRINTF (stderr, "\n");                                           \
     }                                                                     \
 } while (0)
@@ -722,10 +719,11 @@ do {                                                                      \
 `-----------------------------------*/
 
 static void
-yy_symbol_value_print ( FILE *yyo, int yytype, YYSTYPE const * const yyvaluep )
+yy_symbol_value_print ( FILE *yyo, int yytype, YYSTYPE const * const yyvaluep, std::vector<AeonGUI::DrawCommand>& aPath )
 {
     FILE *yyoutput = yyo;
     YYUSE ( yyoutput );
+    YYUSE ( aPath );
     if ( !yyvaluep )
     {
         return;
@@ -745,12 +743,12 @@ yy_symbol_value_print ( FILE *yyo, int yytype, YYSTYPE const * const yyvaluep )
 `---------------------------*/
 
 static void
-yy_symbol_print ( FILE *yyo, int yytype, YYSTYPE const * const yyvaluep )
+yy_symbol_print ( FILE *yyo, int yytype, YYSTYPE const * const yyvaluep, std::vector<AeonGUI::DrawCommand>& aPath )
 {
     YYFPRINTF ( yyo, "%s %s (",
                 yytype < YYNTOKENS ? "token" : "nterm", yytname[yytype] );
 
-    yy_symbol_value_print ( yyo, yytype, yyvaluep );
+    yy_symbol_value_print ( yyo, yytype, yyvaluep, aPath );
     YYFPRINTF ( yyo, ")" );
 }
 
@@ -783,7 +781,7 @@ do {                                                            \
 `------------------------------------------------*/
 
 static void
-yy_reduce_print ( yytype_int16 *yyssp, YYSTYPE *yyvsp, int yyrule )
+yy_reduce_print ( yytype_int16 *yyssp, YYSTYPE *yyvsp, int yyrule, std::vector<AeonGUI::DrawCommand>& aPath )
 {
     unsigned long yylno = yyrline[yyrule];
     int yynrhs = yyr2[yyrule];
@@ -797,7 +795,7 @@ yy_reduce_print ( yytype_int16 *yyssp, YYSTYPE *yyvsp, int yyrule )
         yy_symbol_print ( stderr,
                           yystos[yyssp[yyi + 1 - yynrhs]],
                           &yyvsp[ ( yyi + 1 ) - ( yynrhs )]
-                        );
+                          , aPath );
         YYFPRINTF ( stderr, "\n" );
     }
 }
@@ -805,7 +803,7 @@ yy_reduce_print ( yytype_int16 *yyssp, YYSTYPE *yyvsp, int yyrule )
 # define YY_REDUCE_PRINT(Rule)          \
 do {                                    \
   if (yydebug)                          \
-    yy_reduce_print (yyssp, yyvsp, Rule); \
+    yy_reduce_print (yyssp, yyvsp, Rule, aPath); \
 } while (0)
 
 /* Nonzero means print parse trace.  It is left uninitialized so that
@@ -1093,9 +1091,10 @@ yysyntax_error ( YYSIZE_T *yymsg_alloc, char **yymsg,
 `-----------------------------------------------*/
 
 static void
-yydestruct ( const char *yymsg, int yytype, YYSTYPE *yyvaluep )
+yydestruct ( const char *yymsg, int yytype, YYSTYPE *yyvaluep, std::vector<AeonGUI::DrawCommand>& aPath )
 {
     YYUSE ( yyvaluep );
+    YYUSE ( aPath );
     if ( !yymsg )
     {
         yymsg = "Deleting";
@@ -1124,7 +1123,7 @@ int yynerrs;
 `----------*/
 
 int
-yyparse ( void )
+yyparse ( std::vector<AeonGUI::DrawCommand>& aPath )
 {
     int yystate;
     /* Number of tokens to shift before error messages enabled.  */
@@ -1384,55 +1383,323 @@ yyreduce:
     switch ( yyn )
     {
     case 19:
-#line 59 "C:/Code/AeonGUI/core/parsers/path_data.ypp"
+#line 62 "C:/Code/AeonGUI/core/parsers/path_data.ypp"
         {
-            std::cout << 'M' << std::endl;
+            aPath.emplace_back ( AeonGUI::DrawCommand{'M', std::get<AeonGUI::Vector2> ( yyvsp[0] ) } );
         }
-#line 1337 "C:/Code/AeonGUI/mingw64/core/path_data_parser.cpp"
+#line 1338 "C:/Code/AeonGUI/mingw64/core/path_data_parser.cpp"
         break;
 
     case 20:
-#line 60 "C:/Code/AeonGUI/core/parsers/path_data.ypp"
+#line 66 "C:/Code/AeonGUI/core/parsers/path_data.ypp"
         {
-            std::cout << 'm' << std::endl;
+            aPath.emplace_back ( AeonGUI::DrawCommand{'m', std::get<AeonGUI::Vector2> ( yyvsp[0] ) } );
         }
-#line 1343 "C:/Code/AeonGUI/mingw64/core/path_data_parser.cpp"
+#line 1346 "C:/Code/AeonGUI/mingw64/core/path_data_parser.cpp"
+        break;
+
+    case 21:
+#line 70 "C:/Code/AeonGUI/core/parsers/path_data.ypp"
+        {
+            auto& lineto_argument_sequence = std::get<std::vector<AeonGUI::Vector2>> ( yyvsp[0] );
+            aPath.reserve ( aPath.size() + lineto_argument_sequence.size() + 1 );
+            aPath.emplace_back ( AeonGUI::DrawCommand{'M', std::get<AeonGUI::Vector2> ( yyvsp[-1] ) } );
+            for ( auto &i : lineto_argument_sequence )
+            {
+                aPath.emplace_back ( AeonGUI::DrawCommand{'L', i} );
+            }
+        }
+#line 1357 "C:/Code/AeonGUI/mingw64/core/path_data_parser.cpp"
+        break;
+
+    case 22:
+#line 77 "C:/Code/AeonGUI/core/parsers/path_data.ypp"
+        {
+            auto& lineto_argument_sequence = std::get<std::vector<AeonGUI::Vector2>> ( yyvsp[0] );
+            aPath.reserve ( aPath.size() + lineto_argument_sequence.size() + 1 );
+            aPath.emplace_back ( AeonGUI::DrawCommand{'m', std::get<AeonGUI::Vector2> ( yyvsp[-1] ) } );
+            for ( auto &i : lineto_argument_sequence )
+            {
+                aPath.emplace_back ( AeonGUI::DrawCommand{'l', i} );
+            }
+        }
+#line 1368 "C:/Code/AeonGUI/mingw64/core/path_data_parser.cpp"
+        break;
+
+    case 23:
+#line 84 "C:/Code/AeonGUI/core/parsers/path_data.ypp"
+        {
+            auto& lineto_argument_sequence = std::get<std::vector<AeonGUI::Vector2>> ( yyvsp[0] );
+            aPath.reserve ( aPath.size() + lineto_argument_sequence.size() + 1 );
+            aPath.emplace_back ( AeonGUI::DrawCommand{'M', std::get<AeonGUI::Vector2> ( yyvsp[-2] ) } );
+            for ( auto &i : lineto_argument_sequence )
+            {
+                aPath.emplace_back ( AeonGUI::DrawCommand{'L', i} );
+            }
+        }
+#line 1379 "C:/Code/AeonGUI/mingw64/core/path_data_parser.cpp"
+        break;
+
+    case 24:
+#line 91 "C:/Code/AeonGUI/core/parsers/path_data.ypp"
+        {
+            auto& lineto_argument_sequence = std::get<std::vector<AeonGUI::Vector2>> ( yyvsp[0] );
+            aPath.reserve ( aPath.size() + lineto_argument_sequence.size() + 1 );
+            aPath.emplace_back ( AeonGUI::DrawCommand{'m', std::get<AeonGUI::Vector2> ( yyvsp[-2] ) } );
+            for ( auto &i : lineto_argument_sequence )
+            {
+                aPath.emplace_back ( AeonGUI::DrawCommand{'l', i} );
+            }
+        }
+#line 1390 "C:/Code/AeonGUI/mingw64/core/path_data_parser.cpp"
         break;
 
     case 25:
-#line 69 "C:/Code/AeonGUI/core/parsers/path_data.ypp"
+#line 99 "C:/Code/AeonGUI/core/parsers/path_data.ypp"
         {
-            std::cout << 'L' << std::endl;
+            aPath.emplace_back ( AeonGUI::DrawCommand{'Z', {}} );
         }
-#line 1349 "C:/Code/AeonGUI/mingw64/core/path_data_parser.cpp"
+#line 1396 "C:/Code/AeonGUI/mingw64/core/path_data_parser.cpp"
         break;
 
     case 26:
-#line 70 "C:/Code/AeonGUI/core/parsers/path_data.ypp"
+#line 100 "C:/Code/AeonGUI/core/parsers/path_data.ypp"
         {
-            std::cout << 'l' << std::endl;
+            aPath.emplace_back ( AeonGUI::DrawCommand{'z', {}} );
         }
-#line 1355 "C:/Code/AeonGUI/mingw64/core/path_data_parser.cpp"
+#line 1402 "C:/Code/AeonGUI/mingw64/core/path_data_parser.cpp"
         break;
 
-    case 64:
-#line 142 "C:/Code/AeonGUI/core/parsers/path_data.ypp"
+    case 27:
+#line 104 "C:/Code/AeonGUI/core/parsers/path_data.ypp"
+        {
+            auto& lineto_argument_sequence = std::get<std::vector<AeonGUI::Vector2>> ( yyvsp[0] );
+            aPath.reserve ( aPath.size() + lineto_argument_sequence.size() );
+            for ( auto &i : lineto_argument_sequence )
+            {
+                aPath.emplace_back ( AeonGUI::DrawCommand{'L', i} );
+            }
+        }
+#line 1415 "C:/Code/AeonGUI/mingw64/core/path_data_parser.cpp"
+        break;
+
+    case 28:
+#line 113 "C:/Code/AeonGUI/core/parsers/path_data.ypp"
+        {
+            auto& lineto_argument_sequence = std::get<std::vector<AeonGUI::Vector2>> ( yyvsp[0] );
+            aPath.reserve ( aPath.size() + lineto_argument_sequence.size() );
+            for ( auto &i : lineto_argument_sequence )
+            {
+                aPath.emplace_back ( AeonGUI::DrawCommand{'l', i} );
+            }
+        }
+#line 1428 "C:/Code/AeonGUI/mingw64/core/path_data_parser.cpp"
+        break;
+
+    case 29:
+#line 123 "C:/Code/AeonGUI/core/parsers/path_data.ypp"
+        {
+            yyval = std::vector<AeonGUI::Vector2> {std::get<AeonGUI::Vector2> ( yyvsp[0] ) };
+        }
+#line 1434 "C:/Code/AeonGUI/mingw64/core/path_data_parser.cpp"
+        break;
+
+    case 30:
+#line 125 "C:/Code/AeonGUI/core/parsers/path_data.ypp"
+        {
+            std::get<std::vector<AeonGUI::Vector2>> ( yyvsp[-1] ).emplace_back ( std::get<AeonGUI::Vector2> ( yyvsp[0] ) );
+            yyval = std::move ( yyvsp[-1] );
+        }
+#line 1443 "C:/Code/AeonGUI/mingw64/core/path_data_parser.cpp"
+        break;
+
+    case 31:
+#line 130 "C:/Code/AeonGUI/core/parsers/path_data.ypp"
+        {
+            std::get<std::vector<AeonGUI::Vector2>> ( yyvsp[-2] ).emplace_back ( std::get<AeonGUI::Vector2> ( yyvsp[0] ) );
+            yyval = std::move ( yyvsp[-2] );
+        }
+#line 1452 "C:/Code/AeonGUI/mingw64/core/path_data_parser.cpp"
+        break;
+
+    case 32:
+#line 137 "C:/Code/AeonGUI/core/parsers/path_data.ypp"
+        {
+            auto& lineto_argument_sequence = std::get<std::vector<double>> ( yyvsp[0] );
+            aPath.reserve ( aPath.size() + lineto_argument_sequence.size() );
+            for ( auto &i : lineto_argument_sequence )
+            {
+                aPath.emplace_back ( AeonGUI::DrawCommand{'L', {i, 0.0}} );
+            }
+        }
+#line 1465 "C:/Code/AeonGUI/mingw64/core/path_data_parser.cpp"
+        break;
+
+    case 33:
+#line 146 "C:/Code/AeonGUI/core/parsers/path_data.ypp"
+        {
+            auto& lineto_argument_sequence = std::get<std::vector<double>> ( yyvsp[0] );
+            aPath.reserve ( aPath.size() + lineto_argument_sequence.size() );
+            for ( auto &i : lineto_argument_sequence )
+            {
+                aPath.emplace_back ( AeonGUI::DrawCommand{'l', {i, 0.0}} );
+            }
+        }
+#line 1478 "C:/Code/AeonGUI/mingw64/core/path_data_parser.cpp"
+        break;
+
+    case 34:
+#line 156 "C:/Code/AeonGUI/core/parsers/path_data.ypp"
+        {
+            yyval = std::vector<double> {std::get<double> ( yyvsp[0] ) };
+        }
+#line 1484 "C:/Code/AeonGUI/mingw64/core/path_data_parser.cpp"
+        break;
+
+    case 35:
+#line 158 "C:/Code/AeonGUI/core/parsers/path_data.ypp"
+        {
+            std::get<std::vector<double>> ( yyvsp[-1] ).emplace_back ( std::get<double> ( yyvsp[0] ) );
+            yyval = std::move ( yyvsp[-1] );
+        }
+#line 1493 "C:/Code/AeonGUI/mingw64/core/path_data_parser.cpp"
+        break;
+
+    case 36:
+#line 163 "C:/Code/AeonGUI/core/parsers/path_data.ypp"
+        {
+            std::get<std::vector<double>> ( yyvsp[-2] ).emplace_back ( std::get<double> ( yyvsp[0] ) );
+            yyval = std::move ( yyvsp[-2] );
+        }
+#line 1502 "C:/Code/AeonGUI/mingw64/core/path_data_parser.cpp"
+        break;
+
+    case 37:
+#line 170 "C:/Code/AeonGUI/core/parsers/path_data.ypp"
+        {
+            auto& lineto_argument_sequence = std::get<std::vector<double>> ( yyvsp[0] );
+            aPath.reserve ( aPath.size() + lineto_argument_sequence.size() );
+            for ( auto &i : lineto_argument_sequence )
+            {
+                aPath.emplace_back ( AeonGUI::DrawCommand{'L', {0.0, i}} );
+            }
+        }
+#line 1515 "C:/Code/AeonGUI/mingw64/core/path_data_parser.cpp"
+        break;
+
+    case 38:
+#line 179 "C:/Code/AeonGUI/core/parsers/path_data.ypp"
+        {
+            auto& lineto_argument_sequence = std::get<std::vector<double>> ( yyvsp[0] );
+            aPath.reserve ( aPath.size() + lineto_argument_sequence.size() );
+            for ( auto &i : lineto_argument_sequence )
+            {
+                aPath.emplace_back ( AeonGUI::DrawCommand{'l', {0.0, i}} );
+            }
+        }
+#line 1528 "C:/Code/AeonGUI/mingw64/core/path_data_parser.cpp"
+        break;
+
+    case 39:
+#line 190 "C:/Code/AeonGUI/core/parsers/path_data.ypp"
+        {
+            auto& right = std::get<std::vector<AeonGUI::Vector2>> ( yyvsp[0] );
+            aPath.reserve ( aPath.size() + right.size() );
+            for ( auto &i : right )
+            {
+                aPath.emplace_back ( AeonGUI::DrawCommand{'C', i} );
+            }
+        }
+#line 1541 "C:/Code/AeonGUI/mingw64/core/path_data_parser.cpp"
+        break;
+
+    case 40:
+#line 199 "C:/Code/AeonGUI/core/parsers/path_data.ypp"
+        {
+            auto& right = std::get<std::vector<AeonGUI::Vector2>> ( yyvsp[0] );
+            aPath.reserve ( aPath.size() + right.size() );
+            for ( auto &i : right )
+            {
+                aPath.emplace_back ( AeonGUI::DrawCommand{'c', i} );
+            }
+        }
+#line 1554 "C:/Code/AeonGUI/mingw64/core/path_data_parser.cpp"
+        break;
+
+    case 41:
+#line 209 "C:/Code/AeonGUI/core/parsers/path_data.ypp"
+        {
+            yyval = yyvsp[0];
+        }
+#line 1560 "C:/Code/AeonGUI/mingw64/core/path_data_parser.cpp"
+        break;
+
+    case 42:
+#line 211 "C:/Code/AeonGUI/core/parsers/path_data.ypp"
+        {
+            auto& left = std::get<std::vector<AeonGUI::Vector2>> ( yyvsp[-1] );
+            auto& right = std::get<std::vector<AeonGUI::Vector2>> ( yyvsp[0] );
+            left.insert ( left.end(), right.begin(), right.end() );
+            yyval = std::move ( yyvsp[-1] );
+        }
+#line 1571 "C:/Code/AeonGUI/mingw64/core/path_data_parser.cpp"
+        break;
+
+    case 43:
+#line 218 "C:/Code/AeonGUI/core/parsers/path_data.ypp"
+        {
+            auto& left = std::get<std::vector<AeonGUI::Vector2>> ( yyvsp[-2] );
+            auto& right = std::get<std::vector<AeonGUI::Vector2>> ( yyvsp[0] );
+            left.insert ( left.end(), right.begin(), right.end() );
+            yyval = std::move ( yyvsp[-2] );
+        }
+#line 1582 "C:/Code/AeonGUI/mingw64/core/path_data_parser.cpp"
+        break;
+
+    case 44:
+#line 227 "C:/Code/AeonGUI/core/parsers/path_data.ypp"
+        {
+            yyval = std::vector<AeonGUI::Vector2>
+            {
+                std::get<AeonGUI::Vector2> ( yyvsp[-4] ),
+                std::get<AeonGUI::Vector2> ( yyvsp[-2] ),
+                std::get<AeonGUI::Vector2> ( yyvsp[0] )
+            };
+        }
+#line 1595 "C:/Code/AeonGUI/mingw64/core/path_data_parser.cpp"
+        break;
+
+    case 45:
+#line 236 "C:/Code/AeonGUI/core/parsers/path_data.ypp"
+        {
+            yyval = std::vector<AeonGUI::Vector2>
+            {
+                std::get<AeonGUI::Vector2> ( yyvsp[-2] ),
+                std::get<AeonGUI::Vector2> ( yyvsp[-1] ),
+                std::get<AeonGUI::Vector2> ( yyvsp[0] )
+            };
+        }
+#line 1608 "C:/Code/AeonGUI/mingw64/core/path_data_parser.cpp"
+        break;
+
+    case 66:
+#line 284 "C:/Code/AeonGUI/core/parsers/path_data.ypp"
         {
             yyval = AeonGUI::Vector2 ( std::get<double> ( yyvsp[-2] ), std::get<double> ( yyvsp[0] ) );
         }
-#line 1361 "C:/Code/AeonGUI/mingw64/core/path_data_parser.cpp"
+#line 1614 "C:/Code/AeonGUI/mingw64/core/path_data_parser.cpp"
         break;
 
-    case 65:
-#line 143 "C:/Code/AeonGUI/core/parsers/path_data.ypp"
+    case 67:
+#line 285 "C:/Code/AeonGUI/core/parsers/path_data.ypp"
         {
             yyval = AeonGUI::Vector2 ( std::get<double> ( yyvsp[-1] ), std::get<double> ( yyvsp[0] ) );
         }
-#line 1367 "C:/Code/AeonGUI/mingw64/core/path_data_parser.cpp"
+#line 1620 "C:/Code/AeonGUI/mingw64/core/path_data_parser.cpp"
         break;
 
 
-#line 1371 "C:/Code/AeonGUI/mingw64/core/path_data_parser.cpp"
+#line 1624 "C:/Code/AeonGUI/mingw64/core/path_data_parser.cpp"
 
     default:
         break;
@@ -1483,7 +1750,7 @@ yyerrlab:
     {
         ++yynerrs;
 #if ! YYERROR_VERBOSE
-        yyerror ( YY_ ( "syntax error" ) );
+        yyerror ( aPath, YY_ ( "syntax error" ) );
 #else
 # define YYSYNTAX_ERROR yysyntax_error (&yymsg_alloc, &yymsg, \
                                         yyssp, yytoken)
@@ -1514,7 +1781,7 @@ yyerrlab:
                     yymsgp = yymsg;
                 }
             }
-            yyerror ( yymsgp );
+            yyerror ( aPath, yymsgp );
             if ( yysyntax_error_status == 2 )
             {
                 goto yyexhaustedlab;
@@ -1542,7 +1809,7 @@ yyerrlab:
         else
         {
             yydestruct ( "Error: discarding",
-                         yytoken, &yylval );
+                         yytoken, &yylval, aPath );
             yychar = YYEMPTY;
         }
     }
@@ -1602,7 +1869,7 @@ yyerrlab1:
 
 
         yydestruct ( "Error: popping",
-                     yystos[yystate], yyvsp );
+                     yystos[yystate], yyvsp, aPath );
         YYPOPSTACK ( 1 );
         yystate = *yyssp;
         YY_STACK_PRINT ( yyss, yyssp );
@@ -1641,7 +1908,7 @@ yyabortlab:
     | yyexhaustedlab -- memory exhaustion comes here.  |
     `-------------------------------------------------*/
 yyexhaustedlab:
-    yyerror ( YY_ ( "memory exhausted" ) );
+    yyerror ( aPath, YY_ ( "memory exhausted" ) );
     yyresult = 2;
     /* Fall through.  */
 #endif
@@ -1657,7 +1924,7 @@ yyreturn:
            user semantic actions for why this is necessary.  */
         yytoken = YYTRANSLATE ( yychar );
         yydestruct ( "Cleanup: discarding lookahead",
-                     yytoken, &yylval );
+                     yytoken, &yylval, aPath );
     }
     /* Do not reclaim the symbols of the rule whose action triggered
        this YYABORT or YYACCEPT.  */
@@ -1666,7 +1933,7 @@ yyreturn:
     while ( yyssp != yyss )
     {
         yydestruct ( "Cleanup: popping",
-                     yystos[*yyssp], yyvsp );
+                     yystos[*yyssp], yyvsp, aPath );
         YYPOPSTACK ( 1 );
     }
 #ifndef yyoverflow
@@ -1683,12 +1950,12 @@ yyreturn:
 #endif
     return yyresult;
 }
-#line 147 "C:/Code/AeonGUI/core/parsers/path_data.ypp"
+#line 289 "C:/Code/AeonGUI/core/parsers/path_data.ypp"
 
 
 extern "C"
 {
-    int derror ( const char *s )
+    int derror ( std::vector<AeonGUI::DrawCommand>& aPath, const char *s )
     {
         std::cerr << s << std::endl;
         return 0;

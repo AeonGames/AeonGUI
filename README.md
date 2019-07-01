@@ -1,5 +1,7 @@
-AeonGUI README (Latest Updated: 06-17-2019)
-===========================
+AeonGUI [![MinGW64 Build status](https://ci.appveyor.com/api/projects/status/qu54ujbndy1qu80g?svg=true)](https://ci.appveyor.com/project/Kwizatz/aeongui)
+=======
+
+Last Updated: 07-01-2019
 
 This file contains the following sections:
 
@@ -10,14 +12,14 @@ LICENSE
 AUTHOR
 
 DESCRIPTION
-===========
+
 Right now AeonGUI is a project to create a graphic user interface library to be used primarily on video games and interactive media.
 It's primary goal is to stay agnostic of any advanced/dedicated graphics rendering API such as OpenGL, Vulkan, Direct3D, X11 or GDI.
 
 WARNING!!!: The library is not currently on a stable or even usable state, and is mostly a sandbox for ideas and POCs.
 
 HISTORY
-=======
+
 The idea for the library was born around 2004 or 2005 under the name 'Glitch', and has evolved overtime but never quite reached maturity.
 The name change to AeonGUI came about as a way to identify the library as part of the AeonGames brand
 and to avoid confusion since originaly the name 'GLitch' was chosen to emphasize OpenGL support, which is no longer the priority.
@@ -36,7 +38,7 @@ Now, in 2019 the current idea is to create a SVG agent that implements the subse
 **We really hope this is the last iteration of what AeonGUI IS**
 
 COMPILATION
-===========
+
 The library uses CMake to build the required files used to build the binary depending on the platform.
 For information on how to use CMake refer to the [CMake official site](https://www.cmake.org).
 There is only "official" support for Windows(MSYS2 and Visual Studio) and Linux at this time,
@@ -49,7 +51,7 @@ The rules to download and configure external dependencies are most useful to Win
 development libraries for most software packages.
 
 LICENSE
-=======
+
 The library is released under the terms of the permisive [Apache 2.0 license] (http://www.apache.org/licenses/LICENSE-2.0)
 
 The Aeon Games logo is __NOT__ covered by the Apache license,
@@ -60,5 +62,5 @@ Some of the code and assets are not covered by the Apache license:
 fonts     is Copyright (c) 2003 by Bitstream, Inc., refer to COPYRIGHT.TXT for license terms.
 
 AUTHOR
-======
+
 The only author (for now) of AeonGUI is Rodrigo Hernandez and can be reached at kwizatz at aeongames dot com.

@@ -71,6 +71,6 @@ typedef int DSTYPE;
 
 extern DSTYPE dlval;
 
-int dparse ( void );
+int dparse ( std::vector<AeonGUI::DrawCommand>& aPath );
 
 #endif /* !YY_D_C_CODE_AEONGUI_MINGW64_CORE_PATH_DATA_PARSER_HPP_INCLUDED  */
