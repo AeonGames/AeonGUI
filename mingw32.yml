@@ -1,4 +1,4 @@
-version: 'aeongui-mingw64-{branch}-{build}'
+version: 'aeongui-mingw32-{branch}-{build}'
 branches:
   only:
   - master
@@ -9,7 +9,7 @@ before_build:
 - cmd: >-
     set PATH=c:\msys64\mingw64\bin;c:\msys64\usr\bin
 
-    set MSYSTEM=MINGW64
+    set MSYSTEM=MINGW32
 
     set CHERE_INVOKING=1
 
@@ -23,7 +23,7 @@ before_build:
 
     C:\msys64\usr\bin\bash.exe -lc "pacman -Syuu --noconfirm"
 
-    C:\msys64\usr\bin\bash.exe -lc "pacman -S --needed --noconfirm mingw-w64-x86_64-make mingw-w64-x86_64-cmake mingw-w64-x86_64-python2 mingw-w64-x86_64-python2-pip mingw-w64-x86_64-python2-yaml flex bison mingw-w64-x86_64-libxml2 mingw-w64-x86_64-zlib mingw-w64-x86_64-libpng mingw-w64-x86_64-cairo"
+    C:\msys64\usr\bin\bash.exe -lc "pacman -S --needed --noconfirm mingw-w64-i686-make mingw-w64-i686-cmake mingw-w64-i686-python2 mingw-w64-i686-python2-pip mingw-w64-i686-python2-yaml flex bison mingw-w64-i686-libxml2 mingw-w64-i686-zlib mingw-w64-i686-libpng mingw-w64-i686-cairo"
 
     C:\msys64\usr\bin\bash.exe -lc "cmake -G\"MSYS Makefiles\" .."
 
