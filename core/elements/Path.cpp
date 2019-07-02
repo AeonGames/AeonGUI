@@ -32,7 +32,7 @@ namespace AeonGUI
                 }
                 for ( auto& i : mPath )
                 {
-                    std::cout << i.GetCommand() << " " << i.GetVertex() [0] << " " << i.GetVertex() [1] << std::endl;
+                    std::cout << static_cast<char> ( i.GetCommand() ) << " " << i.GetVertex() [0] << " " << i.GetVertex() [1] << std::endl;
                 }
             }
         }

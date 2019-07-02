@@ -1,4 +1,4 @@
-AeonGUI [![MinGW64 Build status](https://ci.appveyor.com/api/projects/status/qu54ujbndy1qu80g?svg=true)](https://ci.appveyor.com/project/Kwizatz/aeongui)
+AeonGUI [![MinGW64 Build status](https://ci.appveyor.com/api/projects/status/qu54ujbndy1qu80g?svg=true)](https://ci.appveyor.com/project/Kwizatz/aeongui) [![MinGW32 Build status](https://ci.appveyor.com/api/projects/status/r29c5316vxv6a256?svg=true)](https://ci.appveyor.com/project/Kwizatz/aeongui-altq2)
 =======
 
 Last Updated: 07-01-2019
@@ -31,10 +31,9 @@ was going on without the need for a GUI.
 
 Somewhere between 2013 and 2018 the idea of the GUI as an HTML agent lingered, it would have been easy to create UIs for anyone
 with CSS and HTML experience, no need to learn a new paradigm, but that idea died as well due to the complexity required plus
-the actual similarity between documents and video game UIs being very different.
+the actual similarities between HTML documents and video game UIs being very limited.
 
-Now, in 2019 the current idea is to create a SVG agent that implements the subset of the SVG DOM, making UIs easily implemented via SVG files.
-
+Right now, in 2019 the idea is to create a SVG agent that implements a subset of the SVG DOM, making UIs easily implemented via SVG files.
 **We really hope this is the last iteration of what AeonGUI IS**
 
 COMPILATION

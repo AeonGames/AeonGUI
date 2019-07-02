@@ -31,33 +31,38 @@ limitations under the License.
 %option prefix="d"
 
 number               -?([0-9]+|[0-9]*\.[0-9]+([eE][-+]?[0-9]+)?)
+flag                 0|1
 
 %%
+{flag}                  {
+							dlval = static_cast<bool>(std::atoi(yytext));
+							return FLAG;
+						}
 {number}                {
 							dlval = std::strtod(yytext,nullptr);
 							return NUMBER;
 						}
 ","                     return ',';
-"M"                     return 'M';
-"m"                     return 'm';
-"Z"                     return 'Z';
-"z"                     return 'z';
-"L"                     return 'L';
-"l"                     return 'l';
-"H"                     return 'H';
-"h"                     return 'h';
-"V"                     return 'V';
-"v"                     return 'v';
-"C"                     return 'C';
-"c"                     return 'c';
-"S"                     return 'S';
-"s"                     return 's';
-"Q"                     return 'Q';
-"q"                     return 'q';
-"T"                     return 'T';
-"t"                     return 't';
-"A"                     return 'A';
-"a"                     return 'a';
+"M"                     { dlval = static_cast<uint64_t>('M'); return 'M';}
+"m"                     { dlval = static_cast<uint64_t>('m'); return 'm';}
+"Z"                     { dlval = static_cast<uint64_t>('Z'); return 'Z';}
+"z"                     { dlval = static_cast<uint64_t>('z'); return 'z';}
+"L"                     { dlval = static_cast<uint64_t>('L'); return 'L';}
+"l"                     { dlval = static_cast<uint64_t>('l'); return 'l';}
+"H"                     { dlval = static_cast<uint64_t>('H'); return 'H';}
+"h"                     { dlval = static_cast<uint64_t>('h'); return 'h';}
+"V"                     { dlval = static_cast<uint64_t>('V'); return 'V';}
+"v"                     { dlval = static_cast<uint64_t>('v'); return 'v';}
+"C"                     { dlval = static_cast<uint64_t>('C'); return 'C';}
+"c"                     { dlval = static_cast<uint64_t>('c'); return 'c';}
+"S"                     { dlval = static_cast<uint64_t>('S'); return 'S';}
+"s"                     { dlval = static_cast<uint64_t>('s'); return 's';}
+"Q"                     { dlval = static_cast<uint64_t>('Q'); return 'Q';}
+"q"                     { dlval = static_cast<uint64_t>('q'); return 'q';}
+"T"                     { dlval = static_cast<uint64_t>('T'); return 'T';}
+"t"                     { dlval = static_cast<uint64_t>('t'); return 't';}
+"A"                     { dlval = static_cast<uint64_t>('A'); return 'A';}
+"a"                     { dlval = static_cast<uint64_t>('a'); return 'a';}
 .
 %%
 
