@@ -35,6 +35,16 @@ static void AddCommandsToPath(std::vector<AeonGUI::DrawCommand>& aPath,uint64_t 
     }
 }
 
+static void AddArcToPath(
+    std::vector<AeonGUI::DrawCommand>& aPath,
+    const AeonGUI::Vector2& aRadii,
+    double aAngle,
+    bool aLargeArc,
+    bool aSweepFlag,
+    const AeonGUI::Vector2& aEnd)
+{
+}
+
 %}
 
 %define api.prefix {d}
@@ -149,37 +159,166 @@ elliptical-arc-argument-sequence:
     | elliptical-arc-argument-sequence elliptical-arc-argument
     ;
 elliptical-arc-argument:
-    coordinate-pair NUMBER NUMBER NUMBER coordinate-pair
+    coordinate-pair coordinate FLAG FLAG coordinate-pair 
+    {
+        AddArcToPath(aPath,
+        std::get<AeonGUI::Vector2>($1),
+        std::get<double>($2),
+        std::get<bool>($3),
+        std::get<bool>($4),
+        std::get<AeonGUI::Vector2>($5));
+    }
     |
-    coordinate-pair ',' NUMBER NUMBER NUMBER coordinate-pair
+    coordinate-pair ',' coordinate FLAG FLAG coordinate-pair
+    {
+        AddArcToPath(aPath,
+        std::get<AeonGUI::Vector2>($1),
+        std::get<double>($3),
+        std::get<bool>($4),
+        std::get<bool>($5),
+        std::get<AeonGUI::Vector2>($6));
+    }
     |
-    coordinate-pair NUMBER ',' NUMBER NUMBER coordinate-pair
+    coordinate-pair coordinate ',' FLAG FLAG coordinate-pair
+    {
+        AddArcToPath(aPath,
+        std::get<AeonGUI::Vector2>($1),
+        std::get<double>($2),
+        std::get<bool>($4),
+        std::get<bool>($5),
+        std::get<AeonGUI::Vector2>($6));
+    }
     |
-    coordinate-pair NUMBER NUMBER ',' NUMBER coordinate-pair
+    coordinate-pair coordinate FLAG ',' FLAG coordinate-pair
+    {
+        AddArcToPath(aPath,
+        std::get<AeonGUI::Vector2>($1),
+        std::get<double>($2),
+        std::get<bool>($3),
+        std::get<bool>($5),
+        std::get<AeonGUI::Vector2>($6));
+    }
     |
-    coordinate-pair NUMBER NUMBER NUMBER ',' coordinate-pair
+    coordinate-pair coordinate FLAG FLAG ',' coordinate-pair
+    {
+        AddArcToPath(aPath,
+        std::get<AeonGUI::Vector2>($1),
+        std::get<double>($2),
+        std::get<bool>($3),
+        std::get<bool>($4),
+        std::get<AeonGUI::Vector2>($6));
+    }
     |
-    coordinate-pair ',' NUMBER ',' NUMBER NUMBER coordinate-pair
+    coordinate-pair ',' coordinate ',' FLAG FLAG coordinate-pair
+    {
+        AddArcToPath(aPath,
+        std::get<AeonGUI::Vector2>($1),
+        std::get<double>($3),
+        std::get<bool>($5),
+        std::get<bool>($6),
+        std::get<AeonGUI::Vector2>($7));
+    }
     |
-    coordinate-pair NUMBER NUMBER ',' NUMBER ',' coordinate-pair
+    coordinate-pair coordinate FLAG ',' FLAG ',' coordinate-pair
+    {
+        AddArcToPath(aPath,
+        std::get<AeonGUI::Vector2>($1),
+        std::get<double>($2),
+        std::get<bool>($3),
+        std::get<bool>($5),
+        std::get<AeonGUI::Vector2>($7));
+    }
     |
-    coordinate-pair ',' NUMBER NUMBER NUMBER ',' coordinate-pair
+    coordinate-pair ',' coordinate FLAG FLAG ',' coordinate-pair
+    {
+        AddArcToPath(aPath,
+        std::get<AeonGUI::Vector2>($1),
+        std::get<double>($3),
+        std::get<bool>($4),
+        std::get<bool>($5),
+        std::get<AeonGUI::Vector2>($7));
+    }
     |
-    coordinate-pair NUMBER ',' NUMBER ',' NUMBER coordinate-pair
+    coordinate-pair coordinate ',' FLAG ',' FLAG coordinate-pair
+    {
+        AddArcToPath(aPath,
+        std::get<AeonGUI::Vector2>($1),
+        std::get<double>($2),
+        std::get<bool>($4),
+        std::get<bool>($6),
+        std::get<AeonGUI::Vector2>($7));
+    }
     |
-    coordinate-pair ',' NUMBER NUMBER ',' NUMBER coordinate-pair
+    coordinate-pair ',' coordinate FLAG ',' FLAG coordinate-pair
+    {
+        AddArcToPath(aPath,
+        std::get<AeonGUI::Vector2>($1),
+        std::get<double>($3),
+        std::get<bool>($4),
+        std::get<bool>($6),
+        std::get<AeonGUI::Vector2>($7));
+    }
     |
-    coordinate-pair NUMBER ',' NUMBER NUMBER ',' coordinate-pair
+    coordinate-pair coordinate ',' FLAG FLAG ',' coordinate-pair
+    {
+        AddArcToPath(aPath,
+        std::get<AeonGUI::Vector2>($1),
+        std::get<double>($2),
+        std::get<bool>($4),
+        std::get<bool>($5),
+        std::get<AeonGUI::Vector2>($7));
+    }
     |
-    coordinate-pair NUMBER ',' NUMBER ',' NUMBER ',' coordinate-pair
+    coordinate-pair coordinate ',' FLAG ',' FLAG ',' coordinate-pair
+    {
+        AddArcToPath(aPath,
+        std::get<AeonGUI::Vector2>($1),
+        std::get<double>($2),
+        std::get<bool>($4),
+        std::get<bool>($6),
+        std::get<AeonGUI::Vector2>($8));
+    }
     |
-    coordinate-pair ',' NUMBER NUMBER ',' NUMBER ',' coordinate-pair
+    coordinate-pair ',' coordinate FLAG ',' FLAG ',' coordinate-pair
+    {
+        AddArcToPath(aPath,
+        std::get<AeonGUI::Vector2>($1),
+        std::get<double>($3),
+        std::get<bool>($4),
+        std::get<bool>($6),
+        std::get<AeonGUI::Vector2>($8));
+    }
     |
-    coordinate-pair ',' NUMBER ',' NUMBER NUMBER ',' coordinate-pair
+    coordinate-pair ',' coordinate ',' FLAG FLAG ',' coordinate-pair
+    {
+        AddArcToPath(aPath,
+        std::get<AeonGUI::Vector2>($1),
+        std::get<double>($3),
+        std::get<bool>($5),
+        std::get<bool>($6),
+        std::get<AeonGUI::Vector2>($8));
+    }
     |
-    coordinate-pair ',' NUMBER ',' NUMBER ',' NUMBER coordinate-pair
+    coordinate-pair ',' coordinate ',' FLAG ',' FLAG coordinate-pair
+    {
+        AddArcToPath(aPath,
+        std::get<AeonGUI::Vector2>($1),
+        std::get<double>($3),
+        std::get<bool>($5),
+        std::get<bool>($7),
+        std::get<AeonGUI::Vector2>($8));
+    }
     |
-    coordinate-pair ',' NUMBER ',' NUMBER ',' NUMBER ',' coordinate-pair;
+    coordinate-pair ',' coordinate ',' FLAG ',' FLAG ',' coordinate-pair
+    {
+        AddArcToPath(aPath,
+        std::get<AeonGUI::Vector2>($1),
+        std::get<double>($3),
+        std::get<bool>($5),
+        std::get<bool>($7),
+        std::get<AeonGUI::Vector2>($9));
+    }
+    ;
 triple-coordinate-pair-argument-sequence:
     triple-coordinate-pair-argument { $$ = $1; }
     | triple-coordinate-pair-argument-sequence triple-coordinate-pair-argument
