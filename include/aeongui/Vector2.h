@@ -28,13 +28,25 @@ namespace AeonGUI
         DLL Vector2 ( double aX, double aY );
         DLL double GetX() const;
         DLL double GetY() const;
+        DLL double Length() const;
         DLL const double& operator[] ( std::size_t aIndex ) const;
         DLL Vector2& operator+= ( const Vector2& aRight );
+        DLL Vector2& operator-= ( const Vector2& aRight );
         DLL Vector2& operator*= ( const Matrix2x3& aRight );
+        DLL Vector2& operator*= ( const Vector2& aRight );
+        DLL Vector2& operator*= ( double aRight );
+        DLL Vector2& operator/= ( double aRight );
     private:
         double mVector2[2];
     };
     DLL Vector2 operator+ ( const Vector2& aLeft, const Vector2& aRight );
+    DLL Vector2 operator- ( const Vector2& aLeft, const Vector2& aRight );
     DLL Vector2 operator* ( const Vector2& aLeft, const Matrix2x3& aRight );
+    DLL Vector2 operator* ( const Vector2& aLeft, const Vector2& aRight );
+    DLL Vector2 operator/ ( const Vector2& aLeft, double aRight );
+    DLL Vector2 operator* ( const Vector2& aLeft, double aRight );
+    DLL Vector2 Abs ( const Vector2& aVector2 );
+    DLL double Dot ( const Vector2& aLeft, const Vector2& aRight );
+    DLL double Distance ( const Vector2& aLeft, const Vector2& aRight );
 }
 #endif

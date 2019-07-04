@@ -20,11 +20,14 @@ limitations under the License.
 #include <cstddef>
 #include <vector>
 #include <initializer_list>
+#include <variant>
 #include "aeongui/Platform.h"
 #include "aeongui/Vector2.h"
 
 namespace AeonGUI
 {
+    using DrawCommand = std::variant<uint64_t, double, bool>;
+#if 0
     class DrawCommand
     {
     public:
@@ -35,5 +38,6 @@ namespace AeonGUI
         uint64_t mCommand;
         Vector2  mVertex;
     };
+#endif
 }
 #endif

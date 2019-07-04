@@ -30,10 +30,12 @@ namespace AeonGUI
                 {
                     std::cerr << error << std::endl;
                 }
+#if 0
                 for ( auto& i : mPath )
                 {
-                    std::cout << static_cast<char> ( i.GetCommand() ) << " " << i.GetVertex() [0] << " " << i.GetVertex() [1] << std::endl;
+                    //std::cout << static_cast<char> ( i.GetCommand() ) << " " << i.GetVertex() [0] << " " << i.GetVertex() [1] << std::endl;
                 }
+#endif
             }
         }
         Path::~Path()

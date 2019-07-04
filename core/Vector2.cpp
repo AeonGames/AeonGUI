@@ -15,6 +15,7 @@ limitations under the License.
 */
 #include "aeongui/Vector2.h"
 #include "aeongui/Matrix2x3.h"
+#include <cmath>
 namespace AeonGUI
 {
     Vector2::Vector2()
@@ -36,6 +37,10 @@ namespace AeonGUI
     {
         return mVector2[1];
     }
+    double Vector2::Length() const
+    {
+        return std::sqrt ( Dot ( *this, *this ) );
+    }
     const double& Vector2::operator[] ( std::size_t aIndex ) const
     {
         return mVector2[aIndex];
@@ -53,6 +58,30 @@ namespace AeonGUI
         return Vector2 { aLeft } += aRight;
     }
 
+    Vector2& Vector2::operator-= ( const Vector2& aRight )
+    {
+        mVector2[0] -= aRight.mVector2[0];
+        mVector2[1] -= aRight.mVector2[1];
+        return *this;
+    }
+
+    Vector2& Vector2::operator/= ( double aRight )
+    {
+        mVector2[0] /= aRight;
+        mVector2[1] /= aRight;
+        return *this;
+    }
+
+    Vector2 operator- ( const Vector2& aLeft, const Vector2& aRight )
+    {
+        return Vector2 { aLeft } -= aRight;
+    }
+
+    Vector2 operator/ ( const Vector2& aLeft, double aRight )
+    {
+        return Vector2 { aLeft } /= aRight;
+    }
+
     Vector2& Vector2::operator*= ( const Matrix2x3& aRight )
     {
         Vector2 local{*this};
@@ -64,5 +93,43 @@ namespace AeonGUI
     Vector2 operator* ( const Vector2& aLeft, const Matrix2x3& aRight )
     {
         return Vector2 { aLeft } *= aRight;
+    }
+
+    Vector2& Vector2::operator*= ( const Vector2& aRight )
+    {
+        mVector2[0] *= aRight[0];
+        mVector2[1] *= aRight[1];
+        return *this;
+    }
+
+    Vector2 operator* ( const Vector2& aLeft, const Vector2& aRight )
+    {
+        return Vector2 { aLeft } *= aRight;
+    }
+
+    Vector2& Vector2::operator*= ( double aRight )
+    {
+        mVector2[0] *= aRight;
+        mVector2[1] *= aRight;
+        return *this;
+    }
+
+    Vector2 operator* ( const Vector2& aLeft, double aRight )
+    {
+        return Vector2 { aLeft } *= aRight;
+    }
+
+    Vector2 Abs ( const Vector2& aVector2 )
+    {
+        return {std::abs ( aVector2[0] ), std::abs ( aVector2[1] ) };
+    }
+
+    double Dot ( const Vector2& aLeft, const Vector2& aRight )
+    {
+        return aLeft[0] * aRight[0] + aLeft[1] * aRight[1];
+    }
+    double Distance ( const Vector2& aLeft, const Vector2& aRight )
+    {
+        return ( aRight - aLeft ).Length();
     }
 }

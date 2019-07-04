@@ -16,6 +16,7 @@ limitations under the License.
 #include "aeongui/DrawCommand.h"
 namespace AeonGUI
 {
+#if 0
     DrawCommand::DrawCommand ( uint64_t aCommand, const Vector2& aVertex ) :
         mCommand{aCommand},
         mVertex{aVertex}
@@ -29,4 +30,5 @@ namespace AeonGUI
     {
         return mVertex;
     }
+#endif
 }
