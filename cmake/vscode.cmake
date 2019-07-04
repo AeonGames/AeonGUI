@@ -58,16 +58,21 @@ if(CMAKE_GENERATOR MATCHES "(MSYS|Unix) Makefiles")
                       }                    
                   ],
                   \"externalConsole\": true,
-                          \"program\": \"${CMAKE_BINARY_DIR}/bin/${TARGET}${CMAKE_EXECUTABLE_SUFFIX}\",
-                          \"miDebuggerPath\": \"${GDB_EXECUTABLE}\",
-                          \"MIMode\": \"gdb\",
-                          \"setupCommands\": [
-                              {
-                                  \"description\": \"Enable pretty-printing for gdb\",
-                                  \"text\": \"-enable-pretty-printing\",
-                                  \"ignoreFailures\": true
-                              }
-                              ]
+                        \"program\": \"${CMAKE_BINARY_DIR}/bin/${TARGET}${CMAKE_EXECUTABLE_SUFFIX}\",
+                        \"miDebuggerPath\": \"${GDB_EXECUTABLE}\",
+                        \"MIMode\": \"gdb\",
+                        \"setupCommands\": [
+                        {
+                        \"description\": \"Enable pretty-printing for gdb\",
+                        \"text\": \"enable pretty printing\",
+                        \"ignoreFailures\": false
+                        },
+                        {
+                        \"description\": \"Break on Throw\",
+                        \"text\": \"catch throw\",
+                        \"ignoreFailures\": false
+                        }
+                  ]
                   },\n")
               endif()
           endforeach(TARGET)
