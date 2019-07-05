@@ -36,7 +36,7 @@ namespace AeonGUI
         DLL size_t GetWidth() const;
         DLL size_t GetHeight() const;
         DLL size_t GetStride() const;
-        DLL void Render();
+        DLL void Draw();
     private:
         Document mDocument;
         CairoCanvas mCanvas;

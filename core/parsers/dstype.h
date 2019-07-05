@@ -20,7 +20,7 @@ limitations under the License.
 #include <cstdint>
 #include <cstddef>
 #include "aeongui/Vector2.h"
-#include "aeongui/DrawCommand.h"
-using dstype = std::variant<std::vector<AeonGUI::DrawCommand>, AeonGUI::DrawCommand>;
+#include "aeongui/DrawType.h"
+using dstype = std::variant<std::vector<AeonGUI::DrawType>, AeonGUI::DrawType>;
 #define DSTYPE dstype
 #endif

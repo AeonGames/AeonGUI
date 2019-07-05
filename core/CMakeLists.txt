@@ -16,7 +16,7 @@ set(AEONGUI_HEADERS
 		../include/aeongui/Matrix2x3.h
 		../include/aeongui/Transform.h
 		../include/aeongui/Vector2.h
-		../include/aeongui/DrawCommand.h
+		../include/aeongui/DrawType.h
 )
 
 set(AEONGUI_SOURCES
@@ -31,7 +31,6 @@ set(AEONGUI_SOURCES
         AABB.cpp
         Canvas.cpp
         CairoCanvas.cpp
-        DrawCommand.cpp
         elements/SVG.cpp
         elements/G.cpp
         elements/Path.cpp

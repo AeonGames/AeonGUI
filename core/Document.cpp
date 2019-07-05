@@ -105,4 +105,13 @@ namespace AeonGUI
             static_cast<const Element*> ( mRootElement.get() )->TraverseDepthFirstPostOrder ( aAction );
         }
     }
+
+    void Document::Draw ( Canvas& aCanvas ) const
+    {
+        TraverseDepthFirstPreOrder (
+            [&aCanvas] ( const Element & aElement )
+        {
+            aElement.Draw ( aCanvas );
+        } );
+    }
 }

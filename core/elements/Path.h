@@ -18,7 +18,7 @@ limitations under the License.
 
 #include <vector>
 #include "aeongui/Element.h"
-#include "aeongui/DrawCommand.h"
+#include "aeongui/DrawType.h"
 
 namespace AeonGUI
 {
@@ -29,9 +29,9 @@ namespace AeonGUI
         public:
             Path ( xmlElementPtr aXmlElementPtr );
             ~Path() final;
-            void Render ( Canvas& aCanvas ) const final;
+            void Draw ( Canvas& aCanvas ) const final;
         private:
-            std::vector<DrawCommand> mPath{};
+            std::vector<DrawType> mPath{};
         };
     }
 }

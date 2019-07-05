@@ -26,7 +26,7 @@ namespace AeonGUI
         Polyline::~Polyline()
         {
         }
-        void Polyline::Render ( Canvas& aCanvas ) const
+        void Polyline::Draw ( Canvas& aCanvas ) const
         {
         }
     }

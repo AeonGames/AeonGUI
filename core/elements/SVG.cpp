@@ -27,7 +27,7 @@ namespace AeonGUI
         SVG::~SVG()
         {
         }
-        void SVG::Render ( Canvas& aCanvas ) const
+        void SVG::Draw ( Canvas& aCanvas ) const
         {
         }
     }

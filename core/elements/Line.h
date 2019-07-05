@@ -27,7 +27,7 @@ namespace AeonGUI
         public:
             Line ( xmlElementPtr aXmlElementPtr );
             ~Line() final;
-            void Render ( Canvas& aCanvas ) const final;
+            void Draw ( Canvas& aCanvas ) const final;
         };
     }
 }

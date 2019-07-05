@@ -45,7 +45,7 @@ namespace AeonGUI
         DLL const char* GetTagName() const;
         DLL bool HasAttr ( const char* aAttrName ) const;
         DLL const char* GetAttr ( const char* aAttrName ) const;
-        DLL virtual void Render ( Canvas& aCanvas ) const;
+        DLL virtual void Draw ( Canvas& aCanvas ) const;
         DLL virtual ~Element();
     protected:
         xmlElementPtr mXmlElementPtr{};

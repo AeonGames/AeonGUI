@@ -17,7 +17,9 @@ limitations under the License.
 #define AEONGUI_CANVAS_H
 #include <cstdint>
 #include <cstddef>
+#include <vector>
 #include "aeongui/Platform.h"
+#include "aeongui/DrawType.h"
 namespace AeonGUI
 {
     class Canvas
@@ -29,7 +31,8 @@ namespace AeonGUI
         virtual size_t GetHeight() const = 0;
         virtual size_t GetStride() const = 0;
         virtual void Clear() = 0;
-        virtual ~Canvas() = 0;
+        virtual void Draw ( const std::vector<DrawType>& aCommands ) = 0;
+        DLL virtual ~Canvas() = 0;
     };
 }
 #endif

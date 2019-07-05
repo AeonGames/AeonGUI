@@ -13,22 +13,19 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 */
-#include "aeongui/DrawCommand.h"
+#ifndef AEONGUI_DRAWCOMMAND_H
+#define AEONGUI_DRAWCOMMAND_H
+
+#include <cstdint>
+#include <cstddef>
+#include <vector>
+#include <initializer_list>
+#include <variant>
+#include "aeongui/Platform.h"
+#include "aeongui/Vector2.h"
+
 namespace AeonGUI
 {
-#if 0
-    DrawCommand::DrawCommand ( uint64_t aCommand, const Vector2& aVertex ) :
-        mCommand{aCommand},
-        mVertex{aVertex}
-    {
-    }
-    uint64_t DrawCommand::GetCommand() const
-    {
-        return mCommand;
-    }
-    const Vector2& DrawCommand::GetVertex() const
-    {
-        return mVertex;
-    }
-#endif
+    using DrawType = std::variant<uint64_t, double, bool>;
 }
+#endif

@@ -450,7 +450,7 @@ void Window::RenderLoop()
     glDisable(GL_DEPTH_TEST);
     //auto& transform = mWidget->GetLocalTransform();
     //mWidget->SetTransform({transform.GetScale(),transform.GetRotation()+(delta*10),transform.GetTranslation()});
-    mWindow.Render();
+    mWindow.Draw();
     glBindTexture(GL_TEXTURE_2D, mScreenTexture);
     glTexImage2D ( GL_TEXTURE_2D,
                     0,

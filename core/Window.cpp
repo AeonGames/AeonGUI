@@ -51,8 +51,9 @@ namespace AeonGUI
         return mCanvas.GetStride();
     }
 
-    void Window::Render()
+    void Window::Draw()
     {
         mCanvas.Clear();
+        mDocument.Draw ( mCanvas );
     }
 }

@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg">
+  <path d="M 10 10 H 90 V 90 H 10 Z"/>
+  <path d="M 100 10 h 80 v 80 h -80 Z" fill="transparent" stroke="black"/>
+  <path d="M    10 100 
+                90 100 
+                90 180
+                10  180 Z" fill="transparent" stroke="black"/>
+</svg>

@@ -57,7 +57,8 @@ extern int ddebug;
 # define DTOKENTYPE
 enum dtokentype
 {
-    NUMBER = 258
+    FLAG = 258,
+    NUMBER = 259
 };
 #endif
 
@@ -71,6 +72,6 @@ typedef int DSTYPE;
 
 extern DSTYPE dlval;
 
-int dparse ( std::vector<AeonGUI::DrawCommand>& aPath );
+int dparse ( std::vector<AeonGUI::DrawType>& aPath );
 
 #endif /* !YY_D_C_CODE_AEONGUI_MINGW64_CORE_PATH_DATA_PARSER_HPP_INCLUDED  */

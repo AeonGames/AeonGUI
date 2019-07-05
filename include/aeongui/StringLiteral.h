@@ -47,9 +47,12 @@ namespace AeonGUI
         {
             return ( mString == b.mString ) || ( strcmp ( mString, b.mString ) == 0 );
         }
-        constexpr bool operator == ( const char* b ) const
+#ifdef __GNUG__
+        constexpr
+#endif
+        bool operator == ( const char* b ) const
         {
-            return ( strcmp ( mString, b ) == 0 );
+            return ( mString == b ) || ( strcmp ( mString, b ) == 0 );
         }
         bool operator == ( const std::string &b ) const
         {

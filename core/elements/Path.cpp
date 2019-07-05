@@ -15,13 +15,14 @@ limitations under the License.
 */
 #include <iostream>
 #include "Path.h"
+#include "aeongui/Canvas.h"
 
 namespace AeonGUI
 {
     namespace Elements
     {
 
-        int ParsePathData ( std::vector<DrawCommand>& aPath, const char* s );
+        int ParsePathData ( std::vector<DrawType>& aPath, const char* s );
         Path::Path ( xmlElementPtr aXmlElementPtr ) : Element ( aXmlElementPtr ), mPath{}
         {
             if ( HasAttr ( "d" ) )
@@ -30,19 +31,14 @@ namespace AeonGUI
                 {
                     std::cerr << error << std::endl;
                 }
-#if 0
-                for ( auto& i : mPath )
-                {
-                    //std::cout << static_cast<char> ( i.GetCommand() ) << " " << i.GetVertex() [0] << " " << i.GetVertex() [1] << std::endl;
-                }
-#endif
             }
         }
         Path::~Path()
         {
         }
-        void Path::Render ( Canvas& aCanvas ) const
+        void Path::Draw ( Canvas& aCanvas ) const
         {
+            aCanvas.Draw ( mPath );
         }
     }
 }

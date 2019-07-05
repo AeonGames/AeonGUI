@@ -51,7 +51,7 @@ namespace AeonGUI
         return reinterpret_cast<const char*> ( xmlGetProp ( reinterpret_cast<xmlNodePtr> ( mXmlElementPtr ), reinterpret_cast<const xmlChar*> ( aAttrName ) ) );
     }
 
-    void Element::Render ( Canvas& aCanvas ) const
+    void Element::Draw ( Canvas& aCanvas ) const
     {
         // Do nothing by default
         ( void ) aCanvas;

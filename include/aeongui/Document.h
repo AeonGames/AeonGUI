@@ -20,7 +20,7 @@ limitations under the License.
 #include <memory>
 #include <algorithm>
 #include "aeongui/Platform.h"
-#include "aeongui/CairoCanvas.h"
+#include "aeongui/Canvas.h"
 #include "aeongui/Element.h"
 
 extern "C"
@@ -36,6 +36,7 @@ namespace AeonGUI
     public:
         DLL Document ( const std::string& aFilename );
         DLL ~Document();
+        DLL void Draw ( Canvas& aCanvas ) const;
         DLL Element* AddElement ( std::unique_ptr<Element> aElement );
         DLL std::unique_ptr<Element> RemoveElement ( const Element* aElement );
         DLL void TraverseDepthFirstPreOrder ( const std::function<void ( Element& ) >& aAction );

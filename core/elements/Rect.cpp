@@ -26,7 +26,7 @@ namespace AeonGUI
         Rect::~Rect()
         {
         }
-        void Rect::Render ( Canvas& aCanvas ) const
+        void Rect::Draw ( Canvas& aCanvas ) const
         {
         }
     }

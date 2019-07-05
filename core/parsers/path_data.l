@@ -17,12 +17,14 @@ limitations under the License.
 #include <cstddef>
 #include <cstdint>
 #include <cstdlib>
-#include "aeongui/DrawCommand.h"
+#include "aeongui/DrawType.h"
 #include "../core/parsers/dstype.h"
 #include "path_data_parser.hpp"
 %}
 
 %option nounput
+%option nounistd
+%option never-interactive
 %option noreject
 %option nostdinit
 %option noyywrap
@@ -70,7 +72,7 @@ namespace AeonGUI
 {
 	namespace Elements
 	{
-		int ParsePathData(std::vector<DrawCommand>& aPath,const char* string)
+		int ParsePathData(std::vector<DrawType>& aPath,const char* string)
 		{
 			YY_BUFFER_STATE state=d_scan_string(string);
 			d_switch_to_buffer(state);

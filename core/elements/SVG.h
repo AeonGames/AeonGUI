@@ -27,7 +27,7 @@ namespace AeonGUI
         public:
             SVG ( xmlElementPtr aXmlElementPtr );
             ~SVG() final;
-            void Render ( Canvas& aCanvas ) const final;
+            void Draw ( Canvas& aCanvas ) const final;
         };
     }
 }

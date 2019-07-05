@@ -26,7 +26,7 @@ namespace AeonGUI
         Polygon::~Polygon()
         {
         }
-        void Polygon::Render ( Canvas& aCanvas ) const
+        void Polygon::Draw ( Canvas& aCanvas ) const
         {
         }
     }

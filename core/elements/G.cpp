@@ -26,7 +26,7 @@ namespace AeonGUI
         G::~G()
         {
         }
-        void G::Render ( Canvas& aCanvas ) const
+        void G::Draw ( Canvas& aCanvas ) const
         {
         }
     }

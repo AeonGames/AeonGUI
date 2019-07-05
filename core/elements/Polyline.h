@@ -27,7 +27,7 @@ namespace AeonGUI
         public:
             Polyline ( xmlElementPtr aXmlElementPtr );
             ~Polyline() final;
-            void Render ( Canvas& aCanvas ) const final;
+            void Draw ( Canvas& aCanvas ) const final;
         };
     }
 }

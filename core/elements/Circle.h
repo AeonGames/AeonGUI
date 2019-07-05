@@ -27,7 +27,7 @@ namespace AeonGUI
         public:
             Circle ( xmlElementPtr aXmlElementPtr );
             ~Circle() final;
-            void Render ( Canvas& aCanvas ) const final;
+            void Draw ( Canvas& aCanvas ) const final;
         };
     }
 }

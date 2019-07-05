@@ -625,15 +625,15 @@ static const flex_int16_t yy_nxt[][128] =
         4,    4,    4,    4,    4,    4,    4,    4,    4,    4,
         4,    4,    4,    4,    4,    4,    4,    4,    4,    4,
         4,    4,    4,    4,    6,    7,    8,    4,    9,    9,
-        9,    9,    9,    9,    9,    9,    9,    9,    4,    4,
-        4,    4,    4,    4,    4,   10,    4,   11,    4,    4,
+        10,   10,   10,   10,   10,   10,   10,   10,    4,    4,
+        4,    4,    4,    4,    4,   11,    4,   12,    4,    4,
 
-        4,    4,   12,    4,    4,    4,   13,   14,    4,    4,
-        4,   15,    4,   16,   17,    4,   18,    4,    4,    4,
-        19,    4,    4,    4,    4,    4,    4,   20,    4,   21,
-        4,    4,    4,    4,   22,    4,    4,    4,   23,   24,
-        4,    4,    4,   25,    4,   26,   27,    4,   28,    4,
-        4,    4,   29,    4,    4,    4,    4,    4
+        4,    4,   13,    4,    4,    4,   14,   15,    4,    4,
+        4,   16,    4,   17,   18,    4,   19,    4,    4,    4,
+        20,    4,    4,    4,    4,    4,    4,   21,    4,   22,
+        4,    4,    4,    4,   23,    4,    4,    4,   24,   25,
+        4,    4,    4,   26,    4,   27,   28,    4,   29,    4,
+        4,    4,   30,    4,    4,    4,    4,    4
     },
 
     {
@@ -643,14 +643,14 @@ static const flex_int16_t yy_nxt[][128] =
         4,    4,    4,    4,    4,    4,    4,    4,    4,    4,
 
         4,    4,    4,    4,    6,    7,    8,    4,    9,    9,
-        9,    9,    9,    9,    9,    9,    9,    9,    4,    4,
-        4,    4,    4,    4,    4,   10,    4,   11,    4,    4,
-        4,    4,   12,    4,    4,    4,   13,   14,    4,    4,
-        4,   15,    4,   16,   17,    4,   18,    4,    4,    4,
-        19,    4,    4,    4,    4,    4,    4,   20,    4,   21,
-        4,    4,    4,    4,   22,    4,    4,    4,   23,   24,
-        4,    4,    4,   25,    4,   26,   27,    4,   28,    4,
-        4,    4,   29,    4,    4,    4,    4,    4
+        10,   10,   10,   10,   10,   10,   10,   10,    4,    4,
+        4,    4,    4,    4,    4,   11,    4,   12,    4,    4,
+        4,    4,   13,    4,    4,    4,   14,   15,    4,    4,
+        4,   16,    4,   17,   18,    4,   19,    4,    4,    4,
+        20,    4,    4,    4,    4,    4,    4,   21,    4,   22,
+        4,    4,    4,    4,   23,    4,    4,    4,   24,   25,
+        4,    4,    4,   26,    4,   27,   28,    4,   29,    4,
+        4,    4,   30,    4,    4,    4,    4,    4
     },
 
     {
@@ -728,8 +728,8 @@ static const flex_int16_t yy_nxt[][128] =
         -7,   -7,   -7,   -7,   -7,   -7,   -7,   -7,   -7,   -7,
         -7,   -7,   -7,   -7,   -7,   -7,   -7,   -7,   -7,   -7,
         -7,   -7,   -7,   -7,   -7,   -7,   -7,   -7,   -7,   -7,
-        -7,   -7,   -7,   -7,   -7,   -7,   30,   -7,   31,   31,
-        31,   31,   31,   31,   31,   31,   31,   31,   -7,   -7,
+        -7,   -7,   -7,   -7,   -7,   -7,   31,   -7,   32,   32,
+        32,   32,   32,   32,   32,   32,   32,   32,   -7,   -7,
         -7,   -7,   -7,   -7,   -7,   -7,   -7,   -7,   -7,   -7,
         -7,   -7,   -7,   -7,   -7,   -7,   -7,   -7,   -7,   -7,
         -7,   -7,   -7,   -7,   -7,   -7,   -7,   -7,   -7,   -7,
@@ -745,8 +745,8 @@ static const flex_int16_t yy_nxt[][128] =
         -8,   -8,   -8,   -8,   -8,   -8,   -8,   -8,   -8,   -8,
         -8,   -8,   -8,   -8,   -8,   -8,   -8,   -8,   -8,   -8,
         -8,   -8,   -8,   -8,   -8,   -8,   -8,   -8,   -8,   -8,
-        -8,   -8,   -8,   -8,   -8,   -8,   -8,   -8,   32,   32,
-        32,   32,   32,   32,   32,   32,   32,   32,   -8,   -8,
+        -8,   -8,   -8,   -8,   -8,   -8,   -8,   -8,   33,   33,
+        33,   33,   33,   33,   33,   33,   33,   33,   -8,   -8,
 
         -8,   -8,   -8,   -8,   -8,   -8,   -8,   -8,   -8,   -8,
         -8,   -8,   -8,   -8,   -8,   -8,   -8,   -8,   -8,   -8,
@@ -763,8 +763,8 @@ static const flex_int16_t yy_nxt[][128] =
         -9,   -9,   -9,   -9,   -9,   -9,   -9,   -9,   -9,   -9,
 
         -9,   -9,   -9,   -9,   -9,   -9,   -9,   -9,   -9,   -9,
-        -9,   -9,   -9,   -9,   -9,   -9,   30,   -9,   31,   31,
-        31,   31,   31,   31,   31,   31,   31,   31,   -9,   -9,
+        -9,   -9,   -9,   -9,   -9,   -9,   31,   -9,   32,   32,
+        32,   32,   32,   32,   32,   32,   32,   32,   -9,   -9,
         -9,   -9,   -9,   -9,   -9,   -9,   -9,   -9,   -9,   -9,
         -9,   -9,   -9,   -9,   -9,   -9,   -9,   -9,   -9,   -9,
         -9,   -9,   -9,   -9,   -9,   -9,   -9,   -9,   -9,   -9,
@@ -780,8 +780,8 @@ static const flex_int16_t yy_nxt[][128] =
         -10,  -10,  -10,  -10,  -10,  -10,  -10,  -10,  -10,  -10,
         -10,  -10,  -10,  -10,  -10,  -10,  -10,  -10,  -10,  -10,
         -10,  -10,  -10,  -10,  -10,  -10,  -10,  -10,  -10,  -10,
-        -10,  -10,  -10,  -10,  -10,  -10,  -10,  -10,  -10,  -10,
-        -10,  -10,  -10,  -10,  -10,  -10,  -10,  -10,  -10,  -10,
+        -10,  -10,  -10,  -10,  -10,  -10,   31,  -10,   32,   32,
+        32,   32,   32,   32,   32,   32,   32,   32,  -10,  -10,
         -10,  -10,  -10,  -10,  -10,  -10,  -10,  -10,  -10,  -10,
         -10,  -10,  -10,  -10,  -10,  -10,  -10,  -10,  -10,  -10,
         -10,  -10,  -10,  -10,  -10,  -10,  -10,  -10,  -10,  -10,
@@ -1126,8 +1126,8 @@ static const flex_int16_t yy_nxt[][128] =
         -30,  -30,  -30,  -30,  -30,  -30,  -30,  -30,  -30,  -30,
         -30,  -30,  -30,  -30,  -30,  -30,  -30,  -30,  -30,  -30,
         -30,  -30,  -30,  -30,  -30,  -30,  -30,  -30,  -30,  -30,
-        -30,  -30,  -30,  -30,  -30,  -30,  -30,  -30,   32,   32,
-        32,   32,   32,   32,   32,   32,   32,   32,  -30,  -30,
+        -30,  -30,  -30,  -30,  -30,  -30,  -30,  -30,  -30,  -30,
+        -30,  -30,  -30,  -30,  -30,  -30,  -30,  -30,  -30,  -30,
         -30,  -30,  -30,  -30,  -30,  -30,  -30,  -30,  -30,  -30,
         -30,  -30,  -30,  -30,  -30,  -30,  -30,  -30,  -30,  -30,
         -30,  -30,  -30,  -30,  -30,  -30,  -30,  -30,  -30,  -30,
@@ -1143,8 +1143,8 @@ static const flex_int16_t yy_nxt[][128] =
         -31,  -31,  -31,  -31,  -31,  -31,  -31,  -31,  -31,  -31,
         -31,  -31,  -31,  -31,  -31,  -31,  -31,  -31,  -31,  -31,
         -31,  -31,  -31,  -31,  -31,  -31,  -31,  -31,  -31,  -31,
-        -31,  -31,  -31,  -31,  -31,  -31,   30,  -31,   31,   31,
-        31,   31,   31,   31,   31,   31,   31,   31,  -31,  -31,
+        -31,  -31,  -31,  -31,  -31,  -31,  -31,  -31,   33,   33,
+        33,   33,   33,   33,   33,   33,   33,   33,  -31,  -31,
         -31,  -31,  -31,  -31,  -31,  -31,  -31,  -31,  -31,  -31,
 
         -31,  -31,  -31,  -31,  -31,  -31,  -31,  -31,  -31,  -31,
@@ -1161,13 +1161,13 @@ static const flex_int16_t yy_nxt[][128] =
         -32,  -32,  -32,  -32,  -32,  -32,  -32,  -32,  -32,  -32,
         -32,  -32,  -32,  -32,  -32,  -32,  -32,  -32,  -32,  -32,
 
-        -32,  -32,  -32,  -32,  -32,  -32,  -32,  -32,   32,   32,
+        -32,  -32,  -32,  -32,  -32,  -32,   31,  -32,   32,   32,
         32,   32,   32,   32,   32,   32,   32,   32,  -32,  -32,
-        -32,  -32,  -32,  -32,  -32,  -32,  -32,  -32,  -32,   33,
         -32,  -32,  -32,  -32,  -32,  -32,  -32,  -32,  -32,  -32,
         -32,  -32,  -32,  -32,  -32,  -32,  -32,  -32,  -32,  -32,
         -32,  -32,  -32,  -32,  -32,  -32,  -32,  -32,  -32,  -32,
-        -32,   33,  -32,  -32,  -32,  -32,  -32,  -32,  -32,  -32,
+        -32,  -32,  -32,  -32,  -32,  -32,  -32,  -32,  -32,  -32,
+        -32,  -32,  -32,  -32,  -32,  -32,  -32,  -32,  -32,  -32,
         -32,  -32,  -32,  -32,  -32,  -32,  -32,  -32,  -32,  -32,
         -32,  -32,  -32,  -32,  -32,  -32,  -32,  -32
     },
@@ -1178,13 +1178,13 @@ static const flex_int16_t yy_nxt[][128] =
         -33,  -33,  -33,  -33,  -33,  -33,  -33,  -33,  -33,  -33,
         -33,  -33,  -33,  -33,  -33,  -33,  -33,  -33,  -33,  -33,
         -33,  -33,  -33,  -33,  -33,  -33,  -33,  -33,  -33,  -33,
-        -33,  -33,  -33,   34,  -33,   34,  -33,  -33,   35,   35,
-        35,   35,   35,   35,   35,   35,   35,   35,  -33,  -33,
+        -33,  -33,  -33,  -33,  -33,  -33,  -33,  -33,   33,   33,
+        33,   33,   33,   33,   33,   33,   33,   33,  -33,  -33,
+        -33,  -33,  -33,  -33,  -33,  -33,  -33,  -33,  -33,   34,
         -33,  -33,  -33,  -33,  -33,  -33,  -33,  -33,  -33,  -33,
         -33,  -33,  -33,  -33,  -33,  -33,  -33,  -33,  -33,  -33,
         -33,  -33,  -33,  -33,  -33,  -33,  -33,  -33,  -33,  -33,
-        -33,  -33,  -33,  -33,  -33,  -33,  -33,  -33,  -33,  -33,
-        -33,  -33,  -33,  -33,  -33,  -33,  -33,  -33,  -33,  -33,
+        -33,   34,  -33,  -33,  -33,  -33,  -33,  -33,  -33,  -33,
 
         -33,  -33,  -33,  -33,  -33,  -33,  -33,  -33,  -33,  -33,
         -33,  -33,  -33,  -33,  -33,  -33,  -33,  -33
@@ -1195,8 +1195,8 @@ static const flex_int16_t yy_nxt[][128] =
         -34,  -34,  -34,  -34,  -34,  -34,  -34,  -34,  -34,  -34,
         -34,  -34,  -34,  -34,  -34,  -34,  -34,  -34,  -34,  -34,
         -34,  -34,  -34,  -34,  -34,  -34,  -34,  -34,  -34,  -34,
-        -34,  -34,  -34,  -34,  -34,  -34,  -34,  -34,   35,   35,
-        35,   35,   35,   35,   35,   35,   35,   35,  -34,  -34,
+        -34,  -34,  -34,   35,  -34,   35,  -34,  -34,   36,   36,
+        36,   36,   36,   36,   36,   36,   36,   36,  -34,  -34,
         -34,  -34,  -34,  -34,  -34,  -34,  -34,  -34,  -34,  -34,
         -34,  -34,  -34,  -34,  -34,  -34,  -34,  -34,  -34,  -34,
 
@@ -1212,9 +1212,9 @@ static const flex_int16_t yy_nxt[][128] =
         -35,  -35,  -35,  -35,  -35,  -35,  -35,  -35,  -35,  -35,
         -35,  -35,  -35,  -35,  -35,  -35,  -35,  -35,  -35,  -35,
         -35,  -35,  -35,  -35,  -35,  -35,  -35,  -35,  -35,  -35,
-        -35,  -35,  -35,  -35,  -35,  -35,  -35,  -35,   35,   35,
+        -35,  -35,  -35,  -35,  -35,  -35,  -35,  -35,   36,   36,
 
-        35,   35,   35,   35,   35,   35,   35,   35,  -35,  -35,
+        36,   36,   36,   36,   36,   36,   36,   36,  -35,  -35,
         -35,  -35,  -35,  -35,  -35,  -35,  -35,  -35,  -35,  -35,
         -35,  -35,  -35,  -35,  -35,  -35,  -35,  -35,  -35,  -35,
         -35,  -35,  -35,  -35,  -35,  -35,  -35,  -35,  -35,  -35,
@@ -1222,6 +1222,24 @@ static const flex_int16_t yy_nxt[][128] =
         -35,  -35,  -35,  -35,  -35,  -35,  -35,  -35,  -35,  -35,
         -35,  -35,  -35,  -35,  -35,  -35,  -35,  -35,  -35,  -35,
         -35,  -35,  -35,  -35,  -35,  -35,  -35,  -35
+    },
+
+    {
+        3,  -36,  -36,  -36,  -36,  -36,  -36,  -36,  -36,  -36,
+        -36,  -36,  -36,  -36,  -36,  -36,  -36,  -36,  -36,  -36,
+
+        -36,  -36,  -36,  -36,  -36,  -36,  -36,  -36,  -36,  -36,
+        -36,  -36,  -36,  -36,  -36,  -36,  -36,  -36,  -36,  -36,
+        -36,  -36,  -36,  -36,  -36,  -36,  -36,  -36,   36,   36,
+        36,   36,   36,   36,   36,   36,   36,   36,  -36,  -36,
+        -36,  -36,  -36,  -36,  -36,  -36,  -36,  -36,  -36,  -36,
+        -36,  -36,  -36,  -36,  -36,  -36,  -36,  -36,  -36,  -36,
+        -36,  -36,  -36,  -36,  -36,  -36,  -36,  -36,  -36,  -36,
+        -36,  -36,  -36,  -36,  -36,  -36,  -36,  -36,  -36,  -36,
+        -36,  -36,  -36,  -36,  -36,  -36,  -36,  -36,  -36,  -36,
+        -36,  -36,  -36,  -36,  -36,  -36,  -36,  -36,  -36,  -36,
+
+        -36,  -36,  -36,  -36,  -36,  -36,  -36,  -36
     },
 
 } ;
@@ -1240,8 +1258,8 @@ static void yynoreturn yy_fatal_error ( const char* msg  );
     (yy_hold_char) = *yy_cp; \
     *yy_cp = '\0'; \
     (yy_c_buf_p) = yy_cp;
-#define YY_NUM_RULES 24
-#define YY_END_OF_BUFFER 25
+#define YY_NUM_RULES 25
+#define YY_END_OF_BUFFER 26
 /* This struct is not used in this scanner,
    but its presence is necessary. */
 struct yy_trans_info
@@ -1249,25 +1267,25 @@ struct yy_trans_info
     flex_int32_t yy_verify;
     flex_int32_t yy_nxt;
 };
-static const flex_int16_t yy_accept[36] =
+static const flex_int16_t yy_accept[37] =
 {
     0,
-    0,    0,   25,   23,   24,    2,   23,   23,    1,   21,
-    13,    9,    7,    3,   17,   15,   19,   11,    5,   22,
-    14,   10,    8,    4,   18,   16,   20,   12,    6,    0,
-    1,    1,    0,    0,    1
+    0,    0,   26,   24,   25,    3,   24,   24,    1,    2,
+    22,   14,   10,    8,    4,   18,   16,   20,   12,    6,
+    23,   15,   11,    9,    5,   19,   17,   21,   13,    7,
+    0,    2,    2,    0,    0,    2
 } ;
 
 static yy_state_type yy_last_accepting_state;
 static char *yy_last_accepting_cpos;
 
-static const yy_state_type yy_NUL_trans[36] =
+static const yy_state_type yy_NUL_trans[37] =
 {
     0,
     4,    4,    0,    0,    0,    0,    0,    0,    0,    0,
     0,    0,    0,    0,    0,    0,    0,    0,    0,    0,
     0,    0,    0,    0,    0,    0,    0,    0,    0,    0,
-    0,    0,    0,    0,    0
+    0,    0,    0,    0,    0,    0
 } ;
 
 extern int yy_flex_debug;
@@ -1301,11 +1319,11 @@ limitations under the License.
 #include <cstddef>
 #include <cstdint>
 #include <cstdlib>
-#include "aeongui/DrawCommand.h"
+#include "aeongui/DrawType.h"
 #include "../core/parsers/dstype.h"
 #include "path_data_parser.hpp"
-#line 1305 "C:/Code/AeonGUI/mingw64/core/path_data_lexer.cpp"
-#line 1306 "C:/Code/AeonGUI/mingw64/core/path_data_lexer.cpp"
+#line 1323 "C:/Code/AeonGUI/mingw64/core/path_data_lexer.cpp"
+#line 1324 "C:/Code/AeonGUI/mingw64/core/path_data_lexer.cpp"
 
 #define INITIAL 0
 
@@ -1527,9 +1545,9 @@ YY_DECL
     }
 
     {
-#line 35 "C:/Code/AeonGUI/core/parsers/path_data.l"
+#line 36 "C:/Code/AeonGUI/core/parsers/path_data.l"
 
-#line 1523 "C:/Code/AeonGUI/mingw64/core/path_data_lexer.cpp"
+#line 1541 "C:/Code/AeonGUI/mingw64/core/path_data_lexer.cpp"
 
         while ( /*CONSTCOND*/1 )        /* loops until end-of-file is reached */
         {
@@ -1577,128 +1595,136 @@ do_action:  /* This label is used only to access EOF actions. */
 
             case 1:
                 YY_RULE_SETUP
-#line 36 "C:/Code/AeonGUI/core/parsers/path_data.l"
+#line 37 "C:/Code/AeonGUI/core/parsers/path_data.l"
+                {
+                    dlval = static_cast<bool> ( std::atoi ( yytext ) );
+                    return FLAG;
+                }
+                YY_BREAK
+            case 2:
+                YY_RULE_SETUP
+#line 41 "C:/Code/AeonGUI/core/parsers/path_data.l"
                 {
                     dlval = std::strtod ( yytext, nullptr );
                     return NUMBER;
                 }
                 YY_BREAK
-            case 2:
-                YY_RULE_SETUP
-#line 40 "C:/Code/AeonGUI/core/parsers/path_data.l"
-                return ',';
-                YY_BREAK
             case 3:
                 YY_RULE_SETUP
-#line 41 "C:/Code/AeonGUI/core/parsers/path_data.l"
-                return 'M';
+#line 45 "C:/Code/AeonGUI/core/parsers/path_data.l"
+                return ',';
                 YY_BREAK
             case 4:
                 YY_RULE_SETUP
-#line 42 "C:/Code/AeonGUI/core/parsers/path_data.l"
-                return 'm';
+#line 46 "C:/Code/AeonGUI/core/parsers/path_data.l"
+                { dlval = static_cast<uint64_t> ( 'M' ); return 'M';}
                 YY_BREAK
             case 5:
                 YY_RULE_SETUP
-#line 43 "C:/Code/AeonGUI/core/parsers/path_data.l"
-                return 'Z';
+#line 47 "C:/Code/AeonGUI/core/parsers/path_data.l"
+                { dlval = static_cast<uint64_t> ( 'm' ); return 'm';}
                 YY_BREAK
             case 6:
                 YY_RULE_SETUP
-#line 44 "C:/Code/AeonGUI/core/parsers/path_data.l"
-                return 'z';
+#line 48 "C:/Code/AeonGUI/core/parsers/path_data.l"
+                { dlval = static_cast<uint64_t> ( 'Z' ); return 'Z';}
                 YY_BREAK
             case 7:
                 YY_RULE_SETUP
-#line 45 "C:/Code/AeonGUI/core/parsers/path_data.l"
-                return 'L';
+#line 49 "C:/Code/AeonGUI/core/parsers/path_data.l"
+                { dlval = static_cast<uint64_t> ( 'z' ); return 'z';}
                 YY_BREAK
             case 8:
                 YY_RULE_SETUP
-#line 46 "C:/Code/AeonGUI/core/parsers/path_data.l"
-                return 'l';
+#line 50 "C:/Code/AeonGUI/core/parsers/path_data.l"
+                { dlval = static_cast<uint64_t> ( 'L' ); return 'L';}
                 YY_BREAK
             case 9:
                 YY_RULE_SETUP
-#line 47 "C:/Code/AeonGUI/core/parsers/path_data.l"
-                return 'H';
+#line 51 "C:/Code/AeonGUI/core/parsers/path_data.l"
+                { dlval = static_cast<uint64_t> ( 'l' ); return 'l';}
                 YY_BREAK
             case 10:
                 YY_RULE_SETUP
-#line 48 "C:/Code/AeonGUI/core/parsers/path_data.l"
-                return 'h';
+#line 52 "C:/Code/AeonGUI/core/parsers/path_data.l"
+                { dlval = static_cast<uint64_t> ( 'H' ); return 'H';}
                 YY_BREAK
             case 11:
                 YY_RULE_SETUP
-#line 49 "C:/Code/AeonGUI/core/parsers/path_data.l"
-                return 'V';
+#line 53 "C:/Code/AeonGUI/core/parsers/path_data.l"
+                { dlval = static_cast<uint64_t> ( 'h' ); return 'h';}
                 YY_BREAK
             case 12:
                 YY_RULE_SETUP
-#line 50 "C:/Code/AeonGUI/core/parsers/path_data.l"
-                return 'v';
+#line 54 "C:/Code/AeonGUI/core/parsers/path_data.l"
+                { dlval = static_cast<uint64_t> ( 'V' ); return 'V';}
                 YY_BREAK
             case 13:
                 YY_RULE_SETUP
-#line 51 "C:/Code/AeonGUI/core/parsers/path_data.l"
-                return 'C';
+#line 55 "C:/Code/AeonGUI/core/parsers/path_data.l"
+                { dlval = static_cast<uint64_t> ( 'v' ); return 'v';}
                 YY_BREAK
             case 14:
                 YY_RULE_SETUP
-#line 52 "C:/Code/AeonGUI/core/parsers/path_data.l"
-                return 'c';
+#line 56 "C:/Code/AeonGUI/core/parsers/path_data.l"
+                { dlval = static_cast<uint64_t> ( 'C' ); return 'C';}
                 YY_BREAK
             case 15:
                 YY_RULE_SETUP
-#line 53 "C:/Code/AeonGUI/core/parsers/path_data.l"
-                return 'S';
+#line 57 "C:/Code/AeonGUI/core/parsers/path_data.l"
+                { dlval = static_cast<uint64_t> ( 'c' ); return 'c';}
                 YY_BREAK
             case 16:
                 YY_RULE_SETUP
-#line 54 "C:/Code/AeonGUI/core/parsers/path_data.l"
-                return 's';
+#line 58 "C:/Code/AeonGUI/core/parsers/path_data.l"
+                { dlval = static_cast<uint64_t> ( 'S' ); return 'S';}
                 YY_BREAK
             case 17:
                 YY_RULE_SETUP
-#line 55 "C:/Code/AeonGUI/core/parsers/path_data.l"
-                return 'Q';
+#line 59 "C:/Code/AeonGUI/core/parsers/path_data.l"
+                { dlval = static_cast<uint64_t> ( 's' ); return 's';}
                 YY_BREAK
             case 18:
                 YY_RULE_SETUP
-#line 56 "C:/Code/AeonGUI/core/parsers/path_data.l"
-                return 'q';
+#line 60 "C:/Code/AeonGUI/core/parsers/path_data.l"
+                { dlval = static_cast<uint64_t> ( 'Q' ); return 'Q';}
                 YY_BREAK
             case 19:
                 YY_RULE_SETUP
-#line 57 "C:/Code/AeonGUI/core/parsers/path_data.l"
-                return 'T';
+#line 61 "C:/Code/AeonGUI/core/parsers/path_data.l"
+                { dlval = static_cast<uint64_t> ( 'q' ); return 'q';}
                 YY_BREAK
             case 20:
                 YY_RULE_SETUP
-#line 58 "C:/Code/AeonGUI/core/parsers/path_data.l"
-                return 't';
+#line 62 "C:/Code/AeonGUI/core/parsers/path_data.l"
+                { dlval = static_cast<uint64_t> ( 'T' ); return 'T';}
                 YY_BREAK
             case 21:
                 YY_RULE_SETUP
-#line 59 "C:/Code/AeonGUI/core/parsers/path_data.l"
-                return 'A';
+#line 63 "C:/Code/AeonGUI/core/parsers/path_data.l"
+                { dlval = static_cast<uint64_t> ( 't' ); return 't';}
                 YY_BREAK
             case 22:
                 YY_RULE_SETUP
-#line 60 "C:/Code/AeonGUI/core/parsers/path_data.l"
-                return 'a';
+#line 64 "C:/Code/AeonGUI/core/parsers/path_data.l"
+                { dlval = static_cast<uint64_t> ( 'A' ); return 'A';}
                 YY_BREAK
             case 23:
                 YY_RULE_SETUP
-#line 61 "C:/Code/AeonGUI/core/parsers/path_data.l"
-
+#line 65 "C:/Code/AeonGUI/core/parsers/path_data.l"
+                { dlval = static_cast<uint64_t> ( 'a' ); return 'a';}
                 YY_BREAK
             case 24:
                 YY_RULE_SETUP
-#line 62 "C:/Code/AeonGUI/core/parsers/path_data.l"
+#line 66 "C:/Code/AeonGUI/core/parsers/path_data.l"
+
+                YY_BREAK
+            case 25:
+                YY_RULE_SETUP
+#line 67 "C:/Code/AeonGUI/core/parsers/path_data.l"
                 ECHO;
                 YY_BREAK
-#line 1691 "C:/Code/AeonGUI/mingw64/core/path_data_lexer.cpp"
+#line 1717 "C:/Code/AeonGUI/mingw64/core/path_data_lexer.cpp"
             case YY_STATE_EOF ( INITIAL ) :
                 yyterminate();
 
@@ -2738,14 +2764,14 @@ void yyfree ( void * ptr )
 
 #define YYTABLES_NAME "yytables"
 
-#line 62 "C:/Code/AeonGUI/core/parsers/path_data.l"
+#line 67 "C:/Code/AeonGUI/core/parsers/path_data.l"
 
 
 namespace AeonGUI
 {
     namespace Elements
     {
-        int ParsePathData ( std::vector<DrawCommand>& aPath, const char* string )
+        int ParsePathData ( std::vector<DrawType>& aPath, const char* string )
         {
             YY_BUFFER_STATE state = d_scan_string ( string );
             d_switch_to_buffer ( state );

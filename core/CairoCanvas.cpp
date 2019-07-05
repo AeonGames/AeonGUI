@@ -77,4 +77,100 @@ namespace AeonGUI
             cairo_surface_destroy ( mCairoSurface );
         }
     }
+    void CairoCanvas::Draw ( const std::vector<DrawType>& aCommands )
+    {
+        cairo_set_line_width ( mCairoContext, 1 );
+        cairo_set_source_rgb ( mCairoContext, 1, 1, 1 );
+        for ( auto i = aCommands.begin(); i != aCommands.end(); )
+        {
+            switch ( std::get<uint64_t> ( *i++ ) )
+            {
+            case 'M':
+            {
+                cairo_move_to ( mCairoContext, std::get<double> ( *i++ ), std::get<double> ( *i++ ) );
+                while ( i != aCommands.end() && std::holds_alternative<double> ( *i ) )
+                {
+                    cairo_line_to ( mCairoContext, std::get<double> ( *i++ ), std::get<double> ( *i++ ) );
+                }
+            }
+            break;
+            case 'm':
+            {
+                cairo_rel_move_to ( mCairoContext, std::get<double> ( *i++ ), std::get<double> ( *i++ ) );
+                while ( i != aCommands.end() && std::holds_alternative<double> ( *i ) )
+                {
+                    cairo_rel_line_to ( mCairoContext, std::get<double> ( *i++ ), std::get<double> ( *i++ ) );
+                }
+            }
+            break;
+            case 'Z':
+            case 'z':
+                cairo_close_path ( mCairoContext );
+                break;
+            case 'L':
+                while ( i != aCommands.end() && std::holds_alternative<double> ( *i ) )
+                {
+                    cairo_line_to ( mCairoContext, std::get<double> ( *i++ ), std::get<double> ( *i++ ) );
+                }
+                break;
+            case 'l':
+                while ( i != aCommands.end() && std::holds_alternative<double> ( *i ) )
+                {
+                    cairo_rel_line_to ( mCairoContext, std::get<double> ( *i++ ), std::get<double> ( *i++ ) );
+                }
+                break;
+            case 'H':
+                while ( i != aCommands.end() && std::holds_alternative<double> ( *i ) )
+                {
+                    double x;
+                    double y;
+                    cairo_get_current_point ( mCairoContext, &x, &y );
+                    cairo_line_to ( mCairoContext, std::get<double> ( *i++ ), y );
+                }
+                break;
+            case 'h':
+                while ( i != aCommands.end() && std::holds_alternative<double> ( *i ) )
+                {
+                    cairo_rel_line_to ( mCairoContext, std::get<double> ( *i++ ), 0 );
+                }
+                break;
+            case 'V':
+                while ( i != aCommands.end() && std::holds_alternative<double> ( *i ) )
+                {
+                    double x;
+                    double y;
+                    cairo_get_current_point ( mCairoContext, &x, &y );
+                    cairo_line_to ( mCairoContext, x, std::get<double> ( *i++ ) );
+                }
+                break;
+            case 'v':
+                while ( i != aCommands.end() && std::holds_alternative<double> ( *i ) )
+                {
+                    cairo_rel_line_to ( mCairoContext, 0, std::get<double> ( *i++ ) );
+                }
+                break;
+            case 'C':
+                break;
+            case 'c':
+                break;
+            case 'S':
+                break;
+            case 's':
+                break;
+            case 'Q':
+                break;
+            case 'q':
+                break;
+            case 'T':
+                break;
+            case 't':
+                break;
+            case 'A':
+                break;
+            case 'a':
+                break;
+            }
+        }
+        cairo_stroke ( mCairoContext );
+    }
 }
