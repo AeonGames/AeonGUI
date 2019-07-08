@@ -15,6 +15,7 @@ limitations under the License.
 */
 
 #include <cairo.h>
+#include <iostream>
 #include "aeongui/CairoCanvas.h"
 
 namespace AeonGUI
@@ -79,27 +80,32 @@ namespace AeonGUI
     }
     void CairoCanvas::Draw ( const std::vector<DrawType>& aCommands )
     {
+        cairo_save ( mCairoContext );
         cairo_set_line_width ( mCairoContext, 1 );
-        cairo_set_source_rgb ( mCairoContext, 1, 1, 1 );
+        cairo_set_source_rgb ( mCairoContext, 0, 0, 0 );
         for ( auto i = aCommands.begin(); i != aCommands.end(); )
         {
-            switch ( std::get<uint64_t> ( *i++ ) )
+            switch ( std::get<uint64_t> ( * ( i++ ) ) )
             {
             case 'M':
             {
-                cairo_move_to ( mCairoContext, std::get<double> ( *i++ ), std::get<double> ( *i++ ) );
+                cairo_move_to ( mCairoContext, std::get<double> ( *i ), std::get<double> ( * ( i + 1 ) ) );
+                i += 2;
                 while ( i != aCommands.end() && std::holds_alternative<double> ( *i ) )
                 {
-                    cairo_line_to ( mCairoContext, std::get<double> ( *i++ ), std::get<double> ( *i++ ) );
+                    cairo_line_to ( mCairoContext, std::get<double> ( *i ), std::get<double> ( * ( i + 1 ) ) );
+                    i += 2;
                 }
             }
             break;
             case 'm':
             {
-                cairo_rel_move_to ( mCairoContext, std::get<double> ( *i++ ), std::get<double> ( *i++ ) );
+                cairo_rel_move_to ( mCairoContext, std::get<double> ( *i ), std::get<double> ( * ( i + 1 ) ) );
+                i += 2;
                 while ( i != aCommands.end() && std::holds_alternative<double> ( *i ) )
                 {
-                    cairo_rel_line_to ( mCairoContext, std::get<double> ( *i++ ), std::get<double> ( *i++ ) );
+                    cairo_rel_line_to ( mCairoContext, std::get<double> ( *i ), std::get<double> ( * ( i + 1 ) ) );
+                    i += 2;
                 }
             }
             break;
@@ -110,13 +116,15 @@ namespace AeonGUI
             case 'L':
                 while ( i != aCommands.end() && std::holds_alternative<double> ( *i ) )
                 {
-                    cairo_line_to ( mCairoContext, std::get<double> ( *i++ ), std::get<double> ( *i++ ) );
+                    cairo_line_to ( mCairoContext, std::get<double> ( *i ), std::get<double> ( * ( i + 1 ) ) );
+                    i += 2;
                 }
                 break;
             case 'l':
                 while ( i != aCommands.end() && std::holds_alternative<double> ( *i ) )
                 {
-                    cairo_rel_line_to ( mCairoContext, std::get<double> ( *i++ ), std::get<double> ( *i++ ) );
+                    cairo_rel_line_to ( mCairoContext, std::get<double> ( *i ), std::get<double> ( * ( i + 1 ) ) );
+                    i += 2;
                 }
                 break;
             case 'H':
@@ -125,13 +133,15 @@ namespace AeonGUI
                     double x;
                     double y;
                     cairo_get_current_point ( mCairoContext, &x, &y );
-                    cairo_line_to ( mCairoContext, std::get<double> ( *i++ ), y );
+                    cairo_line_to ( mCairoContext, std::get<double> ( *i ), y );
+                    ++i;
                 }
                 break;
             case 'h':
                 while ( i != aCommands.end() && std::holds_alternative<double> ( *i ) )
                 {
-                    cairo_rel_line_to ( mCairoContext, std::get<double> ( *i++ ), 0 );
+                    cairo_rel_line_to ( mCairoContext, std::get<double> ( *i ), 0 );
+                    ++i;
                 }
                 break;
             case 'V':
@@ -140,18 +150,36 @@ namespace AeonGUI
                     double x;
                     double y;
                     cairo_get_current_point ( mCairoContext, &x, &y );
-                    cairo_line_to ( mCairoContext, x, std::get<double> ( *i++ ) );
+                    cairo_line_to ( mCairoContext, x, std::get<double> ( *i ) );
+                    ++i;
                 }
                 break;
             case 'v':
                 while ( i != aCommands.end() && std::holds_alternative<double> ( *i ) )
                 {
-                    cairo_rel_line_to ( mCairoContext, 0, std::get<double> ( *i++ ) );
+                    cairo_rel_line_to ( mCairoContext, 0, std::get<double> ( *i ) );
+                    ++i;
                 }
                 break;
             case 'C':
+                while ( i != aCommands.end() && std::holds_alternative<double> ( *i ) )
+                {
+                    cairo_curve_to ( mCairoContext,
+                                     std::get<double> ( *i ), std::get<double> ( * ( i + 1 ) ),
+                                     std::get<double> ( * ( i + 2 ) ), std::get<double> ( * ( i + 3 ) ),
+                                     std::get<double> ( * ( i + 4 ) ), std::get<double> ( * ( i + 5 ) ) );
+                    i += 6;
+                }
                 break;
             case 'c':
+                while ( i != aCommands.end() && std::holds_alternative<double> ( *i ) )
+                {
+                    cairo_rel_curve_to ( mCairoContext,
+                                         std::get<double> ( *i ), std::get<double> ( * ( i + 1 ) ),
+                                         std::get<double> ( * ( i + 2 ) ), std::get<double> ( * ( i + 3 ) ),
+                                         std::get<double> ( * ( i + 4 ) ), std::get<double> ( * ( i + 5 ) ) );
+                    i += 6;
+                }
                 break;
             case 'S':
                 break;
@@ -172,5 +200,6 @@ namespace AeonGUI
             }
         }
         cairo_stroke ( mCairoContext );
+        cairo_restore ( mCairoContext );
     }
 }

@@ -288,7 +288,7 @@ void Window::Initialize ( HINSTANCE hInstance, LONG aWidth, LONG aHeight )
     GLGETPROCADDRESS(PFNGLENABLEVERTEXATTRIBARRAYPROC,glEnableVertexAttribArray);
     GLGETPROCADDRESS(PFNGLVERTEXATTRIBPOINTERPROC,glVertexAttribPointer);
 
-    glClearColor ( 0, 0, 0, 1 );
+    glClearColor ( 1, 1, 1, 1 );
     glViewport ( 0, 0, aWidth, aHeight );
     glBlendFunc ( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
     OPENGL_CHECK_ERROR;
