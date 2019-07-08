@@ -20,6 +20,7 @@ limitations under the License.
 #include "aeongui/DrawType.h"
 #include "../core/parsers/dstype.h"
 #include "path_data_parser.hpp"
+#define YY_NO_UNISTD_H 1
 %}
 
 %option nounput

@@ -89,6 +89,7 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 */
+#define YY_NO_UNISTD_H 1
 #include <cstddef>
 #include <cstdint>
 #include <cmath>
@@ -127,7 +128,7 @@ static dstype GetArcArgs ( const dstype& aRadii, const dstype& aRotation, const 
     };
 }
 
-#line 131 "C:/Code/AeonGUI/mingw64/core/path_data_parser.cpp"
+#line 132 "C:/Code/AeonGUI/mingw64/core/path_data_parser.cpp"
 
 # ifndef YY_NULLPTR
 #  if defined __cplusplus
@@ -483,14 +484,14 @@ static const yytype_uint8 yytranslate[] =
 /* YYRLINE[YYN] -- Source line where rule number YYN was defined.  */
 static const yytype_uint16 yyrline[] =
 {
-    0,    56,    56,    57,    60,    61,    63,    64,    67,    68,
-    70,    71,    72,    73,    74,    75,    76,    77,    78,    80,
-    82,    85,    86,    89,    91,    94,    95,    98,    99,   102,
-    103,   106,   107,   110,   111,   114,   115,   118,   120,   123,
-    124,   129,   136,   141,   146,   151,   156,   161,   166,   171,
-    176,   181,   186,   191,   196,   201,   206,   211,   217,   218,
-    223,   230,   241,   253,   255,   260,   267,   273,   280,   282,
-    288,   295,   297,   300,   305,   311,   318,   320
+    0,    57,    57,    58,    61,    62,    64,    65,    68,    69,
+    71,    72,    73,    74,    75,    76,    77,    78,    79,    81,
+    83,    86,    87,    90,    92,    95,    96,    99,   100,   103,
+    104,   107,   108,   111,   112,   115,   116,   119,   121,   124,
+    125,   130,   137,   142,   147,   152,   157,   162,   167,   172,
+    177,   182,   187,   192,   197,   202,   207,   212,   218,   219,
+    224,   231,   242,   254,   256,   261,   268,   274,   281,   283,
+    289,   296,   298,   301,   306,   312,   319,   321
 };
 #endif
 
@@ -1435,347 +1436,347 @@ yyreduce:
     switch ( yyn )
     {
     case 19:
-#line 80 "C:/Code/AeonGUI/core/parsers/path_data.ypp"
+#line 81 "C:/Code/AeonGUI/core/parsers/path_data.ypp"
         {
             AddCommandToPath ( aPath, std::get<AeonGUI::DrawType> ( yyvsp[-1] ), std::get<std::vector<AeonGUI::DrawType>> ( yyvsp[0] ) );
         }
-#line 1388 "C:/Code/AeonGUI/mingw64/core/path_data_parser.cpp"
+#line 1389 "C:/Code/AeonGUI/mingw64/core/path_data_parser.cpp"
         break;
 
     case 20:
-#line 82 "C:/Code/AeonGUI/core/parsers/path_data.ypp"
+#line 83 "C:/Code/AeonGUI/core/parsers/path_data.ypp"
         {
             AddCommandToPath ( aPath, std::get<AeonGUI::DrawType> ( yyvsp[-1] ), std::get<std::vector<AeonGUI::DrawType>> ( yyvsp[0] ) );
         }
-#line 1394 "C:/Code/AeonGUI/mingw64/core/path_data_parser.cpp"
+#line 1395 "C:/Code/AeonGUI/mingw64/core/path_data_parser.cpp"
         break;
 
     case 21:
-#line 85 "C:/Code/AeonGUI/core/parsers/path_data.ypp"
-        {
-            aPath.emplace_back ( std::get<AeonGUI::DrawType> ( yyvsp[0] ) );
-        }
-#line 1400 "C:/Code/AeonGUI/mingw64/core/path_data_parser.cpp"
-        break;
-
-    case 22:
 #line 86 "C:/Code/AeonGUI/core/parsers/path_data.ypp"
         {
             aPath.emplace_back ( std::get<AeonGUI::DrawType> ( yyvsp[0] ) );
         }
-#line 1406 "C:/Code/AeonGUI/mingw64/core/path_data_parser.cpp"
+#line 1401 "C:/Code/AeonGUI/mingw64/core/path_data_parser.cpp"
+        break;
+
+    case 22:
+#line 87 "C:/Code/AeonGUI/core/parsers/path_data.ypp"
+        {
+            aPath.emplace_back ( std::get<AeonGUI::DrawType> ( yyvsp[0] ) );
+        }
+#line 1407 "C:/Code/AeonGUI/mingw64/core/path_data_parser.cpp"
         break;
 
     case 23:
-#line 89 "C:/Code/AeonGUI/core/parsers/path_data.ypp"
+#line 90 "C:/Code/AeonGUI/core/parsers/path_data.ypp"
         {
             AddCommandToPath ( aPath, std::get<AeonGUI::DrawType> ( yyvsp[-1] ), std::get<std::vector<AeonGUI::DrawType>> ( yyvsp[0] ) );
         }
-#line 1412 "C:/Code/AeonGUI/mingw64/core/path_data_parser.cpp"
+#line 1413 "C:/Code/AeonGUI/mingw64/core/path_data_parser.cpp"
         break;
 
     case 24:
-#line 91 "C:/Code/AeonGUI/core/parsers/path_data.ypp"
+#line 92 "C:/Code/AeonGUI/core/parsers/path_data.ypp"
         {
             AddCommandToPath ( aPath, std::get<AeonGUI::DrawType> ( yyvsp[-1] ), std::get<std::vector<AeonGUI::DrawType>> ( yyvsp[0] ) );
         }
-#line 1418 "C:/Code/AeonGUI/mingw64/core/path_data_parser.cpp"
+#line 1419 "C:/Code/AeonGUI/mingw64/core/path_data_parser.cpp"
         break;
 
     case 25:
-#line 94 "C:/Code/AeonGUI/core/parsers/path_data.ypp"
-        {
-            AddCommandToPath ( aPath, std::get<AeonGUI::DrawType> ( yyvsp[-1] ), std::get<std::vector<AeonGUI::DrawType>> ( yyvsp[0] ) );
-        }
-#line 1424 "C:/Code/AeonGUI/mingw64/core/path_data_parser.cpp"
-        break;
-
-    case 26:
 #line 95 "C:/Code/AeonGUI/core/parsers/path_data.ypp"
         {
             AddCommandToPath ( aPath, std::get<AeonGUI::DrawType> ( yyvsp[-1] ), std::get<std::vector<AeonGUI::DrawType>> ( yyvsp[0] ) );
         }
-#line 1430 "C:/Code/AeonGUI/mingw64/core/path_data_parser.cpp"
+#line 1425 "C:/Code/AeonGUI/mingw64/core/path_data_parser.cpp"
         break;
 
-    case 27:
-#line 98 "C:/Code/AeonGUI/core/parsers/path_data.ypp"
+    case 26:
+#line 96 "C:/Code/AeonGUI/core/parsers/path_data.ypp"
         {
             AddCommandToPath ( aPath, std::get<AeonGUI::DrawType> ( yyvsp[-1] ), std::get<std::vector<AeonGUI::DrawType>> ( yyvsp[0] ) );
         }
-#line 1436 "C:/Code/AeonGUI/mingw64/core/path_data_parser.cpp"
+#line 1431 "C:/Code/AeonGUI/mingw64/core/path_data_parser.cpp"
         break;
 
-    case 28:
+    case 27:
 #line 99 "C:/Code/AeonGUI/core/parsers/path_data.ypp"
         {
             AddCommandToPath ( aPath, std::get<AeonGUI::DrawType> ( yyvsp[-1] ), std::get<std::vector<AeonGUI::DrawType>> ( yyvsp[0] ) );
         }
-#line 1442 "C:/Code/AeonGUI/mingw64/core/path_data_parser.cpp"
+#line 1437 "C:/Code/AeonGUI/mingw64/core/path_data_parser.cpp"
         break;
 
-    case 29:
-#line 102 "C:/Code/AeonGUI/core/parsers/path_data.ypp"
+    case 28:
+#line 100 "C:/Code/AeonGUI/core/parsers/path_data.ypp"
         {
             AddCommandToPath ( aPath, std::get<AeonGUI::DrawType> ( yyvsp[-1] ), std::get<std::vector<AeonGUI::DrawType>> ( yyvsp[0] ) );
         }
-#line 1448 "C:/Code/AeonGUI/mingw64/core/path_data_parser.cpp"
+#line 1443 "C:/Code/AeonGUI/mingw64/core/path_data_parser.cpp"
         break;
 
-    case 30:
+    case 29:
 #line 103 "C:/Code/AeonGUI/core/parsers/path_data.ypp"
         {
             AddCommandToPath ( aPath, std::get<AeonGUI::DrawType> ( yyvsp[-1] ), std::get<std::vector<AeonGUI::DrawType>> ( yyvsp[0] ) );
         }
-#line 1454 "C:/Code/AeonGUI/mingw64/core/path_data_parser.cpp"
+#line 1449 "C:/Code/AeonGUI/mingw64/core/path_data_parser.cpp"
         break;
 
-    case 31:
-#line 106 "C:/Code/AeonGUI/core/parsers/path_data.ypp"
+    case 30:
+#line 104 "C:/Code/AeonGUI/core/parsers/path_data.ypp"
         {
             AddCommandToPath ( aPath, std::get<AeonGUI::DrawType> ( yyvsp[-1] ), std::get<std::vector<AeonGUI::DrawType>> ( yyvsp[0] ) );
         }
-#line 1460 "C:/Code/AeonGUI/mingw64/core/path_data_parser.cpp"
+#line 1455 "C:/Code/AeonGUI/mingw64/core/path_data_parser.cpp"
         break;
 
-    case 32:
+    case 31:
 #line 107 "C:/Code/AeonGUI/core/parsers/path_data.ypp"
         {
             AddCommandToPath ( aPath, std::get<AeonGUI::DrawType> ( yyvsp[-1] ), std::get<std::vector<AeonGUI::DrawType>> ( yyvsp[0] ) );
         }
-#line 1466 "C:/Code/AeonGUI/mingw64/core/path_data_parser.cpp"
+#line 1461 "C:/Code/AeonGUI/mingw64/core/path_data_parser.cpp"
         break;
 
-    case 33:
-#line 110 "C:/Code/AeonGUI/core/parsers/path_data.ypp"
+    case 32:
+#line 108 "C:/Code/AeonGUI/core/parsers/path_data.ypp"
         {
             AddCommandToPath ( aPath, std::get<AeonGUI::DrawType> ( yyvsp[-1] ), std::get<std::vector<AeonGUI::DrawType>> ( yyvsp[0] ) );
         }
-#line 1472 "C:/Code/AeonGUI/mingw64/core/path_data_parser.cpp"
+#line 1467 "C:/Code/AeonGUI/mingw64/core/path_data_parser.cpp"
         break;
 
-    case 34:
+    case 33:
 #line 111 "C:/Code/AeonGUI/core/parsers/path_data.ypp"
         {
             AddCommandToPath ( aPath, std::get<AeonGUI::DrawType> ( yyvsp[-1] ), std::get<std::vector<AeonGUI::DrawType>> ( yyvsp[0] ) );
         }
-#line 1478 "C:/Code/AeonGUI/mingw64/core/path_data_parser.cpp"
+#line 1473 "C:/Code/AeonGUI/mingw64/core/path_data_parser.cpp"
         break;
 
-    case 35:
-#line 114 "C:/Code/AeonGUI/core/parsers/path_data.ypp"
+    case 34:
+#line 112 "C:/Code/AeonGUI/core/parsers/path_data.ypp"
         {
             AddCommandToPath ( aPath, std::get<AeonGUI::DrawType> ( yyvsp[-1] ), std::get<std::vector<AeonGUI::DrawType>> ( yyvsp[0] ) );
         }
-#line 1484 "C:/Code/AeonGUI/mingw64/core/path_data_parser.cpp"
+#line 1479 "C:/Code/AeonGUI/mingw64/core/path_data_parser.cpp"
         break;
 
-    case 36:
+    case 35:
 #line 115 "C:/Code/AeonGUI/core/parsers/path_data.ypp"
         {
             AddCommandToPath ( aPath, std::get<AeonGUI::DrawType> ( yyvsp[-1] ), std::get<std::vector<AeonGUI::DrawType>> ( yyvsp[0] ) );
         }
-#line 1490 "C:/Code/AeonGUI/mingw64/core/path_data_parser.cpp"
+#line 1485 "C:/Code/AeonGUI/mingw64/core/path_data_parser.cpp"
+        break;
+
+    case 36:
+#line 116 "C:/Code/AeonGUI/core/parsers/path_data.ypp"
+        {
+            AddCommandToPath ( aPath, std::get<AeonGUI::DrawType> ( yyvsp[-1] ), std::get<std::vector<AeonGUI::DrawType>> ( yyvsp[0] ) );
+        }
+#line 1491 "C:/Code/AeonGUI/mingw64/core/path_data_parser.cpp"
         break;
 
     case 37:
-#line 118 "C:/Code/AeonGUI/core/parsers/path_data.ypp"
+#line 119 "C:/Code/AeonGUI/core/parsers/path_data.ypp"
         {
             AddCommandToPath ( aPath, std::get<AeonGUI::DrawType> ( yyvsp[-1] ), std::get<std::vector<AeonGUI::DrawType>> ( yyvsp[0] ) );
         }
-#line 1496 "C:/Code/AeonGUI/mingw64/core/path_data_parser.cpp"
+#line 1497 "C:/Code/AeonGUI/mingw64/core/path_data_parser.cpp"
         break;
 
     case 38:
-#line 120 "C:/Code/AeonGUI/core/parsers/path_data.ypp"
+#line 121 "C:/Code/AeonGUI/core/parsers/path_data.ypp"
         {
             AddCommandToPath ( aPath, std::get<AeonGUI::DrawType> ( yyvsp[-1] ), std::get<std::vector<AeonGUI::DrawType>> ( yyvsp[0] ) );
         }
-#line 1502 "C:/Code/AeonGUI/mingw64/core/path_data_parser.cpp"
+#line 1503 "C:/Code/AeonGUI/mingw64/core/path_data_parser.cpp"
         break;
 
     case 39:
-#line 123 "C:/Code/AeonGUI/core/parsers/path_data.ypp"
+#line 124 "C:/Code/AeonGUI/core/parsers/path_data.ypp"
         {
             yyval = std::move ( yyvsp[0] );
         }
-#line 1508 "C:/Code/AeonGUI/mingw64/core/path_data_parser.cpp"
+#line 1509 "C:/Code/AeonGUI/mingw64/core/path_data_parser.cpp"
         break;
 
     case 40:
-#line 125 "C:/Code/AeonGUI/core/parsers/path_data.ypp"
+#line 126 "C:/Code/AeonGUI/core/parsers/path_data.ypp"
         {
             Merge ( yyvsp[-1], yyvsp[0] );
             yyval = std::move ( yyvsp[-1] );
         }
-#line 1517 "C:/Code/AeonGUI/mingw64/core/path_data_parser.cpp"
+#line 1518 "C:/Code/AeonGUI/mingw64/core/path_data_parser.cpp"
         break;
 
     case 41:
-#line 130 "C:/Code/AeonGUI/core/parsers/path_data.ypp"
+#line 131 "C:/Code/AeonGUI/core/parsers/path_data.ypp"
         {
             Merge ( yyvsp[-2], yyvsp[-1] );
             yyval = std::move ( yyvsp[-2] );
         }
-#line 1526 "C:/Code/AeonGUI/mingw64/core/path_data_parser.cpp"
+#line 1527 "C:/Code/AeonGUI/mingw64/core/path_data_parser.cpp"
         break;
 
     case 42:
-#line 137 "C:/Code/AeonGUI/core/parsers/path_data.ypp"
+#line 138 "C:/Code/AeonGUI/core/parsers/path_data.ypp"
         {
             yyval = GetArcArgs ( yyvsp[-4], yyvsp[-3], yyvsp[-2], yyvsp[-1], yyvsp[0] );
         }
-#line 1534 "C:/Code/AeonGUI/mingw64/core/path_data_parser.cpp"
+#line 1535 "C:/Code/AeonGUI/mingw64/core/path_data_parser.cpp"
         break;
 
     case 43:
-#line 142 "C:/Code/AeonGUI/core/parsers/path_data.ypp"
+#line 143 "C:/Code/AeonGUI/core/parsers/path_data.ypp"
         {
             yyval = GetArcArgs ( yyvsp[-5], yyvsp[-3], yyvsp[-2], yyvsp[-1], yyvsp[0] );
         }
-#line 1542 "C:/Code/AeonGUI/mingw64/core/path_data_parser.cpp"
+#line 1543 "C:/Code/AeonGUI/mingw64/core/path_data_parser.cpp"
         break;
 
     case 44:
-#line 147 "C:/Code/AeonGUI/core/parsers/path_data.ypp"
+#line 148 "C:/Code/AeonGUI/core/parsers/path_data.ypp"
         {
             yyval = GetArcArgs ( yyvsp[-5], yyvsp[-4], yyvsp[-2], yyvsp[-1], yyvsp[0] );
         }
-#line 1550 "C:/Code/AeonGUI/mingw64/core/path_data_parser.cpp"
+#line 1551 "C:/Code/AeonGUI/mingw64/core/path_data_parser.cpp"
         break;
 
     case 45:
-#line 152 "C:/Code/AeonGUI/core/parsers/path_data.ypp"
+#line 153 "C:/Code/AeonGUI/core/parsers/path_data.ypp"
         {
             yyval = GetArcArgs ( yyvsp[-5], yyvsp[-4], yyvsp[-3], yyvsp[-1], yyvsp[0] );
         }
-#line 1558 "C:/Code/AeonGUI/mingw64/core/path_data_parser.cpp"
+#line 1559 "C:/Code/AeonGUI/mingw64/core/path_data_parser.cpp"
         break;
 
     case 46:
-#line 157 "C:/Code/AeonGUI/core/parsers/path_data.ypp"
+#line 158 "C:/Code/AeonGUI/core/parsers/path_data.ypp"
         {
             yyval = GetArcArgs ( yyvsp[-5], yyvsp[-4], yyvsp[-3], yyvsp[-2], yyvsp[0] );
         }
-#line 1566 "C:/Code/AeonGUI/mingw64/core/path_data_parser.cpp"
+#line 1567 "C:/Code/AeonGUI/mingw64/core/path_data_parser.cpp"
         break;
 
     case 47:
-#line 162 "C:/Code/AeonGUI/core/parsers/path_data.ypp"
+#line 163 "C:/Code/AeonGUI/core/parsers/path_data.ypp"
         {
             yyval = GetArcArgs ( yyvsp[-6], yyvsp[-4], yyvsp[-2], yyvsp[-1], yyvsp[0] );
         }
-#line 1574 "C:/Code/AeonGUI/mingw64/core/path_data_parser.cpp"
+#line 1575 "C:/Code/AeonGUI/mingw64/core/path_data_parser.cpp"
         break;
 
     case 48:
-#line 167 "C:/Code/AeonGUI/core/parsers/path_data.ypp"
+#line 168 "C:/Code/AeonGUI/core/parsers/path_data.ypp"
         {
             yyval = GetArcArgs ( yyvsp[-6], yyvsp[-5], yyvsp[-4], yyvsp[-2], yyvsp[0] );
         }
-#line 1582 "C:/Code/AeonGUI/mingw64/core/path_data_parser.cpp"
+#line 1583 "C:/Code/AeonGUI/mingw64/core/path_data_parser.cpp"
         break;
 
     case 49:
-#line 172 "C:/Code/AeonGUI/core/parsers/path_data.ypp"
+#line 173 "C:/Code/AeonGUI/core/parsers/path_data.ypp"
         {
             yyval = GetArcArgs ( yyvsp[-6], yyvsp[-4], yyvsp[-3], yyvsp[-2], yyvsp[0] );
         }
-#line 1590 "C:/Code/AeonGUI/mingw64/core/path_data_parser.cpp"
+#line 1591 "C:/Code/AeonGUI/mingw64/core/path_data_parser.cpp"
         break;
 
     case 50:
-#line 177 "C:/Code/AeonGUI/core/parsers/path_data.ypp"
+#line 178 "C:/Code/AeonGUI/core/parsers/path_data.ypp"
         {
             yyval = GetArcArgs ( yyvsp[-6], yyvsp[-5], yyvsp[-3], yyvsp[-1], yyvsp[0] );
         }
-#line 1598 "C:/Code/AeonGUI/mingw64/core/path_data_parser.cpp"
+#line 1599 "C:/Code/AeonGUI/mingw64/core/path_data_parser.cpp"
         break;
 
     case 51:
-#line 182 "C:/Code/AeonGUI/core/parsers/path_data.ypp"
+#line 183 "C:/Code/AeonGUI/core/parsers/path_data.ypp"
         {
             yyval = GetArcArgs ( yyvsp[-6], yyvsp[-4], yyvsp[-3], yyvsp[-1], yyvsp[0] );
         }
-#line 1606 "C:/Code/AeonGUI/mingw64/core/path_data_parser.cpp"
+#line 1607 "C:/Code/AeonGUI/mingw64/core/path_data_parser.cpp"
         break;
 
     case 52:
-#line 187 "C:/Code/AeonGUI/core/parsers/path_data.ypp"
+#line 188 "C:/Code/AeonGUI/core/parsers/path_data.ypp"
         {
             yyval = GetArcArgs ( yyvsp[-6], yyvsp[-5], yyvsp[-3], yyvsp[-2], yyvsp[0] );
         }
-#line 1614 "C:/Code/AeonGUI/mingw64/core/path_data_parser.cpp"
+#line 1615 "C:/Code/AeonGUI/mingw64/core/path_data_parser.cpp"
         break;
 
     case 53:
-#line 192 "C:/Code/AeonGUI/core/parsers/path_data.ypp"
+#line 193 "C:/Code/AeonGUI/core/parsers/path_data.ypp"
         {
             yyval = GetArcArgs ( yyvsp[-7], yyvsp[-6], yyvsp[-4], yyvsp[-2], yyvsp[0] );
         }
-#line 1622 "C:/Code/AeonGUI/mingw64/core/path_data_parser.cpp"
+#line 1623 "C:/Code/AeonGUI/mingw64/core/path_data_parser.cpp"
         break;
 
     case 54:
-#line 197 "C:/Code/AeonGUI/core/parsers/path_data.ypp"
+#line 198 "C:/Code/AeonGUI/core/parsers/path_data.ypp"
         {
             yyval = GetArcArgs ( yyvsp[-7], yyvsp[-5], yyvsp[-4], yyvsp[-2], yyvsp[0] );
         }
-#line 1630 "C:/Code/AeonGUI/mingw64/core/path_data_parser.cpp"
+#line 1631 "C:/Code/AeonGUI/mingw64/core/path_data_parser.cpp"
         break;
 
     case 55:
-#line 202 "C:/Code/AeonGUI/core/parsers/path_data.ypp"
+#line 203 "C:/Code/AeonGUI/core/parsers/path_data.ypp"
         {
             yyval = GetArcArgs ( yyvsp[-7], yyvsp[-5], yyvsp[-3], yyvsp[-2], yyvsp[0] );
         }
-#line 1638 "C:/Code/AeonGUI/mingw64/core/path_data_parser.cpp"
+#line 1639 "C:/Code/AeonGUI/mingw64/core/path_data_parser.cpp"
         break;
 
     case 56:
-#line 207 "C:/Code/AeonGUI/core/parsers/path_data.ypp"
+#line 208 "C:/Code/AeonGUI/core/parsers/path_data.ypp"
         {
             yyval = GetArcArgs ( yyvsp[-7], yyvsp[-5], yyvsp[-3], yyvsp[-1], yyvsp[0] );
         }
-#line 1646 "C:/Code/AeonGUI/mingw64/core/path_data_parser.cpp"
+#line 1647 "C:/Code/AeonGUI/mingw64/core/path_data_parser.cpp"
         break;
 
     case 57:
-#line 212 "C:/Code/AeonGUI/core/parsers/path_data.ypp"
+#line 213 "C:/Code/AeonGUI/core/parsers/path_data.ypp"
         {
             yyval = GetArcArgs ( yyvsp[-8], yyvsp[-6], yyvsp[-4], yyvsp[-2], yyvsp[0] );
         }
-#line 1654 "C:/Code/AeonGUI/mingw64/core/path_data_parser.cpp"
+#line 1655 "C:/Code/AeonGUI/mingw64/core/path_data_parser.cpp"
         break;
 
     case 58:
-#line 217 "C:/Code/AeonGUI/core/parsers/path_data.ypp"
+#line 218 "C:/Code/AeonGUI/core/parsers/path_data.ypp"
         {
             yyval = std::move ( yyvsp[0] );
         }
-#line 1660 "C:/Code/AeonGUI/mingw64/core/path_data_parser.cpp"
+#line 1661 "C:/Code/AeonGUI/mingw64/core/path_data_parser.cpp"
         break;
 
     case 59:
-#line 219 "C:/Code/AeonGUI/core/parsers/path_data.ypp"
+#line 220 "C:/Code/AeonGUI/core/parsers/path_data.ypp"
         {
             Merge ( yyvsp[-1], yyvsp[0] );
             yyval = std::move ( yyvsp[-1] );
         }
-#line 1669 "C:/Code/AeonGUI/mingw64/core/path_data_parser.cpp"
+#line 1670 "C:/Code/AeonGUI/mingw64/core/path_data_parser.cpp"
         break;
 
     case 60:
-#line 224 "C:/Code/AeonGUI/core/parsers/path_data.ypp"
+#line 225 "C:/Code/AeonGUI/core/parsers/path_data.ypp"
         {
             Merge ( yyvsp[-2], yyvsp[-1] );
             yyval = std::move ( yyvsp[-2] );
         }
-#line 1678 "C:/Code/AeonGUI/mingw64/core/path_data_parser.cpp"
+#line 1679 "C:/Code/AeonGUI/mingw64/core/path_data_parser.cpp"
         break;
 
     case 61:
-#line 231 "C:/Code/AeonGUI/core/parsers/path_data.ypp"
+#line 232 "C:/Code/AeonGUI/core/parsers/path_data.ypp"
         {
             auto& left = std::get<std::vector<AeonGUI::DrawType>> ( yyvsp[-2] );
             auto& center = std::get<std::vector<AeonGUI::DrawType>> ( yyvsp[-1] );
@@ -1785,11 +1786,11 @@ yyreduce:
             left.insert ( left.end(), right.begin(), right.end() );
             yyval = std::move ( yyvsp[-2] );
         }
-#line 1692 "C:/Code/AeonGUI/mingw64/core/path_data_parser.cpp"
+#line 1693 "C:/Code/AeonGUI/mingw64/core/path_data_parser.cpp"
         break;
 
     case 62:
-#line 242 "C:/Code/AeonGUI/core/parsers/path_data.ypp"
+#line 243 "C:/Code/AeonGUI/core/parsers/path_data.ypp"
         {
             auto& left = std::get<std::vector<AeonGUI::DrawType>> ( yyvsp[-4] );
             auto& center = std::get<std::vector<AeonGUI::DrawType>> ( yyvsp[-2] );
@@ -1799,131 +1800,131 @@ yyreduce:
             left.insert ( left.end(), right.begin(), right.end() );
             yyval = std::move ( yyvsp[-4] );
         }
-#line 1706 "C:/Code/AeonGUI/mingw64/core/path_data_parser.cpp"
+#line 1707 "C:/Code/AeonGUI/mingw64/core/path_data_parser.cpp"
         break;
 
     case 63:
-#line 253 "C:/Code/AeonGUI/core/parsers/path_data.ypp"
+#line 254 "C:/Code/AeonGUI/core/parsers/path_data.ypp"
         {
             yyval = std::move ( yyvsp[0] );
         }
-#line 1712 "C:/Code/AeonGUI/mingw64/core/path_data_parser.cpp"
+#line 1713 "C:/Code/AeonGUI/mingw64/core/path_data_parser.cpp"
         break;
 
     case 64:
-#line 256 "C:/Code/AeonGUI/core/parsers/path_data.ypp"
+#line 257 "C:/Code/AeonGUI/core/parsers/path_data.ypp"
         {
             Merge ( yyvsp[-1], yyvsp[0] );
             yyval = std::move ( yyvsp[-1] );
         }
-#line 1721 "C:/Code/AeonGUI/mingw64/core/path_data_parser.cpp"
+#line 1722 "C:/Code/AeonGUI/mingw64/core/path_data_parser.cpp"
         break;
 
     case 65:
-#line 261 "C:/Code/AeonGUI/core/parsers/path_data.ypp"
+#line 262 "C:/Code/AeonGUI/core/parsers/path_data.ypp"
         {
             Merge ( yyvsp[-2], yyvsp[-1] );
             yyval = std::move ( yyvsp[-2] );
         }
-#line 1730 "C:/Code/AeonGUI/mingw64/core/path_data_parser.cpp"
+#line 1731 "C:/Code/AeonGUI/mingw64/core/path_data_parser.cpp"
         break;
 
     case 66:
-#line 268 "C:/Code/AeonGUI/core/parsers/path_data.ypp"
+#line 269 "C:/Code/AeonGUI/core/parsers/path_data.ypp"
         {
             Merge ( yyvsp[-1], yyvsp[0] );
             yyval = std::move ( yyvsp[-1] );
         }
-#line 1739 "C:/Code/AeonGUI/mingw64/core/path_data_parser.cpp"
+#line 1740 "C:/Code/AeonGUI/mingw64/core/path_data_parser.cpp"
         break;
 
     case 67:
-#line 274 "C:/Code/AeonGUI/core/parsers/path_data.ypp"
+#line 275 "C:/Code/AeonGUI/core/parsers/path_data.ypp"
         {
-            Merge ( yyvsp[-2], yyvsp[-1] );
+            Merge ( yyvsp[-2], yyvsp[0] );
             yyval = std::move ( yyvsp[-2] );
         }
-#line 1748 "C:/Code/AeonGUI/mingw64/core/path_data_parser.cpp"
+#line 1749 "C:/Code/AeonGUI/mingw64/core/path_data_parser.cpp"
         break;
 
     case 68:
-#line 280 "C:/Code/AeonGUI/core/parsers/path_data.ypp"
+#line 281 "C:/Code/AeonGUI/core/parsers/path_data.ypp"
         {
             yyval = std::move ( yyvsp[0] );
         }
-#line 1754 "C:/Code/AeonGUI/mingw64/core/path_data_parser.cpp"
+#line 1755 "C:/Code/AeonGUI/mingw64/core/path_data_parser.cpp"
         break;
 
     case 69:
-#line 283 "C:/Code/AeonGUI/core/parsers/path_data.ypp"
+#line 284 "C:/Code/AeonGUI/core/parsers/path_data.ypp"
         {
             Merge ( yyvsp[-1], yyvsp[0] );
             yyval = std::move ( yyvsp[-1] );
         }
-#line 1763 "C:/Code/AeonGUI/mingw64/core/path_data_parser.cpp"
+#line 1764 "C:/Code/AeonGUI/mingw64/core/path_data_parser.cpp"
         break;
 
     case 70:
-#line 289 "C:/Code/AeonGUI/core/parsers/path_data.ypp"
+#line 290 "C:/Code/AeonGUI/core/parsers/path_data.ypp"
         {
-            Merge ( yyvsp[-2], yyvsp[-1] );
+            Merge ( yyvsp[-2], yyvsp[0] );
             yyval = std::move ( yyvsp[-2] );
         }
-#line 1772 "C:/Code/AeonGUI/mingw64/core/path_data_parser.cpp"
+#line 1773 "C:/Code/AeonGUI/mingw64/core/path_data_parser.cpp"
         break;
 
     case 71:
-#line 295 "C:/Code/AeonGUI/core/parsers/path_data.ypp"
+#line 296 "C:/Code/AeonGUI/core/parsers/path_data.ypp"
         {
             yyval = std::vector<AeonGUI::DrawType> {std::get<AeonGUI::DrawType> ( yyvsp[-1] ), std::get<AeonGUI::DrawType> ( yyvsp[0] ) };
         }
-#line 1778 "C:/Code/AeonGUI/mingw64/core/path_data_parser.cpp"
+#line 1779 "C:/Code/AeonGUI/mingw64/core/path_data_parser.cpp"
         break;
 
     case 72:
-#line 297 "C:/Code/AeonGUI/core/parsers/path_data.ypp"
+#line 298 "C:/Code/AeonGUI/core/parsers/path_data.ypp"
         {
             yyval = std::vector<AeonGUI::DrawType> {std::get<AeonGUI::DrawType> ( yyvsp[-2] ), std::get<AeonGUI::DrawType> ( yyvsp[0] ) };
         }
-#line 1784 "C:/Code/AeonGUI/mingw64/core/path_data_parser.cpp"
+#line 1785 "C:/Code/AeonGUI/mingw64/core/path_data_parser.cpp"
         break;
 
     case 73:
-#line 301 "C:/Code/AeonGUI/core/parsers/path_data.ypp"
+#line 302 "C:/Code/AeonGUI/core/parsers/path_data.ypp"
         {
             yyval = std::vector<AeonGUI::DrawType> {std::get<AeonGUI::DrawType> ( yyvsp[0] ) };
         }
-#line 1792 "C:/Code/AeonGUI/mingw64/core/path_data_parser.cpp"
+#line 1793 "C:/Code/AeonGUI/mingw64/core/path_data_parser.cpp"
         break;
 
     case 74:
-#line 306 "C:/Code/AeonGUI/core/parsers/path_data.ypp"
+#line 307 "C:/Code/AeonGUI/core/parsers/path_data.ypp"
         {
             std::get<std::vector<AeonGUI::DrawType>> ( yyvsp[-1] ).emplace_back ( std::get<AeonGUI::DrawType> ( yyvsp[0] ) );
             yyval = std::move ( yyvsp[-1] );
         }
-#line 1801 "C:/Code/AeonGUI/mingw64/core/path_data_parser.cpp"
+#line 1802 "C:/Code/AeonGUI/mingw64/core/path_data_parser.cpp"
         break;
 
     case 75:
-#line 312 "C:/Code/AeonGUI/core/parsers/path_data.ypp"
+#line 313 "C:/Code/AeonGUI/core/parsers/path_data.ypp"
         {
             std::get<std::vector<AeonGUI::DrawType>> ( yyvsp[-2] ).emplace_back ( std::get<AeonGUI::DrawType> ( yyvsp[0] ) );
             yyval = std::move ( yyvsp[-2] );
         }
-#line 1810 "C:/Code/AeonGUI/mingw64/core/path_data_parser.cpp"
+#line 1811 "C:/Code/AeonGUI/mingw64/core/path_data_parser.cpp"
         break;
 
     case 77:
-#line 321 "C:/Code/AeonGUI/core/parsers/path_data.ypp"
+#line 322 "C:/Code/AeonGUI/core/parsers/path_data.ypp"
         {
             yyval = std::get<bool> ( std::get<AeonGUI::DrawType> ( yyvsp[0] ) ) ? 1.0 : 0.0;
         }
-#line 1818 "C:/Code/AeonGUI/mingw64/core/path_data_parser.cpp"
+#line 1819 "C:/Code/AeonGUI/mingw64/core/path_data_parser.cpp"
         break;
 
 
-#line 1822 "C:/Code/AeonGUI/mingw64/core/path_data_parser.cpp"
+#line 1823 "C:/Code/AeonGUI/mingw64/core/path_data_parser.cpp"
 
     default:
         break;
@@ -2174,7 +2175,7 @@ yyreturn:
 #endif
     return yyresult;
 }
-#line 324 "C:/Code/AeonGUI/core/parsers/path_data.ypp"
+#line 325 "C:/Code/AeonGUI/core/parsers/path_data.ypp"
 
 extern "C"
 {

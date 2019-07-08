@@ -80,11 +80,14 @@ namespace AeonGUI
     }
     void CairoCanvas::Draw ( const std::vector<DrawType>& aCommands )
     {
-        cairo_save ( mCairoContext );
         cairo_set_line_width ( mCairoContext, 1 );
         cairo_set_source_rgb ( mCairoContext, 0, 0, 0 );
+        uint64_t last_cmd{};
+        Vector2 last_c_ctrl{};
+        Vector2 last_q_ctrl{};
         for ( auto i = aCommands.begin(); i != aCommands.end(); )
         {
+            uint64_t cmd{std::get<uint64_t> ( * ( i ) ) };
             switch ( std::get<uint64_t> ( * ( i++ ) ) )
             {
             case 'M':
@@ -164,9 +167,10 @@ namespace AeonGUI
             case 'C':
                 while ( i != aCommands.end() && std::holds_alternative<double> ( *i ) )
                 {
+                    last_c_ctrl = {std::get<double> ( * ( i + 2 ) ), std::get<double> ( * ( i + 3 ) ) };
                     cairo_curve_to ( mCairoContext,
                                      std::get<double> ( *i ), std::get<double> ( * ( i + 1 ) ),
-                                     std::get<double> ( * ( i + 2 ) ), std::get<double> ( * ( i + 3 ) ),
+                                     last_c_ctrl[0], last_c_ctrl[1],
                                      std::get<double> ( * ( i + 4 ) ), std::get<double> ( * ( i + 5 ) ) );
                     i += 6;
                 }
@@ -174,32 +178,111 @@ namespace AeonGUI
             case 'c':
                 while ( i != aCommands.end() && std::holds_alternative<double> ( *i ) )
                 {
+                    last_c_ctrl = {std::get<double> ( * ( i + 2 ) ), std::get<double> ( * ( i + 3 ) ) };
                     cairo_rel_curve_to ( mCairoContext,
                                          std::get<double> ( *i ), std::get<double> ( * ( i + 1 ) ),
-                                         std::get<double> ( * ( i + 2 ) ), std::get<double> ( * ( i + 3 ) ),
+                                         last_c_ctrl[0], last_c_ctrl[1],
                                          std::get<double> ( * ( i + 4 ) ), std::get<double> ( * ( i + 5 ) ) );
                     i += 6;
                 }
                 break;
             case 'S':
+                while ( i != aCommands.end() && std::holds_alternative<double> ( *i ) )
+                {
+                    double x, y;
+                    cairo_get_current_point ( mCairoContext, &x, &y );
+                    last_c_ctrl = ( last_cmd == 'C' || last_cmd == 'S' ) ? Vector2{ ( 2 * x ) - last_c_ctrl[0], ( 2 * y ) - last_c_ctrl[1]}:
+                                  Vector2{};
+                    cairo_curve_to ( mCairoContext,
+                                     last_c_ctrl[0], last_c_ctrl[1],
+                                     std::get<double> ( *i ), std::get<double> ( * ( i + 1 ) ),
+                                     std::get<double> ( * ( i + 2 ) ), std::get<double> ( * ( i + 3 ) ) );
+                    last_c_ctrl = {std::get<double> ( * ( i ) ), std::get<double> ( * ( i + 1 ) ) };
+                    i += 4;
+                }
                 break;
             case 's':
+                while ( i != aCommands.end() && std::holds_alternative<double> ( *i ) )
+                {
+                    last_c_ctrl = ( last_cmd == 'c' || last_cmd == 's' ) ? Vector2{-last_c_ctrl[0], -last_c_ctrl[1]}:
+                                  Vector2{};
+                    cairo_rel_curve_to ( mCairoContext,
+                                         last_c_ctrl[0], last_c_ctrl[1],
+                                         std::get<double> ( *i ), std::get<double> ( * ( i + 1 ) ),
+                                         std::get<double> ( * ( i + 2 ) ), std::get<double> ( * ( i + 3 ) ) );
+                    last_c_ctrl = {std::get<double> ( * ( i ) ), std::get<double> ( * ( i + 1 ) ) };
+                    i += 4;
+                }
                 break;
             case 'Q':
+                while ( i != aCommands.end() && std::holds_alternative<double> ( *i ) )
+                {
+                    double x, y;
+                    cairo_get_current_point ( mCairoContext, &x, &y );
+                    last_q_ctrl = {std::get<double> ( *i ), std::get<double> ( * ( i + 1 ) ) };
+                    Vector2 P2{std::get<double> ( * ( i + 2 ) ), std::get<double> ( * ( i + 3 ) ) };
+                    Vector2 Q1{Vector2{x* ( 1.0 / 3.0 ), y* ( 1.0 / 3.0 ) } + last_q_ctrl* ( 2.0 / 3.0 ) };
+                    Vector2 Q2{last_q_ctrl* ( 2.0 / 3.0 ) + P2* ( 1.0 / 3.0 ) };
+                    cairo_curve_to ( mCairoContext,
+                                     Q1[0], Q1[1],
+                                     Q2[0], Q2[1],
+                                     P2[0], P2[1] );
+                    i += 4;
+                }
                 break;
             case 'q':
+                while ( i != aCommands.end() && std::holds_alternative<double> ( *i ) )
+                {
+                    last_q_ctrl = {std::get<double> ( *i ), std::get<double> ( * ( i + 1 ) ) };
+                    Vector2 P2{std::get<double> ( * ( i + 2 ) ), std::get<double> ( * ( i + 3 ) ) };
+                    Vector2 Q1{last_q_ctrl* ( 2.0 / 3.0 ) };
+                    Vector2 Q2{last_q_ctrl* ( 2.0 / 3.0 ) + P2* ( 1.0 / 3.0 ) };
+                    cairo_rel_curve_to ( mCairoContext,
+                                         Q1[0], Q1[1],
+                                         Q2[0], Q2[1],
+                                         P2[0], P2[1] );
+                    i += 4;
+                }
                 break;
             case 'T':
+                while ( i != aCommands.end() && std::holds_alternative<double> ( *i ) )
+                {
+                    double x, y;
+                    cairo_get_current_point ( mCairoContext, &x, &y );
+                    last_q_ctrl = ( last_cmd == 'Q' || last_cmd == 'T' ) ? Vector2{ ( 2 * x ) - last_q_ctrl[0], ( 2 * y ) - last_q_ctrl[1]}:
+                                  Vector2{};
+                    Vector2 P2{std::get<double> ( * ( i ) ), std::get<double> ( * ( i + 1 ) ) };
+                    Vector2 Q1{Vector2{x* ( 1.0 / 3.0 ), y* ( 1.0 / 3.0 ) } + last_q_ctrl* ( 2.0 / 3.0 ) };
+                    Vector2 Q2{last_q_ctrl* ( 2.0 / 3.0 ) + P2* ( 1.0 / 3.0 ) };
+                    cairo_curve_to ( mCairoContext,
+                                     Q1[0], Q1[1],
+                                     Q2[0], Q2[1],
+                                     P2[0], P2[1] );
+                    i += 2;
+                }
                 break;
             case 't':
+                while ( i != aCommands.end() && std::holds_alternative<double> ( *i ) )
+                {
+                    last_q_ctrl = ( last_cmd == 'q' || last_cmd == 't' ) ? Vector2{-last_q_ctrl[0], -last_q_ctrl[1]}:
+                                  Vector2{};
+                    Vector2 P2{std::get<double> ( * ( i ) ), std::get<double> ( * ( i + 1 ) ) };
+                    Vector2 Q1{last_q_ctrl* ( 2.0 / 3.0 ) };
+                    Vector2 Q2{last_q_ctrl* ( 2.0 / 3.0 ) + P2* ( 1.0 / 3.0 ) };
+                    cairo_curve_to ( mCairoContext,
+                                     Q1[0], Q1[1],
+                                     Q2[0], Q2[1],
+                                     P2[0], P2[1] );
+                    i += 2;
+                }
                 break;
             case 'A':
                 break;
             case 'a':
                 break;
             }
+            last_cmd = cmd;
         }
         cairo_stroke ( mCairoContext );
-        cairo_restore ( mCairoContext );
     }
 }
