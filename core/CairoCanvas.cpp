@@ -16,10 +16,194 @@ limitations under the License.
 
 #include <cairo.h>
 #include <iostream>
+#include <algorithm>
+#include <cmath>
+#include <limits>
 #include "aeongui/CairoCanvas.h"
 
 namespace AeonGUI
 {
+    /**@note the following two functions have been adapted from librsvg code. */
+    static void
+    path_arc_segment ( cairo_t* context,
+                       bool relative,
+                       double xc, double yc,
+                       double th0, double th1, double rx, double ry,
+                       double x_axis_rotation )
+    {
+        double x1, y1, x2, y2, x3, y3;
+        double t;
+        double th_half;
+        double f, sinf, cosf;
+
+        f = x_axis_rotation * M_PI / 180.0;
+        sinf = std::sin ( f );
+        cosf = std::cos ( f );
+
+        th_half = 0.5 * ( th1 - th0 );
+        t = ( 8.0 / 3.0 ) * std::sin ( th_half * 0.5 ) * std::sin ( th_half * 0.5 ) / std::sin ( th_half );
+        x1 = rx * ( std::cos ( th0 ) - t * std::sin ( th0 ) );
+        y1 = ry * ( std::sin ( th0 ) + t * std::cos ( th0 ) );
+        x3 = rx * std::cos ( th1 );
+        y3 = ry * std::sin ( th1 );
+        x2 = x3 + rx * ( t * std::sin ( th1 ) );
+        y2 = y3 + ry * ( -t * std::cos ( th1 ) );
+        if ( !relative )
+        {
+            cairo_curve_to (   context,
+                               xc + cosf * x1 - sinf * y1,
+                               yc + sinf * x1 + cosf * y1,
+                               xc + cosf * x2 - sinf * y2,
+                               yc + sinf * x2 + cosf * y2,
+                               xc + cosf * x3 - sinf * y3,
+                               yc + sinf * x3 + cosf * y3 );
+        }
+        else
+        {
+            cairo_rel_curve_to (   context,
+                                   xc + cosf * x1 - sinf * y1,
+                                   yc + sinf * x1 + cosf * y1,
+                                   xc + cosf * x2 - sinf * y2,
+                                   yc + sinf * x2 + cosf * y2,
+                                   xc + cosf * x3 - sinf * y3,
+                                   yc + sinf * x3 + cosf * y3 );
+        }
+    }
+
+    static void
+    path_arc (   cairo_t* context,
+                 bool relative,
+                 double x1, double y1,
+                 double rx, double ry,
+                 double x_axis_rotation,
+                 bool large_arc_flag, bool sweep_flag,
+                 double x2, double y2 )
+    {
+
+        /* See Appendix F.6 Elliptical arc implementation notes
+           http://www.w3.org/TR/SVG/implnote.html#ArcImplementationNotes */
+
+        double f, sinf, cosf;
+        double x1_, y1_;
+        double cx_, cy_, cx, cy;
+        double gamma;
+        double theta1, delta_theta;
+        double k1, k2, k3, k4, k5;
+
+        int i, n_segs;
+
+        if ( x1 == x2 && y1 == y2 )
+        {
+            return;
+        }
+
+        /* X-axis */
+        f = x_axis_rotation * M_PI / 180.0;
+        sinf = std::sin ( f );
+        cosf = std::cos ( f );
+
+        rx = std::abs ( rx );
+        ry = std::abs ( ry );
+
+        if ( ( rx < std::numeric_limits<double>::epsilon() ) || ( ry < std::numeric_limits<double>::epsilon() ) )
+        {
+            cairo_line_to ( context, x2, y2 );
+            return;
+        }
+
+        k1 = ( x1 - x2 ) / 2;
+        k2 = ( y1 - y2 ) / 2;
+
+        x1_ = cosf * k1 + sinf * k2;
+        y1_ = -sinf * k1 + cosf * k2;
+
+        gamma = ( x1_ * x1_ ) / ( rx * rx ) + ( y1_ * y1_ ) / ( ry * ry );
+        if ( gamma > 1 )
+        {
+            rx *= std::sqrt ( gamma );
+            ry *= std::sqrt ( gamma );
+        }
+
+        /* Compute the center */
+
+        k1 = rx * rx * y1_ * y1_ + ry * ry * x1_ * x1_;
+        if ( k1 == 0 )
+        {
+            return;
+        }
+
+        k1 = std::sqrt ( std::abs ( ( rx * rx * ry * ry ) / k1 - 1 ) );
+        if ( sweep_flag == large_arc_flag )
+        {
+            k1 = -k1;
+        }
+
+        cx_ = k1 * rx * y1_ / ry;
+        cy_ = -k1 * ry * x1_ / rx;
+
+        cx = cosf * cx_ - sinf * cy_ + ( x1 + x2 ) / 2;
+        cy = sinf * cx_ + cosf * cy_ + ( y1 + y2 ) / 2;
+
+        /* Compute start angle */
+
+        k1 = ( x1_ - cx_ ) / rx;
+        k2 = ( y1_ - cy_ ) / ry;
+        k3 = ( -x1_ - cx_ ) / rx;
+        k4 = ( -y1_ - cy_ ) / ry;
+
+        k5 = std::sqrt ( std::abs ( k1 * k1 + k2 * k2 ) );
+        if ( k5 == 0 )
+        {
+            return;
+        }
+
+        k5 = k1 / k5;
+        k5 = std::clamp ( k5, -1.0, 1.0 );
+        theta1 = std::acos ( k5 );
+        if ( k2 < 0 )
+        {
+            theta1 = -theta1;
+        }
+
+        /* Compute delta_theta */
+
+        k5 = std::sqrt ( std::abs ( ( k1 * k1 + k2 * k2 ) * ( k3 * k3 + k4 * k4 ) ) );
+        if ( k5 == 0 )
+        {
+            return;
+        }
+
+        k5 = ( k1 * k3 + k2 * k4 ) / k5;
+        k5 = std::clamp ( k5, -1.0, 1.0 );
+        delta_theta = std::acos ( k5 );
+        if ( k1 * k4 - k3 * k2 < 0 )
+        {
+            delta_theta = -delta_theta;
+        }
+
+        if ( sweep_flag && delta_theta < 0 )
+        {
+            delta_theta += M_PI * 2;
+        }
+        else if ( !sweep_flag && delta_theta > 0 )
+        {
+            delta_theta -= M_PI * 2;
+        }
+
+        /* Now draw the arc */
+
+        n_segs = std::ceil ( std::abs ( delta_theta / ( M_PI * 0.5 + 0.001 ) ) );
+
+        for ( i = 0; i < n_segs; i++ )
+        {
+            path_arc_segment ( context, relative,
+                               cx, cy,
+                               theta1 + i * delta_theta / n_segs,
+                               theta1 + ( i + 1 ) * delta_theta / n_segs,
+                               rx, ry, x_axis_rotation );
+        }
+    }
+
     CairoCanvas::CairoCanvas ( uint32_t aWidth, uint32_t aHeight ) :
         mCairoSurface{cairo_image_surface_create ( CAIRO_FORMAT_ARGB32, aWidth, aHeight ) },
         mCairoContext{cairo_create ( reinterpret_cast<cairo_surface_t*> ( mCairoSurface ) ) }
@@ -277,8 +461,32 @@ namespace AeonGUI
                 }
                 break;
             case 'A':
+                while ( i != aCommands.end() && !std::holds_alternative<uint64_t> ( *i ) )
+                {
+                    double x, y;
+                    cairo_get_current_point ( mCairoContext, &x, &y );
+                    path_arc ( mCairoContext, false,
+                               x, y,
+                               std::get<double> ( * ( i ) ), std::get<double> ( * ( i + 1 ) ),
+                               std::get<double> ( * ( i + 2 ) ),
+                               std::get<bool> ( * ( i + 3 ) ), std::get<bool> ( * ( i + 4 ) ),
+                               std::get<double> ( * ( i + 5 ) ), std::get<double> ( * ( i + 6 ) )
+                             );
+                    i += 7;
+                }
                 break;
             case 'a':
+                while ( i != aCommands.end() && !std::holds_alternative<uint64_t> ( *i ) )
+                {
+                    path_arc ( mCairoContext, true,
+                               0.0, 0.0,
+                               std::get<double> ( * ( i ) ), std::get<double> ( * ( i + 1 ) ),
+                               std::get<double> ( * ( i + 2 ) ),
+                               std::get<bool> ( * ( i + 3 ) ), std::get<bool> ( * ( i + 4 ) ),
+                               std::get<double> ( * ( i + 5 ) ), std::get<double> ( * ( i + 6 ) )
+                             );
+                    i += 7;
+                }
                 break;
             }
             last_cmd = cmd;
