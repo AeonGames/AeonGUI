@@ -34,6 +34,7 @@ limitations under the License.
 #include "elements/Polygon.h"
 #include "elements/Circle.h"
 #include "elements/Ellipse.h"
+#include "elements/Script.h"
 
 namespace AeonGUI
 {
@@ -101,6 +102,13 @@ namespace AeonGUI
             [] ( xmlElementPtr aXmlElementPtr )
             {
                 return std::make_unique<Elements::Ellipse> ( aXmlElementPtr );
+            }
+        },
+        {
+            "script",
+            [] ( xmlElementPtr aXmlElementPtr )
+            {
+                return std::make_unique<Elements::Script> ( aXmlElementPtr );
             }
         },
     };

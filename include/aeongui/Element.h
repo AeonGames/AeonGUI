@@ -32,6 +32,7 @@ extern "C"
 namespace AeonGUI
 {
     class Canvas;
+    class JavaScript;
     class Element
     {
     public:
@@ -45,7 +46,10 @@ namespace AeonGUI
         DLL const char* GetTagName() const;
         DLL bool HasAttr ( const char* aAttrName ) const;
         DLL const char* GetAttr ( const char* aAttrName ) const;
+        DLL const char* GetContent () const;
         DLL virtual void Draw ( Canvas& aCanvas ) const;
+        DLL virtual void Load ( JavaScript& aJavaScript );
+        DLL virtual void Unload ( JavaScript& aJavaScript );
         DLL virtual ~Element();
     protected:
         xmlElementPtr mXmlElementPtr{};

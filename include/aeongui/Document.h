@@ -21,6 +21,7 @@ limitations under the License.
 #include <algorithm>
 #include "aeongui/Platform.h"
 #include "aeongui/Canvas.h"
+#include "aeongui/JavaScript.h"
 #include "aeongui/Element.h"
 
 extern "C"
@@ -37,6 +38,8 @@ namespace AeonGUI
         DLL Document ( const std::string& aFilename );
         DLL ~Document();
         DLL void Draw ( Canvas& aCanvas ) const;
+        DLL void Load ( JavaScript& aJavaScript );
+        DLL void Unload ( JavaScript& aJavaScript );
         DLL Element* AddElement ( std::unique_ptr<Element> aElement );
         DLL std::unique_ptr<Element> RemoveElement ( const Element* aElement );
         DLL void TraverseDepthFirstPreOrder ( const std::function<void ( Element& ) >& aAction );

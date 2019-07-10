@@ -114,4 +114,20 @@ namespace AeonGUI
             aElement.Draw ( aCanvas );
         } );
     }
+    void Document::Load ( JavaScript& aJavaScript )
+    {
+        TraverseDepthFirstPreOrder (
+            [&aJavaScript] ( Element & aElement )
+        {
+            aElement.Load ( aJavaScript );
+        } );
+    }
+    void Document::Unload ( JavaScript& aJavaScript )
+    {
+        TraverseDepthFirstPreOrder (
+            [&aJavaScript] ( Element & aElement )
+        {
+            aElement.Unload ( aJavaScript );
+        } );
+    }
 }

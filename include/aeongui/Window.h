@@ -22,8 +22,9 @@ limitations under the License.
 #include <string>
 #include "aeongui/Document.h"
 #include "aeongui/Platform.h"
-///@todo Canvas implementation should be selectable.
+///@todo Canvas and JavaScript implementations should be selectable.
 #include "aeongui/CairoCanvas.h"
+#include "aeongui/Duktape.h"
 
 namespace AeonGUI
 {
@@ -31,6 +32,7 @@ namespace AeonGUI
     {
     public:
         DLL Window ( const std::string aFilename, uint32_t aWidth, uint32_t aHeight );
+        DLL ~Window ();
         DLL void ResizeViewport ( uint32_t aWidth, uint32_t aHeight );
         DLL const uint8_t* GetPixels() const;
         DLL size_t GetWidth() const;
@@ -40,6 +42,7 @@ namespace AeonGUI
     private:
         Document mDocument;
         CairoCanvas mCanvas;
+        Duktape mJavaScript;
     };
 }
 #endif

@@ -17,6 +17,8 @@ set(AEONGUI_HEADERS
 		../include/aeongui/Transform.h
 		../include/aeongui/Vector2.h
 		../include/aeongui/DrawType.h
+		../include/aeongui/JavaScript.h
+		../include/aeongui/Duktape.h
 )
 
 set(AEONGUI_SOURCES
@@ -31,6 +33,8 @@ set(AEONGUI_SOURCES
         AABB.cpp
         Canvas.cpp
         CairoCanvas.cpp
+        JavaScript.cpp
+        Duktape.cpp
         elements/SVG.cpp
         elements/G.cpp
         elements/Path.cpp
@@ -40,6 +44,7 @@ set(AEONGUI_SOURCES
         elements/Polygon.cpp
         elements/Circle.cpp
         elements/Ellipse.cpp
+        elements/Script.cpp
         elements/SVG.h
         elements/G.h
         elements/Path.h
@@ -49,6 +54,7 @@ set(AEONGUI_SOURCES
         elements/Polygon.h
         elements/Circle.h
         elements/Ellipse.h
+        elements/Script.h
 )
 
 if(USE_CUDA)

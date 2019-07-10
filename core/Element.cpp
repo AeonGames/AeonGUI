@@ -25,13 +25,6 @@ namespace AeonGUI
         {
             throw std::runtime_error ( "XML Element is NULL" );
         }
-#if 0
-        std::cout << mXmlElementPtr->name << std::endl;
-        for ( auto* attribute = mXmlElementPtr->attributes; attribute; attribute = attribute->nexth )
-        {
-            std::cout << "\t" << attribute->name << " " << xmlGetProp ( reinterpret_cast<xmlNodePtr> ( mXmlElementPtr ), attribute->name ) << std::endl;
-        }
-#endif
     }
 
     Element::~Element() = default;
@@ -51,10 +44,27 @@ namespace AeonGUI
         return reinterpret_cast<const char*> ( xmlGetProp ( reinterpret_cast<xmlNodePtr> ( mXmlElementPtr ), reinterpret_cast<const xmlChar*> ( aAttrName ) ) );
     }
 
+    const char* Element::GetContent () const
+    {
+        return reinterpret_cast<const char*> ( xmlNodeGetContent ( reinterpret_cast<xmlNodePtr> ( mXmlElementPtr ) ) );
+    }
+
     void Element::Draw ( Canvas& aCanvas ) const
     {
         // Do nothing by default
         ( void ) aCanvas;
+    }
+
+    void Element::Load ( JavaScript& aJavaScript )
+    {
+        // Do nothing by default
+        ( void ) aJavaScript;
+    }
+
+    void Element::Unload ( JavaScript& aJavaScript )
+    {
+        // Do nothing by default
+        ( void ) aJavaScript;
     }
 
     /*  This is ugly, but it is only way to use the same code for the const and the non const version
