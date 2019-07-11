@@ -145,13 +145,22 @@ endif(USE_CUDA)
 if(FLEX_FOUND AND BISON_FOUND)
     message(STATUS "Parser code will be generated from Flex and Bison code.")
     message(STATUS "Build the 'update-parser-code' target if you want to update the pre-generated code.")
+
     bison_target(path_data_parser ${CMAKE_CURRENT_SOURCE_DIR}/parsers/path_data.ypp ${CMAKE_CURRENT_BINARY_DIR}/path_data_parser.cpp COMPILE_FLAGS "-v -d")
     flex_target(path_data_lexer ${CMAKE_CURRENT_SOURCE_DIR}/parsers/path_data.l ${CMAKE_CURRENT_BINARY_DIR}/path_data_lexer.cpp COMPILE_FLAGS "-Cf")
     add_flex_bison_dependency(path_data_lexer path_data_parser)
     list(APPEND AEONGUI_SOURCES ${BISON_path_data_parser_OUTPUTS} ${FLEX_path_data_lexer_OUTPUTS} parsers/dstype.h)
+
+    bison_target(css_parser ${CMAKE_CURRENT_SOURCE_DIR}/parsers/css.ypp ${CMAKE_CURRENT_BINARY_DIR}/css_parser.cpp COMPILE_FLAGS "-v -d")
+    flex_target(css_lexer ${CMAKE_CURRENT_SOURCE_DIR}/parsers/css.l ${CMAKE_CURRENT_BINARY_DIR}/css_lexer.cpp COMPILE_FLAGS "-Cf -8")
+    add_flex_bison_dependency(css_lexer css_parser)
+    list(APPEND AEONGUI_SOURCES ${BISON_css_parser_OUTPUTS} ${FLEX_css_lexer_OUTPUTS})
+
     add_custom_target(update-parser-code
         COMMAND
             ${CMAKE_COMMAND} -E copy_if_different ${BISON_path_data_parser_OUTPUTS} ${FLEX_path_data_lexer_OUTPUTS} ${CMAKE_SOURCE_DIR}/core/parsers
+        COMMAND
+            ${CMAKE_COMMAND} -E copy_if_different ${BISON_css_parser_OUTPUTS} ${FLEX_css_lexer_OUTPUTS} ${CMAKE_SOURCE_DIR}/core/parsers
         DEPENDS
             path_data_parser
             path_data_lexer
@@ -163,7 +172,11 @@ else()
         parsers/path_data_lexer.cpp
         parsers/path_data_parser.cpp
         parsers/path_data_parser.hpp
-        parsers/dstype.h)
+        parsers/dstype.h
+        parsers/css_lexer.cpp
+        parsers/css_parser.cpp
+        parsers/css_parser.hpp
+        )
 endif()
 
 set(AEONGUI_LIBRARIES ${LIBXML2_LIBRARIES} pcx)

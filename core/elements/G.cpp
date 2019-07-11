@@ -13,15 +13,16 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 */
+#include <regex>
 #include "G.h"
 
 namespace AeonGUI
 {
     namespace Elements
     {
-
         G::G ( xmlElementPtr aXmlElementPtr ) : Element ( aXmlElementPtr )
         {
+            const char* style = GetAttr ( "style" );
         }
         G::~G()
         {
