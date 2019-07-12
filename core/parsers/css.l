@@ -122,33 +122,10 @@ Z				z|\\0{0,4}(5a|7a)(\r\n|[ \t\r\n\f])?|\\z
 {num}{H}{Z}				{return FREQ;}
 {num}{K}{H}{Z}			{return FREQ;}
 {num}{ident}			{return DIMENSION;}
-
 {num}%					{return PERCENTAGE;}
 {num}					{return NUMBER;}
-
 "url("{w}{string}{w}")" {return URI;}
 "url("{w}{url}{w}")"    {return URI;}
 {baduri}                {return BAD_URI;}
-
 {ident}"("				{return FUNCTION;}
-
-{ident}/\\          	return IDENT;
-#{name}/\\          	return HASH;
-@{ident}/\\         	return ATKEYWORD;
-#/\\                	return DELIM;
-@/\\                	return DELIM;
-@/-                 	return DELIM;
-@/-\\               	return DELIM;
--/\\                	return DELIM;
--/-                 	return DELIM;
-\</!                	return DELIM;
-\</!-               	return DELIM;
-{num}{ident}/\\     	return DIMENSION;
-{num}/\\            	return NUMBER;
-{num}/-             	return NUMBER;
-{num}/-\\           	return NUMBER;
-[0-9]+/\.           	return NUMBER;
-u/\+                	return IDENT;
-u\+[0-9a-f?]{1,6}/- 	return UNICODE_RANGE;
-
 .						{return *yytext;}
