@@ -27,7 +27,7 @@ namespace AeonGUI
         Circle::~Circle()
         {
         }
-        void Circle::Draw ( Canvas& aCanvas ) const
+        void Circle::DrawStart ( Canvas& aCanvas ) const
         {
         }
     }

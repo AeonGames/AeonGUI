@@ -36,7 +36,7 @@ namespace AeonGUI
         Path::~Path()
         {
         }
-        void Path::Draw ( Canvas& aCanvas ) const
+        void Path::DrawStart ( Canvas& aCanvas ) const
         {
             aCanvas.Draw ( mPath );
         }

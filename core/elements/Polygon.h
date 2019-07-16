@@ -27,7 +27,7 @@ namespace AeonGUI
         public:
             Polygon ( xmlElementPtr aXmlElementPtr );
             ~Polygon() final;
-            void Draw ( Canvas& aCanvas ) const final;
+            void DrawStart ( Canvas& aCanvas ) const final;
         };
     }
 }

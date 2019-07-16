@@ -36,7 +36,7 @@ namespace AeonGUI
         G::~G()
         {
         }
-        void G::Draw ( Canvas& aCanvas ) const
+        void G::DrawStart ( Canvas& aCanvas ) const
         {
             for ( auto& i : mAttributeMap )
             {

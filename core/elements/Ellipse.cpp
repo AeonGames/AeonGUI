@@ -26,7 +26,7 @@ namespace AeonGUI
         Ellipse::~Ellipse()
         {
         }
-        void Ellipse::Draw ( Canvas& aCanvas ) const
+        void Ellipse::DrawStart ( Canvas& aCanvas ) const
         {
         }
     }

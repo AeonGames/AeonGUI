@@ -26,7 +26,7 @@ namespace AeonGUI
         Line::~Line()
         {
         }
-        void Line::Draw ( Canvas& aCanvas ) const
+        void Line::DrawStart ( Canvas& aCanvas ) const
         {
         }
     }

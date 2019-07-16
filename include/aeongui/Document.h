@@ -46,6 +46,8 @@ namespace AeonGUI
         DLL void TraverseDepthFirstPreOrder ( const std::function<void ( const Element& ) >& aAction ) const;
         DLL void TraverseDepthFirstPostOrder ( const std::function<void ( Element& ) >& aAction );
         DLL void TraverseDepthFirstPostOrder ( const std::function<void ( const Element& ) >& aAction ) const;
+        DLL void TraverseDepthFirstPreOrder ( const std::function<void ( Element& ) >& aPreamble, const std::function<void ( Element& ) >& aPostamble );
+        DLL void TraverseDepthFirstPreOrder ( const std::function<void ( const Element& ) >& aPreamble, const std::function<void ( const Element& ) >& aPostamble ) const;
     private:
         xmlDocPtr mDocument{};
         std::vector<std::unique_ptr<Element>> mChildren{};

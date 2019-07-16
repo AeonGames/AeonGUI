@@ -43,8 +43,8 @@ namespace AeonGUI
     private:
         cairo_surface_t* mCairoSurface{};
         cairo_t* mCairoContext{};
-        Color mFillColor{0, 255, 255, 255};
-        Color mStrokeColor{255, 0, 0, 0};
+        Color mFillColor{255, 255, 255, 255};
+        Color mStrokeColor{0, 0, 0, 0};
         double mStrokeWidth{1};
     };
 }

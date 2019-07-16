@@ -29,7 +29,7 @@ namespace AeonGUI
         public:
             Path ( xmlElementPtr aXmlElementPtr );
             ~Path() final;
-            void Draw ( Canvas& aCanvas ) const final;
+            void DrawStart ( Canvas& aCanvas ) const final;
         private:
             std::vector<DrawType> mPath{};
         };

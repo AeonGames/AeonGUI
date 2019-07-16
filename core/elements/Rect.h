@@ -27,7 +27,7 @@ namespace AeonGUI
         public:
             Rect ( xmlElementPtr aXmlElementPtr );
             ~Rect() final;
-            void Draw ( Canvas& aCanvas ) const final;
+            void DrawStart ( Canvas& aCanvas ) const final;
         };
     }
 }

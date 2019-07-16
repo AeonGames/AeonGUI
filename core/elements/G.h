@@ -29,7 +29,7 @@ namespace AeonGUI
         public:
             G ( xmlElementPtr aXmlElementPtr );
             ~G() final;
-            void Draw ( Canvas& aCanvas ) const final;
+            void DrawStart ( Canvas& aCanvas ) const final;
         private:
             AttributeMap mAttributeMap{};
         };

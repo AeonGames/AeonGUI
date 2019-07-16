@@ -43,11 +43,15 @@ namespace AeonGUI
         DLL void TraverseDepthFirstPreOrder ( const std::function<void ( const Element& ) >& aAction ) const;
         DLL void TraverseDepthFirstPostOrder ( const std::function<void ( Element& ) >& aAction );
         DLL void TraverseDepthFirstPostOrder ( const std::function<void ( const Element& ) >& aAction ) const;
+        DLL void TraverseDepthFirstPreOrder ( const std::function<void ( Element& ) >& aPreamble, const std::function<void ( Element& ) >& aPostamble );
+        DLL void TraverseDepthFirstPreOrder ( const std::function<void ( const Element& ) >& aPreamble, const std::function<void ( const Element& ) >& aPostamble ) const;
+
         DLL const char* GetTagName() const;
         DLL bool HasAttr ( const char* aAttrName ) const;
         DLL const char* GetAttr ( const char* aAttrName ) const;
         DLL const char* GetContent () const;
-        DLL virtual void Draw ( Canvas& aCanvas ) const;
+        DLL virtual void DrawStart ( Canvas& aCanvas ) const;
+        DLL virtual void DrawFinish ( Canvas& aCanvas ) const;
         DLL virtual void Load ( JavaScript& aJavaScript );
         DLL virtual void Unload ( JavaScript& aJavaScript );
         DLL virtual ~Element();

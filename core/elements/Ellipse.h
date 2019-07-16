@@ -27,7 +27,7 @@ namespace AeonGUI
         public:
             Ellipse ( xmlElementPtr aXmlElementPtr );
             ~Ellipse() final;
-            void Draw ( Canvas& aCanvas ) const final;
+            void DrawStart ( Canvas& aCanvas ) const final;
         };
     }
 }

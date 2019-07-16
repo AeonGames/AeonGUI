@@ -106,12 +106,32 @@ namespace AeonGUI
         }
     }
 
+    void Document::TraverseDepthFirstPreOrder ( const std::function<void ( Element& ) >& aPreamble, const std::function<void ( Element& ) >& aPostamble )
+    {
+        for ( auto & mRootElement : mChildren )
+        {
+            mRootElement->TraverseDepthFirstPreOrder ( aPreamble, aPostamble );
+        }
+    }
+
+    void Document::TraverseDepthFirstPreOrder ( const std::function<void ( const Element& ) >& aPreamble, const std::function<void ( const Element& ) >& aPostamble ) const
+    {
+        for ( const auto& mRootElement : mChildren )
+        {
+            static_cast<const Element*> ( mRootElement.get() )->TraverseDepthFirstPreOrder ( aPreamble, aPostamble );
+        }
+    }
+
     void Document::Draw ( Canvas& aCanvas ) const
     {
         TraverseDepthFirstPreOrder (
             [&aCanvas] ( const Element & aElement )
         {
-            aElement.Draw ( aCanvas );
+            aElement.DrawStart ( aCanvas );
+        },
+        [&aCanvas] ( const Element & aElement )
+        {
+            aElement.DrawFinish ( aCanvas );
         } );
     }
     void Document::Load ( JavaScript& aJavaScript )

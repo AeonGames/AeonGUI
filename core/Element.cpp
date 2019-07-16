@@ -49,7 +49,13 @@ namespace AeonGUI
         return reinterpret_cast<const char*> ( xmlNodeGetContent ( reinterpret_cast<xmlNodePtr> ( mXmlElementPtr ) ) );
     }
 
-    void Element::Draw ( Canvas& aCanvas ) const
+    void Element::DrawStart ( Canvas& aCanvas ) const
+    {
+        // Do nothing by default
+        ( void ) aCanvas;
+    }
+
+    void Element::DrawFinish ( Canvas& aCanvas ) const
     {
         // Do nothing by default
         ( void ) aCanvas;
@@ -121,6 +127,37 @@ namespace AeonGUI
             { \
                 aAction ( *node ); \
                 node->mIterator = 0; /* Reset counter for next traversal. */ \
+                node = node->mParent; \
+            } \
+        } \
+    }
+
+    TraverseDepthFirstPostOrder ( const )
+    TraverseDepthFirstPostOrder( )
+#undef TraverseDepthFirstPostOrder
+
+
+#define TraverseDepthFirstPostOrder(...) \
+    void Element::TraverseDepthFirstPreOrder ( \
+        const std::function<void ( __VA_ARGS__ Element& ) >& aPreamble, \
+        const std::function<void ( __VA_ARGS__ Element& ) >& aPostamble ) __VA_ARGS__ \
+    { \
+        auto node = this; \
+        aPreamble ( *node ); \
+        auto parent = mParent; \
+        while ( node != parent ) \
+        { \
+            if ( node->mIterator < node->mChildren.size() ) \
+            { \
+                auto prev = node; \
+                node = node->mChildren[node->mIterator].get(); \
+                aPreamble ( *node ); \
+                ++prev->mIterator; \
+            } \
+            else \
+            { \
+                aPostamble ( *node ); \
+                node->mIterator = 0; \
                 node = node->mParent; \
             } \
         } \
