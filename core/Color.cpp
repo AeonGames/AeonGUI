@@ -15,14 +15,45 @@ Copyright (C) 2010-2012,2019 Rodrigo Hernandez Cordoba
 ******************************************************************************/
 #include "aeongui/Color.h"
 #include <algorithm>
+#include <regex>
+#include <iostream>
 namespace AeonGUI
 {
+    static const std::regex color_regex{"#([0-9A-Fa-f]{2})([0-9A-Fa-f]{2})([0-9A-Fa-f]{2})"};
+
     Color::Color() : bgra ( 0 ) {}
     Color::Color ( uint32_t value ) : bgra ( value ) {}
     Color::Color ( uint8_t A, uint8_t R, uint8_t G, uint8_t B )
         : b ( B ), g ( G ), r ( R ), a ( A ) {}
 
-    Color::Color ( const std::string& value ) {/*Nothing Yet*/}
+    Color::Color ( const std::string& value )
+    {
+        std::smatch color_match;
+        if ( std::regex_search ( value, color_match, color_regex ) )
+        {
+            a = 255;
+            r = std::stoul ( color_match[1].str(), nullptr, 16 );
+            g = std::stoul ( color_match[2].str(), nullptr, 16 );
+            b = std::stoul ( color_match[3].str(), nullptr, 16 );
+        }
+    }
+
+    double Color::R() const
+    {
+        return static_cast<double> ( r ) / 255.0;
+    }
+    double Color::G() const
+    {
+        return static_cast<double> ( g ) / 255.0;
+    }
+    double Color::B() const
+    {
+        return static_cast<double> ( b ) / 255.0;
+    }
+    double Color::A() const
+    {
+        return static_cast<double> ( a ) / 255.0;
+    }
 
     void Color::Blend ( Color src )
     {

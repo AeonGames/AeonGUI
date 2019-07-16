@@ -262,10 +262,28 @@ namespace AeonGUI
             cairo_surface_destroy ( mCairoSurface );
         }
     }
+
+    void CairoCanvas::SetFillColor ( const Color& aColor )
+    {
+        mFillColor = aColor;
+    }
+
+    void CairoCanvas::SetStrokeColor ( const Color& aColor )
+    {
+        mStrokeColor = aColor;
+    }
+
+    void CairoCanvas::SetStrokeWidth ( double aStrokeWidth )
+    {
+        mStrokeWidth = aStrokeWidth;
+    }
+
     void CairoCanvas::Draw ( const std::vector<DrawType>& aCommands )
     {
-        cairo_set_line_width ( mCairoContext, 1 );
-        cairo_set_source_rgb ( mCairoContext, 0, 0, 0 );
+        if ( mFillColor.a == 0 && mStrokeColor.a == 0 )
+        {
+            return;
+        }
         uint64_t last_cmd{};
         Vector2 last_c_ctrl{};
         Vector2 last_q_ctrl{};
@@ -491,6 +509,13 @@ namespace AeonGUI
             }
             last_cmd = cmd;
         }
+        if ( mFillColor.a )
+        {
+            cairo_set_source_rgba ( mCairoContext, mFillColor.R(), mFillColor.G(), mFillColor.B(), mFillColor.A() );
+            cairo_fill_preserve ( mCairoContext );
+        }
+        cairo_set_line_width ( mCairoContext, mStrokeWidth );
+        cairo_set_source_rgba ( mCairoContext, mStrokeColor.R(), mStrokeColor.G(), mStrokeColor.B(), mStrokeColor.A() );
         cairo_stroke ( mCairoContext );
     }
 }

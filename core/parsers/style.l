@@ -47,7 +47,7 @@ delim           ;|:
 							return IDENT;
 						}
 "#"{h}{h}{h}{h}{h}{h}  	{
-							stylelval = AeonGUI::Color{std::strtoul(yytext,nullptr,16)};
+							stylelval = AeonGUI::Color{yytext};
 							return COLOR;
 						}
 {number}				{

@@ -15,6 +15,7 @@ limitations under the License.
 */
 #include <iostream>
 #include "G.h"
+#include "aeongui/Canvas.h"
 #include "aeongui/AttributeMap.h"
 
 namespace AeonGUI
@@ -26,8 +27,7 @@ namespace AeonGUI
         {
             if ( HasAttr ( "style" ) )
             {
-                AttributeMap map;
-                if ( int error = ParseStyle ( map, GetAttr ( "style" ) ) )
+                if ( int error = ParseStyle ( mAttributeMap, GetAttr ( "style" ) ) )
                 {
                     std::cerr << error << std::endl;
                 }
@@ -38,6 +38,21 @@ namespace AeonGUI
         }
         void G::Draw ( Canvas& aCanvas ) const
         {
+            for ( auto& i : mAttributeMap )
+            {
+                if ( i.first == "fill" )
+                {
+                    aCanvas.SetFillColor ( std::get<Color> ( i.second ) );
+                }
+                else if ( i.first == "stroke" )
+                {
+                    aCanvas.SetStrokeColor ( std::get<Color> ( i.second ) );
+                }
+                else if ( i.first == "stroke-width" )
+                {
+                    aCanvas.SetStrokeWidth ( std::get<double> ( i.second ) );
+                }
+            }
         }
     }
 }

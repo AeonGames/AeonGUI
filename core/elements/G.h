@@ -17,6 +17,7 @@ limitations under the License.
 #define AEONGUI_ELEMENTS_G_H
 
 #include "aeongui/Element.h"
+#include "aeongui/AttributeMap.h"
 
 namespace AeonGUI
 {
@@ -29,6 +30,8 @@ namespace AeonGUI
             G ( xmlElementPtr aXmlElementPtr );
             ~G() final;
             void Draw ( Canvas& aCanvas ) const final;
+        private:
+            AttributeMap mAttributeMap{};
         };
     }
 }

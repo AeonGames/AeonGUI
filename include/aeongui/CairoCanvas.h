@@ -36,10 +36,16 @@ namespace AeonGUI
         size_t GetStride() const final;
         void Clear() final;
         void Draw ( const std::vector<DrawType>& aCommands ) final;
+        void SetFillColor ( const Color& aColor ) final;
+        void SetStrokeColor ( const Color& aColor ) final;
+        void SetStrokeWidth ( double aWidth ) final;
         DLL ~CairoCanvas() final;
     private:
         cairo_surface_t* mCairoSurface{};
         cairo_t* mCairoContext{};
+        Color mFillColor{0, 255, 255, 255};
+        Color mStrokeColor{255, 0, 0, 0};
+        double mStrokeWidth{1};
     };
 }
 #endif

@@ -38,7 +38,7 @@ declaration-list:
     declaration-list ';' declaration
     ;
 declaration:
-    IDENT ':' value { aAttributeMap[std::get<std::string>($1)] = std::get<AeonGUI::AttributeType>($2); }
+    IDENT ':' value { aAttributeMap[std::get<std::string>($1)] = std::get<AeonGUI::AttributeType>($3); }
     ;
 value:
     COLOR | NUMBER;

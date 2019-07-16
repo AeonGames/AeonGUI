@@ -20,6 +20,7 @@ limitations under the License.
 #include <vector>
 #include "aeongui/Platform.h"
 #include "aeongui/DrawType.h"
+#include "aeongui/Color.h"
 namespace AeonGUI
 {
     class Canvas
@@ -31,6 +32,9 @@ namespace AeonGUI
         virtual size_t GetHeight() const = 0;
         virtual size_t GetStride() const = 0;
         virtual void Clear() = 0;
+        virtual void SetFillColor ( const Color& aColor ) = 0;
+        virtual void SetStrokeColor ( const Color& aColor ) = 0;
+        virtual void SetStrokeWidth ( double aWidth ) = 0;
         virtual void Draw ( const std::vector<DrawType>& aCommands ) = 0;
         DLL virtual ~Canvas() = 0;
     };

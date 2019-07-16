@@ -194,6 +194,17 @@ namespace AeonGUI
         */
         DLL Color ( uint8_t A, uint8_t R, uint8_t G, uint8_t B );
 
+        /*! \brief Blends the color with the incoming source color.
+            To better handle transparency the blend function uses the source alpha as source factor
+            and one minus source alpha as destination factor.
+            \param src Incomming source color.*/
+        DLL void Blend ( Color src );
+
+        DLL double R() const;
+        DLL double G() const;
+        DLL double B() const;
+        DLL double A() const;
+
         uint32_t bgra; ///< 32 bit Unsigned integer color value.
         struct
         {
@@ -209,11 +220,6 @@ namespace AeonGUI
             uint8_t a; ///< Alpha color element.
 #endif
         };
-        /*! \brief Blends the color with the incoming source color.
-            To better handle transparency the blend function uses the source alpha as source factor
-            and one minus source alpha as destination factor.
-            \param src Incomming source color.*/
-        DLL void Blend ( Color src );
     };
 }
 #endif
