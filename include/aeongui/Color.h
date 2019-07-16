@@ -15,8 +15,9 @@ limitations under the License.
 */
 #ifndef AEONGUI_COLOR_H
 #define AEONGUI_COLOR_H
+#include <string>
+#include <cstdint>
 #include "aeongui/Platform.h"
-#include "Integer.h"
 namespace AeonGUI
 {
     /// W3C CSS3 color keyword names (see http://www.w3.org/TR/SVG/types.html#ColorKeywords)
@@ -183,6 +184,8 @@ namespace AeonGUI
             \param value 32 bit color value.
         */
         DLL Color ( uint32_t value );
+
+        DLL Color ( const std::string& value );
         /*! \brief 4 8 bit Unsigned integer component constructor.
             \param A Alpha color value.
             \param R Red color value.

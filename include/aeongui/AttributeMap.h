@@ -13,13 +13,15 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 */
-#ifndef AEONGUI_DSTYPE_H
-#define AEONGUI_DSTYPE_H
+#ifndef AEONGUI_ATTRIBUTEMAP_H
+#define AEONGUI_ATTRIBUTEMAP_H
+#include "aeongui/Color.h"
+#include <string>
+#include <unordered_map>
 #include <variant>
-#include <vector>
-#include <cstdint>
-#include <cstddef>
-#include "aeongui/DrawType.h"
-using dstype = std::variant<std::vector<AeonGUI::DrawType>, AeonGUI::DrawType>;
-#define DSTYPE dstype
+namespace AeonGUI
+{
+    using AttributeType = std::variant<double, Color>;
+    using AttributeMap = std::unordered_map<std::string, AttributeType>;
+}
 #endif

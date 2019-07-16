@@ -19,6 +19,7 @@ set(AEONGUI_HEADERS
 		../include/aeongui/DrawType.h
 		../include/aeongui/JavaScript.h
 		../include/aeongui/Duktape.h
+		../include/aeongui/Color.h
 )
 
 set(AEONGUI_SOURCES
@@ -35,6 +36,7 @@ set(AEONGUI_SOURCES
         CairoCanvas.cpp
         JavaScript.cpp
         Duktape.cpp
+        Color.cpp
         elements/SVG.cpp
         elements/G.cpp
         elements/Path.cpp
@@ -151,16 +153,16 @@ if(FLEX_FOUND AND BISON_FOUND)
     add_flex_bison_dependency(path_data_lexer path_data_parser)
     list(APPEND AEONGUI_SOURCES ${BISON_path_data_parser_OUTPUTS} ${FLEX_path_data_lexer_OUTPUTS} parsers/dstype.h)
 
-    bison_target(css_parser ${CMAKE_CURRENT_SOURCE_DIR}/parsers/css.ypp ${CMAKE_CURRENT_BINARY_DIR}/css_parser.cpp COMPILE_FLAGS "-v -d")
-    flex_target(css_lexer ${CMAKE_CURRENT_SOURCE_DIR}/parsers/css.l ${CMAKE_CURRENT_BINARY_DIR}/css_lexer.cpp COMPILE_FLAGS "-Cf -8")
-    add_flex_bison_dependency(css_lexer css_parser)
-    list(APPEND AEONGUI_SOURCES ${BISON_css_parser_OUTPUTS} ${FLEX_css_lexer_OUTPUTS})
+    bison_target(style_parser ${CMAKE_CURRENT_SOURCE_DIR}/parsers/style.ypp ${CMAKE_CURRENT_BINARY_DIR}/style_parser.cpp COMPILE_FLAGS "-v -d")
+    flex_target(style_lexer ${CMAKE_CURRENT_SOURCE_DIR}/parsers/style.l ${CMAKE_CURRENT_BINARY_DIR}/style_lexer.cpp COMPILE_FLAGS "-Cf")
+    add_flex_bison_dependency(style_lexer style_parser)
+    list(APPEND AEONGUI_SOURCES ${BISON_style_parser_OUTPUTS} ${FLEX_style_lexer_OUTPUTS})
 
     add_custom_target(update-parser-code
         COMMAND
             ${CMAKE_COMMAND} -E copy_if_different ${BISON_path_data_parser_OUTPUTS} ${FLEX_path_data_lexer_OUTPUTS} ${CMAKE_SOURCE_DIR}/core/parsers
         COMMAND
-            ${CMAKE_COMMAND} -E copy_if_different ${BISON_css_parser_OUTPUTS} ${FLEX_css_lexer_OUTPUTS} ${CMAKE_SOURCE_DIR}/core/parsers
+            ${CMAKE_COMMAND} -E copy_if_different ${BISON_style_parser_OUTPUTS} ${FLEX_style_lexer_OUTPUTS} ${CMAKE_SOURCE_DIR}/core/parsers
         DEPENDS
             path_data_parser
             path_data_lexer
@@ -173,9 +175,9 @@ else()
         parsers/path_data_parser.cpp
         parsers/path_data_parser.hpp
         parsers/dstype.h
-        parsers/css_lexer.cpp
-        parsers/css_parser.cpp
-        parsers/css_parser.hpp
+        parsers/style_lexer.cpp
+        parsers/style_parser.cpp
+        parsers/style_parser.hpp
         )
 endif()
 

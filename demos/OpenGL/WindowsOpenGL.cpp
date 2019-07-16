@@ -163,26 +163,6 @@ void Window::Initialize ( HINSTANCE hInstance, LONG aWidth, LONG aHeight )
     std::cout << "Width: " << mWindow.GetWidth() << std::endl;
     std::cout << "Height: " << mWindow.GetHeight() << std::endl;
     std::cout << "Stride: " << mWindow.GetStride() << std::endl;
-#if 0
-    mWidget = mWindow.AddWidget(std::make_unique<AeonGUI::Widget>(
-        AeonGUI::Transform{
-            {1,1}, // No Scale
-            {0.0}, // rotation
-            {128,128}  // Translate to 128,128
-        },
-        AeonGUI::AABB{{}, // Center at the Origin
-        {128.0f,128.0f}}   // Half width and height
-    ));
-    mWidget->AddWidget(std::make_unique<AeonGUI::Widget>(
-        AeonGUI::Transform{
-            {1.0,1.0}, // Scale
-            {0.0}, // rotation
-            {96,96}  // Translation
-        },
-        AeonGUI::AABB{{}, // Center at the Origin
-        {32.0f,32.0f}}   // 64x128 rectangle
-    ));
-#endif
     int pf{};
     PIXELFORMATDESCRIPTOR pfd{};
     RECT rect{0, 0, aWidth, aHeight};

@@ -13,16 +13,25 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 */
-#include <regex>
+#include <iostream>
 #include "G.h"
+#include "aeongui/AttributeMap.h"
 
 namespace AeonGUI
 {
     namespace Elements
     {
+        int ParseStyle ( AttributeMap& aAttributeMap, const char* s );
         G::G ( xmlElementPtr aXmlElementPtr ) : Element ( aXmlElementPtr )
         {
-            const char* style = GetAttr ( "style" );
+            if ( HasAttr ( "style" ) )
+            {
+                AttributeMap map;
+                if ( int error = ParseStyle ( map, GetAttr ( "style" ) ) )
+                {
+                    std::cerr << error << std::endl;
+                }
+            }
         }
         G::~G()
         {

@@ -13,13 +13,13 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 */
-#ifndef AEONGUI_DSTYPE_H
-#define AEONGUI_DSTYPE_H
+#ifndef AEONGUI_STYLESTYPE_H
+#define AEONGUI_STYLESTYPE_H
 #include <variant>
-#include <vector>
+#include <string>
 #include <cstdint>
 #include <cstddef>
-#include "aeongui/DrawType.h"
-using dstype = std::variant<std::vector<AeonGUI::DrawType>, AeonGUI::DrawType>;
-#define DSTYPE dstype
+#include "aeongui/AttributeMap.h"
+using stylestype = std::variant<std::string, AeonGUI::AttributeType>;
+#define STYLESTYPE stylestype
 #endif

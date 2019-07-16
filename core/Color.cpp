@@ -1,5 +1,5 @@
 /******************************************************************************
-Copyright 2010-2012 Rodrigo Hernandez Cordoba
+Copyright (C) 2010-2012,2019 Rodrigo Hernandez Cordoba
 
    Licensed under the Apache License, Version 2.0 (the "License");
    you may not use this file except in compliance with the License.
@@ -13,7 +13,7 @@ Copyright 2010-2012 Rodrigo Hernandez Cordoba
    See the License for the specific language governing permissions and
    limitations under the License.
 ******************************************************************************/
-#include "Color.h"
+#include "aeongui/Color.h"
 #include <algorithm>
 namespace AeonGUI
 {
@@ -22,17 +22,23 @@ namespace AeonGUI
     Color::Color ( uint8_t A, uint8_t R, uint8_t G, uint8_t B )
         : b ( B ), g ( G ), r ( R ), a ( A ) {}
 
+    Color::Color ( const std::string& value ) {/*Nothing Yet*/}
+
     void Color::Blend ( Color src )
     {
-        if ( ( src.a == 255 ) )
+        if ( ( src.a == 0 ) )
+        {
+            /*  If the source alpha is 0
+                the destination color is unchanged */
+            return;
+        }
+        else if ( ( src.a == 255 ) )
         {
             /*  Full source opacity
                 do a simple replacement*/
             bgra = src.bgra;
         }
-        /*  If the source alpha is 0
-            the destination color is unchanged */
-        else if ( src.a > 0 )
+        else
         {
             float sfactor = ( static_cast<float> ( src.a ) / 255.0f );
             float dfactor = 1.0f - sfactor;
