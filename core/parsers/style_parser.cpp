@@ -63,19 +63,19 @@
 #define YYPULL 1
 
 /* Substitute the type names.  */
-#define YYSTYPE         CSSSTYPE
+#define YYSTYPE         STYLESTYPE
 /* Substitute the variable and function names.  */
-#define yyparse         cssparse
-#define yylex           csslex
-#define yyerror         csserror
-#define yydebug         cssdebug
-#define yynerrs         cssnerrs
+#define yyparse         styleparse
+#define yylex           stylelex
+#define yyerror         styleerror
+#define yydebug         styledebug
+#define yynerrs         stylenerrs
 
-#define yylval          csslval
-#define yychar          csschar
+#define yylval          stylelval
+#define yychar          stylechar
 
 /* First part of user prologue.  */
-#line 1 "C:/Code/AeonGUI/core/parsers/css.ypp"
+#line 1 "C:/Code/AeonGUI/core/parsers/style.ypp"
 
 /*
 Copyright (C) 2019 Rodrigo Jose Hernandez Cordoba
@@ -90,19 +90,23 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 #define YY_NO_UNISTD_H 1
+#include <variant>
+#include <string>
 #include <cstddef>
 #include <cstdint>
 #include <cmath>
 #include <iostream>
+#include "../core/parsers/stylestype.h"
+#include "aeongui/AttributeMap.h"
 
-extern int csslex();
+extern int stylelex();
 
 extern "C"
 {
-    int csserror ( const char *s );
+    int styleerror ( AeonGUI::AttributeMap& aAttributeMap, const char *s );
 }
 
-#line 106 "C:/Code/AeonGUI/mingw64/core/css_parser.cpp"
+#line 110 "C:/Code/AeonGUI/mingw64/core/style_parser.cpp"
 
 # ifndef YY_NULLPTR
 #  if defined __cplusplus
@@ -126,74 +130,48 @@ extern "C"
 
 /* Use api.header.include to #include this header
    instead of duplicating it here.  */
-#ifndef YY_CSS_C_CODE_AEONGUI_MINGW64_CORE_CSS_PARSER_HPP_INCLUDED
-# define YY_CSS_C_CODE_AEONGUI_MINGW64_CORE_CSS_PARSER_HPP_INCLUDED
+#ifndef YY_STYLE_C_CODE_AEONGUI_MINGW64_CORE_STYLE_PARSER_HPP_INCLUDED
+# define YY_STYLE_C_CODE_AEONGUI_MINGW64_CORE_STYLE_PARSER_HPP_INCLUDED
 /* Debug traces.  */
-#ifndef CSSDEBUG
+#ifndef STYLEDEBUG
 # if defined YYDEBUG
 #if YYDEBUG
-#   define CSSDEBUG 1
+#   define STYLEDEBUG 1
 #  else
-#   define CSSDEBUG 0
+#   define STYLEDEBUG 0
 #  endif
 # else /* ! defined YYDEBUG */
-#  define CSSDEBUG 0
+#  define STYLEDEBUG 0
 # endif /* ! defined YYDEBUG */
-#endif  /* ! defined CSSDEBUG */
-#if CSSDEBUG
-extern int cssdebug;
+#endif  /* ! defined STYLEDEBUG */
+#if STYLEDEBUG
+extern int styledebug;
 #endif
 
 /* Token type.  */
-#ifndef CSSTOKENTYPE
-# define CSSTOKENTYPE
-enum csstokentype
+#ifndef STYLETOKENTYPE
+# define STYLETOKENTYPE
+enum styletokentype
 {
-    ANGLE = 258,
-    ATKEYWORD = 259,
-    BAD_STRING = 260,
-    BAD_URI = 261,
-    CDC = 262,
-    CDO = 263,
-    CHARSET_SYM = 264,
-    DASHMATCH = 265,
-    DELIM = 266,
-    DIMENSION = 267,
-    EMS = 268,
-    EXS = 269,
-    FREQ = 270,
-    FUNCTION = 271,
-    HASH = 272,
-    IDENT = 273,
-    IMPORTANT_SYM = 274,
-    IMPORT_SYM = 275,
-    INCLUDES = 276,
-    LENGTH = 277,
-    MEDIA_SYM = 278,
-    NUMBER = 279,
-    PAGE_SYM = 280,
-    PERCENTAGE = 281,
-    S = 282,
-    STRING = 283,
-    TIME = 284,
-    UNICODE_RANGE = 285,
-    URI = 286
+    IDENT = 258,
+    COLOR = 259,
+    NUMBER = 260
 };
 #endif
 
 /* Value type.  */
-#if ! defined CSSSTYPE && ! defined CSSSTYPE_IS_DECLARED
-typedef int CSSSTYPE;
-# define CSSSTYPE_IS_TRIVIAL 1
-# define CSSSTYPE_IS_DECLARED 1
+#if ! defined STYLESTYPE && ! defined STYLESTYPE_IS_DECLARED
+typedef int STYLESTYPE;
+# define STYLESTYPE_IS_TRIVIAL 1
+# define STYLESTYPE_IS_DECLARED 1
 #endif
 
 
-extern CSSSTYPE csslval;
+extern STYLESTYPE stylelval;
 
-int cssparse ( void );
+int styleparse ( AeonGUI::AttributeMap& aAttributeMap );
 
-#endif /* !YY_CSS_C_CODE_AEONGUI_MINGW64_CORE_CSS_PARSER_HPP_INCLUDED  */
+#endif /* !YY_STYLE_C_CODE_AEONGUI_MINGW64_CORE_STYLE_PARSER_HPP_INCLUDED  */
 
 
 
@@ -369,7 +347,7 @@ void free ( void * ); /* INFRINGES ON USER NAME SPACE */
 
 #if (! defined yyoverflow \
      && (! defined __cplusplus \
-         || (defined CSSSTYPE_IS_TRIVIAL && CSSSTYPE_IS_TRIVIAL)))
+         || (defined STYLESTYPE_IS_TRIVIAL && STYLESTYPE_IS_TRIVIAL)))
 
 /* A type that is properly aligned for any stack member.  */
 union yyalloc
@@ -428,21 +406,21 @@ union yyalloc
 #endif /* !YYCOPY_NEEDED */
 
 /* YYFINAL -- State number of the termination state.  */
-#define YYFINAL  43
+#define YYFINAL  5
 /* YYLAST -- Last index in YYTABLE.  */
-#define YYLAST   371
+#define YYLAST   6
 
 /* YYNTOKENS -- Number of terminals.  */
-#define YYNTOKENS  39
+#define YYNTOKENS  8
 /* YYNNTS -- Number of nonterminals.  */
-#define YYNNTS  9
+#define YYNNTS  4
 /* YYNRULES -- Number of rules.  */
-#define YYNRULES  49
+#define YYNRULES  6
 /* YYNSTATES -- Number of states.  */
-#define YYNSTATES  60
+#define YYNSTATES  11
 
 #define YYUNDEFTOK  2
-#define YYMAXUTOK   286
+#define YYMAXUTOK   260
 
 /* YYTRANSLATE(TOKEN-NUM) -- Symbol number corresponding to TOKEN-NUM
    as returned by yylex, with out-of-bounds checking.  */
@@ -457,15 +435,15 @@ static const yytype_uint8 yytranslate[] =
     2,     2,     2,     2,     2,     2,     2,     2,     2,     2,
     2,     2,     2,     2,     2,     2,     2,     2,     2,     2,
     2,     2,     2,     2,     2,     2,     2,     2,     2,     2,
-    37,    38,     2,     2,     2,     2,     2,     2,     2,     2,
-    2,     2,     2,     2,     2,     2,     2,     2,     2,    32,
+    2,     2,     2,     2,     2,     2,     2,     2,     2,     2,
+    2,     2,     2,     2,     2,     2,     2,     2,     7,     6,
     2,     2,     2,     2,     2,     2,     2,     2,     2,     2,
     2,     2,     2,     2,     2,     2,     2,     2,     2,     2,
     2,     2,     2,     2,     2,     2,     2,     2,     2,     2,
-    2,    35,     2,    36,     2,     2,     2,     2,     2,     2,
     2,     2,     2,     2,     2,     2,     2,     2,     2,     2,
     2,     2,     2,     2,     2,     2,     2,     2,     2,     2,
-    2,     2,     2,    33,     2,    34,     2,     2,     2,     2,
+    2,     2,     2,     2,     2,     2,     2,     2,     2,     2,
+    2,     2,     2,     2,     2,     2,     2,     2,     2,     2,
     2,     2,     2,     2,     2,     2,     2,     2,     2,     2,
     2,     2,     2,     2,     2,     2,     2,     2,     2,     2,
     2,     2,     2,     2,     2,     2,     2,     2,     2,     2,
@@ -479,37 +457,24 @@ static const yytype_uint8 yytranslate[] =
     2,     2,     2,     2,     2,     2,     2,     2,     2,     2,
     2,     2,     2,     2,     2,     2,     2,     2,     2,     2,
     2,     2,     2,     2,     2,     2,     1,     2,     3,     4,
-    5,     6,     7,     8,     9,    10,    11,    12,    13,    14,
-    15,    16,    17,    18,    19,    20,    21,    22,    23,    24,
-    25,    26,    27,    28,    29,    30,    31
+    5
 };
 
-#if CSSDEBUG
+#if STYLEDEBUG
 /* YYRLINE[YYN] -- Source line where rule number YYN was defined.  */
 static const yytype_uint8 yyrline[] =
 {
-    0,    33,    33,    34,    35,    36,    39,    39,    42,    42,
-    45,    45,    48,    48,    50,    50,    53,    53,    53,    53,
-    53,    56,    57,    58,    59,    60,    61,    62,    63,    64,
-    65,    66,    67,    68,    69,    70,    71,    72,    73,    74,
-    75,    76,    77,    78,    79,    80,    81,    82,    83,    84
+    0,    37,    37,    38,    41,    44,    44
 };
 #endif
 
-#if CSSDEBUG || YYERROR_VERBOSE || 0
+#if STYLEDEBUG || YYERROR_VERBOSE || 0
 /* YYTNAME[SYMBOL-NUM] -- String name of the symbol SYMBOL-NUM.
    First, the terminals, then, starting at YYNTOKENS, nonterminals.  */
 static const char *const yytname[] =
 {
-    "$end", "error", "$undefined", "ANGLE", "ATKEYWORD", "BAD_STRING",
-    "BAD_URI", "CDC", "CDO", "CHARSET_SYM", "DASHMATCH", "DELIM",
-    "DIMENSION", "EMS", "EXS", "FREQ", "FUNCTION", "HASH", "IDENT",
-    "IMPORTANT_SYM", "IMPORT_SYM", "INCLUDES", "LENGTH", "MEDIA_SYM",
-    "NUMBER", "PAGE_SYM", "PERCENTAGE", "S", "STRING", "TIME",
-    "UNICODE_RANGE", "URI", "';'", "'{'", "'}'", "'['", "']'", "'('", "')'",
-    "$accept", "at-rule", "bracket-block", "square-bracket-block",
-    "parenthesis-block", "function-block", "component-value-list",
-    "component-value", "preserved-token", YY_NULLPTR
+    "$end", "error", "$undefined", "IDENT", "COLOR", "NUMBER", "';'", "':'",
+    "$accept", "declaration-list", "declaration", "value", YY_NULLPTR
 };
 #endif
 
@@ -518,33 +483,26 @@ static const char *const yytname[] =
    (internal) symbol number NUM (which must be that of a token).  */
 static const yytype_uint16 yytoknum[] =
 {
-    0,   256,   257,   258,   259,   260,   261,   262,   263,   264,
-    265,   266,   267,   268,   269,   270,   271,   272,   273,   274,
-    275,   276,   277,   278,   279,   280,   281,   282,   283,   284,
-    285,   286,    59,   123,   125,    91,    93,    40,    41
+    0,   256,   257,   258,   259,   260,    59,    58
 };
 # endif
 
-#define YYPACT_NINF -3
+#define YYPACT_NINF -5
 
 #define yypact_value_is_default(Yystate) \
-  (!!((Yystate) == (-3)))
+  (!!((Yystate) == (-5)))
 
-#define YYTABLE_NINF -5
+#define YYTABLE_NINF -1
 
 #define yytable_value_is_error(Yytable_value) \
   0
 
 /* YYPACT[STATE-NUM] -- Index in YYTABLE of the portion describing
    STATE-NUM.  */
-static const yytype_int16 yypact[] =
+static const yytype_int8 yypact[] =
 {
-    26,   145,    32,    -3,    -3,    -3,    -3,    -3,    -3,    -3,
-    -3,    -3,    -3,    -3,    -3,    -3,    -2,    -3,    -3,    -3,
-    -3,    -3,    -3,    -3,    -3,    -3,    -3,    -3,    -3,    -3,
-    -3,    -3,    -3,   180,   215,    37,    34,    -3,    -3,    -3,
-    250,    -3,    -3,    -3,    -3,    -3,    73,    -3,   285,    -3,
-    320,    -3,   109,    -3,    38,    -3,    -3,    -3,    -3,    -3
+    1,    -4,     0,    -5,    -3,    -5,     1,    -5,    -5,    -5,
+    -5
 };
 
 /* YYDEFACT[STATE-NUM] -- Default reduction number in state STATE-NUM.
@@ -552,143 +510,53 @@ static const yytype_int16 yypact[] =
    means the default is an error.  */
 static const yytype_uint8 yydefact[] =
 {
-    0,     0,     0,    21,    22,    23,    24,    25,    26,    27,
-    28,    29,    30,    31,    32,    33,    34,    35,    36,    37,
-    38,    39,    40,    41,    42,    43,    44,    45,    46,    47,
-    48,    49,     3,     0,     0,     0,    17,    18,    19,    20,
-    0,    14,    16,     1,    12,    17,     0,     6,     0,     8,
-    0,    10,     0,     5,    17,    15,    13,     7,     9,    11
+    0,     0,     0,     2,     0,     1,     0,     5,     6,     4,
+    3
 };
 
 /* YYPGOTO[NTERM-NUM].  */
-static const yytype_int16 yypgoto[] =
+static const yytype_int8 yypgoto[] =
 {
-    -3,    -3,    -1,    -3,    -3,    -3,   336,   314,    -3
+    -5,    -5,    -1,    -5
     };
 
 /* YYDEFGOTO[NTERM-NUM].  */
 static const yytype_int8 yydefgoto[] =
 {
-    -1,     2,    45,    37,    38,    39,    40,    41,    42
+    -1,     2,     3,     9
     };
 
 /* YYTABLE[YYPACT[STATE-NUM]] -- What to do in state STATE-NUM.  If
    positive, shift that token.  If negative, reduce the rule whose
    number is the opposite.  If YYTABLE_NINF, syntax error.  */
-static const yytype_int8 yytable[] =
+static const yytype_uint8 yytable[] =
 {
-    36,     3,     4,     5,     6,     7,     8,     9,    10,    11,
-    12,    13,    14,    15,    16,    17,    18,    19,    20,    21,
-    22,    23,    24,    25,    26,    27,    28,    29,    30,    31,
-    1,    33,    43,    34,    -2,    35,    44,     0,    -4,    54,
-    3,     4,     5,     6,     7,     8,     9,    10,    11,    12,
-    13,    14,    15,    16,    17,    18,    19,    20,    21,    22,
-    23,    24,    25,    26,    27,    28,    29,    30,    31,     0,
-    33,     0,    34,     0,    35,    51,     3,     4,     5,     6,
-    7,     8,     9,    10,    11,    12,    13,    14,    15,    16,
-    17,    18,    19,    20,    21,    22,    23,    24,    25,    26,
-    27,    28,    29,    30,    31,     0,    33,     0,    34,     0,
-    35,    56,     3,     4,     5,     6,     7,     8,     9,    10,
-    11,    12,    13,    14,    15,    16,    17,    18,    19,    20,
-    21,    22,    23,    24,    25,    26,    27,    28,    29,    30,
-    31,     0,    33,     0,    34,     0,    35,    59,     3,     4,
-    5,     6,     7,     8,     9,    10,    11,    12,    13,    14,
-    15,    16,    17,    18,    19,    20,    21,    22,    23,    24,
-    25,    26,    27,    28,    29,    30,    31,    32,    33,     0,
-    34,     0,    35,     3,     4,     5,     6,     7,     8,     9,
-    10,    11,    12,    13,    14,    15,    16,    17,    18,    19,
-    20,    21,    22,    23,    24,    25,    26,    27,    28,    29,
-    30,    31,     0,    33,    47,    34,     0,    35,     3,     4,
-    5,     6,     7,     8,     9,    10,    11,    12,    13,    14,
-    15,    16,    17,    18,    19,    20,    21,    22,    23,    24,
-    25,    26,    27,    28,    29,    30,    31,     0,    33,     0,
-    34,    49,    35,     3,     4,     5,     6,     7,     8,     9,
-    10,    11,    12,    13,    14,    15,    16,    17,    18,    19,
-    20,    21,    22,    23,    24,    25,    26,    27,    28,    29,
-    30,    31,    53,    33,     0,    34,     0,    35,     3,     4,
-    5,     6,     7,     8,     9,    10,    11,    12,    13,    14,
-    15,    16,    17,    18,    19,    20,    21,    22,    23,    24,
-    25,    26,    27,    28,    29,    30,    31,     0,    33,    57,
-    34,     0,    35,     3,     4,     5,     6,     7,     8,     9,
-    10,    11,    12,    13,    14,    15,    16,    17,    18,    19,
-    20,    21,    22,    23,    24,    25,    26,    27,    28,    29,
-    30,    31,    46,    33,    55,    34,    58,    35,     0,     0,
-    55,     0,    55,     0,    55,     0,    55,     0,     0,    48,
-    50,    52
+    5,     7,     8,     4,     1,    10,     6
 };
 
-static const yytype_int8 yycheck[] =
+static const yytype_uint8 yycheck[] =
 {
-    1,     3,     4,     5,     6,     7,     8,     9,    10,    11,
-    12,    13,    14,    15,    16,    17,    18,    19,    20,    21,
-    22,    23,    24,    25,    26,    27,    28,    29,    30,    31,
-    4,    33,     0,    35,     0,    37,    38,    -1,     0,    40,
-    3,     4,     5,     6,     7,     8,     9,    10,    11,    12,
-    13,    14,    15,    16,    17,    18,    19,    20,    21,    22,
-    23,    24,    25,    26,    27,    28,    29,    30,    31,    -1,
-    33,    -1,    35,    -1,    37,    38,     3,     4,     5,     6,
-    7,     8,     9,    10,    11,    12,    13,    14,    15,    16,
-    17,    18,    19,    20,    21,    22,    23,    24,    25,    26,
-    27,    28,    29,    30,    31,    -1,    33,    -1,    35,    -1,
-    37,    38,     3,     4,     5,     6,     7,     8,     9,    10,
-    11,    12,    13,    14,    15,    16,    17,    18,    19,    20,
-    21,    22,    23,    24,    25,    26,    27,    28,    29,    30,
-    31,    -1,    33,    -1,    35,    -1,    37,    38,     3,     4,
-    5,     6,     7,     8,     9,    10,    11,    12,    13,    14,
-    15,    16,    17,    18,    19,    20,    21,    22,    23,    24,
-    25,    26,    27,    28,    29,    30,    31,    32,    33,    -1,
-    35,    -1,    37,     3,     4,     5,     6,     7,     8,     9,
-    10,    11,    12,    13,    14,    15,    16,    17,    18,    19,
-    20,    21,    22,    23,    24,    25,    26,    27,    28,    29,
-    30,    31,    -1,    33,    34,    35,    -1,    37,     3,     4,
-    5,     6,     7,     8,     9,    10,    11,    12,    13,    14,
-    15,    16,    17,    18,    19,    20,    21,    22,    23,    24,
-    25,    26,    27,    28,    29,    30,    31,    -1,    33,    -1,
-    35,    36,    37,     3,     4,     5,     6,     7,     8,     9,
-    10,    11,    12,    13,    14,    15,    16,    17,    18,    19,
-    20,    21,    22,    23,    24,    25,    26,    27,    28,    29,
-    30,    31,    32,    33,    -1,    35,    -1,    37,     3,     4,
-    5,     6,     7,     8,     9,    10,    11,    12,    13,    14,
-    15,    16,    17,    18,    19,    20,    21,    22,    23,    24,
-    25,    26,    27,    28,    29,    30,    31,    -1,    33,    34,
-    35,    -1,    37,     3,     4,     5,     6,     7,     8,     9,
-    10,    11,    12,    13,    14,    15,    16,    17,    18,    19,
-    20,    21,    22,    23,    24,    25,    26,    27,    28,    29,
-    30,    31,    16,    33,    40,    35,    36,    37,    -1,    -1,
-    46,    -1,    48,    -1,    50,    -1,    52,    -1,    -1,    33,
-    34,    35
+    0,     4,     5,     7,     3,     6,     6
 };
 
 /* YYSTOS[STATE-NUM] -- The (internal number of the) accessing
    symbol of state STATE-NUM.  */
 static const yytype_uint8 yystos[] =
 {
-    0,     4,    40,     3,     4,     5,     6,     7,     8,     9,
-    10,    11,    12,    13,    14,    15,    16,    17,    18,    19,
-    20,    21,    22,    23,    24,    25,    26,    27,    28,    29,
-    30,    31,    32,    33,    35,    37,    41,    42,    43,    44,
-    45,    46,    47,     0,    38,    41,    45,    34,    45,    36,
-    45,    38,    45,    32,    41,    46,    38,    34,    36,    38
+    0,     3,     9,    10,     7,     0,     6,     4,     5,    11,
+    10
 };
 
 /* YYR1[YYN] -- Symbol number of symbol that rule YYN derives.  */
 static const yytype_uint8 yyr1[] =
 {
-    0,    39,    40,    40,    40,    40,    41,    41,    42,    42,
-    43,    43,    44,    44,    45,    45,    46,    46,    46,    46,
-    46,    47,    47,    47,    47,    47,    47,    47,    47,    47,
-    47,    47,    47,    47,    47,    47,    47,    47,    47,    47,
-    47,    47,    47,    47,    47,    47,    47,    47,    47,    47
+    0,     8,     9,     9,    10,    11,    11
 };
 
 /* YYR2[YYN] -- Number of symbols on the right hand side of rule YYN.  */
 static const yytype_uint8 yyr2[] =
 {
-    0,     2,     2,     2,     3,     3,     2,     3,     2,     3,
-    2,     3,     2,     3,     1,     2,     1,     1,     1,     1,
-    1,     1,     1,     1,     1,     1,     1,     1,     1,     1,
-    1,     1,     1,     1,     1,     1,     1,     1,     1,     1,
-    1,     1,     1,     1,     1,     1,     1,     1,     1,     1
+    0,     2,     1,     3,     3,     1,     1
 };
 
 
@@ -716,7 +584,7 @@ static const yytype_uint8 yyr2[] =
       }                                                           \
     else                                                          \
       {                                                           \
-        yyerror (YY_("syntax error: cannot back up")); \
+        yyerror (aAttributeMap, YY_("syntax error: cannot back up")); \
         YYERROR;                                                  \
       }                                                           \
   while (0)
@@ -728,7 +596,7 @@ static const yytype_uint8 yyr2[] =
 
 
 /* Enable debugging if requested.  */
-#if CSSDEBUG
+#if STYLEDEBUG
 
 # ifndef YYFPRINTF
 #  include <stdio.h> /* INFRINGES ON USER NAME SPACE */
@@ -753,7 +621,7 @@ do {                                                                      \
     {                                                                     \
       YYFPRINTF (stderr, "%s ", Title);                                   \
       yy_symbol_print (stderr,                                            \
-                  Type, Value); \
+                  Type, Value, aAttributeMap); \
       YYFPRINTF (stderr, "\n");                                           \
     }                                                                     \
 } while (0)
@@ -764,10 +632,11 @@ do {                                                                      \
 `-----------------------------------*/
 
 static void
-yy_symbol_value_print ( FILE *yyo, int yytype, YYSTYPE const * const yyvaluep )
+yy_symbol_value_print ( FILE *yyo, int yytype, YYSTYPE const * const yyvaluep, AeonGUI::AttributeMap& aAttributeMap )
 {
     FILE *yyoutput = yyo;
     YYUSE ( yyoutput );
+    YYUSE ( aAttributeMap );
     if ( !yyvaluep )
     {
         return;
@@ -787,12 +656,12 @@ yy_symbol_value_print ( FILE *yyo, int yytype, YYSTYPE const * const yyvaluep )
 `---------------------------*/
 
 static void
-yy_symbol_print ( FILE *yyo, int yytype, YYSTYPE const * const yyvaluep )
+yy_symbol_print ( FILE *yyo, int yytype, YYSTYPE const * const yyvaluep, AeonGUI::AttributeMap& aAttributeMap )
 {
     YYFPRINTF ( yyo, "%s %s (",
                 yytype < YYNTOKENS ? "token" : "nterm", yytname[yytype] );
 
-    yy_symbol_value_print ( yyo, yytype, yyvaluep );
+    yy_symbol_value_print ( yyo, yytype, yyvaluep, aAttributeMap );
     YYFPRINTF ( yyo, ")" );
 }
 
@@ -825,7 +694,7 @@ do {                                                            \
 `------------------------------------------------*/
 
 static void
-yy_reduce_print ( yytype_int16 *yyssp, YYSTYPE *yyvsp, int yyrule )
+yy_reduce_print ( yytype_int16 *yyssp, YYSTYPE *yyvsp, int yyrule, AeonGUI::AttributeMap& aAttributeMap )
 {
     unsigned long yylno = yyrline[yyrule];
     int yynrhs = yyr2[yyrule];
@@ -839,7 +708,7 @@ yy_reduce_print ( yytype_int16 *yyssp, YYSTYPE *yyvsp, int yyrule )
         yy_symbol_print ( stderr,
                           yystos[yyssp[yyi + 1 - yynrhs]],
                           &yyvsp[ ( yyi + 1 ) - ( yynrhs )]
-                        );
+                          , aAttributeMap );
         YYFPRINTF ( stderr, "\n" );
     }
 }
@@ -847,18 +716,18 @@ yy_reduce_print ( yytype_int16 *yyssp, YYSTYPE *yyvsp, int yyrule )
 # define YY_REDUCE_PRINT(Rule)          \
 do {                                    \
   if (yydebug)                          \
-    yy_reduce_print (yyssp, yyvsp, Rule); \
+    yy_reduce_print (yyssp, yyvsp, Rule, aAttributeMap); \
 } while (0)
 
 /* Nonzero means print parse trace.  It is left uninitialized so that
    multiple parsers can coexist.  */
 int yydebug;
-#else /* !CSSDEBUG */
+#else /* !STYLEDEBUG */
 # define YYDPRINTF(Args)
 # define YY_SYMBOL_PRINT(Title, Type, Value, Location)
 # define YY_STACK_PRINT(Bottom, Top)
 # define YY_REDUCE_PRINT(Rule)
-#endif /* !CSSDEBUG */
+#endif /* !STYLEDEBUG */
 
 
 /* YYINITDEPTH -- initial size of the parser's stacks.  */
@@ -1135,9 +1004,10 @@ yysyntax_error ( YYSIZE_T *yymsg_alloc, char **yymsg,
 `-----------------------------------------------*/
 
 static void
-yydestruct ( const char *yymsg, int yytype, YYSTYPE *yyvaluep )
+yydestruct ( const char *yymsg, int yytype, YYSTYPE *yyvaluep, AeonGUI::AttributeMap& aAttributeMap )
 {
     YYUSE ( yyvaluep );
+    YYUSE ( aAttributeMap );
     if ( !yymsg )
     {
         yymsg = "Deleting";
@@ -1166,7 +1036,7 @@ int yynerrs;
 `----------*/
 
 int
-yyparse ( void )
+yyparse ( AeonGUI::AttributeMap& aAttributeMap )
 {
     int yystate;
     /* Number of tokens to shift before error messages enabled.  */
@@ -1425,8 +1295,16 @@ yyreduce:
     YY_REDUCE_PRINT ( yyn );
     switch ( yyn )
     {
+    case 4:
+#line 41 "C:/Code/AeonGUI/core/parsers/style.ypp"
+        {
+            aAttributeMap[std::get<std::string> ( yyvsp[-2] )] = std::get<AeonGUI::AttributeType> ( yyvsp[0] );
+        }
+#line 1249 "C:/Code/AeonGUI/mingw64/core/style_parser.cpp"
+        break;
 
-#line 1377 "C:/Code/AeonGUI/mingw64/core/css_parser.cpp"
+
+#line 1253 "C:/Code/AeonGUI/mingw64/core/style_parser.cpp"
 
     default:
         break;
@@ -1477,7 +1355,7 @@ yyerrlab:
     {
         ++yynerrs;
 #if ! YYERROR_VERBOSE
-        yyerror ( YY_ ( "syntax error" ) );
+        yyerror ( aAttributeMap, YY_ ( "syntax error" ) );
 #else
 # define YYSYNTAX_ERROR yysyntax_error (&yymsg_alloc, &yymsg, \
                                         yyssp, yytoken)
@@ -1508,7 +1386,7 @@ yyerrlab:
                     yymsgp = yymsg;
                 }
             }
-            yyerror ( yymsgp );
+            yyerror ( aAttributeMap, yymsgp );
             if ( yysyntax_error_status == 2 )
             {
                 goto yyexhaustedlab;
@@ -1536,7 +1414,7 @@ yyerrlab:
         else
         {
             yydestruct ( "Error: discarding",
-                         yytoken, &yylval );
+                         yytoken, &yylval, aAttributeMap );
             yychar = YYEMPTY;
         }
     }
@@ -1596,7 +1474,7 @@ yyerrlab1:
 
 
         yydestruct ( "Error: popping",
-                     yystos[yystate], yyvsp );
+                     yystos[yystate], yyvsp, aAttributeMap );
         YYPOPSTACK ( 1 );
         yystate = *yyssp;
         YY_STACK_PRINT ( yyss, yyssp );
@@ -1635,7 +1513,7 @@ yyabortlab:
     | yyexhaustedlab -- memory exhaustion comes here.  |
     `-------------------------------------------------*/
 yyexhaustedlab:
-    yyerror ( YY_ ( "memory exhausted" ) );
+    yyerror ( aAttributeMap, YY_ ( "memory exhausted" ) );
     yyresult = 2;
     /* Fall through.  */
 #endif
@@ -1651,7 +1529,7 @@ yyreturn:
            user semantic actions for why this is necessary.  */
         yytoken = YYTRANSLATE ( yychar );
         yydestruct ( "Cleanup: discarding lookahead",
-                     yytoken, &yylval );
+                     yytoken, &yylval, aAttributeMap );
     }
     /* Do not reclaim the symbols of the rule whose action triggered
        this YYABORT or YYACCEPT.  */
@@ -1660,7 +1538,7 @@ yyreturn:
     while ( yyssp != yyss )
     {
         yydestruct ( "Cleanup: popping",
-                     yystos[*yyssp], yyvsp );
+                     yystos[*yyssp], yyvsp, aAttributeMap );
         YYPOPSTACK ( 1 );
     }
 #ifndef yyoverflow
@@ -1677,11 +1555,11 @@ yyreturn:
 #endif
     return yyresult;
 }
-#line 86 "C:/Code/AeonGUI/core/parsers/css.ypp"
+#line 45 "C:/Code/AeonGUI/core/parsers/style.ypp"
 
 extern "C"
 {
-    int csserror ( const char *s )
+    int styleerror ( AeonGUI::AttributeMap& aAttributeMap, const char *s )
     {
         std::cerr << s << std::endl;
         return 0;

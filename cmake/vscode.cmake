@@ -62,18 +62,18 @@ if(CMAKE_GENERATOR MATCHES "(MSYS|Unix) Makefiles")
                         \"miDebuggerPath\": \"${GDB_EXECUTABLE}\",
                         \"MIMode\": \"gdb\",
                         \"setupCommands\": [
-                        {
-                        \"description\": \"Enable pretty-printing for gdb\",
-                        \"text\": \"enable pretty printing\",
-                        \"ignoreFailures\": false
-                        },
-                        {
-                        \"description\": \"Break on Throw\",
-                        \"text\": \"catch throw\",
-                        \"ignoreFailures\": false
-                        }
-                  ]
-                  },\n")
+                            {
+                                \"description\": \"Enable pretty-printing for gdb\",
+                                \"text\": \"-enable-pretty-printing\",
+                                \"ignoreFailures\": true
+                            },
+                            {
+                                \"description\": \"Enable all-exceptions\",
+                                \"text\": \"catch throw\",
+                                \"ignoreFailures\": true
+                            }
+                        ]
+                    },\n")
               endif()
           endforeach(TARGET)
       endif()

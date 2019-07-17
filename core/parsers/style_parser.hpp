@@ -34,71 +34,45 @@
 /* Undocumented macros, especially those whose name start with YY_,
    are private implementation details.  Do not rely on them.  */
 
-#ifndef YY_CSS_C_CODE_AEONGUI_MINGW64_CORE_CSS_PARSER_HPP_INCLUDED
-# define YY_CSS_C_CODE_AEONGUI_MINGW64_CORE_CSS_PARSER_HPP_INCLUDED
+#ifndef YY_STYLE_C_CODE_AEONGUI_MINGW64_CORE_STYLE_PARSER_HPP_INCLUDED
+# define YY_STYLE_C_CODE_AEONGUI_MINGW64_CORE_STYLE_PARSER_HPP_INCLUDED
 /* Debug traces.  */
-#ifndef CSSDEBUG
+#ifndef STYLEDEBUG
 # if defined YYDEBUG
 #if YYDEBUG
-#   define CSSDEBUG 1
+#   define STYLEDEBUG 1
 #  else
-#   define CSSDEBUG 0
+#   define STYLEDEBUG 0
 #  endif
 # else /* ! defined YYDEBUG */
-#  define CSSDEBUG 0
+#  define STYLEDEBUG 0
 # endif /* ! defined YYDEBUG */
-#endif  /* ! defined CSSDEBUG */
-#if CSSDEBUG
-extern int cssdebug;
+#endif  /* ! defined STYLEDEBUG */
+#if STYLEDEBUG
+extern int styledebug;
 #endif
 
 /* Token type.  */
-#ifndef CSSTOKENTYPE
-# define CSSTOKENTYPE
-enum csstokentype
+#ifndef STYLETOKENTYPE
+# define STYLETOKENTYPE
+enum styletokentype
 {
-    ANGLE = 258,
-    ATKEYWORD = 259,
-    BAD_STRING = 260,
-    BAD_URI = 261,
-    CDC = 262,
-    CDO = 263,
-    CHARSET_SYM = 264,
-    DASHMATCH = 265,
-    DELIM = 266,
-    DIMENSION = 267,
-    EMS = 268,
-    EXS = 269,
-    FREQ = 270,
-    FUNCTION = 271,
-    HASH = 272,
-    IDENT = 273,
-    IMPORTANT_SYM = 274,
-    IMPORT_SYM = 275,
-    INCLUDES = 276,
-    LENGTH = 277,
-    MEDIA_SYM = 278,
-    NUMBER = 279,
-    PAGE_SYM = 280,
-    PERCENTAGE = 281,
-    S = 282,
-    STRING = 283,
-    TIME = 284,
-    UNICODE_RANGE = 285,
-    URI = 286
+    IDENT = 258,
+    COLOR = 259,
+    NUMBER = 260
 };
 #endif
 
 /* Value type.  */
-#if ! defined CSSSTYPE && ! defined CSSSTYPE_IS_DECLARED
-typedef int CSSSTYPE;
-# define CSSSTYPE_IS_TRIVIAL 1
-# define CSSSTYPE_IS_DECLARED 1
+#if ! defined STYLESTYPE && ! defined STYLESTYPE_IS_DECLARED
+typedef int STYLESTYPE;
+# define STYLESTYPE_IS_TRIVIAL 1
+# define STYLESTYPE_IS_DECLARED 1
 #endif
 
 
-extern CSSSTYPE csslval;
+extern STYLESTYPE stylelval;
 
-int cssparse ( void );
+int styleparse ( AeonGUI::AttributeMap& aAttributeMap );
 
-#endif /* !YY_CSS_C_CODE_AEONGUI_MINGW64_CORE_CSS_PARSER_HPP_INCLUDED  */
+#endif /* !YY_STYLE_C_CODE_AEONGUI_MINGW64_CORE_STYLE_PARSER_HPP_INCLUDED  */

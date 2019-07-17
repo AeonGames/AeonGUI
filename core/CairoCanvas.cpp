@@ -90,8 +90,6 @@ namespace AeonGUI
         double theta1, delta_theta;
         double k1, k2, k3, k4, k5;
 
-        int i, n_segs;
-
         if ( x1 == x2 && y1 == y2 )
         {
             return;
@@ -192,9 +190,9 @@ namespace AeonGUI
 
         /* Now draw the arc */
 
-        n_segs = std::ceil ( std::abs ( delta_theta / ( M_PI * 0.5 + 0.001 ) ) );
+        size_t n_segs = static_cast<size_t> ( std::ceil ( std::abs ( delta_theta / ( M_PI * 0.5 + 0.001 ) ) ) );
 
-        for ( i = 0; i < n_segs; i++ )
+        for ( size_t i = 0; i < n_segs; i++ )
         {
             path_arc_segment ( context, relative,
                                cx, cy,

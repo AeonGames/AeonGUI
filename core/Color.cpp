@@ -32,9 +32,9 @@ namespace AeonGUI
         if ( std::regex_search ( value, color_match, color_regex ) )
         {
             a = 255;
-            r = std::stoul ( color_match[1].str(), nullptr, 16 );
-            g = std::stoul ( color_match[2].str(), nullptr, 16 );
-            b = std::stoul ( color_match[3].str(), nullptr, 16 );
+            r = static_cast<uint8_t> ( std::stoul ( color_match[1].str(), nullptr, 16 ) );
+            g = static_cast<uint8_t> ( std::stoul ( color_match[2].str(), nullptr, 16 ) );
+            b = static_cast<uint8_t> ( std::stoul ( color_match[3].str(), nullptr, 16 ) );
         }
     }
 

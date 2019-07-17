@@ -158,27 +158,39 @@ if(FLEX_FOUND AND BISON_FOUND)
     add_flex_bison_dependency(style_lexer style_parser)
     list(APPEND AEONGUI_SOURCES ${BISON_style_parser_OUTPUTS} ${FLEX_style_lexer_OUTPUTS})
 
+    if(MSVC)
+        set_source_files_properties(${FLEX_style_lexer_OUTPUTS} ${FLEX_path_data_lexer_OUTPUTS} PROPERTIES COMPILE_FLAGS -FIcstdint)
+    endif()
+
     add_custom_target(update-parser-code
         COMMAND
-            ${CMAKE_COMMAND} -E copy_if_different ${BISON_path_data_parser_OUTPUTS} ${FLEX_path_data_lexer_OUTPUTS} ${CMAKE_SOURCE_DIR}/core/parsers
+            ${CMAKE_COMMAND} -E copy ${BISON_path_data_parser_OUTPUTS} ${FLEX_path_data_lexer_OUTPUTS} ${CMAKE_SOURCE_DIR}/core/parsers
         COMMAND
-            ${CMAKE_COMMAND} -E copy_if_different ${BISON_style_parser_OUTPUTS} ${FLEX_style_lexer_OUTPUTS} ${CMAKE_SOURCE_DIR}/core/parsers
+            ${CMAKE_COMMAND} -E copy ${BISON_style_parser_OUTPUTS} ${FLEX_style_lexer_OUTPUTS} ${CMAKE_SOURCE_DIR}/core/parsers
         DEPENDS
             path_data_parser
             path_data_lexer
+            style_parser
+            style_lexer
         COMMENT "Updating pre-generated parser code.")
 else()
     message(STATUS "Using pre-generated parser code.")
     message(STATUS "Install Flex and Bison if you want to regenerate the parser code at build time.")
-    list(APPEND AEONGUI_SOURCES
-        parsers/path_data_lexer.cpp
-        parsers/path_data_parser.cpp
+    set(PARSER_HEADERS
         parsers/path_data_parser.hpp
         parsers/dstype.h
+        parsers/style_parser.hpp
+    )
+    set(PARSER_SOURCES
+        parsers/path_data_lexer.cpp
+        parsers/path_data_parser.cpp
         parsers/style_lexer.cpp
         parsers/style_parser.cpp
-        parsers/style_parser.hpp
-        )
+    )
+    list(APPEND AEONGUI_SOURCES ${PARSER_SOURCES} ${PARSER_HEADERS})
+    if(MSVC)
+        set_source_files_properties(${PARSER_SOURCES} PROPERTIES COMPILE_FLAGS -FIcstdint)
+    endif()
 endif()
 
 set(AEONGUI_LIBRARIES ${LIBXML2_LIBRARIES} pcx)
