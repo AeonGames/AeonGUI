@@ -22,6 +22,7 @@ limitations under the License.
 #include "aeongui/Platform.h"
 #include "aeongui/Transform.h"
 #include "aeongui/AABB.h"
+#include "aeongui/AttributeMap.h"
 
 extern "C"
 {
@@ -57,6 +58,7 @@ namespace AeonGUI
         DLL virtual ~Element();
     protected:
         xmlElementPtr mXmlElementPtr{};
+        AttributeMap mAttributeMap{};
     private:
         Element* mParent{};
         std::vector<std::unique_ptr<Element>> mChildren{};

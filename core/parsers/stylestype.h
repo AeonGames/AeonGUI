@@ -20,6 +20,6 @@ limitations under the License.
 #include <cstdint>
 #include <cstddef>
 #include "aeongui/AttributeMap.h"
-using stylestype = std::variant<std::string, AeonGUI::AttributeType>;
+using stylestype = AeonGUI::AttributeType;
 #define STYLESTYPE stylestype
 #endif

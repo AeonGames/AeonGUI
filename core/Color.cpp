@@ -15,11 +15,11 @@ Copyright (C) 2010-2012,2019 Rodrigo Hernandez Cordoba
 ******************************************************************************/
 #include "aeongui/Color.h"
 #include <algorithm>
-#include <regex>
 #include <iostream>
 #include <unordered_map>
 namespace AeonGUI
 {
+    const std::regex Color::ColorRegex{"#[0-9A-Fa-f]{8}|#[0-9A-Fa-f]{6}|#[0-9A-Fa-f]{3}|aliceblue|antiquewhite|aqua|aquamarine|azure|beige|bisque|black|blanchedalmond|blue|blueviolet|brown|burlywood|cadetblue|chartreuse|chocolate|coral|cornflowerblue|cornsilk|crimson|cyan|darkblue|darkcyan|darkgoldenrod|darkgray|darkgreen|darkgrey|darkkhaki|darkmagenta|darkolivegreen|darkorange|darkorchid|darkred|darksalmon|darkseagreen|darkslateblue|darkslategray|darkslategrey|darkturquoise|darkviolet|deeppink|deepskyblue|dimgray|dimgrey|dodgerblue|firebrick|floralwhite|forestgreen|fuchsia|gainsboro|ghostwhite|gold|goldenrod|gray|grey|green|greenyellow|honeydew|hotpink|indianred|indigo|ivory|khaki|lavender|lavenderblush|lawngreen|lemonchiffon|lightblue|lightcoral|lightcyan|lightgoldenrodyellow|lightgray|lightgreen|lightgrey|lightpink|lightsalmon|lightseagreen|lightskyblue|lightslategray|lightslategrey|lightsteelblue|lightyellow|lime|limegreen|linen|magenta|maroon|mediumaquamarine|mediumblue|mediumorchid|mediumpurple|mediumseagreen|mediumslateblue|mediumspringgreen|mediumturquoise|mediumvioletred|midnightblue|mintcream|mistyrose|moccasin|navajowhite|navy|none|oldlace|olive|olivedrab|orange|orangered|orchid|palegoldenrod|palegreen|paleturquoise|palevioletred|papayawhip|peachpuff|peru|pink|plum|powderblue|purple|red|rosybrown|royalblue|saddlebrown|salmon|sandybrown|seagreen|seashell|sienna|silver|skyblue|slateblue|slategray|slategrey|snow|springgreen|steelblue|tan|teal|thistle|tomato|transparent|turquoise|violet|wheat|white|whitesmoke|yellow|yellowgreen"};
     static const std::unordered_map<std::string, uint32_t> color_map
     {
         {"aliceblue", 0xfff0f8ff},
@@ -124,6 +124,7 @@ namespace AeonGUI
         {"moccasin", 0xffffe4b5},
         {"navajowhite", 0xffffdead},
         {"navy", 0xff000080},
+        {"none", 0x00000000}, //<-- Look at me I'm Special.
         {"oldlace", 0xfffdf5e6},
         {"olive", 0xff808000},
         {"olivedrab", 0xff6b8e23},
@@ -162,6 +163,7 @@ namespace AeonGUI
         {"teal", 0xff008080},
         {"thistle", 0xffd8bfd8},
         {"tomato", 0xffff6347},
+        {"transparent", 0x00000000}, //<-- Look at me I'm Special.
         {"turquoise", 0xff40e0d0},
         {"violet", 0xffee82ee},
         {"wheat", 0xfff5deb3},
@@ -169,12 +171,11 @@ namespace AeonGUI
         {"whitesmoke", 0xfff5f5f5},
         {"yellow", 0xffffff00},
         {"yellowgreen", 0xff9acd32},
-        /* Special types */
-        {"none", 0x00000000},
-        {"transparent", 0x00000000},
     };
 
-    static const std::regex color_regex{"#([0-9A-Fa-f]{2})([0-9A-Fa-f]{2})([0-9A-Fa-f]{2})"};
+    static const std::regex color_regex3{"#([0-9A-Fa-f])([0-9A-Fa-f])([0-9A-Fa-f])"};
+    static const std::regex color_regex6{"#([0-9A-Fa-f]{2})([0-9A-Fa-f]{2})([0-9A-Fa-f]{2})"};
+    static const std::regex color_regex8{"#([0-9A-Fa-f]{2})([0-9A-Fa-f]{2})([0-9A-Fa-f]{2})([0-9A-Fa-f]{2})"};
 
     Color::Color() : bgra ( 0 ) {}
     Color::Color ( uint32_t value ) : bgra ( value ) {}
@@ -185,12 +186,26 @@ namespace AeonGUI
     {
         std::smatch color_match;
         std::unordered_map<std::string, uint32_t>::const_iterator color_iterator;
-        if ( std::regex_search ( value, color_match, color_regex ) )
+        if ( std::regex_search ( value, color_match, color_regex8 ) )
+        {
+            a = static_cast<uint8_t> ( std::stoul ( color_match[1].str(), nullptr, 16 ) );
+            r = static_cast<uint8_t> ( std::stoul ( color_match[2].str(), nullptr, 16 ) );
+            g = static_cast<uint8_t> ( std::stoul ( color_match[3].str(), nullptr, 16 ) );
+            b = static_cast<uint8_t> ( std::stoul ( color_match[4].str(), nullptr, 16 ) );
+        }
+        else if ( std::regex_search ( value, color_match, color_regex6 ) )
         {
             a = 255;
             r = static_cast<uint8_t> ( std::stoul ( color_match[1].str(), nullptr, 16 ) );
             g = static_cast<uint8_t> ( std::stoul ( color_match[2].str(), nullptr, 16 ) );
             b = static_cast<uint8_t> ( std::stoul ( color_match[3].str(), nullptr, 16 ) );
+        }
+        else if ( std::regex_search ( value, color_match, color_regex3 ) )
+        {
+            a = 255;
+            r = static_cast<uint8_t> ( std::stoul ( color_match[1].str() + color_match[1].str(), nullptr, 16 ) );
+            g = static_cast<uint8_t> ( std::stoul ( color_match[2].str() + color_match[2].str(), nullptr, 16 ) );
+            b = static_cast<uint8_t> ( std::stoul ( color_match[3].str() + color_match[3].str(), nullptr, 16 ) );
         }
         else if ( ( color_iterator = color_map.find ( value ) ) != color_map.end() )
         {

@@ -14,16 +14,29 @@ Copyright (C) 2010-2013,2019 Rodrigo Hernandez Cordoba
    limitations under the License.
 ******************************************************************************/
 #include <iostream>
+#include <string>
 #include <libxml/tree.h>
 #include "aeongui/Element.h"
 
 namespace AeonGUI
 {
+    int ParseStyle ( AttributeMap& aAttributeMap, const char* s );
     Element::Element ( xmlElementPtr aXmlElementPtr ) : mXmlElementPtr{aXmlElementPtr}
     {
         if ( mXmlElementPtr == nullptr )
         {
             throw std::runtime_error ( "XML Element is NULL" );
+        }
+        for ( auto* attribute = mXmlElementPtr->attributes; attribute; attribute = attribute->nexth )
+        {
+            mAttributeMap[reinterpret_cast<const char*> ( attribute->name )] = reinterpret_cast<const char*> ( xmlGetProp ( reinterpret_cast<xmlNodePtr> ( mXmlElementPtr ), attribute->name ) );
+        }
+        if ( HasAttr ( "style" ) )
+        {
+            if ( int error = ParseStyle ( mAttributeMap, GetAttr ( "style" ) ) )
+            {
+                std::cerr << error << std::endl;
+            }
         }
     }
 

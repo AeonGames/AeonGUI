@@ -21,7 +21,7 @@ limitations under the License.
 #include <variant>
 namespace AeonGUI
 {
-    using AttributeType = std::variant<double, Color>;
+    using AttributeType = std::variant<double, Color, std::string>;
     using AttributeMap = std::unordered_map<std::string, AttributeType>;
 }
 #endif

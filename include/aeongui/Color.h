@@ -17,10 +17,11 @@ limitations under the License.
 #define AEONGUI_COLOR_H
 #include <string>
 #include <cstdint>
+#include <regex>
 #include "aeongui/Platform.h"
 namespace AeonGUI
 {
-    /// W3C CSS3 color keyword names (see http://www.w3.org/TR/SVG/types.html#ColorKeywords)
+    /// W3C CSS3 color keyword names (see https://en.wikipedia.org/wiki/Web_colors)
     enum CSS3Color
     {
         aliceblue = 0xfff0f8ff,
@@ -179,6 +180,7 @@ namespace AeonGUI
     */
     union Color
     {
+        DLL static const std::regex ColorRegex;
         DLL Color();
         /*! \brief 32 bit Unsigned integer constructor.
             \param value 32 bit color value.

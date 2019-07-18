@@ -22,16 +22,8 @@ namespace AeonGUI
 {
     namespace Elements
     {
-        int ParseStyle ( AttributeMap& aAttributeMap, const char* s );
-        G::G ( xmlElementPtr aXmlElementPtr ) : Element ( aXmlElementPtr )
+        G::G ( xmlElementPtr aXmlElementPtr ) : Element {aXmlElementPtr}
         {
-            if ( HasAttr ( "style" ) )
-            {
-                if ( int error = ParseStyle ( mAttributeMap, GetAttr ( "style" ) ) )
-                {
-                    std::cerr << error << std::endl;
-                }
-            }
         }
         G::~G()
         {
@@ -53,6 +45,9 @@ namespace AeonGUI
                     aCanvas.SetStrokeWidth ( std::get<double> ( i.second ) );
                 }
             }
+        }
+        void G::DrawFinish ( Canvas& aCanvas ) const
+        {
         }
     }
 }
