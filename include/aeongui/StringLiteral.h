@@ -66,6 +66,14 @@ namespace AeonGUI
         const char* mString{};
         size_t mStringSize{};
     };
+
+    struct StringLiteralHash
+    {
+        size_t operator() ( const StringLiteral& Key ) const noexcept
+        {
+            return std::hash<std::string> {} ( Key );
+        }
+    };
 }
 
 #endif
