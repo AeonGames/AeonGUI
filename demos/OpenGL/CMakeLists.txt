@@ -85,5 +85,5 @@ if(WIN32)
 endif()
 
 add_executable(OpenGLDemo ${WGL_SOURCES} ${WGL_HEADERS} ${WGL_DEPENDENCIES})
-set_target_properties(OpenGLDemo PROPERTIES DEBUG_ARGUMENTS "${CMAKE_SOURCE_DIR}/images/tiger.svg")
+set_target_properties(OpenGLDemo PROPERTIES DEBUG_ARGUMENTS "${CMAKE_SOURCE_DIR}/images/curve.svg")
 target_link_libraries(OpenGLDemo AeonGUI ${OPENGL_gl_LIBRARY} ${OPENGL_glu_LIBRARY})

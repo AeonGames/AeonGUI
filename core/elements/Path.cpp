@@ -38,6 +38,21 @@ namespace AeonGUI
         }
         void Path::DrawStart ( Canvas& aCanvas ) const
         {
+            for ( auto& i : mAttributeMap )
+            {
+                if ( i.first == "fill" )
+                {
+                    aCanvas.SetFillColor ( std::get<Color> ( i.second ) );
+                }
+                else if ( i.first == "stroke" )
+                {
+                    aCanvas.SetStrokeColor ( std::get<Color> ( i.second ) );
+                }
+                else if ( i.first == "stroke-width" )
+                {
+                    aCanvas.SetStrokeWidth ( std::get<double> ( i.second ) );
+                }
+            }
             aCanvas.Draw ( mPath );
         }
     }

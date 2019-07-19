@@ -1298,7 +1298,7 @@ yyreduce:
     case 4:
 #line 41 "C:/Code/AeonGUI/core/parsers/style.ypp"
         {
-            aAttributeMap[std::get<std::string> ( yyvsp[-2] )] = std::get<AeonGUI::AttributeType> ( yyvsp[0] );
+            aAttributeMap[std::get<std::string> ( yyvsp[-2] )] = yyvsp[0];
         }
 #line 1249 "C:/Code/AeonGUI/mingw64/core/style_parser.cpp"
         break;

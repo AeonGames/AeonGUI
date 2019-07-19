@@ -33,8 +33,11 @@ namespace AeonGUI
         virtual size_t GetStride() const = 0;
         virtual void Clear() = 0;
         virtual void SetFillColor ( const Color& aColor ) = 0;
+        virtual const Color& GetFillColor() const = 0;
         virtual void SetStrokeColor ( const Color& aColor ) = 0;
+        virtual const Color& GetStrokeColor() const = 0;
         virtual void SetStrokeWidth ( double aWidth ) = 0;
+        virtual double GetStrokeWidth () const = 0;
         virtual void Draw ( const std::vector<DrawType>& aCommands ) = 0;
         DLL virtual ~Canvas() = 0;
     };

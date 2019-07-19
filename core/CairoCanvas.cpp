@@ -266,14 +266,29 @@ namespace AeonGUI
         mFillColor = aColor;
     }
 
+    const Color& CairoCanvas::GetFillColor() const
+    {
+        return mFillColor;
+    }
+
     void CairoCanvas::SetStrokeColor ( const Color& aColor )
     {
         mStrokeColor = aColor;
     }
 
+    const Color& CairoCanvas::GetStrokeColor() const
+    {
+        return mStrokeColor;
+    }
+
     void CairoCanvas::SetStrokeWidth ( double aStrokeWidth )
     {
         mStrokeWidth = aStrokeWidth;
+    }
+
+    double CairoCanvas::GetStrokeWidth () const
+    {
+        return mStrokeWidth;
     }
 
     void CairoCanvas::Draw ( const std::vector<DrawType>& aCommands )

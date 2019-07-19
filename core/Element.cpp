@@ -17,9 +17,11 @@ Copyright (C) 2010-2013,2019 Rodrigo Hernandez Cordoba
 #include <string>
 #include <libxml/tree.h>
 #include "aeongui/Element.h"
+#include "aeongui/Color.h"
 
 namespace AeonGUI
 {
+    static const std::regex number{"-?([0-9]+|[0-9]*\\.[0-9]+([eE][-+]?[0-9]+)?)"};
     int ParseStyle ( AttributeMap& aAttributeMap, const char* s );
     Element::Element ( xmlElementPtr aXmlElementPtr ) : mXmlElementPtr{aXmlElementPtr}
     {
@@ -27,9 +29,22 @@ namespace AeonGUI
         {
             throw std::runtime_error ( "XML Element is NULL" );
         }
-        for ( auto* attribute = mXmlElementPtr->attributes; attribute; attribute = attribute->nexth )
+        for ( xmlNodePtr attribute = reinterpret_cast<xmlNodePtr> ( mXmlElementPtr->attributes ); attribute; attribute = attribute->next )
         {
-            mAttributeMap[reinterpret_cast<const char*> ( attribute->name )] = reinterpret_cast<const char*> ( xmlGetProp ( reinterpret_cast<xmlNodePtr> ( mXmlElementPtr ), attribute->name ) );
+            std::cmatch match;
+            const char* value = reinterpret_cast<const char*> ( xmlGetProp ( reinterpret_cast<xmlNodePtr> ( mXmlElementPtr ), attribute->name ) );
+            if ( std::regex_match ( value, match, number ) )
+            {
+                mAttributeMap[reinterpret_cast<const char*> ( attribute->name )] = std::stod ( match[0].str() );
+            }
+            if ( std::regex_match ( value, match, Color::ColorRegex ) )
+            {
+                mAttributeMap[reinterpret_cast<const char*> ( attribute->name )] = Color{match[0].str() };
+            }
+            else
+            {
+                mAttributeMap[reinterpret_cast<const char*> ( attribute->name )] = value;
+            }
         }
         if ( HasAttr ( "style" ) )
         {
