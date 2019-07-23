@@ -35,7 +35,7 @@ namespace AeonGUI
         size_t GetHeight() const final;
         size_t GetStride() const final;
         void Clear() final;
-        void Draw ( const std::vector<DrawType>& aCommands ) final;
+        void Draw ( const Path& ) final;
         void SetFillColor ( const Color& aColor ) final;
         const Color& GetFillColor() const final;
         void SetStrokeColor ( const Color& aColor ) final;

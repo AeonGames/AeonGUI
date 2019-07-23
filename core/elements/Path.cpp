@@ -21,21 +21,22 @@ namespace AeonGUI
 {
     namespace Elements
     {
-
         int ParsePathData ( std::vector<DrawType>& aPath, const char* s );
         Path::Path ( xmlElementPtr aXmlElementPtr ) : Element ( aXmlElementPtr ), mPath{}
         {
             if ( HasAttr ( "d" ) )
             {
-                if ( int error = ParsePathData ( mPath, GetAttr ( "d" ) ) )
+                std::vector<DrawType> path;
+                if ( int error = ParsePathData ( path, GetAttr ( "d" ) ) )
                 {
                     std::cerr << error << std::endl;
                 }
+                mPath.Construct ( path );
             }
         }
-        Path::~Path()
-        {
-        }
+
+        Path::~Path() = default;
+
         void Path::DrawStart ( Canvas& aCanvas ) const
         {
             for ( auto& i : mAttributeMap )

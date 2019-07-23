@@ -37,7 +37,7 @@ namespace AeonGUI
             {
                 mAttributeMap[reinterpret_cast<const char*> ( attribute->name )] = std::stod ( match[0].str() );
             }
-            if ( std::regex_match ( value, match, Color::ColorRegex ) )
+            else if ( std::regex_match ( value, match, Color::ColorRegex ) )
             {
                 mAttributeMap[reinterpret_cast<const char*> ( attribute->name )] = Color{match[0].str() };
             }

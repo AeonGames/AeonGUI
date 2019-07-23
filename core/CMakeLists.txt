@@ -12,6 +12,8 @@ set(AEONGUI_HEADERS
 		../include/aeongui/Window.h
 		../include/aeongui/Canvas.h
 		../include/aeongui/CairoCanvas.h
+		../include/aeongui/Path.h
+		../include/aeongui/CairoPath.h
 		../include/aeongui/AABB.h
 		../include/aeongui/Matrix2x3.h
 		../include/aeongui/Transform.h
@@ -34,6 +36,8 @@ set(AEONGUI_SOURCES
         AABB.cpp
         Canvas.cpp
         CairoCanvas.cpp
+        Path.cpp
+        CairoPath.cpp
         JavaScript.cpp
         Duktape.cpp
         Color.cpp

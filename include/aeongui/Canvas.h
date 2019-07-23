@@ -18,11 +18,13 @@ limitations under the License.
 #include <cstdint>
 #include <cstddef>
 #include <vector>
+#include <memory>
 #include "aeongui/Platform.h"
 #include "aeongui/DrawType.h"
 #include "aeongui/Color.h"
 namespace AeonGUI
 {
+    class Path;
     class Canvas
     {
     public:
@@ -38,7 +40,7 @@ namespace AeonGUI
         virtual const Color& GetStrokeColor() const = 0;
         virtual void SetStrokeWidth ( double aWidth ) = 0;
         virtual double GetStrokeWidth () const = 0;
-        virtual void Draw ( const std::vector<DrawType>& aCommands ) = 0;
+        virtual void Draw ( const Path& ) = 0;
         DLL virtual ~Canvas() = 0;
     };
 }

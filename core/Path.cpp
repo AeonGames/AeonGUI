@@ -13,28 +13,10 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 */
-#ifndef AEONGUI_ELEMENTS_PATH_H
-#define AEONGUI_ELEMENTS_PATH_H
 
-#include <vector>
-#include "aeongui/Element.h"
-#include "aeongui/DrawType.h"
-// Path type should be selectable and should match Canvas type
-#include "aeongui/CairoPath.h"
+#include "aeongui/Path.h"
 
 namespace AeonGUI
 {
-    namespace Elements
-    {
-        class Path : public Element
-        {
-        public:
-            Path ( xmlElementPtr aXmlElementPtr );
-            ~Path() final;
-            void DrawStart ( Canvas& aCanvas ) const final;
-        private:
-            CairoPath mPath;
-        };
-    }
+    Path::~Path() = default;
 }
-#endif

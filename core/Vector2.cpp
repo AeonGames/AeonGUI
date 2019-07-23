@@ -37,6 +37,14 @@ namespace AeonGUI
     {
         return mVector2[1];
     }
+    void Vector2::SetX ( double aX )
+    {
+        mVector2[0] = aX;
+    }
+    void Vector2::SetY ( double aY )
+    {
+        mVector2[1] = aY;
+    }
     double Vector2::Length() const
     {
         return std::sqrt ( Dot ( *this, *this ) );
@@ -44,6 +52,10 @@ namespace AeonGUI
     const double& Vector2::operator[] ( std::size_t aIndex ) const
     {
         return mVector2[aIndex];
+    }
+    double& Vector2::operator[] ( std::size_t aIndex )
+    {
+        return const_cast<double&> ( static_cast<const Vector2*> ( this )->operator[] ( aIndex ) );
     }
 
     Vector2& Vector2::operator+= ( const Vector2& aRight )
