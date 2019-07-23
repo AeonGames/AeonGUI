@@ -26,7 +26,6 @@ limitations under the License.
 #include <cassert>
 #include <cstdint>
 #include <crtdbg.h>
-#include "glcommon.h"
 #include "aeongui/Window.h"
 
 #define GLGETPROCADDRESS(glFunctionType,glFunction) \

@@ -153,7 +153,6 @@ endif()
 include_directories(include common common/pcx demos/common core)
 add_subdirectory(common/pcx)
 add_subdirectory(core)
-add_subdirectory(tools)
 
 if(WIN32)
   add_subdirectory(demos/OpenGL)
