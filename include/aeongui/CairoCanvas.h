@@ -42,6 +42,10 @@ namespace AeonGUI
         const Color& GetStrokeColor() const final;
         void SetStrokeWidth ( double aWidth ) final;
         double GetStrokeWidth () const final;
+        void SetStrokeOpacity ( double aWidth ) final;
+        double GetStrokeOpacity () const final;
+        void SetFillOpacity ( double aWidth ) final;
+        double GetFillOpacity () const final;
         DLL ~CairoCanvas() final;
     private:
         cairo_surface_t* mCairoSurface{};
@@ -49,6 +53,8 @@ namespace AeonGUI
         Color mFillColor{255, 255, 255, 255};
         Color mStrokeColor{0, 0, 0, 0};
         double mStrokeWidth{1};
+        double mStrokeOpacity{1};
+        double mFillOpacity{1};
     };
 }
 #endif

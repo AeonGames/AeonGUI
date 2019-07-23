@@ -40,6 +40,10 @@ namespace AeonGUI
         virtual const Color& GetStrokeColor() const = 0;
         virtual void SetStrokeWidth ( double aWidth ) = 0;
         virtual double GetStrokeWidth () const = 0;
+        virtual void SetStrokeOpacity ( double aWidth ) = 0;
+        virtual double GetStrokeOpacity () const = 0;
+        virtual void SetFillOpacity ( double aWidth ) = 0;
+        virtual double GetFillOpacity () const = 0;
         virtual void Draw ( const Path& ) = 0;
         DLL virtual ~Canvas() = 0;
     };

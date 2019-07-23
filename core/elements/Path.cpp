@@ -53,6 +53,14 @@ namespace AeonGUI
                 {
                     aCanvas.SetStrokeWidth ( std::get<double> ( i.second ) );
                 }
+                else if ( i.first == "stroke-opacity" )
+                {
+                    aCanvas.SetStrokeOpacity ( std::get<double> ( i.second ) );
+                }
+                else if ( i.first == "fill-opacity" )
+                {
+                    aCanvas.SetFillOpacity ( std::get<double> ( i.second ) );
+                }
             }
             aCanvas.Draw ( mPath );
         }

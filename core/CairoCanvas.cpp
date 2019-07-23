@@ -113,6 +113,26 @@ namespace AeonGUI
         return mStrokeWidth;
     }
 
+    void CairoCanvas::SetStrokeOpacity ( double aStrokeOpacity )
+    {
+        mStrokeOpacity = ( ( aStrokeOpacity < 0.0 ) ? 0.0 : ( aStrokeOpacity > 1.0 ) ? 1.0 : aStrokeOpacity );
+    }
+
+    double CairoCanvas::GetStrokeOpacity () const
+    {
+        return mStrokeOpacity;
+    }
+
+    void CairoCanvas::SetFillOpacity ( double aFillOpacity )
+    {
+        mFillOpacity = ( ( aFillOpacity < 0.0 ) ? 0.0 : ( aFillOpacity > 1.0 ) ? 1.0 : aFillOpacity );
+    }
+
+    double CairoCanvas::GetFillOpacity () const
+    {
+        return mFillOpacity;
+    }
+
     void CairoCanvas::Draw ( const Path& aPath )
     {
         const CairoPath& path = reinterpret_cast<const CairoPath&> ( aPath );
@@ -121,13 +141,10 @@ namespace AeonGUI
             return;
         }
         cairo_append_path ( mCairoContext, path.GetCairoPath() );
-        if ( mFillColor.a )
-        {
-            cairo_set_source_rgba ( mCairoContext, mFillColor.R(), mFillColor.G(), mFillColor.B(), mFillColor.A() );
-            cairo_fill_preserve ( mCairoContext );
-        }
+        cairo_set_source_rgba ( mCairoContext, mFillColor.R(), mFillColor.G(), mFillColor.B(), ( mFillOpacity >= 1.0 ) ? mFillColor.A() : mFillOpacity );
+        cairo_fill_preserve ( mCairoContext );
         cairo_set_line_width ( mCairoContext, mStrokeWidth );
-        cairo_set_source_rgba ( mCairoContext, mStrokeColor.R(), mStrokeColor.G(), mStrokeColor.B(), mStrokeColor.A() );
+        cairo_set_source_rgba ( mCairoContext, mStrokeColor.R(), mStrokeColor.G(), mStrokeColor.B(), ( mStrokeOpacity >= 1.0 ) ? mStrokeColor.A() : mStrokeOpacity );
         cairo_stroke ( mCairoContext );
     }
 }
