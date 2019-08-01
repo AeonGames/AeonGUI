@@ -1,15 +1,7 @@
 AeonGUI [![MinGW64 Build status](https://ci.appveyor.com/api/projects/status/g1hx08cchdmkbw3m?svg=true)](https://ci.appveyor.com/project/Kwizatz/aeongui) [![MinGW32 Build status](https://ci.appveyor.com/api/projects/status/yogupd65ow1dr8pq?svg=true)](https://ci.appveyor.com/project/Kwizatz/aeongui-altq2)
 =======
 
-Last Updated: 07-01-2019
-
-This file contains the following sections:
-
-DESCRIPTION
-HISTORY
-COMPILATION
-LICENSE
-AUTHOR
+Last Updated: 07-31-2019
 
 DESCRIPTION
 
