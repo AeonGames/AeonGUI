@@ -1,7 +1,7 @@
 #ifndef PCX_H
 #define PCX_H
 /******************************************************************************
-Copyright 2010-2012 Rodrigo Hernandez Cordoba
+Copyright (C) 2010-2012,2019 Rodrigo Hernandez Cordoba
 
    Licensed under the Apache License, Version 2.0 (the "License");
    you may not use this file except in compliance with the License.
@@ -72,7 +72,7 @@ private:
         uint16_t YStretchEnd;        // Patch 9 end stretch coordinate (Unofficial feature)
         uint16_t YPadStart;         // Patch 9 start Pad coordinate (Unofficial feature)
         uint16_t YPadEnd;           // Patch 9 end Pad coordinate (Unofficial feature)
-        uint8_t  Reserved2[38];     // Reserved (Always 0, should be 54, but 8 bytes are taken by the unofficial patch 9 support)
+        uint8_t  Reserved2[38];     // Reserved (Always 0, should be 54, but 16 bytes are taken by the unofficial patch 9 support)
     };
     Header header;
     uint8_t* pixels;

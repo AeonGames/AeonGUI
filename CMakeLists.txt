@@ -61,7 +61,7 @@ option(USE_ZLIB "Use the zlib compression library")
 option(USE_PNG "Enable PNG image support (Requires zlib)")
 option(USE_CUDA "Enable CUDA support")
 option(BUILD_UNIT_TESTS "Enable Unit Tests using GTest/GMock")
-option(RELEASE_BUILD "Build for Release")
+set(CMAKE_BUILD_TYPE "DEBUG" CACHE STRING "One of DEBUG|RELEASE|RELWITHDEBINFO|MINSIZEREL")
 set(HTTP_PROXY "" CACHE STRING "Specify a proxy server if required for downloads")
 set(HTTPS_PROXY "" CACHE STRING "Specify a proxy server if required for downloads")
 
@@ -71,6 +71,8 @@ endif()
 if(NOT "${HTTPS_PROXY}" STREQUAL "")
 	set(ENV{https_proxy} "${HTTPS_PROXY}")
 endif()
+
+set(CMAKE_DEBUG_POSTFIX "d")
 
 if(USE_CUDA)
 	message(STATUS "Looking for CUDA toolkit")
@@ -128,20 +130,15 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_EXTENSIONS OFF)
 
 if(CMAKE_COMPILER_IS_GNUCXX)
-	# -std=c++0x is required to be able to include stdint.h as cstdint, weird, I know.
-	# But then CUDA doesn't like c++11, so stick to .h files until it does *sigh*
 	set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall")
-	if(RELEASE_BUILD)
-		set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -DNDEBUG -fomit-frame-pointer -O3")
-	else(RELEASE_BUILD)
-		set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -DDEBUG -g -O0")
-	endif(RELEASE_BUILD)
+  set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS} -DNDEBUG -fomit-frame-pointer -O3")
+  set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS} -DDEBUG -g -O0")
 endif(CMAKE_COMPILER_IS_GNUCXX)
 
 if(CMAKE_COMPILER_IS_GNUC)
-	set(CMAKE_C_FLAGS_RELEASE "-DNDEBUG -fomit-frame-pointer -O3")
+  set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -Wall")
+  set(CMAKE_C_FLAGS_RELEASE "-DNDEBUG -fomit-frame-pointer -O3")
 	set(CMAKE_C_FLAGS_DEBUG "-DDEBUG -g -O0")
-	set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -Wall")
 endif(CMAKE_COMPILER_IS_GNUC)
 
 add_definitions(-D_USE_MATH_DEFINES)
@@ -150,8 +147,7 @@ if(BUILD_UNIT_TESTS)
 	include(gmock)
 endif()
 
-include_directories(include common common/pcx demos/common core)
-add_subdirectory(common/pcx)
+include_directories(include common demos/common core)
 add_subdirectory(core)
 
 if(WIN32)
@@ -160,3 +156,23 @@ if(WIN32)
     ${CMAKE_SOURCE_DIR}/demos/OpenGL
 )
 endif()
+
+install(TARGETS AeonGUI duktape
+    EXPORT aeongui
+    RUNTIME DESTINATION bin
+    LIBRARY DESTINATION lib
+    ARCHIVE DESTINATION lib
+)
+
+file(GLOB SDK_HEADERS RELATIVE include/aeongui *.h)
+install(
+  FILES ${SDK_HEADERS}
+	DESTINATION include/aeongui
+)
+
+install(
+    EXPORT aeongui
+    DESTINATION share/aeongui
+)
+
+file(INSTALL LICENSE DESTINATION share/aeongui RENAME copyright)
