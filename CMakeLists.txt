@@ -178,7 +178,7 @@ install(
 install(
     EXPORT aeongui
     DESTINATION share/aeongui
+    FILE aeongui-config.cmake
 )
 
-file(INSTALL cmake/aeongui-config.cmake DESTINATION share/aeongui)
 file(INSTALL LICENSE DESTINATION share/aeongui RENAME copyright)
