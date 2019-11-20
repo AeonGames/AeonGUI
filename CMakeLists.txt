@@ -164,9 +164,14 @@ install(TARGETS AeonGUI duktape
     ARCHIVE DESTINATION lib
 )
 
-file(GLOB SDK_HEADERS RELATIVE include/aeongui *.h)
 install(
-  FILES ${SDK_HEADERS}
+  FILES
+    include/aeongui/Window.h
+    include/aeongui/Document.h
+    include/aeongui/Platform.h
+    include/aeongui/CairoCanvas.h
+    include/aeongui/Duktape.h
+    include/aeongui/Color.h
 	DESTINATION include/aeongui
 )
 
@@ -175,4 +180,5 @@ install(
     DESTINATION share/aeongui
 )
 
+file(INSTALL cmake/aeongui-config.cmake DESTINATION share/aeongui)
 file(INSTALL LICENSE DESTINATION share/aeongui RENAME copyright)
