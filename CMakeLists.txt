@@ -1,16 +1,16 @@
 cmake_minimum_required(VERSION 3.0.2)
+project(AeonGUI CXX C)
 
 if(COMMAND cmake_policy)
-	cmake_policy(SET CMP0003 NEW)
+  cmake_policy(SET CMP0003 NEW)
+  cmake_policy(SET CMP0072 NEW)
 endif(COMMAND cmake_policy)
 
 set(EXECUTABLE_OUTPUT_PATH ${CMAKE_BINARY_DIR}/bin)
 set(LIBRARY_OUTPUT_PATH  ${CMAKE_BINARY_DIR}/bin)
-set(CMAKE_MODULE_PATH ${CMAKE_SOURCE_DIR}/cmake)
+list(APPEND CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/cmake)
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON
     CACHE INTERNAL "Force compilation database")
-
-project(AeonGUI CXX C)
 
 include(CheckIncludeFile)
 include(CheckIncludeFileCXX)

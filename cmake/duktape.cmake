@@ -16,12 +16,12 @@ include(functions)
 
 function(aeongames_check_py_module import_name install_name)
     file(WRITE ${CMAKE_BINARY_DIR}/find_${import_name}.py "import imp\ntry:\n\timp.find_module('${import_name}')\n\tprint 'MODULE-FOUND'\nexcept ImportError:\n\tprint 'MODULE-NOTFOUND'\n")
-    execute_process ( COMMAND ${PYTHON_EXECUTABLE} ${CMAKE_BINARY_DIR}/find_${import_name}.py OUTPUT_VARIABLE MODULE OUTPUT_STRIP_TRAILING_WHITESPACE)
+    execute_process ( COMMAND ${Python2_EXECUTABLE} ${CMAKE_BINARY_DIR}/find_${import_name}.py OUTPUT_VARIABLE MODULE OUTPUT_STRIP_TRAILING_WHITESPACE)
     if(NOT MODULE)
         message(STATUS "${import_name} module not found, attempting install")
-        execute_process ( COMMAND ${PYTHON_EXECUTABLE} -m pip install ${install_name} RESULT_VARIABLE PIP_INSTALL_RESULT)
+        execute_process ( COMMAND ${Python2_EXECUTABLE} -m pip install ${install_name} RESULT_VARIABLE PIP_INSTALL_RESULT)
         if(NOT PIP_INSTALL_RESULT EQUAL 0)
-            message(FATAL_ERROR "${import_name} instalation failed. Try manual instalation. Interpreter found was: ${PYTHON_EXECUTABLE}")
+            message(FATAL_ERROR "${import_name} instalation failed. Try manual instalation. Interpreter found was: ${Python2_EXECUTABLE}")
         endif()
     endif()
 endfunction()
@@ -31,15 +31,15 @@ function(aeongui_configure_duktape)
     download("https://duktape.org/duktape-2.3.0.tar.xz" "duktape-2.3.0.tar.xz")
     decompress("duktape-2.3.0.tar.xz" "duktape-2.3.0")
 
-    find_package (PythonInterp 2.7 REQUIRED)
-    if(NOT PYTHON_EXECUTABLE)
+    find_package (Python2 COMPONENTS Interpreter)
+    if(NOT Python2_EXECUTABLE)
         message(FATAL_ERROR "You need a Python 2 Interpreter installed in order to generate duktape code.")
     endif()
     if(NOT IS_DIRECTORY "${CMAKE_BINARY_DIR}/duktape")
         aeongames_check_py_module("yaml" "pyyaml")
         execute_process(
             COMMAND 
-                ${PYTHON_EXECUTABLE} ${CMAKE_SOURCE_DIR}/duktape-2.3.0/tools/configure.py
+                ${Python2_EXECUTABLE} ${CMAKE_SOURCE_DIR}/duktape-2.3.0/tools/configure.py
                     --source-directory ${CMAKE_SOURCE_DIR}/duktape-2.3.0/src-input
                     --output-directory ${CMAKE_BINARY_DIR}/duktape
                     --config-metadata ${CMAKE_SOURCE_DIR}/duktape-2.3.0/config
