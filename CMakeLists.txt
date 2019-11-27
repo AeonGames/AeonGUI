@@ -162,16 +162,26 @@ install(TARGETS AeonGUI duktape
     RUNTIME DESTINATION bin
     LIBRARY DESTINATION lib
     ARCHIVE DESTINATION lib
+	INCLUDES DESTINATION include
 )
 
 install(
   FILES
+    include/aeongui/AABB.h
+    include/aeongui/AttributeMap.h
     include/aeongui/Window.h
     include/aeongui/Document.h
     include/aeongui/Platform.h
+    include/aeongui/Canvas.h
     include/aeongui/CairoCanvas.h
     include/aeongui/Duktape.h
+    include/aeongui/DrawType.h
     include/aeongui/Color.h
+    include/aeongui/Vector2.h
+    include/aeongui/JavaScript.h
+    include/aeongui/Element.h
+    include/aeongui/Transform.h
+    include/aeongui/Matrix2x3.h
 	DESTINATION include/aeongui
 )
 
