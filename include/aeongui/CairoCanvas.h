@@ -28,6 +28,7 @@ namespace AeonGUI
     class CairoCanvas : public Canvas
     {
     public:
+        CairoCanvas ();
         CairoCanvas ( uint32_t aWidth, uint32_t aHeight );
         void ResizeViewport ( uint32_t aWidth, uint32_t aHeight ) final;
         const uint8_t* GetPixels() const final;

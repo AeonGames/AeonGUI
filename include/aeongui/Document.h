@@ -35,6 +35,7 @@ namespace AeonGUI
     class Document
     {
     public:
+        DLL Document();
         DLL Document ( const std::string& aFilename );
         DLL ~Document();
         DLL void Draw ( Canvas& aCanvas ) const;

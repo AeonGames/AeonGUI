@@ -31,6 +31,7 @@ namespace AeonGUI
     class Window
     {
     public:
+        DLL Window ();
         DLL Window ( const std::string aFilename, uint32_t aWidth, uint32_t aHeight );
         DLL ~Window ();
         DLL void ResizeViewport ( uint32_t aWidth, uint32_t aHeight );
@@ -40,9 +41,9 @@ namespace AeonGUI
         DLL size_t GetStride() const;
         DLL void Draw();
     private:
-        Document mDocument;
-        CairoCanvas mCanvas;
-        Duktape mJavaScript;
+        Document mDocument{};
+        CairoCanvas mCanvas{};
+        Duktape mJavaScript{};
     };
 }
 #endif

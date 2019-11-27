@@ -35,6 +35,8 @@ namespace AeonGUI
         }
     }
 
+    Document::Document () = default;
+
     Document::Document ( const std::string& aFilename ) :
         mDocument{xmlReadFile ( aFilename.c_str(), nullptr, 0 ) }
     {

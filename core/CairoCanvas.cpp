@@ -24,6 +24,7 @@ limitations under the License.
 
 namespace AeonGUI
 {
+    CairoCanvas::CairoCanvas () = default;
     CairoCanvas::CairoCanvas ( uint32_t aWidth, uint32_t aHeight ) :
         mCairoSurface{cairo_image_surface_create ( CAIRO_FORMAT_ARGB32, aWidth, aHeight ) },
         mCairoContext{cairo_create ( reinterpret_cast<cairo_surface_t*> ( mCairoSurface ) ) }

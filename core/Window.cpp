@@ -21,7 +21,7 @@ limitations under the License.
 
 namespace AeonGUI
 {
-
+    Window::Window () = default;
     Window::Window ( const std::string aFilename, uint32_t aWidth, uint32_t aHeight ) :
         mDocument{aFilename},
         mCanvas{aWidth, aHeight},
