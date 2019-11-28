@@ -389,6 +389,11 @@ void Window::Initialize ( HINSTANCE hInstance, LONG aWidth, LONG aHeight )
 
 void Window::Finalize()
 {
+    if(glIsTexture(mScreenTexture))
+    {
+        glDeleteTextures(1,&mScreenTexture);
+        mScreenTexture = 0;
+    }
     if(glIsBuffer(mScreenQuad))
     {
         glDeleteBuffers(1,&mScreenQuad);
