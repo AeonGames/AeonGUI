@@ -150,12 +150,8 @@ endif()
 include_directories(include common demos/common core)
 add_subdirectory(core)
 
-if(WIN32)
-  add_subdirectory(demos/OpenGL)
-  configure_vscode(
-    ${CMAKE_SOURCE_DIR}/demos/OpenGL
-)
-endif()
+add_subdirectory(demos/OpenGL)
+configure_vscode(${CMAKE_SOURCE_DIR}/demos/OpenGL)
 
 install(TARGETS AeonGUI duktape
     EXPORT aeongui

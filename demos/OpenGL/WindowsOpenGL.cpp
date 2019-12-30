@@ -32,107 +32,48 @@ limitations under the License.
     if(glFunction==nullptr) { \
         glFunction = (glFunctionType)wglGetProcAddress(#glFunction); \
         if (glFunction == nullptr) { std::cerr << "OpenGL: Unable to load "<< #glFunction <<" function." << std::endl; }}
-#define GLDEFINEFUNCTION(glFunctionType,glFunction) glFunctionType glFunction = nullptr
+#include "Common.h"
 
-#define OPENGL_CHECK_ERROR \
- { \
-     if (int glError = glGetError()) \
-     { \
-         const char* error_string = (glError == GL_INVALID_ENUM) ? "GL_INVALID_ENUM" : \
-             (glError == GL_INVALID_VALUE) ? "GL_INVALID_VALUE" : \
-             (glError == GL_INVALID_OPERATION) ? "GL_INVALID_OPERATION" : \
-             (glError == GL_STACK_OVERFLOW) ? "GL_STACK_OVERFLOW" : \
-             (glError == GL_STACK_UNDERFLOW) ? "GL_STACK_UNDERFLOW" : \
-             (glError == GL_OUT_OF_MEMORY) ? "GL_OUT_OF_MEMORY" : "Unknown Error Code"; \
-         std::ostringstream stream; \
-         stream << "OpenGL Error " << error_string << " (Code " << glError << " ) " << __FILE__ << ":" << __LINE__; \
-         std::cout << stream.str() << std::endl; \
-     } \
- }
-
-
-const GLchar vertex_shader_code[] =
-    R"(#version 450 core
-layout (location = 0) in vec2 aPos;
-layout (location = 1) in vec2 aTexCoords;
-
-out vec2 Pos;
-out vec2 TexCoords;
-
-void main()
-{
-    gl_Position = vec4(aPos.x, aPos.y, 0.0, 1.0); 
-    Pos = aPos;
-    TexCoords = aTexCoords;
-}
-)";
-const GLint vertex_shader_len { sizeof(vertex_shader_code) /*/ sizeof(vertex_shader_code[0])*/};
-const GLchar* const vertex_shader_code_ptr = vertex_shader_code;
-
-const GLchar fragment_shader_code[] =
-R"(#version 450 core
-out vec4 FragColor;
-  
-in vec2 Pos;
-in vec2 TexCoords;
-
-layout (location = 0) uniform sampler2D screenTexture;
-
-void main()
-{ 
-    //FragColor = vec4((Pos.x+1.0)/2,(Pos.y+1.0)/2,0,1);
-    FragColor = texture(screenTexture, TexCoords);
-}
-)";
-const GLint fragment_shader_len { sizeof(fragment_shader_code) /*/ sizeof(fragment_shader_code[0])*/};
-const GLchar* const fragment_shader_code_ptr = fragment_shader_code;
-
-const float vertices[] = {  
-    // positions   // texCoords
-    -1.0f,  1.0f,  0.0f, 0.0f,
-    -1.0f, -1.0f,  0.0f, 1.0f,
-    1.0f, -1.0f,  1.0f, 1.0f,
-    1.0f,  1.0f,  1.0f, 0.0f
-};
-const GLuint vertex_size{sizeof(vertices)};
-
-GLDEFINEFUNCTION(PFNGLISPROGRAMPROC,glIsProgram);
-GLDEFINEFUNCTION(PFNGLISSHADERPROC,glIsShader);
-GLDEFINEFUNCTION(PFNGLCREATEPROGRAMPROC,glCreateProgram);
-GLDEFINEFUNCTION(PFNGLCREATESHADERPROC,glCreateShader);
-GLDEFINEFUNCTION(PFNGLCOMPILESHADERPROC,glCompileShader);
-GLDEFINEFUNCTION(PFNGLDETACHSHADERPROC,glDetachShader);
-GLDEFINEFUNCTION(PFNGLDELETESHADERPROC,glDeleteShader);
-GLDEFINEFUNCTION(PFNGLDELETEPROGRAMPROC,glDeleteProgram);
-GLDEFINEFUNCTION(PFNGLATTACHSHADERPROC,glAttachShader);
-GLDEFINEFUNCTION(PFNGLSHADERSOURCEPROC,glShaderSource);
-GLDEFINEFUNCTION(PFNGLUSEPROGRAMPROC,glUseProgram);
-GLDEFINEFUNCTION(PFNGLLINKPROGRAMPROC,glLinkProgram);
-GLDEFINEFUNCTION(PFNGLGENVERTEXARRAYSPROC,glGenVertexArrays);
-GLDEFINEFUNCTION(PFNGLBINDVERTEXARRAYPROC,glBindVertexArray);
-GLDEFINEFUNCTION(PFNGLGENBUFFERSPROC,glGenBuffers);
-GLDEFINEFUNCTION(PFNGLBINDBUFFERPROC,glBindBuffer);
-GLDEFINEFUNCTION(PFNGLBUFFERDATAPROC,glBufferData);
-GLDEFINEFUNCTION(PFNGLISBUFFERPROC,glIsBuffer);
-GLDEFINEFUNCTION(PFNGLISVERTEXARRAYPROC,glIsVertexArray);
-GLDEFINEFUNCTION(PFNGLDELETEBUFFERSPROC,glDeleteBuffers);
-GLDEFINEFUNCTION(PFNGLDELETEVERTEXARRAYSPROC,glDeleteVertexArrays);
-GLDEFINEFUNCTION(PFNGLACTIVETEXTUREPROC,glActiveTexture);
-GLDEFINEFUNCTION(PFNGLUNIFORM1IPROC,glUniform1i);
-GLDEFINEFUNCTION(PFNGLGETSHADERIVPROC,glGetShaderiv);
-GLDEFINEFUNCTION(PFNGLGETSHADERINFOLOGPROC,glGetShaderInfoLog);
-GLDEFINEFUNCTION(PFNGLENABLEVERTEXATTRIBARRAYPROC,glEnableVertexAttribArray);
-GLDEFINEFUNCTION(PFNGLVERTEXATTRIBPOINTERPROC,glVertexAttribPointer);
+GLDEFINEFUNCTION ( PFNGLISPROGRAMPROC, glIsProgram );
+GLDEFINEFUNCTION ( PFNGLISSHADERPROC, glIsShader );
+GLDEFINEFUNCTION ( PFNGLCREATEPROGRAMPROC, glCreateProgram );
+GLDEFINEFUNCTION ( PFNGLCREATESHADERPROC, glCreateShader );
+GLDEFINEFUNCTION ( PFNGLCOMPILESHADERPROC, glCompileShader );
+GLDEFINEFUNCTION ( PFNGLDETACHSHADERPROC, glDetachShader );
+GLDEFINEFUNCTION ( PFNGLDELETESHADERPROC, glDeleteShader );
+GLDEFINEFUNCTION ( PFNGLDELETEPROGRAMPROC, glDeleteProgram );
+GLDEFINEFUNCTION ( PFNGLATTACHSHADERPROC, glAttachShader );
+GLDEFINEFUNCTION ( PFNGLSHADERSOURCEPROC, glShaderSource );
+GLDEFINEFUNCTION ( PFNGLUSEPROGRAMPROC, glUseProgram );
+GLDEFINEFUNCTION ( PFNGLLINKPROGRAMPROC, glLinkProgram );
+GLDEFINEFUNCTION ( PFNGLGENVERTEXARRAYSPROC, glGenVertexArrays );
+GLDEFINEFUNCTION ( PFNGLBINDVERTEXARRAYPROC, glBindVertexArray );
+GLDEFINEFUNCTION ( PFNGLGENBUFFERSPROC, glGenBuffers );
+GLDEFINEFUNCTION ( PFNGLBINDBUFFERPROC, glBindBuffer );
+GLDEFINEFUNCTION ( PFNGLBUFFERDATAPROC, glBufferData );
+GLDEFINEFUNCTION ( PFNGLISBUFFERPROC, glIsBuffer );
+GLDEFINEFUNCTION ( PFNGLISVERTEXARRAYPROC, glIsVertexArray );
+GLDEFINEFUNCTION ( PFNGLDELETEBUFFERSPROC, glDeleteBuffers );
+GLDEFINEFUNCTION ( PFNGLDELETEVERTEXARRAYSPROC, glDeleteVertexArrays );
+GLDEFINEFUNCTION ( PFNGLACTIVETEXTUREPROC, glActiveTexture );
+GLDEFINEFUNCTION ( PFNGLUNIFORM1IPROC, glUniform1i );
+GLDEFINEFUNCTION ( PFNGLGETSHADERIVPROC, glGetShaderiv );
+GLDEFINEFUNCTION ( PFNGLGETSHADERINFOLOGPROC, glGetShaderInfoLog );
+GLDEFINEFUNCTION ( PFNGLENABLEVERTEXATTRIBARRAYPROC, glEnableVertexAttribArray );
+GLDEFINEFUNCTION ( PFNGLVERTEXATTRIBPOINTERPROC, glVertexAttribPointer );
 
 class Window
 {
 public:
-    Window(HINSTANCE hInstance, LPSTR aFilename, LONG aWidth, LONG aHeight) : 
-        mWindow{aFilename?aFilename:"",static_cast<uint32_t>(aWidth),static_cast<uint32_t>(aHeight)}
+    Window ( HINSTANCE hInstance, LPSTR aFilename, LONG aWidth, LONG aHeight ) :
+        mWindow{aFilename ? aFilename : "", static_cast<uint32_t> ( aWidth ), static_cast<uint32_t> ( aHeight ) }
     {
         Initialize ( hInstance, aWidth, aHeight );
     }
-    ~Window() {Finalize();}
+    ~Window()
+    {
+        Finalize();
+    }
     LRESULT OnSize ( WPARAM type, WORD newwidth, WORD newheight );
     LRESULT OnPaint();
     LRESULT OnMouseMove ( int32_t x, int32_t y );
@@ -143,7 +84,7 @@ public:
     void RenderLoop();
 private:
     static ATOM atom;
-    void Initialize(HINSTANCE hInstance, LONG aWidth, LONG aHeight);
+    void Initialize ( HINSTANCE hInstance, LONG aWidth, LONG aHeight );
     void Finalize();
     HWND hWnd{};
     HDC hDC{};
@@ -239,33 +180,33 @@ void Window::Initialize ( HINSTANCE hInstance, LONG aWidth, LONG aHeight )
     }
     //---OpenGL 4.5 Context---//
 
-    GLGETPROCADDRESS(PFNGLISPROGRAMPROC,glIsProgram);
-    GLGETPROCADDRESS(PFNGLISSHADERPROC,glIsShader);
-    GLGETPROCADDRESS(PFNGLCREATEPROGRAMPROC,glCreateProgram);
-    GLGETPROCADDRESS(PFNGLCREATESHADERPROC,glCreateShader);
-    GLGETPROCADDRESS(PFNGLCOMPILESHADERPROC,glCompileShader);
-    GLGETPROCADDRESS(PFNGLDETACHSHADERPROC,glDetachShader);
-    GLGETPROCADDRESS(PFNGLDELETESHADERPROC,glDeleteShader);
-    GLGETPROCADDRESS(PFNGLDELETEPROGRAMPROC,glDeleteProgram);
-    GLGETPROCADDRESS(PFNGLATTACHSHADERPROC,glAttachShader);
-    GLGETPROCADDRESS(PFNGLSHADERSOURCEPROC,glShaderSource);
-    GLGETPROCADDRESS(PFNGLUSEPROGRAMPROC,glUseProgram);
-    GLGETPROCADDRESS(PFNGLLINKPROGRAMPROC,glLinkProgram);
-    GLGETPROCADDRESS(PFNGLGENVERTEXARRAYSPROC,glGenVertexArrays);
-    GLGETPROCADDRESS(PFNGLBINDVERTEXARRAYPROC,glBindVertexArray);
-    GLGETPROCADDRESS(PFNGLGENBUFFERSPROC,glGenBuffers);
-    GLGETPROCADDRESS(PFNGLBINDBUFFERPROC,glBindBuffer);
-    GLGETPROCADDRESS(PFNGLBUFFERDATAPROC,glBufferData);
-    GLGETPROCADDRESS(PFNGLISBUFFERPROC,glIsBuffer);
-    GLGETPROCADDRESS(PFNGLISVERTEXARRAYPROC,glIsVertexArray);
-    GLGETPROCADDRESS(PFNGLDELETEBUFFERSPROC,glDeleteBuffers);
-    GLGETPROCADDRESS(PFNGLDELETEVERTEXARRAYSPROC,glDeleteVertexArrays);
-    GLGETPROCADDRESS(PFNGLACTIVETEXTUREPROC,glActiveTexture);
-    GLGETPROCADDRESS(PFNGLUNIFORM1IPROC,glUniform1i);
-    GLGETPROCADDRESS(PFNGLGETSHADERIVPROC,glGetShaderiv);
-    GLGETPROCADDRESS(PFNGLGETSHADERINFOLOGPROC,glGetShaderInfoLog);
-    GLGETPROCADDRESS(PFNGLENABLEVERTEXATTRIBARRAYPROC,glEnableVertexAttribArray);
-    GLGETPROCADDRESS(PFNGLVERTEXATTRIBPOINTERPROC,glVertexAttribPointer);
+    GLGETPROCADDRESS ( PFNGLISPROGRAMPROC, glIsProgram );
+    GLGETPROCADDRESS ( PFNGLISSHADERPROC, glIsShader );
+    GLGETPROCADDRESS ( PFNGLCREATEPROGRAMPROC, glCreateProgram );
+    GLGETPROCADDRESS ( PFNGLCREATESHADERPROC, glCreateShader );
+    GLGETPROCADDRESS ( PFNGLCOMPILESHADERPROC, glCompileShader );
+    GLGETPROCADDRESS ( PFNGLDETACHSHADERPROC, glDetachShader );
+    GLGETPROCADDRESS ( PFNGLDELETESHADERPROC, glDeleteShader );
+    GLGETPROCADDRESS ( PFNGLDELETEPROGRAMPROC, glDeleteProgram );
+    GLGETPROCADDRESS ( PFNGLATTACHSHADERPROC, glAttachShader );
+    GLGETPROCADDRESS ( PFNGLSHADERSOURCEPROC, glShaderSource );
+    GLGETPROCADDRESS ( PFNGLUSEPROGRAMPROC, glUseProgram );
+    GLGETPROCADDRESS ( PFNGLLINKPROGRAMPROC, glLinkProgram );
+    GLGETPROCADDRESS ( PFNGLGENVERTEXARRAYSPROC, glGenVertexArrays );
+    GLGETPROCADDRESS ( PFNGLBINDVERTEXARRAYPROC, glBindVertexArray );
+    GLGETPROCADDRESS ( PFNGLGENBUFFERSPROC, glGenBuffers );
+    GLGETPROCADDRESS ( PFNGLBINDBUFFERPROC, glBindBuffer );
+    GLGETPROCADDRESS ( PFNGLBUFFERDATAPROC, glBufferData );
+    GLGETPROCADDRESS ( PFNGLISBUFFERPROC, glIsBuffer );
+    GLGETPROCADDRESS ( PFNGLISVERTEXARRAYPROC, glIsVertexArray );
+    GLGETPROCADDRESS ( PFNGLDELETEBUFFERSPROC, glDeleteBuffers );
+    GLGETPROCADDRESS ( PFNGLDELETEVERTEXARRAYSPROC, glDeleteVertexArrays );
+    GLGETPROCADDRESS ( PFNGLACTIVETEXTUREPROC, glActiveTexture );
+    GLGETPROCADDRESS ( PFNGLUNIFORM1IPROC, glUniform1i );
+    GLGETPROCADDRESS ( PFNGLGETSHADERIVPROC, glGetShaderiv );
+    GLGETPROCADDRESS ( PFNGLGETSHADERINFOLOGPROC, glGetShaderInfoLog );
+    GLGETPROCADDRESS ( PFNGLENABLEVERTEXATTRIBARRAYPROC, glEnableVertexAttribArray );
+    GLGETPROCADDRESS ( PFNGLVERTEXATTRIBPOINTERPROC, glVertexAttribPointer );
 
     glClearColor ( 1, 1, 1, 1 );
     glViewport ( 0, 0, aWidth, aHeight );
@@ -274,13 +215,12 @@ void Window::Initialize ( HINSTANCE hInstance, LONG aWidth, LONG aHeight )
     glEnable ( GL_BLEND );
     OPENGL_CHECK_ERROR;
 
-
     GLint compile_status{};
     mProgram = glCreateProgram();
     OPENGL_CHECK_ERROR;
     GLuint vertex_shader = glCreateShader ( GL_VERTEX_SHADER );
     OPENGL_CHECK_ERROR;
-    glShaderSource (vertex_shader,1,&vertex_shader_code_ptr,&vertex_shader_len );
+    glShaderSource ( vertex_shader, 1, &vertex_shader_code_ptr, &vertex_shader_len );
     OPENGL_CHECK_ERROR;
     glCompileShader ( vertex_shader );
     OPENGL_CHECK_ERROR;
@@ -301,10 +241,13 @@ void Window::Initialize ( HINSTANCE hInstance, LONG aWidth, LONG aHeight )
             std::cout << log_string << std::endl;
         }
     }
-    glAttachShader ( mProgram, vertex_shader );OPENGL_CHECK_ERROR
+    glAttachShader ( mProgram, vertex_shader );
+    OPENGL_CHECK_ERROR
     //-------------------------
-    uint32_t fragment_shader = glCreateShader ( GL_FRAGMENT_SHADER );OPENGL_CHECK_ERROR
-    glShaderSource ( fragment_shader, 1, &fragment_shader_code_ptr, &fragment_shader_len );OPENGL_CHECK_ERROR
+    uint32_t fragment_shader = glCreateShader ( GL_FRAGMENT_SHADER );
+    OPENGL_CHECK_ERROR
+    glShaderSource ( fragment_shader, 1, &fragment_shader_code_ptr, &fragment_shader_len );
+    OPENGL_CHECK_ERROR
     glCompileShader ( fragment_shader );
     OPENGL_CHECK_ERROR;
     glGetShaderiv ( fragment_shader, GL_COMPILE_STATUS, &compile_status );
@@ -337,7 +280,7 @@ void Window::Initialize ( HINSTANCE hInstance, LONG aWidth, LONG aHeight )
     OPENGL_CHECK_ERROR;
     glDeleteShader ( fragment_shader );
     OPENGL_CHECK_ERROR;
-    glUseProgram(mProgram);
+    glUseProgram ( mProgram );
     OPENGL_CHECK_ERROR;
     glUniform1i ( 0, 0 );
     OPENGL_CHECK_ERROR;
@@ -355,11 +298,11 @@ void Window::Initialize ( HINSTANCE hInstance, LONG aWidth, LONG aHeight )
     OPENGL_CHECK_ERROR;
     glEnableVertexAttribArray ( 0 );
     OPENGL_CHECK_ERROR;
-    glVertexAttribPointer ( 0, 2, GL_FLOAT, GL_FALSE, sizeof(float)*4, 0 );
+    glVertexAttribPointer ( 0, 2, GL_FLOAT, GL_FALSE, sizeof ( float ) * 4, 0 );
     OPENGL_CHECK_ERROR;
     glEnableVertexAttribArray ( 1 );
     OPENGL_CHECK_ERROR;
-    glVertexAttribPointer ( 1, 2, GL_FLOAT, GL_FALSE, sizeof(float)*4, reinterpret_cast<const void*>(sizeof(float)*2) );
+    glVertexAttribPointer ( 1, 2, GL_FLOAT, GL_FALSE, sizeof ( float ) * 4, reinterpret_cast<const void*> ( sizeof ( float ) * 2 ) );
     OPENGL_CHECK_ERROR;
 
     //---------------------------------------------------------------------------
@@ -368,14 +311,14 @@ void Window::Initialize ( HINSTANCE hInstance, LONG aWidth, LONG aHeight )
     glBindTexture ( GL_TEXTURE_2D, mScreenTexture );
     OPENGL_CHECK_ERROR;
     glTexImage2D ( GL_TEXTURE_2D,
-                    0,
-                    GL_RGBA,
-                    aWidth,
-                    aHeight,
-                    0,
-                    GL_BGRA,
-                    GL_UNSIGNED_INT_8_8_8_8_REV,
-                    mWindow.GetPixels());
+                   0,
+                   GL_RGBA,
+                   aWidth,
+                   aHeight,
+                   0,
+                   GL_BGRA,
+                   GL_UNSIGNED_INT_8_8_8_8_REV,
+                   mWindow.GetPixels() );
     OPENGL_CHECK_ERROR;
     glTexParameteri ( GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST );
     OPENGL_CHECK_ERROR;
@@ -389,25 +332,25 @@ void Window::Initialize ( HINSTANCE hInstance, LONG aWidth, LONG aHeight )
 
 void Window::Finalize()
 {
-    if(glIsTexture(mScreenTexture))
+    if ( glIsTexture ( mScreenTexture ) )
     {
-        glDeleteTextures(1,&mScreenTexture);
+        glDeleteTextures ( 1, &mScreenTexture );
         mScreenTexture = 0;
     }
-    if(glIsBuffer(mScreenQuad))
+    if ( glIsBuffer ( mScreenQuad ) )
     {
-        glDeleteBuffers(1,&mScreenQuad);
+        glDeleteBuffers ( 1, &mScreenQuad );
         mScreenQuad = 0;
     }
-    if(glIsVertexArray(mVAO))
+    if ( glIsVertexArray ( mVAO ) )
     {
-        glDeleteVertexArrays(1,&mVAO);
+        glDeleteVertexArrays ( 1, &mVAO );
         mVAO = 0;
     }
-    if(glIsProgram(mProgram))
+    if ( glIsProgram ( mProgram ) )
     {
-        glUseProgram(0);
-        glDeleteProgram(mProgram);
+        glUseProgram ( 0 );
+        glDeleteProgram ( mProgram );
         mProgram = 0;
     }
     wglMakeCurrent ( hDC, NULL );
@@ -429,21 +372,21 @@ void Window::RenderLoop()
         delta = 1.0f / 30.0f;
     }
     glClear ( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT );
-    glUseProgram(mProgram);  
-    glBindVertexArray(mVAO);
-    glDisable(GL_DEPTH_TEST);
+    glUseProgram ( mProgram );
+    glBindVertexArray ( mVAO );
+    glDisable ( GL_DEPTH_TEST );
     mWindow.Draw();
-    glBindTexture(GL_TEXTURE_2D, mScreenTexture);
+    glBindTexture ( GL_TEXTURE_2D, mScreenTexture );
     glTexImage2D ( GL_TEXTURE_2D,
-                    0,
-                    GL_RGBA,
-					static_cast<GLsizei>( mWindow.GetWidth()),
-					static_cast<GLsizei>(mWindow.GetHeight()),
-                    0,
-                    GL_BGRA,
-                    GL_UNSIGNED_INT_8_8_8_8_REV,
-                    mWindow.GetPixels() );
-    glDrawArrays(GL_TRIANGLE_FAN, 0, 4);  
+                   0,
+                   GL_RGBA,
+                   static_cast<GLsizei> ( mWindow.GetWidth() ),
+                   static_cast<GLsizei> ( mWindow.GetHeight() ),
+                   0,
+                   GL_BGRA,
+                   GL_UNSIGNED_INT_8_8_8_8_REV,
+                   mWindow.GetPixels() );
+    glDrawArrays ( GL_TRIANGLE_FAN, 0, 4 );
     SwapBuffers ( hDC );
     last_time = this_time;
 }
@@ -529,19 +472,19 @@ LRESULT Window::OnSize ( WPARAM type, WORD newwidth, WORD newheight )
     }
     glViewport ( 0, 0, width, height );
     OPENGL_CHECK_ERROR;
-    mWindow.ResizeViewport(static_cast<size_t>(newwidth),static_cast<size_t>(newheight));
+    mWindow.ResizeViewport ( static_cast<size_t> ( newwidth ), static_cast<size_t> ( newheight ) );
     std::cout << "Width: " << mWindow.GetWidth() << std::endl;
     std::cout << "Height: " << mWindow.GetHeight() << std::endl;
     std::cout << "Stride: " << mWindow.GetStride() << std::endl;
     glTexImage2D ( GL_TEXTURE_2D,
-                    0,
-                    GL_RGBA,
-                    width,
-                    height,
-                    0,
-                    GL_BGRA,
-                    GL_UNSIGNED_INT_8_8_8_8_REV,
-                    mWindow.GetPixels() );
+                   0,
+                   GL_RGBA,
+                   width,
+                   height,
+                   0,
+                   GL_BGRA,
+                   GL_UNSIGNED_INT_8_8_8_8_REV,
+                   mWindow.GetPixels() );
     OPENGL_CHECK_ERROR;
     return 0;
 }
@@ -576,7 +519,7 @@ LRESULT Window::OnMouseButtonUp ( uint8_t button, int32_t x, int32_t y )
 
 int WINAPI WinMain ( HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nCmdShow )
 {
-    Window window( hInstance ,lpCmdLine, 800,600);
+    Window window ( hInstance, lpCmdLine, 800, 600 );
     MSG msg;
     memset ( &msg, 0, sizeof ( MSG ) );
     while ( msg.message != WM_QUIT )
@@ -600,6 +543,6 @@ int WINAPI WinMain ( HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLi
 
 int main ( int argc, char *argv[] )
 {
-    int ret = WinMain ( GetModuleHandle ( NULL ), nullptr, (argc>1)?argv[1]:nullptr, 0 );
+    int ret = WinMain ( GetModuleHandle ( NULL ), nullptr, ( argc > 1 ) ? argv[1] : nullptr, 0 );
     return ret;
 }

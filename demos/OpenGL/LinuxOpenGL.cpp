@@ -20,23 +20,55 @@ limitations under the License.
 #include <assert.h>
 #include <time.h>
 #include <unistd.h>
+#include <iostream>
+#include <sstream>
 
 #include <X11/Xlib.h>
 #include <X11/Xutil.h>
 #include <X11/keysymdef.h>
 #include <GL/gl.h>
 #include <GL/glx.h>
-#include "glxext.h"
-#include "glext.h"
-#include "OpenGLRenderer.h"
-#include "MainWindow.h"
-#include "glcommon.h"
-#include "logo.h"
-#include "Vera.h"
-#include "Color.h"
+#include "aeongui/Window.h"
+#include "Common.h"
 
+#define GLGETPROCADDRESS(glFunctionType,glFunction) \
+    if(glFunction==nullptr) { \
+    glFunction = ( glFunctionType ) glXGetProcAddress ( (const GLubyte*) #glFunction ); \
+        if (glFunction == nullptr) \
+        { \
+            std::ostringstream stream; \
+            stream << "OpenGL: Unable to load " #glFunction " function."; \
+            throw std::runtime_error(stream.str().c_str()); \
+        } \
+    }
 
-static PFNGLXCREATECONTEXTATTRIBSARBPROC glXCreateContextAttribsARB = NULL;
+GLDEFINEFUNCTION ( PFNGLISPROGRAMPROC, glIsProgram );
+GLDEFINEFUNCTION ( PFNGLISSHADERPROC, glIsShader );
+GLDEFINEFUNCTION ( PFNGLCREATEPROGRAMPROC, glCreateProgram );
+GLDEFINEFUNCTION ( PFNGLCREATESHADERPROC, glCreateShader );
+GLDEFINEFUNCTION ( PFNGLCOMPILESHADERPROC, glCompileShader );
+GLDEFINEFUNCTION ( PFNGLDETACHSHADERPROC, glDetachShader );
+GLDEFINEFUNCTION ( PFNGLDELETESHADERPROC, glDeleteShader );
+GLDEFINEFUNCTION ( PFNGLDELETEPROGRAMPROC, glDeleteProgram );
+GLDEFINEFUNCTION ( PFNGLATTACHSHADERPROC, glAttachShader );
+GLDEFINEFUNCTION ( PFNGLSHADERSOURCEPROC, glShaderSource );
+GLDEFINEFUNCTION ( PFNGLUSEPROGRAMPROC, glUseProgram );
+GLDEFINEFUNCTION ( PFNGLLINKPROGRAMPROC, glLinkProgram );
+GLDEFINEFUNCTION ( PFNGLGENVERTEXARRAYSPROC, glGenVertexArrays );
+GLDEFINEFUNCTION ( PFNGLBINDVERTEXARRAYPROC, glBindVertexArray );
+GLDEFINEFUNCTION ( PFNGLGENBUFFERSPROC, glGenBuffers );
+GLDEFINEFUNCTION ( PFNGLBINDBUFFERPROC, glBindBuffer );
+GLDEFINEFUNCTION ( PFNGLBUFFERDATAPROC, glBufferData );
+GLDEFINEFUNCTION ( PFNGLISBUFFERPROC, glIsBuffer );
+GLDEFINEFUNCTION ( PFNGLISVERTEXARRAYPROC, glIsVertexArray );
+GLDEFINEFUNCTION ( PFNGLDELETEBUFFERSPROC, glDeleteBuffers );
+GLDEFINEFUNCTION ( PFNGLDELETEVERTEXARRAYSPROC, glDeleteVertexArrays );
+GLDEFINEFUNCTION ( PFNGLUNIFORM1IPROC, glUniform1i );
+GLDEFINEFUNCTION ( PFNGLGETSHADERIVPROC, glGetShaderiv );
+GLDEFINEFUNCTION ( PFNGLGETSHADERINFOLOGPROC, glGetShaderInfoLog );
+GLDEFINEFUNCTION ( PFNGLENABLEVERTEXATTRIBARRAYPROC, glEnableVertexAttribArray );
+GLDEFINEFUNCTION ( PFNGLVERTEXATTRIBPOINTERPROC, glVertexAttribPointer );
+GLDEFINEFUNCTION ( PFNGLXCREATECONTEXTATTRIBSARBPROC, glXCreateContextAttribsARB );
 
 // Helper to check for extension string presence.  Adapted from:
 //   http://www.opengl.org/resources/features/OGLextensions/
@@ -78,120 +110,10 @@ static bool isExtensionSupported ( const char *extList, const char *extension )
     return false;
 }
 
-#if 0
-static uint32_t GetScancode ( KeySym keysym )
-{
-    switch ( keysym )
-    {
-    case XK_W:
-    case XK_w:
-        return 0x11;
-    case XK_A:
-    case XK_a:
-        return 0x1e;
-    case XK_S:
-    case XK_s:
-        return 0x1f;
-    case XK_D:
-    case XK_d:
-        return 0x20;
-#if 0
-        //Remove the key as it is included into the switch statement.
-        KEY_ESC      = 0x01,
-        KEY_1        = 0x02,
-        KEY_2        = 0x03,
-        KEY_3        = 0x04,
-        KEY_4        = 0x05,
-        KEY_5        = 0x06,
-        KEY_6        = 0x07,
-        KEY_7        = 0x08,
-        KEY_8        = 0x09,
-        KEY_9        = 0x0A,
-        KEY_0        = 0x0B,
-        KEY_DASH     = 0x0C,
-        KEY_EQUAL    = 0x0D,
-        KEY_BKSP     = 0x0E,
-
-        KEY_TAB      = 0x0F,
-        KEY_Q        = 0x10,
-        KEY_E        = 0x12,
-        KEY_R        = 0x13,
-        KEY_T        = 0x14,
-        KEY_Y        = 0x15,
-        KEY_U        = 0x16,
-        KEY_I        = 0x17,
-        KEY_O        = 0x18,
-        KEY_P        = 0x19,
-        KEY_LBRACKET = 0x1A,
-        KEY_RBRACKET = 0x1B,
-        KEY_ENTER    = 0x1C,
-
-        KEY_CTRL     = 0x1D,
-        KEY_F        = 0x21,
-        KEY_G        = 0x22,
-        KEY_H        = 0x23,
-        KEY_J        = 0x24,
-        KEY_K        = 0x25,
-        KEY_L        = 0x26,
-        KEY_SEMICOLON = 0x27,
-        KEY_SQUOTE   = 0x28,
-        KEY_TILDE    = 0x29,
-
-        KEY_LSHIFT   = 0x2A,
-        KEY_BACKSLASH = 0x2B,
-        KEY_Z        = 0x2C,
-        KEY_X        = 0x2D,
-        KEY_C        = 0x2E,
-        KEY_V        = 0x2F,
-        KEY_B        = 0x30,
-        KEY_N        = 0x31,
-        KEY_M        = 0x32,
-        KEY_COMMA    = 0x33,
-        KEY_PERIOD   = 0x34,
-        KEY_SLASH    = 0x35,
-        KEY_RSHIFT   = 0x36,
-
-        KEY_PRTSCN   = 0x37,
-        KEY_ALT      = 0x38,
-        KEY_SPACE    = 0x39,
-        KEY_CAPS     = 0x3A,
-
-        KEY_F1       = 0x3B,
-        KEY_F2       = 0x3C,
-        KEY_F3       = 0x3D,
-        KEY_F4       = 0x3E,
-        KEY_F5       = 0x3F,
-        KEY_F6       = 0x40,
-        KEY_F7       = 0x41,
-        KEY_F8       = 0x42,
-        KEY_F9       = 0x43,
-        KEY_F10      = 0x44,
-        KEY_NUM      = 0x45,
-        KEY_SCROLL   = 0x46,
-
-        KEY_HOME     = 0x47,
-        KEY_UP       = 0x48,
-        KEY_PGUP     = 0x49,
-        KEY_MINUS    = 0x4A,
-        KEY_LEFT     = 0x4B,
-        KEY_CENTRE   = 0x4C,
-        KEY_RIGHT    = 0x4D,
-        KEY_PLUS     = 0x4E,
-        KEY_END      = 0x4F,
-        KEY_DOWN     = 0x50,
-        KEY_PGDN     = 0x51,
-        KEY_INS      = 0x52,
-        KEY_DEL      = 0x53
-#endif
-    }
-    return keysym;
-}
-#endif
-
 class GLWindow
 {
 public:
-    GLWindow();
+    GLWindow ( char* aFilename );
     ~GLWindow();
     bool Create ( Display* dpy );
     void Destroy();
@@ -200,24 +122,23 @@ private:
     GLXContext ctx;
     Colormap cmap;
     Window window;
-    uint32_t width;
-    uint32_t height;
-    AeonGUI::OpenGLRenderer renderer;
-    AeonGUI::Image* image;
-    AeonGUI::Font* font;
-    AeonGUI::MainWindow* mainwindow;
+    uint32_t mWidth;
+    uint32_t mHeight;
+    GLuint mProgram{};
+    GLuint mVAO{};
+    GLuint mScreenQuad{};
+    GLuint mScreenTexture{};
+    AeonGUI::Window mWindow;
 };
 
-GLWindow::GLWindow() :
+GLWindow::GLWindow ( char* aFilename ) :
     display ( NULL ),
     ctx ( 0 ),
     cmap ( 0 ),
     window ( 0 ),
-    width ( 0 ),
-    height ( 0 ),
-    image ( NULL ),
-    font ( NULL ),
-    mainwindow ( NULL )
+    mWidth ( 800 ),
+    mHeight ( 600 ),
+    mWindow{aFilename ? aFilename : "", static_cast<uint32_t> ( mWidth ), static_cast<uint32_t> ( mHeight ) }
 {}
 
 bool GLWindow::Create ( Display* dpy )
@@ -310,7 +231,7 @@ bool GLWindow::Create ( Display* dpy )
 
     printf ( "Creating window\n" );
     window = XCreateWindow ( display, RootWindow ( display, vi->screen ),
-                             0, 0, 800, 600, 0, vi->depth, InputOutput,
+                             0, 0, mWidth, mHeight, 0, vi->depth, InputOutput,
                              vi->visual,
                              CWBorderPixel | CWColormap | CWEventMask, &swa );
     if ( !window )
@@ -342,8 +263,8 @@ bool GLWindow::Create ( Display* dpy )
     {
         int context_attribs[] =
         {
-            GLX_CONTEXT_MAJOR_VERSION_ARB, 3,
-            GLX_CONTEXT_MINOR_VERSION_ARB, 2,
+            GLX_CONTEXT_MAJOR_VERSION_ARB, 4,
+            GLX_CONTEXT_MINOR_VERSION_ARB, 5,
             GLX_CONTEXT_PROFILE_MASK_ARB, GLX_CONTEXT_CORE_PROFILE_BIT_ARB,
             None
         };
@@ -378,28 +299,158 @@ bool GLWindow::Create ( Display* dpy )
     printf ( "Making context current\n" );
     glXMakeCurrent ( display, window, ctx );
 
+    GLGETPROCADDRESS ( PFNGLISPROGRAMPROC, glIsProgram );
+    GLGETPROCADDRESS ( PFNGLISSHADERPROC, glIsShader );
+    GLGETPROCADDRESS ( PFNGLCREATEPROGRAMPROC, glCreateProgram );
+    GLGETPROCADDRESS ( PFNGLCREATESHADERPROC, glCreateShader );
+    GLGETPROCADDRESS ( PFNGLCOMPILESHADERPROC, glCompileShader );
+    GLGETPROCADDRESS ( PFNGLDETACHSHADERPROC, glDetachShader );
+    GLGETPROCADDRESS ( PFNGLDELETESHADERPROC, glDeleteShader );
+    GLGETPROCADDRESS ( PFNGLDELETEPROGRAMPROC, glDeleteProgram );
+    GLGETPROCADDRESS ( PFNGLATTACHSHADERPROC, glAttachShader );
+    GLGETPROCADDRESS ( PFNGLSHADERSOURCEPROC, glShaderSource );
+    GLGETPROCADDRESS ( PFNGLUSEPROGRAMPROC, glUseProgram );
+    GLGETPROCADDRESS ( PFNGLLINKPROGRAMPROC, glLinkProgram );
+    GLGETPROCADDRESS ( PFNGLGENVERTEXARRAYSPROC, glGenVertexArrays );
+    GLGETPROCADDRESS ( PFNGLBINDVERTEXARRAYPROC, glBindVertexArray );
+    GLGETPROCADDRESS ( PFNGLGENBUFFERSPROC, glGenBuffers );
+    GLGETPROCADDRESS ( PFNGLBINDBUFFERPROC, glBindBuffer );
+    GLGETPROCADDRESS ( PFNGLBUFFERDATAPROC, glBufferData );
+    GLGETPROCADDRESS ( PFNGLISBUFFERPROC, glIsBuffer );
+    GLGETPROCADDRESS ( PFNGLISVERTEXARRAYPROC, glIsVertexArray );
+    GLGETPROCADDRESS ( PFNGLDELETEBUFFERSPROC, glDeleteBuffers );
+    GLGETPROCADDRESS ( PFNGLDELETEVERTEXARRAYSPROC, glDeleteVertexArrays );
+    GLGETPROCADDRESS ( PFNGLUNIFORM1IPROC, glUniform1i );
+    GLGETPROCADDRESS ( PFNGLGETSHADERIVPROC, glGetShaderiv );
+    GLGETPROCADDRESS ( PFNGLGETSHADERINFOLOGPROC, glGetShaderInfoLog );
+    GLGETPROCADDRESS ( PFNGLENABLEVERTEXATTRIBARRAYPROC, glEnableVertexAttribArray );
+    GLGETPROCADDRESS ( PFNGLVERTEXATTRIBPOINTERPROC, glVertexAttribPointer );
+
     bool running = true;
     XEvent xEvent;
 
-    glViewport ( 0, 0, 800, 600 );
-    glClearColor ( 0, 0, 0, 0 );
-    width = 800;
-    height = 600;
-    mainwindow = new AeonGUI::MainWindow ();
-    image = new AeonGUI::Image;
-    image->Load ( logo_width, logo_height, AeonGUI::Image::RGBA, AeonGUI::Image::BYTE, logo_data );
-    font = new AeonGUI::Font ();
-    font->Load ( Vera.data, Vera.size );
-    renderer.Initialize ( );
-    renderer.ChangeScreenSize ( 800, 600 );
-    renderer.SetFont ( font );
-    std::wstring hello ( L"Hello World" );
-    mainwindow->SetCaption ( hello.c_str() );
-    renderer.AddWidget ( mainwindow );
+    glClearColor ( 1, 1, 1, 1 );
+    glViewport ( 0, 0, mWidth, mHeight );
+    glBlendFunc ( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
+    OPENGL_CHECK_ERROR;
+    glEnable ( GL_BLEND );
+    OPENGL_CHECK_ERROR;
+
+    GLint compile_status{};
+    mProgram = glCreateProgram();
+    OPENGL_CHECK_ERROR;
+    GLuint vertex_shader = glCreateShader ( GL_VERTEX_SHADER );
+    OPENGL_CHECK_ERROR;
+    glShaderSource ( vertex_shader, 1, &vertex_shader_code_ptr, &vertex_shader_len );
+    OPENGL_CHECK_ERROR;
+    glCompileShader ( vertex_shader );
+    OPENGL_CHECK_ERROR;
+    glGetShaderiv ( vertex_shader, GL_COMPILE_STATUS, &compile_status );
+    OPENGL_CHECK_ERROR;
+    if ( compile_status != GL_TRUE )
+    {
+        GLint info_log_len;
+        glGetShaderiv ( vertex_shader, GL_INFO_LOG_LENGTH, &info_log_len );
+        OPENGL_CHECK_ERROR;
+        std::string log_string;
+        log_string.resize ( info_log_len );
+        if ( info_log_len > 1 )
+        {
+            glGetShaderInfoLog ( vertex_shader, info_log_len, nullptr, const_cast<GLchar*> ( log_string.data() ) );
+            OPENGL_CHECK_ERROR;
+            std::cout << vertex_shader_code << std::endl;
+            std::cout << log_string << std::endl;
+        }
+    }
+    glAttachShader ( mProgram, vertex_shader );
+    OPENGL_CHECK_ERROR
+    //-------------------------
+    uint32_t fragment_shader = glCreateShader ( GL_FRAGMENT_SHADER );
+    OPENGL_CHECK_ERROR
+    glShaderSource ( fragment_shader, 1, &fragment_shader_code_ptr, &fragment_shader_len );
+    OPENGL_CHECK_ERROR
+    glCompileShader ( fragment_shader );
+    OPENGL_CHECK_ERROR;
+    glGetShaderiv ( fragment_shader, GL_COMPILE_STATUS, &compile_status );
+    OPENGL_CHECK_ERROR;
+    if ( compile_status != GL_TRUE )
+    {
+        GLint info_log_len;
+        glGetShaderiv ( fragment_shader, GL_INFO_LOG_LENGTH, &info_log_len );
+        OPENGL_CHECK_ERROR;
+        std::string log_string;
+        log_string.resize ( info_log_len );
+        if ( info_log_len > 1 )
+        {
+            glGetShaderInfoLog ( fragment_shader, info_log_len, nullptr, const_cast<GLchar*> ( log_string.data() ) );
+            OPENGL_CHECK_ERROR;
+            std::cout << fragment_shader_code << std::endl;
+            std::cout << log_string << std::endl;
+        }
+    }
+    glAttachShader ( mProgram, fragment_shader );
+    OPENGL_CHECK_ERROR;
+    //-------------------------
+    glLinkProgram ( mProgram );
+    OPENGL_CHECK_ERROR;
+    glDetachShader ( mProgram, vertex_shader );
+    OPENGL_CHECK_ERROR;
+    glDetachShader ( mProgram, fragment_shader );
+    OPENGL_CHECK_ERROR;
+    glDeleteShader ( vertex_shader );
+    OPENGL_CHECK_ERROR;
+    glDeleteShader ( fragment_shader );
+    OPENGL_CHECK_ERROR;
+    glUseProgram ( mProgram );
+    OPENGL_CHECK_ERROR;
+    glUniform1i ( 0, 0 );
+    OPENGL_CHECK_ERROR;
+
+    //---------------------------------------------------------------------------
+    glGenVertexArrays ( 1, &mVAO );
+    OPENGL_CHECK_ERROR;
+    glBindVertexArray ( mVAO );
+    OPENGL_CHECK_ERROR;
+    glGenBuffers ( 1, &mScreenQuad );
+    OPENGL_CHECK_ERROR;
+    glBindBuffer ( GL_ARRAY_BUFFER, mScreenQuad );
+    OPENGL_CHECK_ERROR;
+    glBufferData ( GL_ARRAY_BUFFER, vertex_size, vertices, GL_STATIC_DRAW );
+    OPENGL_CHECK_ERROR;
+    glEnableVertexAttribArray ( 0 );
+    OPENGL_CHECK_ERROR;
+    glVertexAttribPointer ( 0, 2, GL_FLOAT, GL_FALSE, sizeof ( float ) * 4, 0 );
+    OPENGL_CHECK_ERROR;
+    glEnableVertexAttribArray ( 1 );
+    OPENGL_CHECK_ERROR;
+    glVertexAttribPointer ( 1, 2, GL_FLOAT, GL_FALSE, sizeof ( float ) * 4, reinterpret_cast<const void*> ( sizeof ( float ) * 2 ) );
+    OPENGL_CHECK_ERROR;
+
+    //---------------------------------------------------------------------------
+    glGenTextures ( 1, &mScreenTexture );
+    OPENGL_CHECK_ERROR;
+    glBindTexture ( GL_TEXTURE_2D, mScreenTexture );
+    OPENGL_CHECK_ERROR;
+    glTexImage2D ( GL_TEXTURE_2D,
+                   0,
+                   GL_RGBA,
+                   mWidth,
+                   mHeight,
+                   0,
+                   GL_BGRA,
+                   GL_UNSIGNED_INT_8_8_8_8_REV,
+                   mWindow.GetPixels() );
+    OPENGL_CHECK_ERROR;
+    glTexParameteri ( GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST );
+    OPENGL_CHECK_ERROR;
+    glTexParameteri ( GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST );
+    OPENGL_CHECK_ERROR;
+    glActiveTexture ( GL_TEXTURE0 );
+    OPENGL_CHECK_ERROR;
 
     timespec current_time;
     clock_gettime ( CLOCK_REALTIME, &current_time );
-    timespec last_time = current_time;
+    static timespec last_time = current_time;
     float delta;
     while ( running )
     {
@@ -419,10 +470,24 @@ bool GLWindow::Create ( Display* dpy )
             case MotionNotify:
                 break;
             case ConfigureNotify:
-                width = xEvent.xconfigure.width;
-                height = xEvent.xconfigure.height;
-                glViewport ( 0, 0, width, height );
-                renderer.ChangeScreenSize ( width, height );
+                mWidth = xEvent.xconfigure.width;
+                mHeight = xEvent.xconfigure.height;
+                glViewport ( 0, 0, mWidth, mHeight );
+                OPENGL_CHECK_ERROR;
+                mWindow.ResizeViewport ( static_cast<size_t> ( mWidth ), static_cast<size_t> ( mHeight ) );
+                std::cout << "Width: " << mWindow.GetWidth() << std::endl;
+                std::cout << "Height: " << mWindow.GetHeight() << std::endl;
+                std::cout << "Stride: " << mWindow.GetStride() << std::endl;
+                glTexImage2D ( GL_TEXTURE_2D,
+                               0,
+                               GL_RGBA,
+                               mWidth,
+                               mHeight,
+                               0,
+                               GL_BGRA,
+                               GL_UNSIGNED_INT_8_8_8_8_REV,
+                               mWindow.GetPixels() );
+                OPENGL_CHECK_ERROR;
                 break;
             case ClientMessage:
                 if ( static_cast<Atom> ( xEvent.xclient.data.l[0] ) == wm_delete_window )
@@ -441,14 +506,25 @@ bool GLWindow::Create ( Display* dpy )
         {
             delta = 1.0f / 30.0f;
         }
-
         last_time = current_time;
+
         glClear ( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT );
-        const AeonGUI::Color color ( 0xFFFFFFFF );
-        renderer.BeginRender();
-        renderer.RenderWidgets();
-        renderer.DrawImage ( image, static_cast<uint32_t> ( width - logo_width ), static_cast<uint32_t> ( height - logo_height ) );
-        renderer.EndRender();
+        glUseProgram ( mProgram );
+        glBindVertexArray ( mVAO );
+        glDisable ( GL_DEPTH_TEST );
+        mWindow.Draw();
+        glBindTexture ( GL_TEXTURE_2D, mScreenTexture );
+        glTexImage2D ( GL_TEXTURE_2D,
+                       0,
+                       GL_RGBA,
+                       static_cast<GLsizei> ( mWindow.GetWidth() ),
+                       static_cast<GLsizei> ( mWindow.GetHeight() ),
+                       0,
+                       GL_BGRA,
+                       GL_UNSIGNED_INT_8_8_8_8_REV,
+                       mWindow.GetPixels() );
+        glDrawArrays ( GL_TRIANGLE_FAN, 0, 4 );
+
         glXSwapBuffers ( display, window );
     }
     return true;
@@ -456,24 +532,6 @@ bool GLWindow::Create ( Display* dpy )
 
 void GLWindow::Destroy()
 {
-    if ( mainwindow != NULL )
-    {
-        renderer.RemoveWidget ( mainwindow );
-        delete mainwindow;
-        mainwindow = NULL;
-    }
-    if ( image != NULL )
-    {
-        delete image;
-        image = NULL;
-    }
-    if ( font != NULL )
-    {
-        delete font;
-        font = NULL;
-    }
-    renderer.Finalize();
-
     if ( display != NULL )
     {
         glXMakeCurrent ( display, 0, 0 );
@@ -504,7 +562,7 @@ GLWindow::~GLWindow()
 
 int main ( int argc, char ** argv )
 {
-    GLWindow glWindow;
+    GLWindow glWindow ( ( argc > 1 ) ? argv[1] : nullptr );
     int glx_major, glx_minor;
 
     Display* display = XOpenDisplay ( 0 );
