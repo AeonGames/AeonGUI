@@ -1,5 +1,5 @@
 /*
-Copyright (C) 2019 Rodrigo Jose Hernandez Cordoba
+Copyright (C) 2019,2020 Rodrigo Jose Hernandez Cordoba
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -50,6 +50,7 @@ namespace AeonGUI
         DLL const char* GetTagName() const;
         DLL bool HasAttr ( const char* aAttrName ) const;
         DLL const char* GetAttr ( const char* aAttrName ) const;
+        DLL double GetAttrAsDouble ( const char* aAttrName, double aDefault = 0 ) const;
         DLL const char* GetContent () const;
         DLL virtual void DrawStart ( Canvas& aCanvas ) const;
         DLL virtual void DrawFinish ( Canvas& aCanvas ) const;

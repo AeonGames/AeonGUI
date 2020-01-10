@@ -1,5 +1,5 @@
 /******************************************************************************
-Copyright (C) 2010-2013,2019 Rodrigo Hernandez Cordoba
+Copyright (C) 2010-2013,2019,2020 Rodrigo Hernandez Cordoba
 
    Licensed under the Apache License, Version 2.0 (the "License");
    you may not use this file except in compliance with the License.
@@ -70,6 +70,11 @@ namespace AeonGUI
     const char* Element::GetAttr ( const char* aAttrName ) const
     {
         return reinterpret_cast<const char*> ( xmlGetProp ( reinterpret_cast<xmlNodePtr> ( mXmlElementPtr ), reinterpret_cast<const xmlChar*> ( aAttrName ) ) );
+    }
+
+    double Element::GetAttrAsDouble ( const char* aAttrName, double aDefault ) const
+    {
+        return ( HasAttr ( aAttrName ) ) ? std::stod ( GetAttr ( aAttrName ) ) : aDefault;
     }
 
     const char* Element::GetContent () const
