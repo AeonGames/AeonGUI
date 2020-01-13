@@ -54,7 +54,8 @@ namespace AeonGUI
                     /// 8. perform an absolute vertical lineto parameter y+ry
                     static_cast<uint64_t> ( 'V' ), y + ry,
                     /// 9. if both rx and ry are greater than zero, perform an absolute elliptical arc operation with a segment-completing close path operation, using the same parameters as previously.
-
+                    // 10. close path.
+                    static_cast<uint64_t> ( 'Z' ),
                 };
                 mPath.Construct ( path );
             }
@@ -64,6 +65,9 @@ namespace AeonGUI
         }
         void Rect::DrawStart ( Canvas& aCanvas ) const
         {
+            // Default Workaround
+            aCanvas.SetFillColor ( black );
+            /// @todo All these should probably have explicit defaults set.
             for ( auto& i : mAttributeMap )
             {
                 if ( i.first == "fill" )

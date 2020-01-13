@@ -33,9 +33,9 @@
      borderopacity="1.0"
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
-     inkscape:zoom="1.4"
-     inkscape:cx="317.5"
-     inkscape:cy="333.93493"
+     inkscape:zoom="1"
+     inkscape:cx="288.5"
+     inkscape:cy="313.57397"
      inkscape:document-units="mm"
      inkscape:current-layer="layer1"
      showgrid="false"
@@ -53,35 +53,34 @@
         <dc:format>image/svg+xml</dc:format>
         <dc:type
            rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
-        <dc:title></dc:title>
+        <dc:title />
       </cc:Work>
     </rdf:RDF>
   </metadata>
   <g
      inkscape:label="Layer 1"
      inkscape:groupmode="layer"
-     id="layer1"
-     transform="translate(0,-138.24998)">
+     id="layer1">
     <rect
        id="rectangle"
        width="32.505951"
        height="13.79613"
        x="16.441965"
-       y="163.00743"
+       y="33.007431"
        style="stroke-width:0.26458332"
        inkscape:label="#rectangle" />
     <ellipse
        id="ellipse"
        cx="68.130211"
-       cy="169.71652"
+       cy="39.716522"
        rx="16.725447"
        ry="6.7090774"
        style="stroke-width:0.26458332"
        inkscape:label="#ellipse" />
     <circle
-       id="path3751"
+       id="circle"
        cx="104.60491"
-       cy="170.0945"
+       cy="40.094498"
        r="13.701636"
        style="stroke-width:0.26458332" />
   </g>
