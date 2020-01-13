@@ -80,6 +80,8 @@ if(CMAKE_GENERATOR MATCHES "(MSYS|Unix) Makefiles")
   endforeach()
   endif()
 
+  configure_file("${CMAKE_SOURCE_DIR}/cmake/cmake-kits.json.in"
+                 "${CMAKE_SOURCE_DIR}/.vscode/cmake-kits.json")
   configure_file("${CMAKE_SOURCE_DIR}/cmake/settings.json.in"
                  "${CMAKE_SOURCE_DIR}/.vscode/settings.json")
   configure_file("${CMAKE_SOURCE_DIR}/cmake/launch.json.in"

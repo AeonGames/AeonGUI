@@ -46,6 +46,7 @@ function(aeongui_configure_duktape)
                     -DDUK_USE_FASTINT 
                     -DDUK_USE_FATAL_HANDLER
                     --dll
+            WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}/duktape-2.3.0/tools
             RESULT_VARIABLE DUKTAPE_CONFIG_RESULT)
             if(NOT DUKTAPE_CONFIG_RESULT EQUAL 0)
                 message(FATAL_ERROR "Duktape configuration failed")
