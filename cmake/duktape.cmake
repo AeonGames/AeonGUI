@@ -1,4 +1,4 @@
-# Copyright (C) 2019 Rodrigo Jose Hernandez Cordoba
+# Copyright (C) 2019,2020 Rodrigo Jose Hernandez Cordoba
 #
 # Licensed under the Apache License, Version 2.0 (the "License"); you may not
 # use this file except in compliance with the License. You may obtain a copy of
@@ -58,6 +58,11 @@ function(aeongui_configure_duktape)
     ${CMAKE_BINARY_DIR}/duktape/duktape.h
     ${CMAKE_BINARY_DIR}/duktape/duktape.c)
     set(DUKTAPE_LIBRARY duktape CACHE STRING "Duktape library target")
-    set(DUKTAPE_INCLUDE_DIR ${CMAKE_BINARY_DIR}/duktape CACHE PATH "Duktape include directory")
+    set(DUKTAPE_INCLUDE_DIRS ${CMAKE_BINARY_DIR}/duktape ${CMAKE_SOURCE_DIR}/duktape-2.3.0/extras/console CACHE PATH "Duktape include directory")
 
+    # Console Binding Helper library
+    add_library(duk_console STATIC
+        ${CMAKE_SOURCE_DIR}/duktape-2.3.0/extras/console/duk_console.c
+        ${CMAKE_SOURCE_DIR}/duktape-2.3.0/extras/console/duk_console.h)
+    target_include_directories(duk_console PRIVATE ${DUKTAPE_INCLUDE_DIR})
 endfunction()

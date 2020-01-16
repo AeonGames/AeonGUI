@@ -1,5 +1,5 @@
 /*
-Copyright (C) 2019 Rodrigo Jose Hernandez Cordoba
+Copyright (C) 2019,2020 Rodrigo Jose Hernandez Cordoba
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -15,17 +15,21 @@ limitations under the License.
 */
 
 #include <stdexcept>
+#include <iostream>
 #include "aeongui/Duktape.h"
 #include "duktape.h"
+#include "duk_console.h"
 
 namespace AeonGUI
 {
     Duktape::Duktape() : mDukContext{duk_create_heap_default() }
     {
+        std::cout << "Duktape" << std::endl;
         if ( !mDukContext )
         {
             throw std::runtime_error ( "Failed to create default duktape heap." );
         }
+        duk_console_init ( mDukContext, 0 );
     }
     Duktape::~Duktape()
     {
@@ -34,5 +38,9 @@ namespace AeonGUI
             duk_destroy_heap ( mDukContext );
             mDukContext = nullptr;
         }
+    }
+    void Duktape::Eval ( const std::string& aString )
+    {
+        duk_eval_string_noresult ( mDukContext, aString.c_str() );
     }
 }
