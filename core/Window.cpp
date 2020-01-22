@@ -1,5 +1,5 @@
 /*
-Copyright (C) 2019 Rodrigo Jose Hernandez Cordoba
+Copyright (C) 2019,2020 Rodrigo Jose Hernandez Cordoba
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -23,9 +23,9 @@ namespace AeonGUI
 {
     Window::Window () = default;
     Window::Window ( const std::string aFilename, uint32_t aWidth, uint32_t aHeight ) :
+        mJavaScript{},
         mDocument{aFilename},
-        mCanvas{aWidth, aHeight},
-        mJavaScript{}
+        mCanvas{aWidth, aHeight}
     {
         mDocument.Load ( mJavaScript );
     }

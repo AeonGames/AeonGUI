@@ -29,6 +29,14 @@ namespace AeonGUI
         {
             throw std::runtime_error ( "Failed to create default duktape heap." );
         }
+        // Register window as an alias for the global object
+        duk_eval_string_noresult ( mDukContext,
+                                   R"(
+Object.defineProperty(new Function('return this')(), 'window', {
+    value: new Function('return this')(),
+    writable: false, enumerable: true, configurable: false});
+)");
+        // Register Console
         duk_console_init ( mDukContext, 0 );
     }
     Duktape::~Duktape()
