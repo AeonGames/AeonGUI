@@ -65,5 +65,8 @@ function(aeongui_configure_duktape)
         ${CMAKE_SOURCE_DIR}/duktape-2.3.0/extras/console/duk_console.c
         ${CMAKE_SOURCE_DIR}/duktape-2.3.0/extras/console/duk_console.h)
     target_include_directories(duk_console PRIVATE ${DUKTAPE_INCLUDE_DIR})
+    if(UNIX)
+        target_compile_options(duk_console PRIVATE -fPIC)
+    endif()
     target_link_libraries(duk_console PRIVATE ${DUKTAPE_LIBRARY})
 endfunction()

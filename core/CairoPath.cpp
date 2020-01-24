@@ -1,5 +1,5 @@
 /*
-Copyright (C) 2019 Rodrigo Jose Hernandez Cordoba
+Copyright (C) 2019,2020 Rodrigo Jose Hernandez Cordoba
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -194,6 +194,7 @@ namespace AeonGUI
         /** @todo calculate mPathData size if posible */
         uint64_t last_cmd{};
         Vector2 last_point{0, 0};
+        Vector2 last_move{0, 0};
         Vector2 last_c_ctrl{};
         Vector2 last_q_ctrl{};
         for ( auto i = aCommands.begin(); i != aCommands.end(); )
@@ -202,24 +203,10 @@ namespace AeonGUI
             switch ( std::get<uint64_t> ( * ( i++ ) ) )
             {
             case 'M':
-            {
-                mPathData.emplace_back ( cairo_path_data_t{CAIRO_PATH_MOVE_TO, 2} );
-                last_point = {std::get<double> ( *i ), std::get<double> ( * ( i + 1 ) ) };
-                mPathData.emplace_back ( cairo_path_data_t{.point = {last_point[0], last_point[1]}} );
-                i += 2;
-                while ( i != aCommands.end() && std::holds_alternative<double> ( *i ) )
-                {
-                    mPathData.emplace_back ( cairo_path_data_t{CAIRO_PATH_LINE_TO, 2} );
-                    last_point = {std::get<double> ( *i ), std::get<double> ( * ( i + 1 ) ) };
-                    mPathData.emplace_back ( cairo_path_data_t{.point = {last_point[0], last_point[1]}} );
-                    i += 2;
-                }
-            }
-            break;
             case 'm':
             {
                 mPathData.emplace_back ( cairo_path_data_t{CAIRO_PATH_MOVE_TO, 2} );
-                last_point += {std::get<double> ( *i ), std::get<double> ( * ( i + 1 ) ) };
+                last_move = last_point = ( ( cmd == 'm' ) ? last_point : Vector2{0, 0} ) + Vector2{std::get<double> ( *i ), std::get<double> ( * ( i + 1 ) ) };
                 mPathData.emplace_back ( cairo_path_data_t{.point = {last_point[0], last_point[1]}} );
                 i += 2;
                 while ( i != aCommands.end() && std::holds_alternative<double> ( *i ) )
@@ -234,21 +221,16 @@ namespace AeonGUI
             case 'Z':
             case 'z':
                 mPathData.emplace_back ( cairo_path_data_t{CAIRO_PATH_CLOSE_PATH, 1} );
+                mPathData.emplace_back ( cairo_path_data_t{CAIRO_PATH_MOVE_TO, 2} );
+                last_point = last_move;
+                mPathData.emplace_back ( cairo_path_data_t{.point = {last_point[0], last_point[1]}} );
                 break;
             case 'L':
-                while ( i != aCommands.end() && std::holds_alternative<double> ( *i ) )
-                {
-                    mPathData.emplace_back ( cairo_path_data_t{CAIRO_PATH_LINE_TO, 2} );
-                    last_point = {std::get<double> ( *i ), std::get<double> ( * ( i + 1 ) ) };
-                    mPathData.emplace_back ( cairo_path_data_t{.point = {last_point[0], last_point[1]}} );
-                    i += 2;
-                }
-                break;
             case 'l':
                 while ( i != aCommands.end() && std::holds_alternative<double> ( *i ) )
                 {
                     mPathData.emplace_back ( cairo_path_data_t{CAIRO_PATH_LINE_TO, 2} );
-                    last_point += {std::get<double> ( *i ), std::get<double> ( * ( i + 1 ) ) };
+                    last_point = ( ( cmd == 'l' ) ? last_point : Vector2{0, 0} ) + Vector2{std::get<double> ( *i ), std::get<double> ( * ( i + 1 ) ) };
                     mPathData.emplace_back ( cairo_path_data_t{.point = {last_point[0], last_point[1]}} );
                     i += 2;
                 }
