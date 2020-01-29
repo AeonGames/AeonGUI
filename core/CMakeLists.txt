@@ -43,8 +43,9 @@ set(AEONGUI_SOURCES
         Color.cpp
         elements/SVG.cpp
         elements/G.cpp
-        elements/Path.cpp
-        elements/Rect.cpp
+        elements/SVGPathElement.cpp
+        elements/SVGGeometryElement.cpp
+        elements/SVGRectElement.cpp
         elements/Line.cpp
         elements/Polyline.cpp
         elements/Polygon.cpp
@@ -53,8 +54,9 @@ set(AEONGUI_SOURCES
         elements/Script.cpp
         elements/SVG.h
         elements/G.h
-        elements/Path.h
-        elements/Rect.h
+        elements/SVGPathElement.h
+        elements/SVGGeometryElement.h
+        elements/SVGRectElement.h
         elements/Line.h
         elements/Polyline.h
         elements/Polygon.h

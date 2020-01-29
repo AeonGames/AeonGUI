@@ -1,5 +1,5 @@
 /*
-Copyright (C) 2019 Rodrigo Jose Hernandez Cordoba
+Copyright (C) 2020 Rodrigo Jose Hernandez Cordoba
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -14,31 +14,19 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 #include <iostream>
-#include "Path.h"
-#include "aeongui/Canvas.h"
+#include "SVGGeometryElement.h"
 
 namespace AeonGUI
 {
     namespace Elements
     {
-        int ParsePathData ( std::vector<DrawType>& aPath, const char* s );
-        Path::Path ( xmlElementPtr aXmlElementPtr ) : Element ( aXmlElementPtr ), mPath{}
+        SVGGeometryElement::SVGGeometryElement ( xmlElementPtr aXmlElementPtr ) : Element ( aXmlElementPtr ), mPath{}
         {
-            if ( HasAttr ( "d" ) )
-            {
-                std::vector<DrawType> path;
-                if ( int error = ParsePathData ( path, GetAttr ( "d" ) ) )
-                {
-                    std::cerr << error << std::endl;
-                }
-                mPath.Construct ( path );
-            }
         }
-
-        Path::~Path() = default;
-
-        void Path::DrawStart ( Canvas& aCanvas ) const
+        SVGGeometryElement::~SVGGeometryElement() = default;
+        void SVGGeometryElement::DrawStart ( Canvas& aCanvas ) const
         {
+            /// @todo All these should probably have explicit defaults set.
             for ( auto& i : mAttributeMap )
             {
                 if ( i.first == "fill" )

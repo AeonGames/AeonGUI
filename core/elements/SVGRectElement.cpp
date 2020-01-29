@@ -15,13 +15,13 @@ limitations under the License.
 */
 #include <iostream>
 #include <vector>
-#include "Rect.h"
+#include "SVGRectElement.h"
 
 namespace AeonGUI
 {
     namespace Elements
     {
-        Rect::Rect ( xmlElementPtr aXmlElementPtr ) : Element ( aXmlElementPtr )
+        SVGRectElement::SVGRectElement ( xmlElementPtr aXmlElementPtr ) : SVGGeometryElement ( aXmlElementPtr )
         {
             std::cout << "Rect" << std::endl;
             double width = GetAttrAsDouble ( "width" );
@@ -60,38 +60,7 @@ namespace AeonGUI
                 mPath.Construct ( path );
             }
         }
-        Rect::~Rect()
-        {
-        }
-        void Rect::DrawStart ( Canvas& aCanvas ) const
-        {
-            // Default Workaround
-            aCanvas.SetFillColor ( black );
-            /// @todo All these should probably have explicit defaults set.
-            for ( auto& i : mAttributeMap )
-            {
-                if ( i.first == "fill" )
-                {
-                    aCanvas.SetFillColor ( std::get<Color> ( i.second ) );
-                }
-                else if ( i.first == "stroke" )
-                {
-                    aCanvas.SetStrokeColor ( std::get<Color> ( i.second ) );
-                }
-                else if ( i.first == "stroke-width" )
-                {
-                    aCanvas.SetStrokeWidth ( std::get<double> ( i.second ) );
-                }
-                else if ( i.first == "stroke-opacity" )
-                {
-                    aCanvas.SetStrokeOpacity ( std::get<double> ( i.second ) );
-                }
-                else if ( i.first == "fill-opacity" )
-                {
-                    aCanvas.SetFillOpacity ( std::get<double> ( i.second ) );
-                }
-            }
-            aCanvas.Draw ( mPath );
-        }
+
+        SVGRectElement::~SVGRectElement() = default;
     }
 }

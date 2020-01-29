@@ -13,26 +13,28 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 */
-#ifndef AEONGUI_ELEMENTS_RECT_H
-#define AEONGUI_ELEMENTS_RECT_H
-
-#include "aeongui/Element.h"
-// Path type should be selectable and should match Canvas type
-#include "aeongui/CairoPath.h"
+#include <iostream>
+#include "SVGPathElement.h"
+#include "aeongui/Canvas.h"
 
 namespace AeonGUI
 {
     namespace Elements
     {
-        class Rect : public Element
+        int ParsePathData ( std::vector<DrawType>& aPath, const char* s );
+        SVGPathElement::SVGPathElement ( xmlElementPtr aXmlElementPtr ) : SVGGeometryElement ( aXmlElementPtr )
         {
-        public:
-            Rect ( xmlElementPtr aXmlElementPtr );
-            ~Rect() final;
-            void DrawStart ( Canvas& aCanvas ) const final;
-        private:
-            CairoPath mPath;
-        };
+            if ( HasAttr ( "d" ) )
+            {
+                std::vector<DrawType> path;
+                if ( int error = ParsePathData ( path, GetAttr ( "d" ) ) )
+                {
+                    std::cerr << error << std::endl;
+                }
+                mPath.Construct ( path );
+            }
+        }
+
+        SVGPathElement::~SVGPathElement() = default;
     }
 }
-#endif

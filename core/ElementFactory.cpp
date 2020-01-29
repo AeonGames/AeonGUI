@@ -1,5 +1,5 @@
 /*
-Copyright (C) 2019 Rodrigo Jose Hernandez Cordoba
+Copyright (C) 2019,2020 Rodrigo Jose Hernandez Cordoba
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -27,8 +27,8 @@ limitations under the License.
 #include "aeongui/ElementFactory.h"
 #include "elements/SVG.h"
 #include "elements/G.h"
-#include "elements/Path.h"
-#include "elements/Rect.h"
+#include "elements/SVGPathElement.h"
+#include "elements/SVGRectElement.h"
 #include "elements/Line.h"
 #include "elements/Polyline.h"
 #include "elements/Polygon.h"
@@ -59,14 +59,14 @@ namespace AeonGUI
             "path",
             [] ( xmlElementPtr aXmlElementPtr )
             {
-                return std::make_unique<Elements::Path> ( aXmlElementPtr );
+                return std::make_unique<Elements::SVGPathElement> ( aXmlElementPtr );
             }
         },
         {
             "rect",
             [] ( xmlElementPtr aXmlElementPtr )
             {
-                return std::make_unique<Elements::Rect> ( aXmlElementPtr );
+                return std::make_unique<Elements::SVGRectElement> ( aXmlElementPtr );
             }
         },
         {
