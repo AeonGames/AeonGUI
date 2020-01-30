@@ -13,25 +13,20 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 */
-#ifndef AEONGUI_ELEMENTS_ELLIPSE_H
-#define AEONGUI_ELEMENTS_ELLIPSE_H
+#ifndef AEONGUI_SVGPOLYLINEELEMENT_H
+#define AEONGUI_SVGPOLYLINEELEMENT_H
 
-#include "aeongui/Element.h"
-// Path type should be selectable and should match Canvas type
-#include "aeongui/CairoPath.h"
+#include "SVGGeometryElement.h"
 
 namespace AeonGUI
 {
     namespace Elements
     {
-        class Ellipse : public Element
+        class SVGPolylineElement : public SVGGeometryElement
         {
         public:
-            Ellipse ( xmlElementPtr aXmlElementPtr );
-            ~Ellipse() final;
-            void DrawStart ( Canvas& aCanvas ) const final;
-        private:
-            CairoPath mPath;
+            SVGPolylineElement ( xmlElementPtr aXmlElementPtr );
+            ~SVGPolylineElement() final;
         };
     }
 }

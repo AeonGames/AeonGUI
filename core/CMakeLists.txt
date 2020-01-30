@@ -46,22 +46,22 @@ set(AEONGUI_SOURCES
         elements/SVGPathElement.cpp
         elements/SVGGeometryElement.cpp
         elements/SVGRectElement.cpp
-        elements/Line.cpp
-        elements/Polyline.cpp
-        elements/Polygon.cpp
-        elements/Circle.cpp
-        elements/Ellipse.cpp
+        elements/SVGLineElement.cpp
+        elements/SVGPolylineElement.cpp
+        elements/SVGPolygonElement.cpp
+        elements/SVGCircleElement.cpp
+        elements/SVGEllipseElement.cpp
         elements/Script.cpp
         elements/SVG.h
         elements/G.h
         elements/SVGPathElement.h
         elements/SVGGeometryElement.h
         elements/SVGRectElement.h
-        elements/Line.h
-        elements/Polyline.h
-        elements/Polygon.h
-        elements/Circle.h
-        elements/Ellipse.h
+        elements/SVGLineElement.h
+        elements/SVGPolylineElement.h
+        elements/SVGPolygonElement.h
+        elements/SVGCircleElement.h
+        elements/SVGEllipseElement.h
         elements/Script.h
 )
 

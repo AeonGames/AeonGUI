@@ -1,5 +1,5 @@
 /*
-Copyright (C) 2019 Rodrigo Jose Hernandez Cordoba
+Copyright (C) 2019,2020 Rodrigo Jose Hernandez Cordoba
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -13,21 +13,21 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 */
-#include "Polygon.h"
+#ifndef AEONGUI_ELEMENTS_LINE_H
+#define AEONGUI_ELEMENTS_LINE_H
+
+#include "SVGGeometryElement.h"
 
 namespace AeonGUI
 {
     namespace Elements
     {
-
-        Polygon::Polygon ( xmlElementPtr aXmlElementPtr ) : Element ( aXmlElementPtr )
+        class SVGLineElement : public SVGGeometryElement
         {
-        }
-        Polygon::~Polygon()
-        {
-        }
-        void Polygon::DrawStart ( Canvas& aCanvas ) const
-        {
-        }
+        public:
+            SVGLineElement ( xmlElementPtr aXmlElementPtr );
+            ~SVGLineElement() final;
+        };
     }
 }
+#endif

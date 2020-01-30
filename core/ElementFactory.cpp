@@ -29,11 +29,11 @@ limitations under the License.
 #include "elements/G.h"
 #include "elements/SVGPathElement.h"
 #include "elements/SVGRectElement.h"
-#include "elements/Line.h"
-#include "elements/Polyline.h"
-#include "elements/Polygon.h"
-#include "elements/Circle.h"
-#include "elements/Ellipse.h"
+#include "elements/SVGLineElement.h"
+#include "elements/SVGPolylineElement.h"
+#include "elements/SVGPolygonElement.h"
+#include "elements/SVGCircleElement.h"
+#include "elements/SVGEllipseElement.h"
 #include "elements/Script.h"
 
 namespace AeonGUI
@@ -73,35 +73,35 @@ namespace AeonGUI
             "line",
             [] ( xmlElementPtr aXmlElementPtr )
             {
-                return std::make_unique<Elements::Line> ( aXmlElementPtr );
+                return std::make_unique<Elements::SVGLineElement> ( aXmlElementPtr );
             }
         },
         {
             "polyline",
             [] ( xmlElementPtr aXmlElementPtr )
             {
-                return std::make_unique<Elements::Polyline> ( aXmlElementPtr );
+                return std::make_unique<Elements::SVGPolylineElement> ( aXmlElementPtr );
             }
         },
         {
             "polygon",
             [] ( xmlElementPtr aXmlElementPtr )
             {
-                return std::make_unique<Elements::Polygon> ( aXmlElementPtr );
+                return std::make_unique<Elements::SVGPolygonElement> ( aXmlElementPtr );
             }
         },
         {
             "circle",
             [] ( xmlElementPtr aXmlElementPtr )
             {
-                return std::make_unique<Elements::Circle> ( aXmlElementPtr );
+                return std::make_unique<Elements::SVGCircleElement> ( aXmlElementPtr );
             }
         },
         {
             "ellipse",
             [] ( xmlElementPtr aXmlElementPtr )
             {
-                return std::make_unique<Elements::Ellipse> ( aXmlElementPtr );
+                return std::make_unique<Elements::SVGEllipseElement> ( aXmlElementPtr );
             }
         },
         {

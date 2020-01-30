@@ -13,26 +13,18 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 */
-#ifndef AEONGUI_ELEMENTS_CIRCLE_H
-#define AEONGUI_ELEMENTS_CIRCLE_H
-
-#include "aeongui/Element.h"
-// Path type should be selectable and should match Canvas type
-#include "aeongui/CairoPath.h"
+#include "SVGPolygonElement.h"
 
 namespace AeonGUI
 {
     namespace Elements
     {
-        class Circle : public Element
+
+        SVGPolygonElement::SVGPolygonElement ( xmlElementPtr aXmlElementPtr ) : SVGGeometryElement ( aXmlElementPtr )
         {
-        public:
-            Circle ( xmlElementPtr aXmlElementPtr );
-            ~Circle() final;
-            void DrawStart ( Canvas& aCanvas ) const final;
-        private:
-            CairoPath mPath;
-        };
+        }
+        SVGPolygonElement::~SVGPolygonElement()
+        {
+        }
     }
 }
-#endif

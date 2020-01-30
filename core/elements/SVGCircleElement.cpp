@@ -14,13 +14,13 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 #include <iostream>
-#include "Circle.h"
+#include "SVGCircleElement.h"
 
 namespace AeonGUI
 {
     namespace Elements
     {
-        Circle::Circle ( xmlElementPtr aXmlElementPtr ) : Element ( aXmlElementPtr )
+        SVGCircleElement::SVGCircleElement ( xmlElementPtr aXmlElementPtr ) : SVGGeometryElement ( aXmlElementPtr )
         {
             std::cout << "Circle" << std::endl;
             double cx = GetAttrAsDouble ( "cx" );
@@ -51,38 +51,8 @@ namespace AeonGUI
                 mPath.Construct ( path );
             }
         }
-        Circle::~Circle()
+        SVGCircleElement::~SVGCircleElement()
         {
-        }
-        void Circle::DrawStart ( Canvas& aCanvas ) const
-        {
-            // Default Workaround
-            aCanvas.SetFillColor ( black );
-            /// @todo All these should probably have explicit defaults set.
-            for ( auto& i : mAttributeMap )
-            {
-                if ( i.first == "fill" )
-                {
-                    aCanvas.SetFillColor ( std::get<Color> ( i.second ) );
-                }
-                else if ( i.first == "stroke" )
-                {
-                    aCanvas.SetStrokeColor ( std::get<Color> ( i.second ) );
-                }
-                else if ( i.first == "stroke-width" )
-                {
-                    aCanvas.SetStrokeWidth ( std::get<double> ( i.second ) );
-                }
-                else if ( i.first == "stroke-opacity" )
-                {
-                    aCanvas.SetStrokeOpacity ( std::get<double> ( i.second ) );
-                }
-                else if ( i.first == "fill-opacity" )
-                {
-                    aCanvas.SetFillOpacity ( std::get<double> ( i.second ) );
-                }
-            }
-            aCanvas.Draw ( mPath );
         }
     }
 }
