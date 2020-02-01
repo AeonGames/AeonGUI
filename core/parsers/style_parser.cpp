@@ -1,4 +1,4 @@
-/* A Bison parser, made by GNU Bison 3.4.1.  */
+/* A Bison parser, made by GNU Bison 3.4.2.  */
 
 /* Bison implementation for Yacc-like parsers in C
 
@@ -48,7 +48,7 @@
 #define YYBISON 1
 
 /* Bison version.  */
-#define YYBISON_VERSION "3.4.1"
+#define YYBISON_VERSION "3.4.2"
 
 /* Skeleton name.  */
 #define YYSKELETON_NAME "yacc.c"
@@ -75,20 +75,8 @@
 #define yychar          stylechar
 
 /* First part of user prologue.  */
-#line 1 "C:/Code/AeonGUI/core/parsers/style.ypp"
+#line 15 "C:/Code/AeonGUI/core/parsers/style.ypp"
 
-/*
-Copyright (C) 2019 Rodrigo Jose Hernandez Cordoba
-Licensed under the Apache License, Version 2.0 (the "License");
-you may not use this file except in compliance with the License.
-You may obtain a copy of the License at
-http://www.apache.org/licenses/LICENSE-2.0
-Unless required by applicable law or agreed to in writing, software
-distributed under the License is distributed on an "AS IS" BASIS,
-WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-See the License for the specific language governing permissions and
-limitations under the License.
-*/
 #define YY_NO_UNISTD_H 1
 #include <variant>
 #include <string>
@@ -106,7 +94,7 @@ extern "C"
     int styleerror ( AeonGUI::AttributeMap& aAttributeMap, const char *s );
 }
 
-#line 110 "C:/Code/AeonGUI/mingw64/core/style_parser.cpp"
+#line 98 "C:/Code/AeonGUI/mingw64/core/style_parser.cpp"
 
 # ifndef YY_NULLPTR
 #  if defined __cplusplus
@@ -147,6 +135,23 @@ extern "C"
 #if STYLEDEBUG
 extern int styledebug;
 #endif
+/* "%code requires" blocks.  */
+#line 1 "C:/Code/AeonGUI/core/parsers/style.ypp"
+
+/*
+Copyright (C) 2019,2020 Rodrigo Jose Hernandez Cordoba
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+http://www.apache.org/licenses/LICENSE-2.0
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+*/
+
+#line 155 "C:/Code/AeonGUI/mingw64/core/style_parser.cpp"
 
 /* Token type.  */
 #ifndef STYLETOKENTYPE
@@ -464,7 +469,7 @@ static const yytype_uint8 yytranslate[] =
 /* YYRLINE[YYN] -- Source line where rule number YYN was defined.  */
 static const yytype_uint8 yyrline[] =
 {
-    0,    37,    37,    38,    41,    44,    44
+    0,    39,    39,    40,    43,    46,    46
 };
 #endif
 
@@ -647,7 +652,9 @@ yy_symbol_value_print ( FILE *yyo, int yytype, YYSTYPE const * const yyvaluep, A
         YYPRINT ( yyo, yytoknum[yytype], *yyvaluep );
     }
 # endif
+    YY_IGNORE_MAYBE_UNINITIALIZED_BEGIN
     YYUSE ( yytype );
+    YY_IGNORE_MAYBE_UNINITIALIZED_END
 }
 
 
@@ -1296,15 +1303,15 @@ yyreduce:
     switch ( yyn )
     {
     case 4:
-#line 41 "C:/Code/AeonGUI/core/parsers/style.ypp"
+#line 43 "C:/Code/AeonGUI/core/parsers/style.ypp"
         {
             aAttributeMap[std::get<std::string> ( yyvsp[-2] )] = yyvsp[0];
         }
-#line 1249 "C:/Code/AeonGUI/mingw64/core/style_parser.cpp"
+#line 1256 "C:/Code/AeonGUI/mingw64/core/style_parser.cpp"
         break;
 
 
-#line 1253 "C:/Code/AeonGUI/mingw64/core/style_parser.cpp"
+#line 1260 "C:/Code/AeonGUI/mingw64/core/style_parser.cpp"
 
     default:
         break;
@@ -1555,7 +1562,7 @@ yyreturn:
 #endif
     return yyresult;
 }
-#line 45 "C:/Code/AeonGUI/core/parsers/style.ypp"
+#line 47 "C:/Code/AeonGUI/core/parsers/style.ypp"
 
 extern "C"
 {

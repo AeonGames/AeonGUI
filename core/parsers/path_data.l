@@ -1,6 +1,6 @@
 %{
 /*
-Copyright (C) 2019 Rodrigo Jose Hernandez Cordoba
+Copyright (C) 2019,2020 Rodrigo Jose Hernandez Cordoba
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -45,7 +45,6 @@ flag                 0|1
 							dlval = std::strtod(yytext,nullptr);
 							return NUMBER;
 						}
-","                     return ',';
 "M"                     { dlval = static_cast<uint64_t>('M'); return 'M';}
 "m"                     { dlval = static_cast<uint64_t>('m'); return 'm';}
 "Z"                     { dlval = static_cast<uint64_t>('Z'); return 'Z';}
