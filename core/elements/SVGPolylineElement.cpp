@@ -14,13 +14,38 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 #include "SVGPolylineElement.h"
+#include <regex>
+#include <iostream>
 
 namespace AeonGUI
 {
     namespace Elements
     {
+        static const std::regex coord{R"((-?(?:[0-9]*\.[0-9]+(?:[eE][-+]?[0-9]+)?|[0-9]+))[[:space:]]*,?[[:space:]]*(-?(?:[0-9]*\.[0-9]+(?:[eE][-+]?[0-9]+)?|[0-9]+)))"};
         SVGPolylineElement::SVGPolylineElement ( xmlElementPtr aXmlElementPtr ) : SVGGeometryElement ( aXmlElementPtr )
         {
+            std::cout << "Polyline" << std::endl;
+            /// https://www.w3.org/TR/SVG/shapes.html#PolylineElement
+            if ( HasAttr ( "points" ) )
+            {
+                std::vector<DrawType> path;
+                const char* points = GetAttr ( "points" );
+                path.reserve ( ( std::distance ( std::cregex_iterator ( points, points + strlen ( points ) + 1, coord ), std::cregex_iterator() ) * 3 ) );
+                std::cmatch match;
+                std::regex_search ( points, match, coord );
+                points = match.suffix().first;
+                path.emplace_back ( static_cast<uint64_t> ( 'M' ) );
+                path.emplace_back ( std::stod ( match[1] ) );
+                path.emplace_back ( std::stod ( match[2] ) );
+                while ( std::regex_search ( points, match, coord ) )
+                {
+                    path.emplace_back ( static_cast<uint64_t> ( 'L' ) );
+                    path.emplace_back ( std::stod ( match[1] ) );
+                    path.emplace_back ( std::stod ( match[2] ) );
+                    points = match.suffix().first;
+                }
+                mPath.Construct ( path );
+            }
         }
         SVGPolylineElement::~SVGPolylineElement()
         {

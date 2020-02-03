@@ -14,6 +14,7 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 #include "SVGLineElement.h"
+#include <iostream>
 
 namespace AeonGUI
 {
@@ -21,6 +22,22 @@ namespace AeonGUI
     {
         SVGLineElement::SVGLineElement ( xmlElementPtr aXmlElementPtr ) : SVGGeometryElement ( aXmlElementPtr )
         {
+            std::cout << "Line" << std::endl;
+            /**
+             * https://www.w3.org/TR/SVG/shapes.html#LineElement
+            */
+            double x1 = GetAttrAsDouble ( "x1" );
+            double y1 = GetAttrAsDouble ( "y1" );
+            double x2 = GetAttrAsDouble ( "x2" );
+            double y2 = GetAttrAsDouble ( "y2" );
+            std::vector<DrawType> path
+            {
+                /// 1. perform an absolute moveto operation to absolute location (x1,y1)
+                static_cast<uint64_t> ( 'M' ), x1, y1,
+                /// 2. perform an absolute lineto operation to absolute location (x2,y2)
+                static_cast<uint64_t> ( 'L' ), x2, y2,
+            };
+            mPath.Construct ( path );
         }
         SVGLineElement::~SVGLineElement()
         {
