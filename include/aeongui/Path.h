@@ -1,5 +1,5 @@
 /*
-Copyright (C) 2019 Rodrigo Jose Hernandez Cordoba
+Copyright (C) 2019,2020 Rodrigo Jose Hernandez Cordoba
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -28,6 +28,7 @@ namespace AeonGUI
     {
     public:
         virtual void Construct ( const std::vector<DrawType>& aCommands ) = 0;
+        virtual void Construct ( const DrawType* aCommands, size_t aCommandCount ) = 0;
         DLL virtual ~Path() = 0;
     };
 }

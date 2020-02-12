@@ -188,7 +188,13 @@ namespace AeonGUI
     {
         return &mPath;
     }
+
     void CairoPath::Construct ( const std::vector<DrawType>& aCommands )
+    {
+        Construct ( aCommands.data(), aCommands.size() );
+    }
+
+    void CairoPath::Construct ( const DrawType* aCommands, size_t aCommandCount )
     {
         mPathData.clear();
         /** @todo calculate mPathData size if posible */
@@ -197,7 +203,8 @@ namespace AeonGUI
         Vector2 last_move{0, 0};
         Vector2 last_c_ctrl{};
         Vector2 last_q_ctrl{};
-        for ( auto i = aCommands.begin(); i != aCommands.end(); )
+        const DrawType* end = aCommands + aCommandCount;
+        for ( const DrawType* i = aCommands; i != end; )
         {
             uint64_t cmd{std::get<uint64_t> ( * ( i ) ) };
             switch ( std::get<uint64_t> ( * ( i++ ) ) )
@@ -209,7 +216,7 @@ namespace AeonGUI
                 last_move = last_point = ( ( cmd == 'm' ) ? last_point : Vector2{0, 0} ) + Vector2{std::get<double> ( *i ), std::get<double> ( * ( i + 1 ) ) };
                 mPathData.emplace_back ( cairo_path_data_t{.point = {last_point[0], last_point[1]}} );
                 i += 2;
-                while ( i != aCommands.end() && std::holds_alternative<double> ( *i ) )
+                while ( i != end && std::holds_alternative<double> ( *i ) )
                 {
                     mPathData.emplace_back ( cairo_path_data_t{CAIRO_PATH_LINE_TO, 2} );
                     last_point += {std::get<double> ( *i ), std::get<double> ( * ( i + 1 ) ) };
@@ -227,7 +234,7 @@ namespace AeonGUI
                 break;
             case 'L':
             case 'l':
-                while ( i != aCommands.end() && std::holds_alternative<double> ( *i ) )
+                while ( i != end && std::holds_alternative<double> ( *i ) )
                 {
                     mPathData.emplace_back ( cairo_path_data_t{CAIRO_PATH_LINE_TO, 2} );
                     last_point = ( ( cmd == 'l' ) ? last_point : Vector2{0, 0} ) + Vector2{std::get<double> ( *i ), std::get<double> ( * ( i + 1 ) ) };
@@ -236,7 +243,7 @@ namespace AeonGUI
                 }
                 break;
             case 'H':
-                while ( i != aCommands.end() && std::holds_alternative<double> ( *i ) )
+                while ( i != end && std::holds_alternative<double> ( *i ) )
                 {
                     mPathData.emplace_back ( cairo_path_data_t{CAIRO_PATH_LINE_TO, 2} );
                     last_point[0] = std::get<double> ( *i );
@@ -245,7 +252,7 @@ namespace AeonGUI
                 }
                 break;
             case 'h':
-                while ( i != aCommands.end() && std::holds_alternative<double> ( *i ) )
+                while ( i != end && std::holds_alternative<double> ( *i ) )
                 {
                     mPathData.emplace_back ( cairo_path_data_t{CAIRO_PATH_LINE_TO, 2} );
                     last_point[0] += std::get<double> ( *i );
@@ -254,7 +261,7 @@ namespace AeonGUI
                 }
                 break;
             case 'V':
-                while ( i != aCommands.end() && std::holds_alternative<double> ( *i ) )
+                while ( i != end && std::holds_alternative<double> ( *i ) )
                 {
                     mPathData.emplace_back ( cairo_path_data_t{CAIRO_PATH_LINE_TO, 2} );
                     last_point[1] = std::get<double> ( *i );
@@ -263,7 +270,7 @@ namespace AeonGUI
                 }
                 break;
             case 'v':
-                while ( i != aCommands.end() && std::holds_alternative<double> ( *i ) )
+                while ( i != end && std::holds_alternative<double> ( *i ) )
                 {
                     mPathData.emplace_back ( cairo_path_data_t{CAIRO_PATH_LINE_TO, 2} );
                     last_point[1] += std::get<double> ( *i );
@@ -272,7 +279,7 @@ namespace AeonGUI
                 }
                 break;
             case 'C':
-                while ( i != aCommands.end() && std::holds_alternative<double> ( *i ) )
+                while ( i != end && std::holds_alternative<double> ( *i ) )
                 {
                     last_c_ctrl = {std::get<double> ( * ( i + 2 ) ), std::get<double> ( * ( i + 3 ) ) };
                     last_point  = {std::get<double> ( * ( i + 4 ) ), std::get<double> ( * ( i + 5 ) ) };
@@ -284,7 +291,7 @@ namespace AeonGUI
                 }
                 break;
             case 'c':
-                while ( i != aCommands.end() && std::holds_alternative<double> ( *i ) )
+                while ( i != end && std::holds_alternative<double> ( *i ) )
                 {
                     mPathData.emplace_back ( cairo_path_data_t{CAIRO_PATH_CURVE_TO, 4} );
                     mPathData.emplace_back ( cairo_path_data_t{.point = {last_point[0] + std::get<double> ( *i ), last_point[1] + std::get<double> ( * ( i + 1 ) ) }} );
@@ -296,7 +303,7 @@ namespace AeonGUI
                 }
                 break;
             case 'S':
-                while ( i != aCommands.end() && std::holds_alternative<double> ( *i ) )
+                while ( i != end && std::holds_alternative<double> ( *i ) )
                 {
                     last_c_ctrl = ( last_cmd == 'C' || last_cmd == 'S' ) ? Vector2{ ( 2 * last_point[0] ) - last_c_ctrl[0], ( 2 * last_point[1] ) - last_c_ctrl[1]}:
                                   Vector2{};
@@ -310,7 +317,7 @@ namespace AeonGUI
                 }
                 break;
             case 's':
-                while ( i != aCommands.end() && std::holds_alternative<double> ( *i ) )
+                while ( i != end && std::holds_alternative<double> ( *i ) )
                 {
                     last_c_ctrl = ( last_cmd == 'c' || last_cmd == 's' ) ? Vector2{ ( 2 * last_point[0] ) - last_c_ctrl[0], ( 2 * last_point[1] ) - last_c_ctrl[1]}:
                                   Vector2{};
@@ -324,7 +331,7 @@ namespace AeonGUI
                 }
                 break;
             case 'Q':
-                while ( i != aCommands.end() && std::holds_alternative<double> ( *i ) )
+                while ( i != end && std::holds_alternative<double> ( *i ) )
                 {
                     last_q_ctrl = {std::get<double> ( *i ), std::get<double> ( * ( i + 1 ) ) };
                     Vector2 Q1{Vector2{last_point[0]* ( 1.0 / 3.0 ), last_point[1]* ( 1.0 / 3.0 ) } + last_q_ctrl* ( 2.0 / 3.0 ) };
@@ -338,7 +345,7 @@ namespace AeonGUI
                 }
                 break;
             case 'q':
-                while ( i != aCommands.end() && std::holds_alternative<double> ( *i ) )
+                while ( i != end && std::holds_alternative<double> ( *i ) )
                 {
                     last_q_ctrl = last_point + Vector2{std::get<double> ( *i ), std::get<double> ( * ( i + 1 ) ) };
                     Vector2 Q1{Vector2{last_point[0]* ( 1.0 / 3.0 ), last_point[1]* ( 1.0 / 3.0 ) } + last_q_ctrl* ( 2.0 / 3.0 ) };
@@ -352,7 +359,7 @@ namespace AeonGUI
                 }
                 break;
             case 'T':
-                while ( i != aCommands.end() && std::holds_alternative<double> ( *i ) )
+                while ( i != end && std::holds_alternative<double> ( *i ) )
                 {
                     last_q_ctrl = ( last_cmd == 'Q' || last_cmd == 'T' ) ? Vector2{ ( 2 * last_point[0] ) - last_q_ctrl[0], ( 2 * last_point[1] ) - last_q_ctrl[1]}:
                                   Vector2{};
@@ -367,7 +374,7 @@ namespace AeonGUI
                 }
                 break;
             case 't':
-                while ( i != aCommands.end() && std::holds_alternative<double> ( *i ) )
+                while ( i != end && std::holds_alternative<double> ( *i ) )
                 {
                     last_q_ctrl = last_point + ( ( last_cmd == 'q' || last_cmd == 't' ) ? Vector2{ ( 2 * last_point[0] ) - last_q_ctrl[0], ( 2 * last_point[1] ) - last_q_ctrl[1]}:
                                                  Vector2{} );
@@ -382,7 +389,7 @@ namespace AeonGUI
                 }
                 break;
             case 'A':
-                while ( i != aCommands.end() && !std::holds_alternative<uint64_t> ( *i ) )
+                while ( i != end && !std::holds_alternative<uint64_t> ( *i ) )
                 {
                     path_arc ( mPathData,
                                last_point[0], last_point[1],
@@ -396,7 +403,7 @@ namespace AeonGUI
                 }
                 break;
             case 'a':
-                while ( i != aCommands.end() && !std::holds_alternative<uint64_t> ( *i ) )
+                while ( i != end && !std::holds_alternative<uint64_t> ( *i ) )
                 {
                     path_arc ( mPathData,
                                last_point[0], last_point[1],

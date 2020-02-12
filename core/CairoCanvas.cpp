@@ -1,5 +1,5 @@
 /*
-Copyright (C) 2019 Rodrigo Jose Hernandez Cordoba
+Copyright (C) 2019,2020 Rodrigo Jose Hernandez Cordoba
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -142,8 +142,8 @@ namespace AeonGUI
             return;
         }
         cairo_append_path ( mCairoContext, path.GetCairoPath() );
-        cairo_set_source_rgba ( mCairoContext, mFillColor.R(), mFillColor.G(), mFillColor.B(), ( mFillOpacity >= 1.0 ) ? mFillColor.A() : mFillOpacity );
-        cairo_fill_preserve ( mCairoContext );
+        //cairo_set_source_rgba ( mCairoContext, mFillColor.R(), mFillColor.G(), mFillColor.B(), ( mFillOpacity >= 1.0 ) ? mFillColor.A() : mFillOpacity );
+        //cairo_fill_preserve ( mCairoContext );
         cairo_set_line_width ( mCairoContext, mStrokeWidth );
         cairo_set_source_rgba ( mCairoContext, mStrokeColor.R(), mStrokeColor.G(), mStrokeColor.B(), ( mStrokeOpacity >= 1.0 ) ? mStrokeColor.A() : mStrokeOpacity );
         cairo_stroke ( mCairoContext );
