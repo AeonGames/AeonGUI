@@ -45,6 +45,7 @@ set(AEONGUI_SOURCES
         elements/G.cpp
         elements/SVGPathElement.cpp
         elements/SVGGeometryElement.cpp
+        elements/SVGGraphicsElement.cpp
         elements/SVGRectElement.cpp
         elements/SVGLineElement.cpp
         elements/SVGPolylineElement.cpp
@@ -55,6 +56,7 @@ set(AEONGUI_SOURCES
         elements/SVG.h
         elements/G.h
         elements/SVGPathElement.h
+        elements/SVGGraphicsElement.h
         elements/SVGGeometryElement.h
         elements/SVGRectElement.h
         elements/SVGLineElement.h

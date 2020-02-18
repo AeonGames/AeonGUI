@@ -20,13 +20,17 @@ namespace AeonGUI
 {
     namespace Elements
     {
-        SVGGeometryElement::SVGGeometryElement ( xmlElementPtr aXmlElementPtr ) : Element ( aXmlElementPtr ), mPath{}
+        SVGGeometryElement::SVGGeometryElement ( xmlElementPtr aXmlElementPtr ) : SVGGraphicsElement ( aXmlElementPtr ), mPath{}
         {
         }
         SVGGeometryElement::~SVGGeometryElement() = default;
         void SVGGeometryElement::DrawStart ( Canvas& aCanvas ) const
         {
-            /// @todo All these should probably have explicit defaults set.
+            aCanvas.SetFillColor ( black );
+            aCanvas.SetStrokeColor ( black );
+            aCanvas.SetStrokeWidth ( 1.0 );
+            aCanvas.SetStrokeOpacity ( 1.0 );
+            aCanvas.SetFillOpacity ( 1.0 );
             for ( auto& i : mAttributeMap )
             {
                 if ( i.first == "fill" )

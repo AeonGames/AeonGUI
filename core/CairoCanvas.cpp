@@ -142,8 +142,8 @@ namespace AeonGUI
             return;
         }
         cairo_append_path ( mCairoContext, path.GetCairoPath() );
-        //cairo_set_source_rgba ( mCairoContext, mFillColor.R(), mFillColor.G(), mFillColor.B(), ( mFillOpacity >= 1.0 ) ? mFillColor.A() : mFillOpacity );
-        //cairo_fill_preserve ( mCairoContext );
+        cairo_set_source_rgba ( mCairoContext, mFillColor.R(), mFillColor.G(), mFillColor.B(), ( mFillOpacity >= 1.0 ) ? mFillColor.A() : mFillOpacity );
+        cairo_fill_preserve ( mCairoContext );
         cairo_set_line_width ( mCairoContext, mStrokeWidth );
         cairo_set_source_rgba ( mCairoContext, mStrokeColor.R(), mStrokeColor.G(), mStrokeColor.B(), ( mStrokeOpacity >= 1.0 ) ? mStrokeColor.A() : mStrokeOpacity );
         cairo_stroke ( mCairoContext );

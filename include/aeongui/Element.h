@@ -19,6 +19,7 @@ limitations under the License.
 #include <vector>
 #include <memory>
 #include <functional>
+#include <variant>
 #include "aeongui/Platform.h"
 #include "aeongui/Transform.h"
 #include "aeongui/AABB.h"
@@ -34,6 +35,7 @@ namespace AeonGUI
 {
     class Canvas;
     class JavaScript;
+    class Document;
     class Element
     {
     public:
