@@ -1,5 +1,5 @@
 /*
-Copyright (C) 2019 Rodrigo Jose Hernandez Cordoba
+Copyright (C) 2019,2020 Rodrigo Jose Hernandez Cordoba
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -23,15 +23,25 @@ limitations under the License.
 
 namespace AeonGUI
 {
+    static void AddElements ( Element* aElement, xmlNode * aNode )
+    {
+        for ( xmlNode * node = aNode; node; node = node->next )
+        {
+            if ( node->type == XML_ELEMENT_NODE )
+            {
+                AddElements ( aElement->AddElement ( Construct ( reinterpret_cast<xmlElementPtr> ( node ) ) ), node->children );
+            }
+        }
+    }
+
     static void AddElements ( Document* aDocument, xmlNode * aNode )
     {
         for ( xmlNode * node = aNode; node; node = node->next )
         {
             if ( node->type == XML_ELEMENT_NODE )
             {
-                aDocument->AddElement ( Construct ( reinterpret_cast<xmlElementPtr> ( node ) ) );
+                AddElements ( aDocument->AddElement ( Construct ( reinterpret_cast<xmlElementPtr> ( node ) ) ), node->children );
             }
-            AddElements ( aDocument, node->children );
         }
     }
 
