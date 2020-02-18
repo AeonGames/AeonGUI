@@ -13,15 +13,18 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 */
-#ifndef AEONGUI_ATTRIBUTEMAP_H
-#define AEONGUI_ATTRIBUTEMAP_H
-#include "aeongui/Color.h"
-#include <string>
-#include <unordered_map>
-#include <variant>
+#include <iostream>
+#include "SVGGElement.h"
+#include "aeongui/Canvas.h"
+#include "aeongui/AttributeMap.h"
+
 namespace AeonGUI
 {
-    using AttributeType = std::variant<std::monostate, double, Color, std::string>;
-    using AttributeMap = std::unordered_map<std::string, AttributeType>;
+    namespace Elements
+    {
+        SVGGElement::SVGGElement ( xmlElementPtr aXmlElementPtr ) : SVGGraphicsElement {aXmlElementPtr}
+        {
+        }
+        SVGGElement::~SVGGElement() = default;
+    }
 }
-#endif

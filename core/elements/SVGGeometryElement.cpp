@@ -26,34 +26,11 @@ namespace AeonGUI
         SVGGeometryElement::~SVGGeometryElement() = default;
         void SVGGeometryElement::DrawStart ( Canvas& aCanvas ) const
         {
-            aCanvas.SetFillColor ( black );
-            aCanvas.SetStrokeColor ( black );
-            aCanvas.SetStrokeWidth ( 1.0 );
-            aCanvas.SetStrokeOpacity ( 1.0 );
-            aCanvas.SetFillOpacity ( 1.0 );
-            for ( auto& i : mAttributeMap )
-            {
-                if ( i.first == "fill" )
-                {
-                    aCanvas.SetFillColor ( std::get<Color> ( i.second ) );
-                }
-                else if ( i.first == "stroke" )
-                {
-                    aCanvas.SetStrokeColor ( std::get<Color> ( i.second ) );
-                }
-                else if ( i.first == "stroke-width" )
-                {
-                    aCanvas.SetStrokeWidth ( std::get<double> ( i.second ) );
-                }
-                else if ( i.first == "stroke-opacity" )
-                {
-                    aCanvas.SetStrokeOpacity ( std::get<double> ( i.second ) );
-                }
-                else if ( i.first == "fill-opacity" )
-                {
-                    aCanvas.SetFillOpacity ( std::get<double> ( i.second ) );
-                }
-            }
+            aCanvas.SetFillColor ( std::get<Color> ( GetInheritedAttribute ( "fill", Color{black} ) ) );
+            aCanvas.SetStrokeColor ( std::get<Color> ( GetInheritedAttribute ( "stroke", Color{black} ) ) );
+            aCanvas.SetStrokeWidth ( std::get<double> ( GetInheritedAttribute ( "stroke-width", 1.0 ) ) );
+            aCanvas.SetStrokeOpacity ( std::get<double> ( GetInheritedAttribute ( "stroke-opacity", 1.0 ) ) );
+            aCanvas.SetFillOpacity ( std::get<double> ( GetInheritedAttribute ( "fill-opacity", 1.0 ) ) );
             aCanvas.Draw ( mPath );
         }
     }

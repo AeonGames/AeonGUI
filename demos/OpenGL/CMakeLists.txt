@@ -30,5 +30,5 @@ else()
     add_executable(OpenGLDemo Common.h LinuxOpenGL.cpp)
 endif()
 
-set_target_properties(OpenGLDemo PROPERTIES DEBUG_ARGUMENTS "${CMAKE_SOURCE_DIR}/images/drawing.svg")
+set_target_properties(OpenGLDemo PROPERTIES DEBUG_ARGUMENTS "${CMAKE_SOURCE_DIR}/images/rocketman.svg")
 target_link_libraries(OpenGLDemo AeonGUI ${X11_LIBRARIES} ${OPENGL_glx_LIBRARY} ${OPENGL_opengl_LIBRARY} ${OPENGL_gl_LIBRARY} ${OPENGL_glu_LIBRARY})

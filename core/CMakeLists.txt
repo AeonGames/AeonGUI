@@ -42,7 +42,7 @@ set(AEONGUI_SOURCES
         Duktape.cpp
         Color.cpp
         elements/SVG.cpp
-        elements/G.cpp
+        elements/SVGGElement.cpp
         elements/SVGPathElement.cpp
         elements/SVGGeometryElement.cpp
         elements/SVGGraphicsElement.cpp
@@ -54,7 +54,7 @@ set(AEONGUI_SOURCES
         elements/SVGEllipseElement.cpp
         elements/Script.cpp
         elements/SVG.h
-        elements/G.h
+        elements/SVGGElement.h
         elements/SVGPathElement.h
         elements/SVGGraphicsElement.h
         elements/SVGGeometryElement.h

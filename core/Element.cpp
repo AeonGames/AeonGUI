@@ -82,6 +82,28 @@ namespace AeonGUI
         return reinterpret_cast<const char*> ( xmlNodeGetContent ( reinterpret_cast<xmlNodePtr> ( mXmlElementPtr ) ) );
     }
 
+    AttributeType Element::GetAttribute ( const char* attrName, const AttributeType& aDefault ) const
+    {
+        auto i = mAttributeMap.find ( attrName );
+        if ( i != mAttributeMap.end() )
+        {
+            return i->second;
+        }
+        return aDefault;
+    }
+
+    AttributeType Element::GetInheritedAttribute ( const char* attrName, const AttributeType& aDefault ) const
+    {
+        AttributeType attr = GetAttribute ( attrName );
+        Element* parent = mParent;
+        while ( std::holds_alternative<std::monostate> ( attr ) && parent != nullptr )
+        {
+            attr = parent->GetAttribute ( attrName );
+            parent = parent->mParent;
+        }
+        return std::holds_alternative<std::monostate> ( attr ) ? aDefault : attr;
+    }
+
     void Element::DrawStart ( Canvas& aCanvas ) const
     {
         // Do nothing by default

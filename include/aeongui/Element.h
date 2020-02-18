@@ -54,6 +54,8 @@ namespace AeonGUI
         DLL const char* GetAttr ( const char* aAttrName ) const;
         DLL double GetAttrAsDouble ( const char* aAttrName, double aDefault = 0 ) const;
         DLL const char* GetContent () const;
+        DLL AttributeType GetAttribute ( const char* attrName, const AttributeType& aDefault = {} ) const;
+        DLL AttributeType GetInheritedAttribute ( const char* attrName, const AttributeType& aDefault = {} ) const;
         DLL virtual void DrawStart ( Canvas& aCanvas ) const;
         DLL virtual void DrawFinish ( Canvas& aCanvas ) const;
         DLL virtual void Load ( JavaScript& aJavaScript );
