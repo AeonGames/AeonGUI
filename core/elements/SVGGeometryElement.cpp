@@ -26,8 +26,8 @@ namespace AeonGUI
         SVGGeometryElement::~SVGGeometryElement() = default;
         void SVGGeometryElement::DrawStart ( Canvas& aCanvas ) const
         {
-            aCanvas.SetFillColor ( std::get<Color> ( GetInheritedAttribute ( "fill", Color{black} ) ) );
-            aCanvas.SetStrokeColor ( std::get<Color> ( GetInheritedAttribute ( "stroke", Color{black} ) ) );
+            aCanvas.SetFillColor ( std::get<ColorAttr> ( GetInheritedAttribute ( "fill", Color{black} ) ) );
+            aCanvas.SetStrokeColor ( std::get<ColorAttr> ( GetInheritedAttribute ( "stroke", ColorAttr{} ) ) );
             aCanvas.SetStrokeWidth ( std::get<double> ( GetInheritedAttribute ( "stroke-width", 1.0 ) ) );
             aCanvas.SetStrokeOpacity ( std::get<double> ( GetInheritedAttribute ( "stroke-opacity", 1.0 ) ) );
             aCanvas.SetFillOpacity ( std::get<double> ( GetInheritedAttribute ( "fill-opacity", 1.0 ) ) );

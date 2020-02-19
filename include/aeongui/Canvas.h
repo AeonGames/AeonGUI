@@ -1,5 +1,5 @@
 /*
-Copyright (C) 2019 Rodrigo Jose Hernandez Cordoba
+Copyright (C) 2019,2020 Rodrigo Jose Hernandez Cordoba
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -34,10 +34,10 @@ namespace AeonGUI
         virtual size_t GetHeight() const = 0;
         virtual size_t GetStride() const = 0;
         virtual void Clear() = 0;
-        virtual void SetFillColor ( const Color& aColor ) = 0;
-        virtual const Color& GetFillColor() const = 0;
-        virtual void SetStrokeColor ( const Color& aColor ) = 0;
-        virtual const Color& GetStrokeColor() const = 0;
+        virtual void SetFillColor ( const ColorAttr& aColor ) = 0;
+        virtual const ColorAttr& GetFillColor() const = 0;
+        virtual void SetStrokeColor ( const ColorAttr& aColor ) = 0;
+        virtual const ColorAttr& GetStrokeColor() const = 0;
         virtual void SetStrokeWidth ( double aWidth ) = 0;
         virtual double GetStrokeWidth () const = 0;
         virtual void SetStrokeOpacity ( double aWidth ) = 0;

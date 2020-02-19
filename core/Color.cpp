@@ -1,5 +1,5 @@
 /******************************************************************************
-Copyright (C) 2010-2012,2019 Rodrigo Hernandez Cordoba
+Copyright (C) 2010-2012,2019,2020 Rodrigo Hernandez Cordoba
 
    Licensed under the Apache License, Version 2.0 (the "License");
    you may not use this file except in compliance with the License.
@@ -124,7 +124,6 @@ namespace AeonGUI
         {"moccasin", 0xffffe4b5},
         {"navajowhite", 0xffffdead},
         {"navy", 0xff000080},
-        {"none", 0x00000000}, //<-- Look at me I'm Special.
         {"oldlace", 0xfffdf5e6},
         {"olive", 0xff808000},
         {"olivedrab", 0xff6b8e23},

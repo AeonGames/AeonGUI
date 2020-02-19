@@ -84,22 +84,22 @@ namespace AeonGUI
         }
     }
 
-    void CairoCanvas::SetFillColor ( const Color& aColor )
+    void CairoCanvas::SetFillColor ( const ColorAttr& aColor )
     {
         mFillColor = aColor;
     }
 
-    const Color& CairoCanvas::GetFillColor() const
+    const ColorAttr& CairoCanvas::GetFillColor() const
     {
         return mFillColor;
     }
 
-    void CairoCanvas::SetStrokeColor ( const Color& aColor )
+    void CairoCanvas::SetStrokeColor ( const ColorAttr& aColor )
     {
         mStrokeColor = aColor;
     }
 
-    const Color& CairoCanvas::GetStrokeColor() const
+    const ColorAttr& CairoCanvas::GetStrokeColor() const
     {
         return mStrokeColor;
     }
@@ -137,15 +137,20 @@ namespace AeonGUI
     void CairoCanvas::Draw ( const Path& aPath )
     {
         const CairoPath& path = reinterpret_cast<const CairoPath&> ( aPath );
-        if ( mFillColor.a == 0 && mStrokeColor.a == 0 )
-        {
-            return;
-        }
         cairo_append_path ( mCairoContext, path.GetCairoPath() );
-        cairo_set_source_rgba ( mCairoContext, mFillColor.R(), mFillColor.G(), mFillColor.B(), ( mFillOpacity >= 1.0 ) ? mFillColor.A() : mFillOpacity );
-        cairo_fill_preserve ( mCairoContext );
-        cairo_set_line_width ( mCairoContext, mStrokeWidth );
-        cairo_set_source_rgba ( mCairoContext, mStrokeColor.R(), mStrokeColor.G(), mStrokeColor.B(), ( mStrokeOpacity >= 1.0 ) ? mStrokeColor.A() : mStrokeOpacity );
-        cairo_stroke ( mCairoContext );
+        if ( std::holds_alternative<Color> ( mFillColor ) )
+        {
+            Color& fill = std::get<Color> ( mFillColor );
+            cairo_set_source_rgba ( mCairoContext, fill.R(), fill.G(), fill.B(), ( mFillOpacity >= 1.0 ) ? fill.A() : mFillOpacity );
+            cairo_fill_preserve ( mCairoContext );
+        }
+        if ( std::holds_alternative<Color> ( mStrokeColor ) )
+        {
+            Color& stroke = std::get<Color> ( mStrokeColor );
+            cairo_set_line_width ( mCairoContext, mStrokeWidth );
+            cairo_set_source_rgba ( mCairoContext, stroke.R(), stroke.G(), stroke.B(), ( mStrokeOpacity >= 1.0 ) ? stroke.A() : mStrokeOpacity );
+            cairo_stroke_preserve ( mCairoContext );
+        }
+        cairo_new_path ( mCairoContext );
     }
 }

@@ -1,5 +1,5 @@
 /*
-Copyright (C) 2010-2012,2019 Rodrigo Jose Hernandez Cordoba
+Copyright (C) 2010-2012,2019,2020 Rodrigo Jose Hernandez Cordoba
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -18,6 +18,7 @@ limitations under the License.
 #include <string>
 #include <cstdint>
 #include <regex>
+#include <variant>
 #include "aeongui/Platform.h"
 namespace AeonGUI
 {
@@ -164,6 +165,7 @@ namespace AeonGUI
         teal = 0xff008080,
         thistle = 0xffd8bfd8,
         tomato = 0xffff6347,
+        transparent = 0x00000000, ///< Special color case
         turquoise = 0xff40e0d0,
         violet = 0xffee82ee,
         wheat = 0xfff5deb3,
@@ -223,5 +225,9 @@ namespace AeonGUI
 #endif
         };
     };
+    /// Alias monostate to none.
+    using none = std::monostate;
+    /// A special color type that distinguishes when no color is set.
+    using ColorAttr = std::variant<none, Color>;
 }
 #endif

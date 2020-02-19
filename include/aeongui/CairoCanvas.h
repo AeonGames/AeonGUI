@@ -1,5 +1,5 @@
 /*
-Copyright (C) 2019 Rodrigo Jose Hernandez Cordoba
+Copyright (C) 2019,2020 Rodrigo Jose Hernandez Cordoba
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -37,10 +37,10 @@ namespace AeonGUI
         size_t GetStride() const final;
         void Clear() final;
         void Draw ( const Path& ) final;
-        void SetFillColor ( const Color& aColor ) final;
-        const Color& GetFillColor() const final;
-        void SetStrokeColor ( const Color& aColor ) final;
-        const Color& GetStrokeColor() const final;
+        void SetFillColor ( const ColorAttr& aColor ) final;
+        const ColorAttr& GetFillColor() const final;
+        void SetStrokeColor ( const ColorAttr& aColor ) final;
+        const ColorAttr& GetStrokeColor() const final;
         void SetStrokeWidth ( double aWidth ) final;
         double GetStrokeWidth () const final;
         void SetStrokeOpacity ( double aWidth ) final;
@@ -51,8 +51,8 @@ namespace AeonGUI
     private:
         cairo_surface_t* mCairoSurface{};
         cairo_t* mCairoContext{};
-        Color mFillColor{255, 255, 255, 255};
-        Color mStrokeColor{0, 0, 0, 0};
+        ColorAttr mFillColor{};
+        ColorAttr mStrokeColor{};
         double mStrokeWidth{1};
         double mStrokeOpacity{1};
         double mFillOpacity{1};
