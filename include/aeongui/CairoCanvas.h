@@ -47,6 +47,8 @@ namespace AeonGUI
         double GetStrokeOpacity () const final;
         void SetFillOpacity ( double aWidth ) final;
         double GetFillOpacity () const final;
+        void SetOpacity ( double aWidth ) final;
+        double GetOpacity () const final;
         DLL ~CairoCanvas() final;
     private:
         cairo_surface_t* mCairoSurface{};
@@ -56,6 +58,7 @@ namespace AeonGUI
         double mStrokeWidth{1};
         double mStrokeOpacity{1};
         double mFillOpacity{1};
+        double mOpacity{1};
     };
 }
 #endif

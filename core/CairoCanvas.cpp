@@ -134,10 +134,24 @@ namespace AeonGUI
         return mFillOpacity;
     }
 
+    void CairoCanvas::SetOpacity ( double aOpacity )
+    {
+        mOpacity = ( ( aOpacity < 0.0 ) ? 0.0 : ( aOpacity > 1.0 ) ? 1.0 : aOpacity );
+    }
+
+    double CairoCanvas::GetOpacity () const
+    {
+        return mOpacity;
+    }
+
     void CairoCanvas::Draw ( const Path& aPath )
     {
         const CairoPath& path = reinterpret_cast<const CairoPath&> ( aPath );
         cairo_append_path ( mCairoContext, path.GetCairoPath() );
+        if ( mOpacity < 1.0 && mOpacity > 0.0 )
+        {
+            cairo_push_group ( mCairoContext );
+        }
         if ( std::holds_alternative<Color> ( mFillColor ) )
         {
             Color& fill = std::get<Color> ( mFillColor );
@@ -150,6 +164,11 @@ namespace AeonGUI
             cairo_set_line_width ( mCairoContext, mStrokeWidth );
             cairo_set_source_rgba ( mCairoContext, stroke.R(), stroke.G(), stroke.B(), ( mStrokeOpacity >= 1.0 ) ? stroke.A() : mStrokeOpacity );
             cairo_stroke_preserve ( mCairoContext );
+        }
+        if ( mOpacity < 1.0 && mOpacity > 0.0 )
+        {
+            cairo_pop_group_to_source ( mCairoContext );
+            cairo_paint_with_alpha ( mCairoContext, mOpacity );
         }
         cairo_new_path ( mCairoContext );
     }

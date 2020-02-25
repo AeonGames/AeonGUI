@@ -31,6 +31,7 @@ namespace AeonGUI
             aCanvas.SetStrokeWidth ( std::get<double> ( GetInheritedAttribute ( "stroke-width", 1.0 ) ) );
             aCanvas.SetStrokeOpacity ( std::get<double> ( GetInheritedAttribute ( "stroke-opacity", 1.0 ) ) );
             aCanvas.SetFillOpacity ( std::get<double> ( GetInheritedAttribute ( "fill-opacity", 1.0 ) ) );
+            aCanvas.SetOpacity ( std::get<double> ( GetInheritedAttribute ( "opacity", 1.0 ) ) );
             aCanvas.Draw ( mPath );
         }
     }
