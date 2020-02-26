@@ -48,9 +48,13 @@ namespace AeonGUI
         }
         if ( HasAttr ( "style" ) )
         {
-            if ( int error = ParseStyle ( mAttributeMap, GetAttr ( "style" ) ) )
+            if ( ParseStyle ( mAttributeMap, GetAttr ( "style" ) ) )
             {
-                std::cerr << error << std::endl;
+                if ( HasAttr ( "id" ) )
+                {
+                    std::cerr << "In Element id = " << GetAttr ( "id" ) << std::endl;
+                }
+                std::cerr << "Error parsing style: " << GetAttr ( "style" ) << std::endl;
             }
         }
     }

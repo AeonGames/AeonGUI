@@ -33,14 +33,9 @@ limitations under the License.
 %option nodebug
 %option prefix="d"
 
-number               -?([0-9]+|[0-9]*\.[0-9]+([eE][-+]?[0-9]+)?)
-flag                 0|1
+number               -?[0-9]*\.?[0-9]+([eE][-+][0-9]+)?
 
 %%
-{flag}                  {
-							dlval = static_cast<bool>(std::atoi(yytext));
-							return FLAG;
-						}
 {number}                {
 							dlval = std::strtod(yytext,nullptr);
 							return NUMBER;

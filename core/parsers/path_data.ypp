@@ -45,8 +45,8 @@ static dstype GetArcArgs(const dstype& aRadii,const dstype& aRotation,const dsty
         std::get<std::vector<AeonGUI::DrawType>>(aRadii)[0],
         std::get<std::vector<AeonGUI::DrawType>>(aRadii)[1],
         std::get<AeonGUI::DrawType>(aRotation),
-        std::get<AeonGUI::DrawType>(aLarge),
-        std::get<AeonGUI::DrawType>(aSweep),
+        std::get<double>(std::get<AeonGUI::DrawType>(aLarge))?true:false,
+        std::get<double>(std::get<AeonGUI::DrawType>(aSweep))?true:false,
         std::get<std::vector<AeonGUI::DrawType>>(aEnd)[0],
         std::get<std::vector<AeonGUI::DrawType>>(aEnd)[1]
     };
@@ -54,7 +54,7 @@ static dstype GetArcArgs(const dstype& aRadii,const dstype& aRotation,const dsty
 %}
 %define api.prefix {d}
 %parse-param {std::vector<AeonGUI::DrawType>& aPath}
-%token FLAG NUMBER
+%token NUMBER
 %%
 svg-path:
     | moveto-drawto-command-groups
@@ -131,7 +131,7 @@ elliptical-arc-argument-sequence:
     }
     ;
 elliptical-arc-argument:
-    coordinate-pair coordinate FLAG FLAG coordinate-pair
+    coordinate-pair coordinate coordinate coordinate coordinate-pair
     {
         $$ = GetArcArgs($1,$2,$3,$4,$5);
     }
@@ -198,11 +198,6 @@ coordinate-argument-sequence:
     ;
 coordinate:
     NUMBER
-    |
-    FLAG
-    {
-        $$ = std::get<bool>(std::get<AeonGUI::DrawType>($1)) ? 1.0 : 0.0;
-    };
 %%
 extern "C"
 {

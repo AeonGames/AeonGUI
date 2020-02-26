@@ -27,9 +27,13 @@ namespace AeonGUI
             if ( HasAttr ( "d" ) )
             {
                 std::vector<DrawType> path;
-                if ( int error = ParsePathData ( path, GetAttr ( "d" ) ) )
+                if ( ParsePathData ( path, GetAttr ( "d" ) ) )
                 {
-                    std::cerr << error << std::endl;
+                    if ( HasAttr ( "id" ) )
+                    {
+                        std::cerr << "Path Id: " << GetAttr ( "id" ) << std::endl;
+                    }
+                    std::cerr << "Path Data: " << GetAttr ( "d" ) << std::endl;
                 }
                 mPath.Construct ( path );
             }

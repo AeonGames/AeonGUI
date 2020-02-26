@@ -1,4 +1,4 @@
-/* A Bison parser, made by GNU Bison 3.5.1.  */
+/* A Bison parser, made by GNU Bison 3.5.2.  */
 
 /* Bison implementation for Yacc-like parsers in C
 
@@ -48,7 +48,7 @@
 #define YYBISON 1
 
 /* Bison version.  */
-#define YYBISON_VERSION "3.5.1"
+#define YYBISON_VERSION "3.5.2"
 
 /* Skeleton name.  */
 #define YYSKELETON_NAME "yacc.c"
@@ -108,8 +108,8 @@ static dstype GetArcArgs ( const dstype& aRadii, const dstype& aRotation, const 
         std::get<std::vector<AeonGUI::DrawType>> ( aRadii ) [0],
                                               std::get<std::vector<AeonGUI::DrawType>> ( aRadii ) [1],
                                               std::get<AeonGUI::DrawType> ( aRotation ),
-                                              std::get<AeonGUI::DrawType> ( aLarge ),
-                                              std::get<AeonGUI::DrawType> ( aSweep ),
+                                              std::get<double> ( std::get<AeonGUI::DrawType> ( aLarge ) ) ? true : false,
+                                              std::get<double> ( std::get<AeonGUI::DrawType> ( aSweep ) ) ? true : false,
                                               std::get<std::vector<AeonGUI::DrawType>> ( aEnd ) [0],
                                               std::get<std::vector<AeonGUI::DrawType>> ( aEnd ) [1]
     };
@@ -188,8 +188,7 @@ limitations under the License.
 # define DTOKENTYPE
 enum dtokentype
 {
-    FLAG = 258,
-    NUMBER = 259
+    NUMBER = 258
 };
 #endif
 
@@ -509,21 +508,21 @@ union yyalloc
 #endif /* !YYCOPY_NEEDED */
 
 /* YYFINAL -- State number of the termination state.  */
-#define YYFINAL  13
+#define YYFINAL  12
 /* YYLAST -- Last index in YYTABLE.  */
-#define YYLAST   107
+#define YYLAST   117
 
 /* YYNTOKENS -- Number of terminals.  */
-#define YYNTOKENS  25
+#define YYNTOKENS  24
 /* YYNNTS -- Number of nonterminals.  */
 #define YYNNTS  26
 /* YYNRULES -- Number of rules.  */
-#define YYNRULES  54
+#define YYNRULES  53
 /* YYNSTATES -- Number of states.  */
-#define YYNSTATES  81
+#define YYNSTATES  80
 
 #define YYUNDEFTOK  2
-#define YYMAXUTOK   259
+#define YYMAXUTOK   258
 
 
 /* YYTRANSLATE(TOKEN-NUM) -- Symbol number corresponding to TOKEN-NUM
@@ -541,13 +540,13 @@ static const yytype_int8 yytranslate[] =
     2,     2,     2,     2,     2,     2,     2,     2,     2,     2,
     2,     2,     2,     2,     2,     2,     2,     2,     2,     2,
     2,     2,     2,     2,     2,     2,     2,     2,     2,     2,
-    2,     2,     2,     2,     2,    23,     2,    15,     2,     2,
-    2,     2,    11,     2,     2,     2,     9,     5,     2,     2,
-    2,    19,     2,    17,    21,     2,    13,     2,     2,     2,
-    7,     2,     2,     2,     2,     2,     2,    24,     2,    16,
-    2,     2,     2,     2,    12,     2,     2,     2,    10,     6,
-    2,     2,     2,    20,     2,    18,    22,     2,    14,     2,
-    2,     2,     8,     2,     2,     2,     2,     2,     2,     2,
+    2,     2,     2,     2,     2,    22,     2,    14,     2,     2,
+    2,     2,    10,     2,     2,     2,     8,     4,     2,     2,
+    2,    18,     2,    16,    20,     2,    12,     2,     2,     2,
+    6,     2,     2,     2,     2,     2,     2,    23,     2,    15,
+    2,     2,     2,     2,    11,     2,     2,     2,     9,     5,
+    2,     2,     2,    19,     2,    17,    21,     2,    13,     2,
+    2,     2,     7,     2,     2,     2,     2,     2,     2,     2,
     2,     2,     2,     2,     2,     2,     2,     2,     2,     2,
     2,     2,     2,     2,     2,     2,     2,     2,     2,     2,
     2,     2,     2,     2,     2,     2,     2,     2,     2,     2,
@@ -560,7 +559,7 @@ static const yytype_int8 yytranslate[] =
     2,     2,     2,     2,     2,     2,     2,     2,     2,     2,
     2,     2,     2,     2,     2,     2,     2,     2,     2,     2,
     2,     2,     2,     2,     2,     2,     2,     2,     2,     2,
-    2,     2,     2,     2,     2,     2,     1,     2,     3,     4
+    2,     2,     2,     2,     2,     2,     1,     2,     3
 };
 
 #if DDEBUG
@@ -572,7 +571,7 @@ static const yytype_uint8 yyrline[] =
     85,    88,    89,    92,    94,    97,    98,   101,   102,   105,
     106,   109,   110,   113,   114,   117,   118,   121,   123,   126,
     127,   134,   140,   141,   148,   160,   162,   169,   176,   178,
-    185,   188,   193,   200,   202
+    185,   188,   193,   200
 };
 #endif
 
@@ -581,9 +580,9 @@ static const yytype_uint8 yyrline[] =
    First, the terminals, then, starting at YYNTOKENS, nonterminals.  */
 static const char *const yytname[] =
 {
-    "$end", "error", "$undefined", "FLAG", "NUMBER", "'M'", "'m'", "'Z'",
-    "'z'", "'L'", "'l'", "'H'", "'h'", "'V'", "'v'", "'C'", "'c'", "'S'",
-    "'s'", "'Q'", "'q'", "'T'", "'t'", "'A'", "'a'", "$accept", "svg-path",
+    "$end", "error", "$undefined", "NUMBER", "'M'", "'m'", "'Z'", "'z'",
+    "'L'", "'l'", "'H'", "'h'", "'V'", "'v'", "'C'", "'c'", "'S'", "'s'",
+    "'Q'", "'q'", "'T'", "'t'", "'A'", "'a'", "$accept", "svg-path",
     "moveto-drawto-command-groups", "moveto-drawto-command-group",
     "drawto-commands", "drawto-command", "moveto", "closepath", "lineto",
     "horizontal-lineto", "vertical-lineto", "curveto", "smooth-curveto",
@@ -603,13 +602,13 @@ static const char *const yytname[] =
    (internal) symbol number NUM (which must be that of a token).  */
 static const yytype_int16 yytoknum[] =
 {
-    0,   256,   257,   258,   259,    77,   109,    90,   122,    76,
-    108,    72,   104,    86,   118,    67,    99,    83,   115,    81,
-    113,    84,   116,    65,    97
+    0,   256,   257,   258,    77,   109,    90,   122,    76,   108,
+    72,   104,    86,   118,    67,    99,    83,   115,    81,   113,
+    84,   116,    65,    97
 };
 # endif
 
-#define YYPACT_NINF (-56)
+#define YYPACT_NINF (-63)
 
 #define yypact_value_is_default(Yyn) \
   ((Yyn) == YYPACT_NINF)
@@ -623,47 +622,45 @@ static const yytype_int16 yytoknum[] =
    STATE-NUM.  */
 static const yytype_int8 yypact[] =
 {
-    -2,    23,    23,    14,    -2,   -56,    83,   -56,   -56,    23,
-        -56,    23,    23,   -56,   -56,   -56,   -56,    23,    23,    23,
-        23,    23,    23,    23,    23,    23,    23,    23,    23,    23,
-        23,    23,    23,    83,   -56,   -56,   -56,   -56,   -56,   -56,
-        -56,   -56,   -56,   -56,   -56,   -56,    23,    23,    23,   -56,
-        23,    23,    23,    23,   -56,    23,    23,    23,   -56,    23,
-        23,    23,    23,    23,    23,    23,   -56,    23,    23,   -56,
-        -56,   -56,    23,   -56,   -56,   -56,    29,   -56,    31,    23,
-        -56
-    };
+    21,     1,     1,    14,    21,   -63,    94,   -63,     1,   -63,
+    1,     1,   -63,   -63,   -63,   -63,     1,     1,     1,     1,
+    1,     1,     1,     1,     1,     1,     1,     1,     1,     1,
+    1,     1,    94,   -63,   -63,   -63,   -63,   -63,   -63,   -63,
+    -63,   -63,   -63,   -63,   -63,     1,     1,     1,   -63,     1,
+    1,     1,     1,   -63,     1,     1,     1,   -63,     1,     1,
+    1,     1,     1,     1,     1,   -63,     1,     1,   -63,   -63,
+    -63,     1,   -63,   -63,   -63,     1,   -63,     1,     1,   -63
+};
 
 /* YYDEFACT[STATE-NUM] -- Default reduction number in state STATE-NUM.
    Performed when YYTABLE does not specify something else to do.  Zero
    means the default is an error.  */
 static const yytype_int8 yydefact[] =
 {
-    2,     0,     0,     0,     3,     4,     6,    54,    53,    19,
-    48,     0,    20,     1,     5,    21,    22,     0,     0,     0,
+    2,     0,     0,     0,     3,     4,     6,    53,    19,    48,
+    0,    20,     1,     5,    21,    22,     0,     0,     0,     0,
     0,     0,     0,     0,     0,     0,     0,     0,     0,     0,
-    0,     0,     0,     7,     8,    10,    11,    12,    13,    14,
-    15,    16,    17,    18,    49,    50,    23,    24,    25,    51,
-    26,    27,    28,    29,    42,     0,    30,    31,    45,     0,
-    32,    33,    34,    35,    36,    37,    39,     0,    38,     9,
-    52,    43,     0,    46,    47,    40,     0,    44,     0,     0,
-    41
+    0,     0,     7,     8,    10,    11,    12,    13,    14,    15,
+    16,    17,    18,    49,    50,    23,    24,    25,    51,    26,
+    27,    28,    29,    42,     0,    30,    31,    45,     0,    32,
+    33,    34,    35,    36,    37,    39,     0,    38,     9,    52,
+    43,     0,    46,    47,    40,     0,    44,     0,     0,    41
 };
 
 /* YYPGOTO[NTERM-NUM].  */
 static const yytype_int8 yypgoto[] =
 {
-    -56,   -56,   -56,    17,   -56,     2,   -56,   -56,   -56,   -56,
-        -56,   -56,   -56,   -56,   -56,   -56,    15,   -53,    24,   -43,
-        -8,   -55,     7,    -1,    18,    22
+    -63,   -63,   -63,    16,   -63,     2,   -63,   -63,   -63,   -63,
+        -63,   -63,   -63,   -63,   -63,   -63,     0,   -62,    10,   -49,
+        -8,   -48,     7,    -1,    18,    22
     };
 
 /* YYDEFGOTO[NTERM-NUM].  */
 static const yytype_int8 yydefgoto[] =
 {
-    -1,     3,     4,     5,    33,    34,     6,    35,    36,    37,
-        38,    39,    40,    41,    42,    43,    65,    66,    53,    54,
-        57,    58,     9,    59,    48,    11
+    -1,     3,     4,     5,    32,    33,     6,    34,    35,    36,
+        37,    38,    39,    40,    41,    42,    64,    65,    52,    53,
+        56,    57,     8,    58,    47,    10
     };
 
 /* YYTABLE[YYPACT[STATE-NUM]] -- What to do in state STATE-NUM.  If
@@ -671,58 +668,59 @@ static const yytype_int8 yydefgoto[] =
    number is the opposite.  If YYTABLE_NINF, syntax error.  */
 static const yytype_int8 yytable[] =
 {
-    10,    10,    73,     1,     2,    73,    73,    73,    44,    12,
-    71,    44,    75,    71,    13,    75,    10,    10,    60,    61,
-    62,    14,    55,    55,    46,    47,     7,     8,    10,    10,
-    67,    67,    78,    45,    79,    69,    63,    64,    50,    51,
-    52,    49,    49,    49,    49,    44,    44,    68,    56,     0,
-    0,     0,    55,     0,    72,    55,     0,     0,    74,     0,
-    0,     0,    44,    44,    67,     0,     0,    67,     0,     0,
-    70,    77,    70,    70,    70,     0,     0,     0,    80,     0,
-    0,     0,     0,     0,     0,     0,     0,     0,     0,    76,
-    15,    16,    17,    18,    19,    20,    21,    22,    23,    24,
-    25,    26,    27,    28,    29,    30,    31,    32
+    9,     9,    74,    70,     7,    74,    70,    43,    72,    11,
+    43,    72,    72,    72,    12,     9,     9,    59,    60,    61,
+    13,    54,    54,    45,    46,     1,     2,     9,     9,    66,
+    66,    67,    44,    55,    68,    62,    63,    49,    50,    51,
+    48,    48,    48,    48,    43,    43,     0,     0,     0,     0,
+    0,    54,     0,    71,    54,     0,     0,    73,     0,     0,
+    0,    43,    43,    66,     0,     0,    66,     0,     0,    69,
+    76,    69,    69,    69,     0,     0,     0,    79,     0,     0,
+    0,     0,     0,     0,     0,     0,     0,     0,    75,     0,
+    0,     0,     0,     0,     0,     0,     0,    77,     0,    78,
+    14,    15,    16,    17,    18,    19,    20,    21,    22,    23,
+    24,    25,    26,    27,    28,    29,    30,    31
 };
 
 static const yytype_int8 yycheck[] =
 {
-    1,     2,    57,     5,     6,    60,    61,    62,     9,     2,
-    53,    12,    65,    56,     0,    68,    17,    18,    26,    27,
-    28,     4,    23,    24,    17,    18,     3,     4,    29,    30,
-    31,    32,     3,    11,     3,    33,    29,    30,    20,    21,
-    22,    19,    20,    21,    22,    46,    47,    32,    24,    -1,
-    -1,    -1,    53,    -1,    55,    56,    -1,    -1,    59,    -1,
-    -1,    -1,    63,    64,    65,    -1,    -1,    68,    -1,    -1,
-    48,    72,    50,    51,    52,    -1,    -1,    -1,    79,    -1,
-    -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,    67,
-    7,     8,     9,    10,    11,    12,    13,    14,    15,    16,
-    17,    18,    19,    20,    21,    22,    23,    24
+    1,     2,    64,    52,     3,    67,    55,     8,    56,     2,
+    11,    59,    60,    61,     0,    16,    17,    25,    26,    27,
+    4,    22,    23,    16,    17,     4,     5,    28,    29,    30,
+    31,    31,    10,    23,    32,    28,    29,    19,    20,    21,
+    18,    19,    20,    21,    45,    46,    -1,    -1,    -1,    -1,
+    -1,    52,    -1,    54,    55,    -1,    -1,    58,    -1,    -1,
+    -1,    62,    63,    64,    -1,    -1,    67,    -1,    -1,    47,
+    71,    49,    50,    51,    -1,    -1,    -1,    78,    -1,    -1,
+    -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,    66,    -1,
+    -1,    -1,    -1,    -1,    -1,    -1,    -1,    75,    -1,    77,
+    6,     7,     8,     9,    10,    11,    12,    13,    14,    15,
+    16,    17,    18,    19,    20,    21,    22,    23
 };
 
 /* YYSTOS[STATE-NUM] -- The (internal number of the) accessing
    symbol of state STATE-NUM.  */
 static const yytype_int8 yystos[] =
 {
-    0,     5,     6,    26,    27,    28,    31,     3,     4,    47,
-    48,    50,    47,     0,    28,     7,     8,     9,    10,    11,
+    0,     4,     5,    25,    26,    27,    30,     3,    46,    47,
+    49,    46,     0,    27,     6,     7,     8,     9,    10,    11,
     12,    13,    14,    15,    16,    17,    18,    19,    20,    21,
-    22,    23,    24,    29,    30,    32,    33,    34,    35,    36,
-    37,    38,    39,    40,    48,    50,    47,    47,    49,    50,
-    49,    49,    49,    43,    44,    48,    43,    45,    46,    48,
-    45,    45,    45,    47,    47,    41,    42,    48,    41,    30,
-    50,    44,    48,    46,    48,    42,    50,    48,     3,     3,
-    48
+    22,    23,    28,    29,    31,    32,    33,    34,    35,    36,
+    37,    38,    39,    47,    49,    46,    46,    48,    49,    48,
+    48,    48,    42,    43,    47,    42,    44,    45,    47,    44,
+    44,    44,    46,    46,    40,    41,    47,    40,    29,    49,
+    43,    47,    45,    47,    41,    49,    47,    49,    49,    47
 };
 
 /* YYR1[YYN] -- Symbol number of symbol that rule YYN derives.  */
 static const yytype_int8 yyr1[] =
 {
-    0,    25,    26,    26,    27,    27,    28,    28,    29,    29,
-    30,    30,    30,    30,    30,    30,    30,    30,    30,    31,
-    31,    32,    32,    33,    33,    34,    34,    35,    35,    36,
-    36,    37,    37,    38,    38,    39,    39,    40,    40,    41,
-    41,    42,    43,    43,    44,    45,    45,    46,    47,    47,
-    48,    49,    49,    50,    50
+    0,    24,    25,    25,    26,    26,    27,    27,    28,    28,
+    29,    29,    29,    29,    29,    29,    29,    29,    29,    30,
+    30,    31,    31,    32,    32,    33,    33,    34,    34,    35,
+    35,    36,    36,    37,    37,    38,    38,    39,    39,    40,
+    40,    41,    42,    42,    43,    44,    44,    45,    46,    46,
+    47,    48,    48,    49
 };
 
 /* YYR2[YYN] -- Number of symbols on the right hand side of rule YYN.  */
@@ -733,7 +731,7 @@ static const yytype_int8 yyr2[] =
     2,     1,     1,     2,     2,     2,     2,     2,     2,     2,
     2,     2,     2,     2,     2,     2,     2,     2,     2,     1,
     2,     5,     1,     2,     3,     1,     2,     2,     1,     2,
-    2,     1,     2,     1,     1
+    2,     1,     2,     1
 };
 
 
@@ -1490,7 +1488,7 @@ yyreduce:
         {
             AddCommandToPath ( aPath, std::get<AeonGUI::DrawType> ( yyvsp[-1] ), std::get<std::vector<AeonGUI::DrawType>> ( yyvsp[0] ) );
         }
-#line 1437 "C:/Code/AeonGUI/mingw64/core/path_data_parser.cpp"
+#line 1435 "C:/Code/AeonGUI/mingw64/core/path_data_parser.cpp"
         break;
 
     case 20:
@@ -1498,7 +1496,7 @@ yyreduce:
         {
             AddCommandToPath ( aPath, std::get<AeonGUI::DrawType> ( yyvsp[-1] ), std::get<std::vector<AeonGUI::DrawType>> ( yyvsp[0] ) );
         }
-#line 1443 "C:/Code/AeonGUI/mingw64/core/path_data_parser.cpp"
+#line 1441 "C:/Code/AeonGUI/mingw64/core/path_data_parser.cpp"
         break;
 
     case 21:
@@ -1506,7 +1504,7 @@ yyreduce:
         {
             aPath.emplace_back ( std::get<AeonGUI::DrawType> ( yyvsp[0] ) );
         }
-#line 1449 "C:/Code/AeonGUI/mingw64/core/path_data_parser.cpp"
+#line 1447 "C:/Code/AeonGUI/mingw64/core/path_data_parser.cpp"
         break;
 
     case 22:
@@ -1514,7 +1512,7 @@ yyreduce:
         {
             aPath.emplace_back ( std::get<AeonGUI::DrawType> ( yyvsp[0] ) );
         }
-#line 1455 "C:/Code/AeonGUI/mingw64/core/path_data_parser.cpp"
+#line 1453 "C:/Code/AeonGUI/mingw64/core/path_data_parser.cpp"
         break;
 
     case 23:
@@ -1522,7 +1520,7 @@ yyreduce:
         {
             AddCommandToPath ( aPath, std::get<AeonGUI::DrawType> ( yyvsp[-1] ), std::get<std::vector<AeonGUI::DrawType>> ( yyvsp[0] ) );
         }
-#line 1461 "C:/Code/AeonGUI/mingw64/core/path_data_parser.cpp"
+#line 1459 "C:/Code/AeonGUI/mingw64/core/path_data_parser.cpp"
         break;
 
     case 24:
@@ -1530,7 +1528,7 @@ yyreduce:
         {
             AddCommandToPath ( aPath, std::get<AeonGUI::DrawType> ( yyvsp[-1] ), std::get<std::vector<AeonGUI::DrawType>> ( yyvsp[0] ) );
         }
-#line 1467 "C:/Code/AeonGUI/mingw64/core/path_data_parser.cpp"
+#line 1465 "C:/Code/AeonGUI/mingw64/core/path_data_parser.cpp"
         break;
 
     case 25:
@@ -1538,7 +1536,7 @@ yyreduce:
         {
             AddCommandToPath ( aPath, std::get<AeonGUI::DrawType> ( yyvsp[-1] ), std::get<std::vector<AeonGUI::DrawType>> ( yyvsp[0] ) );
         }
-#line 1473 "C:/Code/AeonGUI/mingw64/core/path_data_parser.cpp"
+#line 1471 "C:/Code/AeonGUI/mingw64/core/path_data_parser.cpp"
         break;
 
     case 26:
@@ -1546,7 +1544,7 @@ yyreduce:
         {
             AddCommandToPath ( aPath, std::get<AeonGUI::DrawType> ( yyvsp[-1] ), std::get<std::vector<AeonGUI::DrawType>> ( yyvsp[0] ) );
         }
-#line 1479 "C:/Code/AeonGUI/mingw64/core/path_data_parser.cpp"
+#line 1477 "C:/Code/AeonGUI/mingw64/core/path_data_parser.cpp"
         break;
 
     case 27:
@@ -1554,7 +1552,7 @@ yyreduce:
         {
             AddCommandToPath ( aPath, std::get<AeonGUI::DrawType> ( yyvsp[-1] ), std::get<std::vector<AeonGUI::DrawType>> ( yyvsp[0] ) );
         }
-#line 1485 "C:/Code/AeonGUI/mingw64/core/path_data_parser.cpp"
+#line 1483 "C:/Code/AeonGUI/mingw64/core/path_data_parser.cpp"
         break;
 
     case 28:
@@ -1562,7 +1560,7 @@ yyreduce:
         {
             AddCommandToPath ( aPath, std::get<AeonGUI::DrawType> ( yyvsp[-1] ), std::get<std::vector<AeonGUI::DrawType>> ( yyvsp[0] ) );
         }
-#line 1491 "C:/Code/AeonGUI/mingw64/core/path_data_parser.cpp"
+#line 1489 "C:/Code/AeonGUI/mingw64/core/path_data_parser.cpp"
         break;
 
     case 29:
@@ -1570,7 +1568,7 @@ yyreduce:
         {
             AddCommandToPath ( aPath, std::get<AeonGUI::DrawType> ( yyvsp[-1] ), std::get<std::vector<AeonGUI::DrawType>> ( yyvsp[0] ) );
         }
-#line 1497 "C:/Code/AeonGUI/mingw64/core/path_data_parser.cpp"
+#line 1495 "C:/Code/AeonGUI/mingw64/core/path_data_parser.cpp"
         break;
 
     case 30:
@@ -1578,7 +1576,7 @@ yyreduce:
         {
             AddCommandToPath ( aPath, std::get<AeonGUI::DrawType> ( yyvsp[-1] ), std::get<std::vector<AeonGUI::DrawType>> ( yyvsp[0] ) );
         }
-#line 1503 "C:/Code/AeonGUI/mingw64/core/path_data_parser.cpp"
+#line 1501 "C:/Code/AeonGUI/mingw64/core/path_data_parser.cpp"
         break;
 
     case 31:
@@ -1586,7 +1584,7 @@ yyreduce:
         {
             AddCommandToPath ( aPath, std::get<AeonGUI::DrawType> ( yyvsp[-1] ), std::get<std::vector<AeonGUI::DrawType>> ( yyvsp[0] ) );
         }
-#line 1509 "C:/Code/AeonGUI/mingw64/core/path_data_parser.cpp"
+#line 1507 "C:/Code/AeonGUI/mingw64/core/path_data_parser.cpp"
         break;
 
     case 32:
@@ -1594,7 +1592,7 @@ yyreduce:
         {
             AddCommandToPath ( aPath, std::get<AeonGUI::DrawType> ( yyvsp[-1] ), std::get<std::vector<AeonGUI::DrawType>> ( yyvsp[0] ) );
         }
-#line 1515 "C:/Code/AeonGUI/mingw64/core/path_data_parser.cpp"
+#line 1513 "C:/Code/AeonGUI/mingw64/core/path_data_parser.cpp"
         break;
 
     case 33:
@@ -1602,7 +1600,7 @@ yyreduce:
         {
             AddCommandToPath ( aPath, std::get<AeonGUI::DrawType> ( yyvsp[-1] ), std::get<std::vector<AeonGUI::DrawType>> ( yyvsp[0] ) );
         }
-#line 1521 "C:/Code/AeonGUI/mingw64/core/path_data_parser.cpp"
+#line 1519 "C:/Code/AeonGUI/mingw64/core/path_data_parser.cpp"
         break;
 
     case 34:
@@ -1610,7 +1608,7 @@ yyreduce:
         {
             AddCommandToPath ( aPath, std::get<AeonGUI::DrawType> ( yyvsp[-1] ), std::get<std::vector<AeonGUI::DrawType>> ( yyvsp[0] ) );
         }
-#line 1527 "C:/Code/AeonGUI/mingw64/core/path_data_parser.cpp"
+#line 1525 "C:/Code/AeonGUI/mingw64/core/path_data_parser.cpp"
         break;
 
     case 35:
@@ -1618,7 +1616,7 @@ yyreduce:
         {
             AddCommandToPath ( aPath, std::get<AeonGUI::DrawType> ( yyvsp[-1] ), std::get<std::vector<AeonGUI::DrawType>> ( yyvsp[0] ) );
         }
-#line 1533 "C:/Code/AeonGUI/mingw64/core/path_data_parser.cpp"
+#line 1531 "C:/Code/AeonGUI/mingw64/core/path_data_parser.cpp"
         break;
 
     case 36:
@@ -1626,7 +1624,7 @@ yyreduce:
         {
             AddCommandToPath ( aPath, std::get<AeonGUI::DrawType> ( yyvsp[-1] ), std::get<std::vector<AeonGUI::DrawType>> ( yyvsp[0] ) );
         }
-#line 1539 "C:/Code/AeonGUI/mingw64/core/path_data_parser.cpp"
+#line 1537 "C:/Code/AeonGUI/mingw64/core/path_data_parser.cpp"
         break;
 
     case 37:
@@ -1634,7 +1632,7 @@ yyreduce:
         {
             AddCommandToPath ( aPath, std::get<AeonGUI::DrawType> ( yyvsp[-1] ), std::get<std::vector<AeonGUI::DrawType>> ( yyvsp[0] ) );
         }
-#line 1545 "C:/Code/AeonGUI/mingw64/core/path_data_parser.cpp"
+#line 1543 "C:/Code/AeonGUI/mingw64/core/path_data_parser.cpp"
         break;
 
     case 38:
@@ -1642,7 +1640,7 @@ yyreduce:
         {
             AddCommandToPath ( aPath, std::get<AeonGUI::DrawType> ( yyvsp[-1] ), std::get<std::vector<AeonGUI::DrawType>> ( yyvsp[0] ) );
         }
-#line 1551 "C:/Code/AeonGUI/mingw64/core/path_data_parser.cpp"
+#line 1549 "C:/Code/AeonGUI/mingw64/core/path_data_parser.cpp"
         break;
 
     case 39:
@@ -1650,7 +1648,7 @@ yyreduce:
         {
             yyval = std::move ( yyvsp[0] );
         }
-#line 1557 "C:/Code/AeonGUI/mingw64/core/path_data_parser.cpp"
+#line 1555 "C:/Code/AeonGUI/mingw64/core/path_data_parser.cpp"
         break;
 
     case 40:
@@ -1659,7 +1657,7 @@ yyreduce:
             Merge ( yyvsp[-1], yyvsp[0] );
             yyval = std::move ( yyvsp[-1] );
         }
-#line 1566 "C:/Code/AeonGUI/mingw64/core/path_data_parser.cpp"
+#line 1564 "C:/Code/AeonGUI/mingw64/core/path_data_parser.cpp"
         break;
 
     case 41:
@@ -1667,7 +1665,7 @@ yyreduce:
         {
             yyval = GetArcArgs ( yyvsp[-4], yyvsp[-3], yyvsp[-2], yyvsp[-1], yyvsp[0] );
         }
-#line 1574 "C:/Code/AeonGUI/mingw64/core/path_data_parser.cpp"
+#line 1572 "C:/Code/AeonGUI/mingw64/core/path_data_parser.cpp"
         break;
 
     case 42:
@@ -1675,7 +1673,7 @@ yyreduce:
         {
             yyval = std::move ( yyvsp[0] );
         }
-#line 1580 "C:/Code/AeonGUI/mingw64/core/path_data_parser.cpp"
+#line 1578 "C:/Code/AeonGUI/mingw64/core/path_data_parser.cpp"
         break;
 
     case 43:
@@ -1684,7 +1682,7 @@ yyreduce:
             Merge ( yyvsp[-1], yyvsp[0] );
             yyval = std::move ( yyvsp[-1] );
         }
-#line 1589 "C:/Code/AeonGUI/mingw64/core/path_data_parser.cpp"
+#line 1587 "C:/Code/AeonGUI/mingw64/core/path_data_parser.cpp"
         break;
 
     case 44:
@@ -1698,7 +1696,7 @@ yyreduce:
             left.insert ( left.end(), right.begin(), right.end() );
             yyval = std::move ( yyvsp[-2] );
         }
-#line 1603 "C:/Code/AeonGUI/mingw64/core/path_data_parser.cpp"
+#line 1601 "C:/Code/AeonGUI/mingw64/core/path_data_parser.cpp"
         break;
 
     case 45:
@@ -1706,7 +1704,7 @@ yyreduce:
         {
             yyval = std::move ( yyvsp[0] );
         }
-#line 1609 "C:/Code/AeonGUI/mingw64/core/path_data_parser.cpp"
+#line 1607 "C:/Code/AeonGUI/mingw64/core/path_data_parser.cpp"
         break;
 
     case 46:
@@ -1715,7 +1713,7 @@ yyreduce:
             Merge ( yyvsp[-1], yyvsp[0] );
             yyval = std::move ( yyvsp[-1] );
         }
-#line 1618 "C:/Code/AeonGUI/mingw64/core/path_data_parser.cpp"
+#line 1616 "C:/Code/AeonGUI/mingw64/core/path_data_parser.cpp"
         break;
 
     case 47:
@@ -1724,7 +1722,7 @@ yyreduce:
             Merge ( yyvsp[-1], yyvsp[0] );
             yyval = std::move ( yyvsp[-1] );
         }
-#line 1627 "C:/Code/AeonGUI/mingw64/core/path_data_parser.cpp"
+#line 1625 "C:/Code/AeonGUI/mingw64/core/path_data_parser.cpp"
         break;
 
     case 48:
@@ -1732,7 +1730,7 @@ yyreduce:
         {
             yyval = std::move ( yyvsp[0] );
         }
-#line 1633 "C:/Code/AeonGUI/mingw64/core/path_data_parser.cpp"
+#line 1631 "C:/Code/AeonGUI/mingw64/core/path_data_parser.cpp"
         break;
 
     case 49:
@@ -1741,7 +1739,7 @@ yyreduce:
             Merge ( yyvsp[-1], yyvsp[0] );
             yyval = std::move ( yyvsp[-1] );
         }
-#line 1642 "C:/Code/AeonGUI/mingw64/core/path_data_parser.cpp"
+#line 1640 "C:/Code/AeonGUI/mingw64/core/path_data_parser.cpp"
         break;
 
     case 50:
@@ -1749,7 +1747,7 @@ yyreduce:
         {
             yyval = std::vector<AeonGUI::DrawType> {std::get<AeonGUI::DrawType> ( yyvsp[-1] ), std::get<AeonGUI::DrawType> ( yyvsp[0] ) };
         }
-#line 1648 "C:/Code/AeonGUI/mingw64/core/path_data_parser.cpp"
+#line 1646 "C:/Code/AeonGUI/mingw64/core/path_data_parser.cpp"
         break;
 
     case 51:
@@ -1757,7 +1755,7 @@ yyreduce:
         {
             yyval = std::vector<AeonGUI::DrawType> {std::get<AeonGUI::DrawType> ( yyvsp[0] ) };
         }
-#line 1656 "C:/Code/AeonGUI/mingw64/core/path_data_parser.cpp"
+#line 1654 "C:/Code/AeonGUI/mingw64/core/path_data_parser.cpp"
         break;
 
     case 52:
@@ -1766,19 +1764,11 @@ yyreduce:
             std::get<std::vector<AeonGUI::DrawType>> ( yyvsp[-1] ).emplace_back ( std::get<AeonGUI::DrawType> ( yyvsp[0] ) );
             yyval = std::move ( yyvsp[-1] );
         }
-#line 1665 "C:/Code/AeonGUI/mingw64/core/path_data_parser.cpp"
-        break;
-
-    case 54:
-#line 203 "C:/Code/AeonGUI/core/parsers/path_data.ypp"
-        {
-            yyval = std::get<bool> ( std::get<AeonGUI::DrawType> ( yyvsp[0] ) ) ? 1.0 : 0.0;
-        }
-#line 1673 "C:/Code/AeonGUI/mingw64/core/path_data_parser.cpp"
+#line 1663 "C:/Code/AeonGUI/mingw64/core/path_data_parser.cpp"
         break;
 
 
-#line 1677 "C:/Code/AeonGUI/mingw64/core/path_data_parser.cpp"
+#line 1667 "C:/Code/AeonGUI/mingw64/core/path_data_parser.cpp"
 
     default:
         break;
@@ -2029,7 +2019,7 @@ yyreturn:
 #endif
     return yyresult;
 }
-#line 206 "C:/Code/AeonGUI/core/parsers/path_data.ypp"
+#line 201 "C:/Code/AeonGUI/core/parsers/path_data.ypp"
 
 extern "C"
 {

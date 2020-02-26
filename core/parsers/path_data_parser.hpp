@@ -1,4 +1,4 @@
-/* A Bison parser, made by GNU Bison 3.5.1.  */
+/* A Bison parser, made by GNU Bison 3.5.2.  */
 
 /* Bison interface for Yacc-like parsers in C
 
@@ -74,8 +74,7 @@ limitations under the License.
 # define DTOKENTYPE
 enum dtokentype
 {
-    FLAG = 258,
-    NUMBER = 259
+    NUMBER = 258
 };
 #endif
 
