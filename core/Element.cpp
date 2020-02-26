@@ -108,6 +108,11 @@ namespace AeonGUI
         return std::holds_alternative<std::monostate> ( attr ) ? aDefault : attr;
     }
 
+    bool Element::IsDrawEnabled() const
+    {
+        return true;
+    }
+
     void Element::DrawStart ( Canvas& aCanvas ) const
     {
         // Do nothing by default
@@ -207,6 +212,38 @@ namespace AeonGUI
         while ( node != parent ) \
         { \
             if ( node->mIterator < node->mChildren.size() ) \
+            { \
+                auto prev = node; \
+                node = node->mChildren[node->mIterator].get(); \
+                aPreamble ( *node ); \
+                ++prev->mIterator; \
+            } \
+            else \
+            { \
+                aPostamble ( *node ); \
+                node->mIterator = 0; \
+                node = node->mParent; \
+            } \
+        } \
+    }
+
+    TraverseDepthFirstPostOrder ( const )
+    TraverseDepthFirstPostOrder( )
+#undef TraverseDepthFirstPostOrder
+
+#define TraverseDepthFirstPostOrder(...) \
+    void Element::TraverseDepthFirstPreOrder ( \
+        const std::function<void ( __VA_ARGS__ Element& ) >& aPreamble, \
+        const std::function<void ( __VA_ARGS__ Element& ) >& aPostamble, \
+        const std::function<bool ( __VA_ARGS__ Element& ) >& aUnaryPredicate ) __VA_ARGS__ \
+    { \
+        if(!aUnaryPredicate(*this)){return;} \
+        auto node = this; \
+        aPreamble ( *node ); \
+        auto parent = mParent; \
+        while ( node != parent ) \
+        { \
+            if ( node->mIterator < node->mChildren.size() && aUnaryPredicate(*node)) \
             { \
                 auto prev = node; \
                 node = node->mChildren[node->mIterator].get(); \

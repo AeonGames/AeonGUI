@@ -27,6 +27,7 @@ limitations under the License.
 #include "aeongui/ElementFactory.h"
 #include "elements/SVG.h"
 #include "elements/SVGGElement.h"
+#include "elements/SVGDefsElement.h"
 #include "elements/SVGPathElement.h"
 #include "elements/SVGRectElement.h"
 #include "elements/SVGLineElement.h"
@@ -109,6 +110,13 @@ namespace AeonGUI
             [] ( xmlElementPtr aXmlElementPtr )
             {
                 return std::make_unique<Elements::Script> ( aXmlElementPtr );
+            }
+        },
+        {
+            "defs",
+            [] ( xmlElementPtr aXmlElementPtr )
+            {
+                return std::make_unique<Elements::SVGDefsElement> ( aXmlElementPtr );
             }
         },
     };

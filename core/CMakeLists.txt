@@ -43,6 +43,7 @@ set(AEONGUI_SOURCES
         Color.cpp
         elements/SVG.cpp
         elements/SVGGElement.cpp
+        elements/SVGDefsElement.cpp
         elements/SVGPathElement.cpp
         elements/SVGGeometryElement.cpp
         elements/SVGGraphicsElement.cpp
@@ -55,6 +56,7 @@ set(AEONGUI_SOURCES
         elements/Script.cpp
         elements/SVG.h
         elements/SVGGElement.h
+        elements/SVGDefsElement.h
         elements/SVGPathElement.h
         elements/SVGGraphicsElement.h
         elements/SVGGeometryElement.h

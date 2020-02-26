@@ -134,6 +134,22 @@ namespace AeonGUI
         }
     }
 
+    void Document::TraverseDepthFirstPreOrder ( const std::function<void ( Element& ) >& aPreamble, const std::function<void ( Element& ) >& aPostamble, const std::function<bool ( Element& ) >& aUnaryPredicate )
+    {
+        for ( auto & mRootElement : mChildren )
+        {
+            mRootElement->TraverseDepthFirstPreOrder ( aPreamble, aPostamble, aUnaryPredicate );
+        }
+    }
+
+    void Document::TraverseDepthFirstPreOrder ( const std::function<void ( const Element& ) >& aPreamble, const std::function<void ( const Element& ) >& aPostamble, const std::function<bool ( const Element& ) >& aUnaryPredicate ) const
+    {
+        for ( const auto& mRootElement : mChildren )
+        {
+            static_cast<const Element*> ( mRootElement.get() )->TraverseDepthFirstPreOrder ( aPreamble, aPostamble, aUnaryPredicate );
+        }
+    }
+
     void Document::Draw ( Canvas& aCanvas ) const
     {
         TraverseDepthFirstPreOrder (
@@ -144,6 +160,10 @@ namespace AeonGUI
         [&aCanvas] ( const Element & aElement )
         {
             aElement.DrawFinish ( aCanvas );
+        },
+        [] ( const Element & aElement )
+        {
+            return aElement.IsDrawEnabled();
         } );
     }
     void Document::Load ( JavaScript& aJavaScript )
