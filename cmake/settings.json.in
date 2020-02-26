@@ -12,6 +12,6 @@
     "window.zoomLevel": ${CODE_ZOOMLEVEL},
     "files.associations": {
         "*.json.in": "json",
-        "*.ypp": "y"
+        "*.ypp": "yacc"
     }
 }
