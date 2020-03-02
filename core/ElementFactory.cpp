@@ -25,9 +25,12 @@ limitations under the License.
 #include "aeongui/StringLiteral.h"
 #include "aeongui/Element.h"
 #include "aeongui/ElementFactory.h"
-#include "elements/SVG.h"
+#include "elements/SVGSVGElement.h"
 #include "elements/SVGGElement.h"
+#include "elements/SVGLinearGradientElement.h"
+#include "elements/SVGStopElement.h"
 #include "elements/SVGDefsElement.h"
+#include "elements/SVGUseElement.h"
 #include "elements/SVGPathElement.h"
 #include "elements/SVGRectElement.h"
 #include "elements/SVGLineElement.h"
@@ -46,7 +49,7 @@ namespace AeonGUI
             "svg",
             [] ( xmlElementPtr aXmlElementPtr )
             {
-                return std::make_unique<Elements::SVG> ( aXmlElementPtr );
+                return std::make_unique<Elements::SVGSVGElement> ( aXmlElementPtr );
             }
         },
         {
@@ -117,6 +120,27 @@ namespace AeonGUI
             [] ( xmlElementPtr aXmlElementPtr )
             {
                 return std::make_unique<Elements::SVGDefsElement> ( aXmlElementPtr );
+            }
+        },
+        {
+            "use",
+            [] ( xmlElementPtr aXmlElementPtr )
+            {
+                return std::make_unique<Elements::SVGUseElement> ( aXmlElementPtr );
+            }
+        },
+        {
+            "linearGradient",
+            [] ( xmlElementPtr aXmlElementPtr )
+            {
+                return std::make_unique<Elements::SVGLinearGradientElement> ( aXmlElementPtr );
+            }
+        },
+        {
+            "stop",
+            [] ( xmlElementPtr aXmlElementPtr )
+            {
+                return std::make_unique<Elements::SVGStopElement> ( aXmlElementPtr );
             }
         },
     };

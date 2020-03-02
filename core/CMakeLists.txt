@@ -41,8 +41,13 @@ set(AEONGUI_SOURCES
         JavaScript.cpp
         Duktape.cpp
         Color.cpp
-        elements/SVG.cpp
+        elements/SVGElement.cpp
+        elements/SVGSVGElement.cpp
+        elements/SVGGradientElement.cpp
+        elements/SVGLinearGradientElement.cpp
         elements/SVGGElement.cpp
+        elements/SVGUseElement.cpp
+        elements/SVGStopElement.cpp
         elements/SVGDefsElement.cpp
         elements/SVGPathElement.cpp
         elements/SVGGeometryElement.cpp
@@ -54,8 +59,13 @@ set(AEONGUI_SOURCES
         elements/SVGCircleElement.cpp
         elements/SVGEllipseElement.cpp
         elements/Script.cpp
-        elements/SVG.h
         elements/SVGGElement.h
+        elements/SVGSVGElement.h
+        elements/SVGElement.h
+        elements/SVGGradientElement.h
+        elements/SVGLinearGradientElement.h
+        elements/SVGUseElement.h
+        elements/SVGStopElement.h
         elements/SVGDefsElement.h
         elements/SVGPathElement.h
         elements/SVGGraphicsElement.h

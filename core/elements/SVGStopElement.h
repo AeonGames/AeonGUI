@@ -13,22 +13,21 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 */
-#ifndef AEONGUI_SVGGRAPHICSELEMENT_H
-#define AEONGUI_SVGGRAPHICSELEMENT_H
+#ifndef AEONGUI_SVGSTOPELEMENT_H
+#define AEONGUI_SVGSTOPELEMENT_H
 
-#include <vector>
 #include "SVGElement.h"
-#include "aeongui/Color.h"
 
 namespace AeonGUI
 {
     namespace Elements
     {
-        class SVGGraphicsElement : public SVGElement
+
+        class SVGStopElement : public SVGElement
         {
         public:
-            SVGGraphicsElement ( xmlElementPtr aXmlElementPtr );
-            ~SVGGraphicsElement() override;
+            SVGStopElement ( xmlElementPtr aXmlElementPtr );
+            ~SVGStopElement() final;
         };
     }
 }

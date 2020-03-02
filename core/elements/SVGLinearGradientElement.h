@@ -13,22 +13,22 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 */
-#ifndef AEONGUI_SVGGRAPHICSELEMENT_H
-#define AEONGUI_SVGGRAPHICSELEMENT_H
+#ifndef AEONGUI_SVGLINEARGRADIENTELEMENT_H
+#define AEONGUI_SVGLINEARGRADIENTELEMENT_H
 
-#include <vector>
-#include "SVGElement.h"
-#include "aeongui/Color.h"
+#include "SVGGradientElement.h"
+#include "aeongui/AttributeMap.h"
 
 namespace AeonGUI
 {
     namespace Elements
     {
-        class SVGGraphicsElement : public SVGElement
+
+        class SVGLinearGradientElement : public SVGGradientElement
         {
         public:
-            SVGGraphicsElement ( xmlElementPtr aXmlElementPtr );
-            ~SVGGraphicsElement() override;
+            SVGLinearGradientElement ( xmlElementPtr aXmlElementPtr );
+            ~SVGLinearGradientElement() final;
         };
     }
 }

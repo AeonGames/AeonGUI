@@ -1,5 +1,5 @@
 /*
-Copyright (C) 2019 Rodrigo Jose Hernandez Cordoba
+Copyright (C) 2019,2020 Rodrigo Jose Hernandez Cordoba
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -14,20 +14,20 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 #include <iostream>
-#include "SVG.h"
+#include "SVGSVGElement.h"
 
 namespace AeonGUI
 {
     namespace Elements
     {
-        SVG::SVG ( xmlElementPtr aXmlElementPtr ) : Element ( aXmlElementPtr )
+        SVGSVGElement::SVGSVGElement ( xmlElementPtr aXmlElementPtr ) : Element ( aXmlElementPtr )
         {
             std::cout << "This is a specialized implementation for the svg element." << std::endl;
         }
-        SVG::~SVG()
+        SVGSVGElement::~SVGSVGElement()
         {
         }
-        void SVG::DrawStart ( Canvas& aCanvas ) const
+        void SVGSVGElement::DrawStart ( Canvas& aCanvas ) const
         {
         }
     }

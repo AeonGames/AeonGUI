@@ -13,23 +13,15 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 */
-#ifndef AEONGUI_SVGGRAPHICSELEMENT_H
-#define AEONGUI_SVGGRAPHICSELEMENT_H
-
-#include <vector>
-#include "SVGElement.h"
-#include "aeongui/Color.h"
+#include "SVGGradientElement.h"
 
 namespace AeonGUI
 {
     namespace Elements
     {
-        class SVGGraphicsElement : public SVGElement
+        SVGGradientElement::SVGGradientElement ( xmlElementPtr aXmlElementPtr ) : SVGElement {aXmlElementPtr}
         {
-        public:
-            SVGGraphicsElement ( xmlElementPtr aXmlElementPtr );
-            ~SVGGraphicsElement() override;
-        };
+        }
+        SVGGradientElement::~SVGGradientElement() = default;
     }
 }
-#endif
