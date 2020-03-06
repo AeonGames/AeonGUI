@@ -72,24 +72,18 @@ namespace AeonGUI
 
     Document::Document () = default;
 
-    Document::Document ( const std::string& aFilename ) :
-        mDocument{xmlReadFile ( aFilename.c_str(), nullptr, 0 ) }
+    Document::Document ( const std::string& aFilename )
     {
-        if ( mDocument == nullptr )
+        xmlDocPtr document{xmlReadFile ( aFilename.c_str(), nullptr, 0 ) };
+        if ( document == nullptr )
         {
             throw std::runtime_error ( "Could not parse xml file" );
         }
-        AddElements ( this, xmlDocGetRootElement ( mDocument ) );
+        AddElements ( this, xmlDocGetRootElement ( document ) );
+        xmlFreeDoc ( document );
     }
 
-    Document::~Document()
-    {
-        if ( mDocument != nullptr )
-        {
-            xmlFreeDoc ( mDocument );
-            mDocument = nullptr;
-        }
-    }
+    Document::~Document() = default;
 
     Element* Document::AddElement ( std::unique_ptr<Element> aElement )
     {

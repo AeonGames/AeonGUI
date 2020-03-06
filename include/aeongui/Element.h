@@ -25,12 +25,6 @@ limitations under the License.
 #include "aeongui/AABB.h"
 #include "aeongui/AttributeMap.h"
 
-extern "C"
-{
-    typedef struct _xmlElement xmlElement;
-    typedef xmlElement *xmlElementPtr;
-}
-
 namespace AeonGUI
 {
     class Canvas;

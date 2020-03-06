@@ -24,12 +24,6 @@ limitations under the License.
 #include "aeongui/JavaScript.h"
 #include "aeongui/Element.h"
 
-extern "C"
-{
-    typedef struct _xmlDoc xmlDoc;
-    typedef xmlDoc *xmlDocPtr;
-}
-
 namespace AeonGUI
 {
     class Document
@@ -52,7 +46,6 @@ namespace AeonGUI
         DLL void TraverseDepthFirstPreOrder ( const std::function<void ( Element& ) >& aPreamble, const std::function<void ( Element& ) >& aPostamble, const std::function<bool ( Element& ) >& aUnaryPredicate );
         DLL void TraverseDepthFirstPreOrder ( const std::function<void ( const Element& ) >& aPreamble, const std::function<void ( const Element& ) >& aPostamble, const std::function<bool ( const Element& ) >& aUnaryPredicate ) const;
     private:
-        xmlDocPtr mDocument{};
         std::vector<std::unique_ptr<Element>> mChildren{};
     };
 }
