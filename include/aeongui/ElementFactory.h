@@ -1,5 +1,5 @@
 /*
-Copyright (C) 2019 Rodrigo Jose Hernandez Cordoba
+Copyright (C) 2019,2020 Rodrigo Jose Hernandez Cordoba
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -23,9 +23,9 @@ limitations under the License.
 #include "aeongui/StringLiteral.h"
 namespace AeonGUI
 {
-    //using Constructor = std::tuple<StringLiteral, std::function < std::unique_ptr<Element>(xmlElementPtr aXmlElementPtr) >>;
-    DLL std::unique_ptr<Element> Construct ( xmlElementPtr aXmlElementPtr );
-    DLL bool RegisterConstructor ( const StringLiteral& aIdentifier, const std::function < std::unique_ptr<Element> ( xmlElementPtr aXmlElementPtr ) > & aConstructor );
+    //using Constructor = std::tuple<StringLiteral, std::function < std::unique_ptr<Element>(xmlElementPtr aAttributeMap) >>;
+    DLL std::unique_ptr<Element> Construct ( const char* aIdentifier, const AttributeMap& aAttributeMap );
+    DLL bool RegisterConstructor ( const StringLiteral& aIdentifier, const std::function < std::unique_ptr<Element> ( const AttributeMap& aAttributeMap ) > & aConstructor );
     DLL bool UnregisterConstructor ( const StringLiteral& aIdentifier );
     DLL void EnumerateConstructors ( const std::function<bool ( const StringLiteral& ) >& aEnumerator );
 }

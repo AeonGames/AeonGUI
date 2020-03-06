@@ -19,7 +19,7 @@ namespace AeonGUI
 {
     namespace Elements
     {
-        SVGElement::SVGElement ( xmlElementPtr aXmlElementPtr ) : Element ( aXmlElementPtr ) {}
+        SVGElement::SVGElement ( const AttributeMap& aAttributeMap ) : Element ( aAttributeMap ) {}
         SVGElement::~SVGElement() = default;
     }
 }

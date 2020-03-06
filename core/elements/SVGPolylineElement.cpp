@@ -22,7 +22,7 @@ namespace AeonGUI
     namespace Elements
     {
         static const std::regex coord{R"((-?(?:[0-9]*\.[0-9]+(?:[eE][-+]?[0-9]+)?|[0-9]+))[[:space:]]*,?[[:space:]]*(-?(?:[0-9]*\.[0-9]+(?:[eE][-+]?[0-9]+)?|[0-9]+)))"};
-        SVGPolylineElement::SVGPolylineElement ( xmlElementPtr aXmlElementPtr ) : SVGGeometryElement ( aXmlElementPtr )
+        SVGPolylineElement::SVGPolylineElement ( const AttributeMap& aAttributeMap ) : SVGGeometryElement ( aAttributeMap )
         {
             std::cout << "Polyline" << std::endl;
             /// https://www.w3.org/TR/SVG/shapes.html#PolylineElement

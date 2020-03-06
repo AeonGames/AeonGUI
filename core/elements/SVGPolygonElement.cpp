@@ -21,7 +21,7 @@ namespace AeonGUI
     namespace Elements
     {
         static const std::regex coord{R"((-?(?:[0-9]*\.[0-9]+(?:[eE][-+]?[0-9]+)?|[0-9]+))[[:space:]]*,?[[:space:]]*(-?(?:[0-9]*\.[0-9]+(?:[eE][-+]?[0-9]+)?|[0-9]+)))"};
-        SVGPolygonElement::SVGPolygonElement ( xmlElementPtr aXmlElementPtr ) : SVGGeometryElement ( aXmlElementPtr )
+        SVGPolygonElement::SVGPolygonElement ( const AttributeMap& aAttributeMap ) : SVGGeometryElement ( aAttributeMap )
         {
             std::cout << "Polygon" << std::endl;
             /// https://www.w3.org/TR/SVG/shapes.html#PolygonElement

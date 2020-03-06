@@ -23,13 +23,37 @@ limitations under the License.
 
 namespace AeonGUI
 {
+    static const std::regex number{"-?([0-9]+|[0-9]*\\.[0-9]+([eE][-+]?[0-9]+)?)"};
+    static AttributeMap ExtractElementAttributes ( xmlElementPtr aXmlElementPtr )
+    {
+        AttributeMap attribute_map{};
+        for ( xmlNodePtr attribute = reinterpret_cast<xmlNodePtr> ( aXmlElementPtr->attributes ); attribute; attribute = attribute->next )
+        {
+            std::cmatch match;
+            const char* value = reinterpret_cast<const char*> ( xmlGetProp ( reinterpret_cast<xmlNodePtr> ( aXmlElementPtr ), attribute->name ) );
+            if ( std::regex_match ( value, match, number ) )
+            {
+                attribute_map[reinterpret_cast<const char*> ( attribute->name )] = std::stod ( match[0].str() );
+            }
+            else if ( std::regex_match ( value, match, Color::ColorRegex ) )
+            {
+                attribute_map[reinterpret_cast<const char*> ( attribute->name )] = Color{match[0].str() };
+            }
+            else
+            {
+                attribute_map[reinterpret_cast<const char*> ( attribute->name )] = value;
+            }
+        }
+        return attribute_map;
+    }
     static void AddElements ( Element* aElement, xmlNode * aNode )
     {
         for ( xmlNode * node = aNode; node; node = node->next )
         {
             if ( node->type == XML_ELEMENT_NODE )
             {
-                AddElements ( aElement->AddElement ( Construct ( reinterpret_cast<xmlElementPtr> ( node ) ) ), node->children );
+                xmlElementPtr element = reinterpret_cast<xmlElementPtr> ( node );
+                AddElements ( aElement->AddElement ( Construct ( reinterpret_cast<const char*> ( element->name ), ExtractElementAttributes ( element ) ) ), node->children );
             }
         }
     }
@@ -40,7 +64,8 @@ namespace AeonGUI
         {
             if ( node->type == XML_ELEMENT_NODE )
             {
-                AddElements ( aDocument->AddElement ( Construct ( reinterpret_cast<xmlElementPtr> ( node ) ) ), node->children );
+                xmlElementPtr element = reinterpret_cast<xmlElementPtr> ( node );
+                AddElements ( aDocument->AddElement ( Construct ( reinterpret_cast<const char*> ( element->name ), ExtractElementAttributes ( element ) ) ), node->children );
             }
         }
     }

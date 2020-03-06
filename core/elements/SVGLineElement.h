@@ -25,7 +25,7 @@ namespace AeonGUI
         class SVGLineElement : public SVGGeometryElement
         {
         public:
-            SVGLineElement ( xmlElementPtr aXmlElementPtr );
+            SVGLineElement ( const AttributeMap& aAttributeMap );
             ~SVGLineElement() final;
         };
     }

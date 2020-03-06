@@ -20,7 +20,7 @@ namespace AeonGUI
 {
     namespace Elements
     {
-        SVGLineElement::SVGLineElement ( xmlElementPtr aXmlElementPtr ) : SVGGeometryElement ( aXmlElementPtr )
+        SVGLineElement::SVGLineElement ( const AttributeMap& aAttributeMap ) : SVGGeometryElement ( aAttributeMap )
         {
             std::cout << "Line" << std::endl;
             /**

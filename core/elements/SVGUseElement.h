@@ -27,7 +27,7 @@ namespace AeonGUI
         class SVGUseElement : public SVGGraphicsElement
         {
         public:
-            SVGUseElement ( xmlElementPtr aXmlElementPtr );
+            SVGUseElement ( const AttributeMap& aAttributeMap );
             ~SVGUseElement() final;
         };
     }

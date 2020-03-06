@@ -25,7 +25,7 @@ namespace AeonGUI
         class SVGCircleElement : public SVGGeometryElement
         {
         public:
-            SVGCircleElement ( xmlElementPtr aXmlElementPtr );
+            SVGCircleElement ( const AttributeMap& aAttributeMap );
             ~SVGCircleElement() final;
         };
     }

@@ -22,7 +22,7 @@ namespace AeonGUI
 {
     namespace Elements
     {
-        Script::Script ( xmlElementPtr aXmlElementPtr ) : Element ( aXmlElementPtr )
+        Script::Script ( const AttributeMap& aAttributeMap ) : Element ( aAttributeMap )
         {
         }
         Script::~Script()

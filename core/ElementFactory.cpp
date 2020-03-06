@@ -42,123 +42,123 @@ limitations under the License.
 
 namespace AeonGUI
 {
-    using Constructor = std::tuple<StringLiteral, std::function < std::unique_ptr<Element> ( xmlElementPtr aXmlElementPtr ) >>;
+    using Constructor = std::tuple<StringLiteral, std::function < std::unique_ptr<Element> ( const AttributeMap& aAttributeMap ) >>;
     static std::vector<Constructor> Constructors
     {
         {
             "svg",
-            [] ( xmlElementPtr aXmlElementPtr )
+            [] ( const AttributeMap & aAttributeMap )
             {
-                return std::make_unique<Elements::SVGSVGElement> ( aXmlElementPtr );
+                return std::make_unique<Elements::SVGSVGElement> ( aAttributeMap );
             }
         },
         {
             "g",
-            [] ( xmlElementPtr aXmlElementPtr )
+            [] ( const AttributeMap & aAttributeMap )
             {
-                return std::make_unique<Elements::SVGGElement> ( aXmlElementPtr );
+                return std::make_unique<Elements::SVGGElement> ( aAttributeMap );
             }
         },
         {
             "path",
-            [] ( xmlElementPtr aXmlElementPtr )
+            [] ( const AttributeMap & aAttributeMap )
             {
-                return std::make_unique<Elements::SVGPathElement> ( aXmlElementPtr );
+                return std::make_unique<Elements::SVGPathElement> ( aAttributeMap );
             }
         },
         {
             "rect",
-            [] ( xmlElementPtr aXmlElementPtr )
+            [] ( const AttributeMap & aAttributeMap )
             {
-                return std::make_unique<Elements::SVGRectElement> ( aXmlElementPtr );
+                return std::make_unique<Elements::SVGRectElement> ( aAttributeMap );
             }
         },
         {
             "line",
-            [] ( xmlElementPtr aXmlElementPtr )
+            [] ( const AttributeMap & aAttributeMap )
             {
-                return std::make_unique<Elements::SVGLineElement> ( aXmlElementPtr );
+                return std::make_unique<Elements::SVGLineElement> ( aAttributeMap );
             }
         },
         {
             "polyline",
-            [] ( xmlElementPtr aXmlElementPtr )
+            [] ( const AttributeMap & aAttributeMap )
             {
-                return std::make_unique<Elements::SVGPolylineElement> ( aXmlElementPtr );
+                return std::make_unique<Elements::SVGPolylineElement> ( aAttributeMap );
             }
         },
         {
             "polygon",
-            [] ( xmlElementPtr aXmlElementPtr )
+            [] ( const AttributeMap & aAttributeMap )
             {
-                return std::make_unique<Elements::SVGPolygonElement> ( aXmlElementPtr );
+                return std::make_unique<Elements::SVGPolygonElement> ( aAttributeMap );
             }
         },
         {
             "circle",
-            [] ( xmlElementPtr aXmlElementPtr )
+            [] ( const AttributeMap & aAttributeMap )
             {
-                return std::make_unique<Elements::SVGCircleElement> ( aXmlElementPtr );
+                return std::make_unique<Elements::SVGCircleElement> ( aAttributeMap );
             }
         },
         {
             "ellipse",
-            [] ( xmlElementPtr aXmlElementPtr )
+            [] ( const AttributeMap & aAttributeMap )
             {
-                return std::make_unique<Elements::SVGEllipseElement> ( aXmlElementPtr );
+                return std::make_unique<Elements::SVGEllipseElement> ( aAttributeMap );
             }
         },
         {
             "script",
-            [] ( xmlElementPtr aXmlElementPtr )
+            [] ( const AttributeMap & aAttributeMap )
             {
-                return std::make_unique<Elements::Script> ( aXmlElementPtr );
+                return std::make_unique<Elements::Script> ( aAttributeMap );
             }
         },
         {
             "defs",
-            [] ( xmlElementPtr aXmlElementPtr )
+            [] ( const AttributeMap & aAttributeMap )
             {
-                return std::make_unique<Elements::SVGDefsElement> ( aXmlElementPtr );
+                return std::make_unique<Elements::SVGDefsElement> ( aAttributeMap );
             }
         },
         {
             "use",
-            [] ( xmlElementPtr aXmlElementPtr )
+            [] ( const AttributeMap & aAttributeMap )
             {
-                return std::make_unique<Elements::SVGUseElement> ( aXmlElementPtr );
+                return std::make_unique<Elements::SVGUseElement> ( aAttributeMap );
             }
         },
         {
             "linearGradient",
-            [] ( xmlElementPtr aXmlElementPtr )
+            [] ( const AttributeMap & aAttributeMap )
             {
-                return std::make_unique<Elements::SVGLinearGradientElement> ( aXmlElementPtr );
+                return std::make_unique<Elements::SVGLinearGradientElement> ( aAttributeMap );
             }
         },
         {
             "stop",
-            [] ( xmlElementPtr aXmlElementPtr )
+            [] ( const AttributeMap & aAttributeMap )
             {
-                return std::make_unique<Elements::SVGStopElement> ( aXmlElementPtr );
+                return std::make_unique<Elements::SVGStopElement> ( aAttributeMap );
             }
         },
     };
 
-    std::unique_ptr<Element> Construct ( xmlElementPtr aXmlElementPtr )
+    std::unique_ptr<Element> Construct ( const char* aIdentifier, const AttributeMap& aAttributeMap )
     {
         auto it = std::find_if ( Constructors.begin(), Constructors.end(),
-                                 [aXmlElementPtr] ( const Constructor & aConstructor )
+                                 [&aAttributeMap, aIdentifier] ( const Constructor & aConstructor )
         {
-            return std::get<0> ( aConstructor ) == reinterpret_cast<const char*> ( aXmlElementPtr->name );
+            return std::get<0> ( aConstructor ) == aIdentifier ;
         } );
         if ( it != Constructors.end() )
         {
-            return std::get<1> ( *it ) ( aXmlElementPtr );
+            return std::get<1> ( *it ) ( aAttributeMap );
         }
-        return std::make_unique<Element> ( aXmlElementPtr );
+        return std::make_unique<Element> ( aAttributeMap );
     }
-    bool RegisterConstructor ( const StringLiteral& aIdentifier, const std::function < std::unique_ptr<Element> ( xmlElementPtr aXmlElementPtr ) > & aConstructor )
+    bool RegisterConstructor ( const StringLiteral& aIdentifier, const std::function < std::unique_ptr<Element> ( const AttributeMap& aAttributeMap ) > & aConstructor )
     {
         auto it = std::find_if ( Constructors.begin(), Constructors.end(),
                                  [aIdentifier] ( const Constructor & aConstructor )

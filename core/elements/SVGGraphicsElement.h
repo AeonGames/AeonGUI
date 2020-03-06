@@ -27,7 +27,7 @@ namespace AeonGUI
         class SVGGraphicsElement : public SVGElement
         {
         public:
-            SVGGraphicsElement ( xmlElementPtr aXmlElementPtr );
+            SVGGraphicsElement ( const AttributeMap& aAttributeMap );
             ~SVGGraphicsElement() override;
         };
     }

@@ -20,7 +20,7 @@ namespace AeonGUI
 {
     namespace Elements
     {
-        SVGEllipseElement::SVGEllipseElement ( xmlElementPtr aXmlElementPtr ) : SVGGeometryElement ( aXmlElementPtr )
+        SVGEllipseElement::SVGEllipseElement ( const AttributeMap& aAttributeMap ) : SVGGeometryElement ( aAttributeMap )
         {
             std::cout << "Ellipse" << std::endl;
             double cx = std::get<double> ( GetAttribute ( "cx", 0.0 ) );

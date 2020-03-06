@@ -1,5 +1,5 @@
 /*
-Copyright (C) 2019 Rodrigo Jose Hernandez Cordoba
+Copyright (C) 2019,2020 Rodrigo Jose Hernandez Cordoba
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -25,7 +25,7 @@ namespace AeonGUI
         class Script : public Element
         {
         public:
-            Script ( xmlElementPtr aXmlElementPtr );
+            Script ( const AttributeMap& aAttributeMap );
             ~Script () final;
             void Load ( JavaScript& aJavaScript ) final;
             void Unload ( JavaScript& aJavaScript ) final;

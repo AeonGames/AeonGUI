@@ -20,7 +20,7 @@ namespace AeonGUI
 {
     namespace Elements
     {
-        SVGStopElement::SVGStopElement ( xmlElementPtr aXmlElementPtr ) : SVGElement {aXmlElementPtr}
+        SVGStopElement::SVGStopElement ( const AttributeMap& aAttributeMap ) : SVGElement {aAttributeMap}
         {
         }
         SVGStopElement::~SVGStopElement() = default;

@@ -26,7 +26,7 @@ namespace AeonGUI
         class SVGStopElement : public SVGElement
         {
         public:
-            SVGStopElement ( xmlElementPtr aXmlElementPtr );
+            SVGStopElement ( const AttributeMap& aAttributeMap );
             ~SVGStopElement() final;
         };
     }

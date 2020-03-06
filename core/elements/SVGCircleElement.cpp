@@ -20,7 +20,7 @@ namespace AeonGUI
 {
     namespace Elements
     {
-        SVGCircleElement::SVGCircleElement ( xmlElementPtr aXmlElementPtr ) : SVGGeometryElement ( aXmlElementPtr )
+        SVGCircleElement::SVGCircleElement ( const AttributeMap& aAttributeMap ) : SVGGeometryElement ( aAttributeMap )
         {
             std::cout << "Circle" << std::endl;
             double cx = std::get<double> ( GetAttribute ( "cx", 0.0 ) );

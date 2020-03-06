@@ -20,7 +20,7 @@ namespace AeonGUI
 {
     namespace Elements
     {
-        SVGUseElement::SVGUseElement ( xmlElementPtr aXmlElementPtr ) : SVGGraphicsElement {aXmlElementPtr}
+        SVGUseElement::SVGUseElement ( const AttributeMap& aAttributeMap ) : SVGGraphicsElement {aAttributeMap}
         {
         }
         SVGUseElement::~SVGUseElement() = default;

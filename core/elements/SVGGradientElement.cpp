@@ -19,7 +19,7 @@ namespace AeonGUI
 {
     namespace Elements
     {
-        SVGGradientElement::SVGGradientElement ( xmlElementPtr aXmlElementPtr ) : SVGElement {aXmlElementPtr}
+        SVGGradientElement::SVGGradientElement ( const AttributeMap& aAttributeMap ) : SVGElement {aAttributeMap}
         {
         }
         SVGGradientElement::~SVGGradientElement() = default;

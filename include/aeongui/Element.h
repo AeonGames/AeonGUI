@@ -39,7 +39,7 @@ namespace AeonGUI
     class Element
     {
     public:
-        DLL Element ( xmlElementPtr aXmlElementPtr );
+        DLL Element ( const AttributeMap& aAttributes );
         DLL Element* AddElement ( std::unique_ptr<Element> aElement );
         DLL std::unique_ptr<Element> RemoveElement ( const Element* aElement );
         DLL void TraverseDepthFirstPreOrder ( const std::function<void ( Element& ) >& aAction );

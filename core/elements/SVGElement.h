@@ -24,7 +24,7 @@ namespace AeonGUI
         class SVGElement : public Element
         {
         public:
-            SVGElement ( xmlElementPtr aXmlElementPtr );
+            SVGElement ( const AttributeMap& aAttributeMap );
             ~SVGElement() override;
         };
     }

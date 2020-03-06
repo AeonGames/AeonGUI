@@ -20,7 +20,7 @@ namespace AeonGUI
 {
     namespace Elements
     {
-        SVGDefsElement::SVGDefsElement ( xmlElementPtr aXmlElementPtr ) : SVGGraphicsElement {aXmlElementPtr}
+        SVGDefsElement::SVGDefsElement ( const AttributeMap& aAttributeMap ) : SVGGraphicsElement {aAttributeMap}
         {
             std::cout << __func__ << std::endl;
         }

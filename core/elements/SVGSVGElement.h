@@ -25,7 +25,7 @@ namespace AeonGUI
         class SVGSVGElement : public Element
         {
         public:
-            SVGSVGElement ( xmlElementPtr aXmlElementPtr );
+            SVGSVGElement ( const AttributeMap& aAttributeMap );
             ~SVGSVGElement() final;
             void DrawStart ( Canvas& aCanvas ) const final;
         };

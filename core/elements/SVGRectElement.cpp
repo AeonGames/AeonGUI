@@ -21,7 +21,7 @@ namespace AeonGUI
 {
     namespace Elements
     {
-        SVGRectElement::SVGRectElement ( xmlElementPtr aXmlElementPtr ) : SVGGeometryElement ( aXmlElementPtr )
+        SVGRectElement::SVGRectElement ( const AttributeMap& aAttributeMap ) : SVGGeometryElement ( aAttributeMap )
         {
             std::cout << "Rect" << std::endl;
             double width = std::get<double> ( GetAttribute ( "width", 0.0 ) );
