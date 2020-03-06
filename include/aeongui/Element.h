@@ -51,11 +51,6 @@ namespace AeonGUI
         DLL void TraverseDepthFirstPreOrder ( const std::function<void ( Element& ) >& aPreamble, const std::function<void ( Element& ) >& aPostamble, const std::function<bool ( Element& ) >& aUnaryPredicate );
         DLL void TraverseDepthFirstPreOrder ( const std::function<void ( const Element& ) >& aPreamble, const std::function<void ( const Element& ) >& aPostamble, const std::function<bool ( const Element& ) >& aUnaryPredicate ) const;
 
-        DLL const char* GetTagName() const;
-        DLL bool HasAttr ( const char* aAttrName ) const;
-        DLL const char* GetAttr ( const char* aAttrName ) const;
-        DLL double GetAttrAsDouble ( const char* aAttrName, double aDefault = 0 ) const;
-        DLL const char* GetContent () const;
         DLL AttributeType GetAttribute ( const char* attrName, const AttributeType& aDefault = {} ) const;
         DLL AttributeType GetInheritedAttribute ( const char* attrName, const AttributeType& aDefault = {} ) const;
         DLL virtual void DrawStart ( Canvas& aCanvas ) const;
@@ -69,7 +64,6 @@ namespace AeonGUI
         DLL virtual bool IsDrawEnabled() const;
         DLL virtual ~Element();
     protected:
-        xmlElementPtr mXmlElementPtr{};
         AttributeMap mAttributeMap{};
     private:
         Element* mParent{};

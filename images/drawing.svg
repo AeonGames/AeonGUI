@@ -104,4 +104,6 @@
       </g>
     </g>
   </g>
+  <!-- <polygon points="220,10 300,210 170,250 123,234" style="fill:lime;stroke:purple;stroke-width:1" /> -->
+  <polyline points="220,10 300,210 170,250 123,234" style="fill:none;stroke:purple;stroke-width:1" />
 </svg>

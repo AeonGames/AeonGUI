@@ -23,9 +23,9 @@ namespace AeonGUI
         SVGCircleElement::SVGCircleElement ( xmlElementPtr aXmlElementPtr ) : SVGGeometryElement ( aXmlElementPtr )
         {
             std::cout << "Circle" << std::endl;
-            double cx = GetAttrAsDouble ( "cx" );
-            double cy = GetAttrAsDouble ( "cy" );
-            double r = GetAttrAsDouble ( "r" );
+            double cx = std::get<double> ( GetAttribute ( "cx", 0.0 ) );
+            double cy = std::get<double> ( GetAttribute ( "cy", 0.0 ) );
+            double r = std::get<double> ( GetAttribute ( "r", 0.0 ) );
             /**
              * https://www.w3.org/TR/SVG/shapes.html#CircleElement
              * The cx and cy attributes define the coordinates of the center of the circle.

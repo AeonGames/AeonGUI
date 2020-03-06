@@ -23,10 +23,10 @@ namespace AeonGUI
         SVGEllipseElement::SVGEllipseElement ( xmlElementPtr aXmlElementPtr ) : SVGGeometryElement ( aXmlElementPtr )
         {
             std::cout << "Ellipse" << std::endl;
-            double cx = GetAttrAsDouble ( "cx" );
-            double cy = GetAttrAsDouble ( "cy" );
-            double rx = GetAttrAsDouble ( "rx" );
-            double ry = GetAttrAsDouble ( "ry" );
+            double cx = std::get<double> ( GetAttribute ( "cx", 0.0 ) );
+            double cy = std::get<double> ( GetAttribute ( "cy", 0.0 ) );
+            double rx = std::get<double> ( GetAttribute ( "rx", 0.0 ) );
+            double ry = std::get<double> ( GetAttribute ( "ry", 0.0 ) );
             /**
              * https://www.w3.org/TR/SVG/shapes.html#EllipseElement
              * The cx and cy coordinates define the center of the ellipse.

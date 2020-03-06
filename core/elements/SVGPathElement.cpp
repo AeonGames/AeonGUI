@@ -24,16 +24,18 @@ namespace AeonGUI
         int ParsePathData ( std::vector<DrawType>& aPath, const char* s );
         SVGPathElement::SVGPathElement ( xmlElementPtr aXmlElementPtr ) : SVGGeometryElement ( aXmlElementPtr )
         {
-            if ( HasAttr ( "d" ) )
+            auto d = GetAttribute ( "d" );
+            if ( std::holds_alternative<std::string> ( d ) )
             {
                 std::vector<DrawType> path;
-                if ( ParsePathData ( path, GetAttr ( "d" ) ) )
+                if ( ParsePathData ( path, std::get<std::string> ( d ).c_str() ) )
                 {
-                    if ( HasAttr ( "id" ) )
+                    auto id = GetAttribute ( "id" );
+                    if ( std::holds_alternative<std::string> ( id ) )
                     {
-                        std::cerr << "Path Id: " << GetAttr ( "id" ) << std::endl;
+                        std::cerr << "Path Id: " << std::get<std::string> ( id ) << std::endl;
                     }
-                    std::cerr << "Path Data: " << GetAttr ( "d" ) << std::endl;
+                    std::cerr << "Path Data: " << std::get<std::string> ( d ) << std::endl;
                 }
                 mPath.Construct ( path );
             }

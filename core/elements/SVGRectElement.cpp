@@ -24,8 +24,8 @@ namespace AeonGUI
         SVGRectElement::SVGRectElement ( xmlElementPtr aXmlElementPtr ) : SVGGeometryElement ( aXmlElementPtr )
         {
             std::cout << "Rect" << std::endl;
-            double width = GetAttrAsDouble ( "width" );
-            double height = GetAttrAsDouble ( "height" );
+            double width = std::get<double> ( GetAttribute ( "width", 0.0 ) );
+            double height = std::get<double> ( GetAttribute ( "height", 0.0 ) );
             /**
              * https://www.w3.org/TR/SVG/shapes.html#RectElement
              * The width and height properties define the overall width and height of the rectangle.
@@ -34,10 +34,10 @@ namespace AeonGUI
             */
             if ( ( width > 0.0 ) && ( height > 0.0 ) )
             {
-                double x = GetAttrAsDouble ( "x" );
-                double y = GetAttrAsDouble ( "y" );
-                double rx = GetAttrAsDouble ( "rx" );
-                double ry = GetAttrAsDouble ( "ry" );
+                double x = std::get<double> ( GetAttribute ( "x", 0.0 ) );
+                double y = std::get<double> ( GetAttribute ( "y", 0.0 ) );
+                double rx = std::get<double> ( GetAttribute ( "rx", 0.0 ) );
+                double ry = std::get<double> ( GetAttribute ( "ry", 0.0 ) );
                 std::array<DrawType, 44> path{};
                 size_t i = 0;
                 /// 1. perform an absolute moveto operation to location (x+rx,y);

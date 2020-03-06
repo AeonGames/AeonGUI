@@ -23,16 +23,16 @@ namespace AeonGUI
 {
     static const std::regex number{"-?([0-9]+|[0-9]*\\.[0-9]+([eE][-+]?[0-9]+)?)"};
     int ParseStyle ( AttributeMap& aAttributeMap, const char* s );
-    Element::Element ( xmlElementPtr aXmlElementPtr ) : mXmlElementPtr{aXmlElementPtr}
+    Element::Element ( xmlElementPtr aXmlElementPtr )
     {
-        if ( mXmlElementPtr == nullptr )
+        if ( aXmlElementPtr == nullptr )
         {
             throw std::runtime_error ( "XML Element is NULL" );
         }
-        for ( xmlNodePtr attribute = reinterpret_cast<xmlNodePtr> ( mXmlElementPtr->attributes ); attribute; attribute = attribute->next )
+        for ( xmlNodePtr attribute = reinterpret_cast<xmlNodePtr> ( aXmlElementPtr->attributes ); attribute; attribute = attribute->next )
         {
             std::cmatch match;
-            const char* value = reinterpret_cast<const char*> ( xmlGetProp ( reinterpret_cast<xmlNodePtr> ( mXmlElementPtr ), attribute->name ) );
+            const char* value = reinterpret_cast<const char*> ( xmlGetProp ( reinterpret_cast<xmlNodePtr> ( aXmlElementPtr ), attribute->name ) );
             if ( std::regex_match ( value, match, number ) )
             {
                 mAttributeMap[reinterpret_cast<const char*> ( attribute->name )] = std::stod ( match[0].str() );
@@ -46,45 +46,22 @@ namespace AeonGUI
                 mAttributeMap[reinterpret_cast<const char*> ( attribute->name )] = value;
             }
         }
-        if ( HasAttr ( "style" ) )
+        auto style = mAttributeMap.find ( "style" );
+        if ( style != mAttributeMap.end() )
         {
-            if ( ParseStyle ( mAttributeMap, GetAttr ( "style" ) ) )
+            if ( ParseStyle ( mAttributeMap, std::get<std::string> ( style->second ).c_str() ) )
             {
-                if ( HasAttr ( "id" ) )
+                auto id = mAttributeMap.find ( "id" );
+                if ( id != mAttributeMap.end() )
                 {
-                    std::cerr << "In Element id = " << GetAttr ( "id" ) << std::endl;
+                    std::cerr << "In Element id = " << std::get<std::string> ( id->second ) << std::endl;
                 }
-                std::cerr << "Error parsing style: " << GetAttr ( "style" ) << std::endl;
+                std::cerr << "Error parsing style: " << std::get<std::string> ( style->second ) << std::endl;
             }
         }
     }
 
     Element::~Element() = default;
-
-    const char* Element::GetTagName() const
-    {
-        return reinterpret_cast<const char*> ( mXmlElementPtr->name );
-    }
-
-    bool Element::HasAttr ( const char* aAttrName ) const
-    {
-        return xmlHasProp ( reinterpret_cast<xmlNodePtr> ( mXmlElementPtr ), reinterpret_cast<const xmlChar*> ( aAttrName ) );
-    }
-
-    const char* Element::GetAttr ( const char* aAttrName ) const
-    {
-        return reinterpret_cast<const char*> ( xmlGetProp ( reinterpret_cast<xmlNodePtr> ( mXmlElementPtr ), reinterpret_cast<const xmlChar*> ( aAttrName ) ) );
-    }
-
-    double Element::GetAttrAsDouble ( const char* aAttrName, double aDefault ) const
-    {
-        return ( HasAttr ( aAttrName ) ) ? std::stod ( GetAttr ( aAttrName ) ) : aDefault;
-    }
-
-    const char* Element::GetContent () const
-    {
-        return reinterpret_cast<const char*> ( xmlNodeGetContent ( reinterpret_cast<xmlNodePtr> ( mXmlElementPtr ) ) );
-    }
 
     AttributeType Element::GetAttribute ( const char* attrName, const AttributeType& aDefault ) const
     {

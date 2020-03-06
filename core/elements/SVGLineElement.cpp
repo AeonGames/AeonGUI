@@ -26,10 +26,10 @@ namespace AeonGUI
             /**
              * https://www.w3.org/TR/SVG/shapes.html#LineElement
             */
-            double x1 = GetAttrAsDouble ( "x1" );
-            double y1 = GetAttrAsDouble ( "y1" );
-            double x2 = GetAttrAsDouble ( "x2" );
-            double y2 = GetAttrAsDouble ( "y2" );
+            double x1 = std::get<double> ( GetAttribute ( "x1", 0.0 ) );
+            double y1 = std::get<double> ( GetAttribute ( "y1", 0.0 ) );
+            double x2 = std::get<double> ( GetAttribute ( "x2", 0.0 ) );
+            double y2 = std::get<double> ( GetAttribute ( "y2", 0.0 ) );
             std::vector<DrawType> path
             {
                 /// 1. perform an absolute moveto operation to absolute location (x1,y1)

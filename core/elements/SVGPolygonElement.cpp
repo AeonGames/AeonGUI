@@ -25,23 +25,23 @@ namespace AeonGUI
         {
             std::cout << "Polygon" << std::endl;
             /// https://www.w3.org/TR/SVG/shapes.html#PolygonElement
-            if ( HasAttr ( "points" ) )
+            auto attr = GetAttribute ( "points" );
+            if ( std::holds_alternative<std::string> ( attr ) )
             {
                 std::vector<DrawType> path;
-                const char* points = GetAttr ( "points" );
-                path.reserve ( ( std::distance ( std::cregex_iterator ( points, points + strlen ( points ) + 1, coord ), std::cregex_iterator() ) * 3 ) + 1 );
-                std::cmatch match;
-                std::regex_search ( points, match, coord );
-                points = match.suffix().first;
+                std::string& points = std::get<std::string> ( attr );
+                auto it = std::sregex_iterator ( points.begin(), points.end(), coord );
+                path.reserve ( ( std::distance ( it, std::sregex_iterator() ) * 3 ) + 1 );
+                std::smatch match = *it;
                 path.emplace_back ( static_cast<uint64_t> ( 'M' ) );
                 path.emplace_back ( std::stod ( match[1] ) );
                 path.emplace_back ( std::stod ( match[2] ) );
-                while ( std::regex_search ( points, match, coord ) )
+                for ( std::sregex_iterator i = ++it; i != std::sregex_iterator(); ++i )
                 {
+                    match = *i;
                     path.emplace_back ( static_cast<uint64_t> ( 'L' ) );
                     path.emplace_back ( std::stod ( match[1] ) );
                     path.emplace_back ( std::stod ( match[2] ) );
-                    points = match.suffix().first;
                 }
                 path.emplace_back ( static_cast<uint64_t> ( 'Z' ) );
                 mPath.Construct ( path );

@@ -30,8 +30,11 @@ namespace AeonGUI
         }
         void Script::Load ( JavaScript& aJavaScript )
         {
+#if 0
+            ///@todo reimplement now that GetContent has been removed
             std::cout << GetContent() << std::endl;
             aJavaScript.Eval ( GetContent() );
+#endif
         }
         void Script::Unload ( JavaScript& aJavaScript )
         {
