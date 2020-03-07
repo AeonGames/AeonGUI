@@ -19,10 +19,11 @@ limitations under the License.
 #include <functional>
 #include <string>
 #include "aeongui/Platform.h"
-#include "aeongui/Element.h"
 #include "aeongui/StringLiteral.h"
+#include "aeongui/AttributeMap.h"
 namespace AeonGUI
 {
+    class Element;
     //using Constructor = std::tuple<StringLiteral, std::function < std::unique_ptr<Element>(xmlElementPtr aAttributeMap) >>;
     DLL std::unique_ptr<Element> Construct ( const char* aIdentifier, const AttributeMap& aAttributeMap );
     DLL bool RegisterConstructor ( const StringLiteral& aIdentifier, const std::function < std::unique_ptr<Element> ( const AttributeMap& aAttributeMap ) > & aConstructor );

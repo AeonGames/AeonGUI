@@ -3,25 +3,24 @@ find_package(BISON)
 find_package(FLEX)
 
 set(AEONGUI_HEADERS
-		../include/aeongui/Platform.h
-        ../include/aeongui/Rect.h
-        ../include/aeongui/Element.h
-        ../include/aeongui/ElementFactory.h
-        ../include/aeongui/StringLiteral.h
-		../include/aeongui/Document.h
-		../include/aeongui/Window.h
-		../include/aeongui/Canvas.h
-		../include/aeongui/CairoCanvas.h
-		../include/aeongui/Path.h
-		../include/aeongui/CairoPath.h
-		../include/aeongui/AABB.h
-		../include/aeongui/Matrix2x3.h
-		../include/aeongui/Transform.h
-		../include/aeongui/Vector2.h
-		../include/aeongui/DrawType.h
-		../include/aeongui/JavaScript.h
-		../include/aeongui/Duktape.h
-		../include/aeongui/Color.h
+    ../include/aeongui/Platform.h
+    ../include/aeongui/Rect.h
+    ../include/aeongui/ElementFactory.h
+    ../include/aeongui/StringLiteral.h
+    ../include/aeongui/Document.h
+    ../include/aeongui/Window.h
+    ../include/aeongui/Canvas.h
+    ../include/aeongui/CairoCanvas.h
+    ../include/aeongui/Path.h
+    ../include/aeongui/CairoPath.h
+    ../include/aeongui/AABB.h
+    ../include/aeongui/Matrix2x3.h
+    ../include/aeongui/Transform.h
+    ../include/aeongui/Vector2.h
+    ../include/aeongui/DrawType.h
+    ../include/aeongui/JavaScript.h
+    ../include/aeongui/Duktape.h
+    ../include/aeongui/Color.h
 )
 
 set(AEONGUI_SOURCES
@@ -29,7 +28,6 @@ set(AEONGUI_SOURCES
         Window.cpp
         Document.cpp
         Rect.cpp
-        Element.cpp
 		Transform.cpp
         Vector2.cpp
         Matrix2x3.cpp
@@ -41,6 +39,7 @@ set(AEONGUI_SOURCES
         JavaScript.cpp
         Duktape.cpp
         Color.cpp
+        dom/Element.cpp
         dom/SVGElement.cpp
         dom/SVGSVGElement.cpp
         dom/SVGGradientElement.cpp
@@ -59,6 +58,7 @@ set(AEONGUI_SOURCES
         dom/SVGCircleElement.cpp
         dom/SVGEllipseElement.cpp
         dom/Script.cpp
+        dom/Element.h
         dom/SVGGElement.h
         dom/SVGSVGElement.h
         dom/SVGElement.h

@@ -22,7 +22,7 @@ limitations under the License.
 #include "aeongui/Platform.h"
 #include "aeongui/Canvas.h"
 #include "aeongui/JavaScript.h"
-#include "aeongui/Element.h"
+#include "dom/Element.h"
 
 namespace AeonGUI
 {

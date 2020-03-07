@@ -16,7 +16,7 @@ limitations under the License.
 #ifndef AEONGUI_SVGSVGELEMENT_H
 #define AEONGUI_SVGSVGELEMENT_H
 
-#include "aeongui/Element.h"
+#include "Element.h"
 
 namespace AeonGUI
 {

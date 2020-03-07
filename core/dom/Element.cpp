@@ -15,8 +15,7 @@ Copyright (C) 2010-2013,2019,2020 Rodrigo Hernandez Cordoba
 ******************************************************************************/
 #include <iostream>
 #include <string>
-#include <libxml/tree.h>
-#include "aeongui/Element.h"
+#include "Element.h"
 #include "aeongui/Color.h"
 
 namespace AeonGUI

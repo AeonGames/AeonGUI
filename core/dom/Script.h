@@ -16,7 +16,7 @@ limitations under the License.
 #ifndef AEONGUI_ELEMENTS_SCRIPT_H
 #define AEONGUI_ELEMENTS_SCRIPT_H
 
-#include "aeongui/Element.h"
+#include "Element.h"
 
 namespace AeonGUI
 {
