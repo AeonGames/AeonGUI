@@ -65,7 +65,7 @@ number               -?[0-9]*\.?[0-9]+([eE][-+][0-9]+)?
 
 namespace AeonGUI
 {
-	namespace Elements
+	namespace DOM
 	{
 		int ParsePathData(std::vector<DrawType>& aPath,const char* string)
 		{

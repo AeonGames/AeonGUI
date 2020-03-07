@@ -25,20 +25,20 @@ limitations under the License.
 #include "aeongui/StringLiteral.h"
 #include "aeongui/Element.h"
 #include "aeongui/ElementFactory.h"
-#include "elements/SVGSVGElement.h"
-#include "elements/SVGGElement.h"
-#include "elements/SVGLinearGradientElement.h"
-#include "elements/SVGStopElement.h"
-#include "elements/SVGDefsElement.h"
-#include "elements/SVGUseElement.h"
-#include "elements/SVGPathElement.h"
-#include "elements/SVGRectElement.h"
-#include "elements/SVGLineElement.h"
-#include "elements/SVGPolylineElement.h"
-#include "elements/SVGPolygonElement.h"
-#include "elements/SVGCircleElement.h"
-#include "elements/SVGEllipseElement.h"
-#include "elements/Script.h"
+#include "dom/SVGSVGElement.h"
+#include "dom/SVGGElement.h"
+#include "dom/SVGLinearGradientElement.h"
+#include "dom/SVGStopElement.h"
+#include "dom/SVGDefsElement.h"
+#include "dom/SVGUseElement.h"
+#include "dom/SVGPathElement.h"
+#include "dom/SVGRectElement.h"
+#include "dom/SVGLineElement.h"
+#include "dom/SVGPolylineElement.h"
+#include "dom/SVGPolygonElement.h"
+#include "dom/SVGCircleElement.h"
+#include "dom/SVGEllipseElement.h"
+#include "dom/Script.h"
 
 namespace AeonGUI
 {
@@ -49,98 +49,98 @@ namespace AeonGUI
             "svg",
             [] ( const AttributeMap & aAttributeMap )
             {
-                return std::make_unique<Elements::SVGSVGElement> ( aAttributeMap );
+                return std::make_unique<DOM::SVGSVGElement> ( aAttributeMap );
             }
         },
         {
             "g",
             [] ( const AttributeMap & aAttributeMap )
             {
-                return std::make_unique<Elements::SVGGElement> ( aAttributeMap );
+                return std::make_unique<DOM::SVGGElement> ( aAttributeMap );
             }
         },
         {
             "path",
             [] ( const AttributeMap & aAttributeMap )
             {
-                return std::make_unique<Elements::SVGPathElement> ( aAttributeMap );
+                return std::make_unique<DOM::SVGPathElement> ( aAttributeMap );
             }
         },
         {
             "rect",
             [] ( const AttributeMap & aAttributeMap )
             {
-                return std::make_unique<Elements::SVGRectElement> ( aAttributeMap );
+                return std::make_unique<DOM::SVGRectElement> ( aAttributeMap );
             }
         },
         {
             "line",
             [] ( const AttributeMap & aAttributeMap )
             {
-                return std::make_unique<Elements::SVGLineElement> ( aAttributeMap );
+                return std::make_unique<DOM::SVGLineElement> ( aAttributeMap );
             }
         },
         {
             "polyline",
             [] ( const AttributeMap & aAttributeMap )
             {
-                return std::make_unique<Elements::SVGPolylineElement> ( aAttributeMap );
+                return std::make_unique<DOM::SVGPolylineElement> ( aAttributeMap );
             }
         },
         {
             "polygon",
             [] ( const AttributeMap & aAttributeMap )
             {
-                return std::make_unique<Elements::SVGPolygonElement> ( aAttributeMap );
+                return std::make_unique<DOM::SVGPolygonElement> ( aAttributeMap );
             }
         },
         {
             "circle",
             [] ( const AttributeMap & aAttributeMap )
             {
-                return std::make_unique<Elements::SVGCircleElement> ( aAttributeMap );
+                return std::make_unique<DOM::SVGCircleElement> ( aAttributeMap );
             }
         },
         {
             "ellipse",
             [] ( const AttributeMap & aAttributeMap )
             {
-                return std::make_unique<Elements::SVGEllipseElement> ( aAttributeMap );
+                return std::make_unique<DOM::SVGEllipseElement> ( aAttributeMap );
             }
         },
         {
             "script",
             [] ( const AttributeMap & aAttributeMap )
             {
-                return std::make_unique<Elements::Script> ( aAttributeMap );
+                return std::make_unique<DOM::Script> ( aAttributeMap );
             }
         },
         {
             "defs",
             [] ( const AttributeMap & aAttributeMap )
             {
-                return std::make_unique<Elements::SVGDefsElement> ( aAttributeMap );
+                return std::make_unique<DOM::SVGDefsElement> ( aAttributeMap );
             }
         },
         {
             "use",
             [] ( const AttributeMap & aAttributeMap )
             {
-                return std::make_unique<Elements::SVGUseElement> ( aAttributeMap );
+                return std::make_unique<DOM::SVGUseElement> ( aAttributeMap );
             }
         },
         {
             "linearGradient",
             [] ( const AttributeMap & aAttributeMap )
             {
-                return std::make_unique<Elements::SVGLinearGradientElement> ( aAttributeMap );
+                return std::make_unique<DOM::SVGLinearGradientElement> ( aAttributeMap );
             }
         },
         {
             "stop",
             [] ( const AttributeMap & aAttributeMap )
             {
-                return std::make_unique<Elements::SVGStopElement> ( aAttributeMap );
+                return std::make_unique<DOM::SVGStopElement> ( aAttributeMap );
             }
         },
     };
