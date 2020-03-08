@@ -53,189 +53,20 @@ namespace AeonGUI
     AttributeType Element::GetInheritedAttribute ( const char* attrName, const AttributeType& aDefault ) const
     {
         AttributeType attr = GetAttribute ( attrName );
-        Element* parent = mParent;
+        Node* parent = parentNode();
         while ( std::holds_alternative<std::monostate> ( attr ) && parent != nullptr )
         {
-            attr = parent->GetAttribute ( attrName );
-            parent = parent->mParent;
+            if ( parent->nodeType() == ELEMENT_NODE )
+            {
+                attr = reinterpret_cast<Element*> ( parent )->GetAttribute ( attrName );
+            }
+            parent = parent->parentNode();
         }
         return std::holds_alternative<std::monostate> ( attr ) ? aDefault : attr;
     }
 
-    bool Element::IsDrawEnabled() const
+    Node::NodeType Element::nodeType() const
     {
-        return true;
-    }
-
-    void Element::DrawStart ( Canvas& aCanvas ) const
-    {
-        // Do nothing by default
-        ( void ) aCanvas;
-    }
-
-    void Element::DrawFinish ( Canvas& aCanvas ) const
-    {
-        // Do nothing by default
-        ( void ) aCanvas;
-    }
-
-    void Element::Load ( JavaScript& aJavaScript )
-    {
-        // Do nothing by default
-        ( void ) aJavaScript;
-    }
-
-    void Element::Unload ( JavaScript& aJavaScript )
-    {
-        // Do nothing by default
-        ( void ) aJavaScript;
-    }
-
-    /*  This is ugly, but it is only way to use the same code for the const and the non const version
-        without having to add template or friend members to the class declaration. */
-#define TraverseDepthFirstPreOrder(...) \
-    void Element::TraverseDepthFirstPreOrder ( const std::function<void ( __VA_ARGS__ Element& ) >& aAction ) __VA_ARGS__ \
-    {\
-        /** @todo (EC++ Item 3) This code is the same as the constant overload,\
-        but can't easily be implemented in terms of that because of aAction's Element parameter\
-        need to also be const.\
-        */\
-        auto Element{this};\
-        aAction ( *Element );\
-        auto parent = mParent;\
-        while ( Element != parent )\
-        {\
-            if ( Element->mIterator < Element->mChildren.size() )\
-            {\
-                auto prev = Element;\
-                Element = Element->mChildren[Element->mIterator].get();\
-                aAction ( *Element );\
-                prev->mIterator++;\
-            }\
-            else\
-            {\
-                Element->mIterator = 0; /* Reset counter for next traversal.*/\
-                Element = Element->mParent;\
-            }\
-        }\
-    }
-
-    TraverseDepthFirstPreOrder ( const )
-    TraverseDepthFirstPreOrder( )
-#undef TraverseDepthFirstPreOrder
-
-#define TraverseDepthFirstPostOrder(...) \
-    void Element::TraverseDepthFirstPostOrder ( const std::function<void ( __VA_ARGS__ Element& ) >& aAction ) __VA_ARGS__ \
-    { \
-        /* \
-        This code implements a similar solution to this stackoverflow answer: \
-        http://stackoverflow.com/questions/5987867/traversing-a-n-ary-tree-without-using-recurrsion/5988138#5988138 \
-        */ \
-        auto node = this; \
-        auto parent = mParent; \
-        while ( node != parent ) \
-        { \
-            if ( node->mIterator < node->mChildren.size() ) \
-            { \
-                auto prev = node; \
-                node = node->mChildren[node->mIterator].get(); \
-                ++prev->mIterator; \
-            } \
-            else \
-            { \
-                aAction ( *node ); \
-                node->mIterator = 0; /* Reset counter for next traversal. */ \
-                node = node->mParent; \
-            } \
-        } \
-    }
-
-    TraverseDepthFirstPostOrder ( const )
-    TraverseDepthFirstPostOrder( )
-#undef TraverseDepthFirstPostOrder
-
-
-#define TraverseDepthFirstPostOrder(...) \
-    void Element::TraverseDepthFirstPreOrder ( \
-        const std::function<void ( __VA_ARGS__ Element& ) >& aPreamble, \
-        const std::function<void ( __VA_ARGS__ Element& ) >& aPostamble ) __VA_ARGS__ \
-    { \
-        auto node = this; \
-        aPreamble ( *node ); \
-        auto parent = mParent; \
-        while ( node != parent ) \
-        { \
-            if ( node->mIterator < node->mChildren.size() ) \
-            { \
-                auto prev = node; \
-                node = node->mChildren[node->mIterator].get(); \
-                aPreamble ( *node ); \
-                ++prev->mIterator; \
-            } \
-            else \
-            { \
-                aPostamble ( *node ); \
-                node->mIterator = 0; \
-                node = node->mParent; \
-            } \
-        } \
-    }
-
-    TraverseDepthFirstPostOrder ( const )
-    TraverseDepthFirstPostOrder( )
-#undef TraverseDepthFirstPostOrder
-
-#define TraverseDepthFirstPostOrder(...) \
-    void Element::TraverseDepthFirstPreOrder ( \
-        const std::function<void ( __VA_ARGS__ Element& ) >& aPreamble, \
-        const std::function<void ( __VA_ARGS__ Element& ) >& aPostamble, \
-        const std::function<bool ( __VA_ARGS__ Element& ) >& aUnaryPredicate ) __VA_ARGS__ \
-    { \
-        if(!aUnaryPredicate(*this)){return;} \
-        auto node = this; \
-        aPreamble ( *node ); \
-        auto parent = mParent; \
-        while ( node != parent ) \
-        { \
-            if ( node->mIterator < node->mChildren.size() && aUnaryPredicate(*node)) \
-            { \
-                auto prev = node; \
-                node = node->mChildren[node->mIterator].get(); \
-                aPreamble ( *node ); \
-                ++prev->mIterator; \
-            } \
-            else \
-            { \
-                aPostamble ( *node ); \
-                node->mIterator = 0; \
-                node = node->mParent; \
-            } \
-        } \
-    }
-
-    TraverseDepthFirstPostOrder ( const )
-    TraverseDepthFirstPostOrder( )
-#undef TraverseDepthFirstPostOrder
-
-    Element* Element::AddElement ( std::unique_ptr<Element> aElement )
-    {
-        aElement->mParent = this;
-        return mChildren.emplace_back ( std::move ( aElement ) ).get();
-    }
-
-    std::unique_ptr<Element> Element::RemoveElement ( const Element* aElement )
-    {
-        std::unique_ptr<Element> result{};
-        auto i = std::find_if ( mChildren.begin(), mChildren.end(), [aElement] ( const std::unique_ptr<Element>& Element )
-        {
-            return aElement == Element.get();
-        } );
-        if ( i != mChildren.end() )
-        {
-            result = std::move ( *i );
-            mChildren.erase ( std::remove ( i, mChildren.end(), *i ), mChildren.end() );
-        }
-        result->mParent = nullptr;
-        return result;
+        return ELEMENT_NODE;
     }
 }

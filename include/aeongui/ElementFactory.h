@@ -23,10 +23,10 @@ limitations under the License.
 #include "aeongui/AttributeMap.h"
 namespace AeonGUI
 {
-    class Element;
+    class Node;
     //using Constructor = std::tuple<StringLiteral, std::function < std::unique_ptr<Element>(xmlElementPtr aAttributeMap) >>;
-    DLL std::unique_ptr<Element> Construct ( const char* aIdentifier, const AttributeMap& aAttributeMap );
-    DLL bool RegisterConstructor ( const StringLiteral& aIdentifier, const std::function < std::unique_ptr<Element> ( const AttributeMap& aAttributeMap ) > & aConstructor );
+    DLL std::unique_ptr<Node> Construct ( const char* aIdentifier, const AttributeMap& aAttributeMap );
+    DLL bool RegisterConstructor ( const StringLiteral& aIdentifier, const std::function < std::unique_ptr<Node> ( const AttributeMap& aAttributeMap ) > & aConstructor );
     DLL bool UnregisterConstructor ( const StringLiteral& aIdentifier );
     DLL void EnumerateConstructors ( const std::function<bool ( const StringLiteral& ) >& aEnumerator );
 }

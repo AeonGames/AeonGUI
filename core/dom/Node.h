@@ -13,28 +13,41 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 */
-#ifndef AEONGUI_DOCUMENT_H
-#define AEONGUI_DOCUMENT_H
+#ifndef AEONGUI_NODE_H
+#define AEONGUI_NODE_H
 #include <cstdint>
 #include <vector>
 #include <memory>
-#include <algorithm>
+#include <functional>
+#include <variant>
 #include "aeongui/Platform.h"
-#include "aeongui/Canvas.h"
-#include "aeongui/JavaScript.h"
-#include "dom/Node.h"
+#include "aeongui/AttributeMap.h"
 
 namespace AeonGUI
 {
-    class Document
+    class Canvas;
+    class JavaScript;
+    class Document;
+    class Node
     {
     public:
-        DLL Document();
-        DLL Document ( const std::string& aFilename );
-        DLL ~Document();
-        DLL void Draw ( Canvas& aCanvas ) const;
-        DLL void Load ( JavaScript& aJavaScript );
-        DLL void Unload ( JavaScript& aJavaScript );
+        enum NodeType
+        {
+            ELEMENT_NODE = 1,
+            ATTRIBUTE_NODE = 2,
+            TEXT_NODE = 3,
+            CDATA_SECTION_NODE = 4,
+            ENTITY_REFERENCE_NODE = 5,
+            ENTITY_NODE = 6,
+            PROCESSING_INSTRUCTION_NODE = 7,
+            COMMENT_NODE = 8,
+            DOCUMENT_NODE = 9,
+            DOCUMENT_TYPE_NODE = 10,
+            DOCUMENT_FRAGMENT_NODE = 11,
+            NOTATION_NODE = 12,
+        };
+        DLL Node ( const AttributeMap& );
+        DLL Node();
         DLL Node* AddNode ( std::unique_ptr<Node> aNode );
         DLL std::unique_ptr<Node> RemoveNode ( const Node* aNode );
         DLL void TraverseDepthFirstPreOrder ( const std::function<void ( Node& ) >& aAction );
@@ -45,8 +58,26 @@ namespace AeonGUI
         DLL void TraverseDepthFirstPreOrder ( const std::function<void ( const Node& ) >& aPreamble, const std::function<void ( const Node& ) >& aPostamble ) const;
         DLL void TraverseDepthFirstPreOrder ( const std::function<void ( Node& ) >& aPreamble, const std::function<void ( Node& ) >& aPostamble, const std::function<bool ( Node& ) >& aUnaryPredicate );
         DLL void TraverseDepthFirstPreOrder ( const std::function<void ( const Node& ) >& aPreamble, const std::function<void ( const Node& ) >& aPostamble, const std::function<bool ( const Node& ) >& aUnaryPredicate ) const;
+
+        DLL virtual void DrawStart ( Canvas& aCanvas ) const;
+        DLL virtual void DrawFinish ( Canvas& aCanvas ) const;
+        DLL virtual void Load ( JavaScript& aJavaScript );
+        DLL virtual void Unload ( JavaScript& aJavaScript );
+        /** Returns whether this node and all descendants should be skipped
+         *  in a drawing operation.
+         *  @return true by default override to disable drawing.
+        */
+        DLL virtual bool IsDrawEnabled() const;
+        DLL virtual ~Node();
+        /**DOM Properties and Methods @{*/
+        DLL Node* parentNode() const;
+        DLL Node* parentElement() const;
+        virtual NodeType nodeType() const = 0;
+        /**@}*/
     private:
+        Node* mParent{};
         std::vector<std::unique_ptr<Node>> mChildren{};
+        mutable std::vector<std::unique_ptr<Node>>::size_type mIterator{ 0 };
     };
 }
 #endif

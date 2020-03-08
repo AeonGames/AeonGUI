@@ -39,6 +39,7 @@ set(AEONGUI_SOURCES
         JavaScript.cpp
         Duktape.cpp
         Color.cpp
+        dom/Node.cpp
         dom/Element.cpp
         dom/SVGElement.cpp
         dom/SVGSVGElement.cpp
@@ -58,6 +59,7 @@ set(AEONGUI_SOURCES
         dom/SVGCircleElement.cpp
         dom/SVGEllipseElement.cpp
         dom/Script.cpp
+        dom/Node.h
         dom/Element.h
         dom/SVGGElement.h
         dom/SVGSVGElement.h

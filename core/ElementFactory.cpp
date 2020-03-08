@@ -144,7 +144,7 @@ namespace AeonGUI
         },
     };
 
-    std::unique_ptr<Element> Construct ( const char* aIdentifier, const AttributeMap& aAttributeMap )
+    std::unique_ptr<Node> Construct ( const char* aIdentifier, const AttributeMap& aAttributeMap )
     {
         auto it = std::find_if ( Constructors.begin(), Constructors.end(),
                                  [&aAttributeMap, aIdentifier] ( const Constructor & aConstructor )

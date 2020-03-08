@@ -46,26 +46,26 @@ namespace AeonGUI
         }
         return attribute_map;
     }
-    static void AddElements ( Element* aElement, xmlNode * aNode )
+    static void AddNodes ( Node* aNode, xmlNode * aXmlNode )
     {
-        for ( xmlNode * node = aNode; node; node = node->next )
+        for ( xmlNode * node = aXmlNode; node; node = node->next )
         {
             if ( node->type == XML_ELEMENT_NODE )
             {
                 xmlElementPtr element = reinterpret_cast<xmlElementPtr> ( node );
-                AddElements ( aElement->AddElement ( Construct ( reinterpret_cast<const char*> ( element->name ), ExtractElementAttributes ( element ) ) ), node->children );
+                AddNodes ( aNode->AddNode ( Construct ( reinterpret_cast<const char*> ( element->name ), ExtractElementAttributes ( element ) ) ), node->children );
             }
         }
     }
 
-    static void AddElements ( Document* aDocument, xmlNode * aNode )
+    static void AddNodes ( Document* aDocument, xmlNode * aNode )
     {
         for ( xmlNode * node = aNode; node; node = node->next )
         {
             if ( node->type == XML_ELEMENT_NODE )
             {
                 xmlElementPtr element = reinterpret_cast<xmlElementPtr> ( node );
-                AddElements ( aDocument->AddElement ( Construct ( reinterpret_cast<const char*> ( element->name ), ExtractElementAttributes ( element ) ) ), node->children );
+                AddNodes ( aDocument->AddNode ( Construct ( reinterpret_cast<const char*> ( element->name ), ExtractElementAttributes ( element ) ) ), node->children );
             }
         }
     }
@@ -79,23 +79,24 @@ namespace AeonGUI
         {
             throw std::runtime_error ( "Could not parse xml file" );
         }
-        AddElements ( this, xmlDocGetRootElement ( document ) );
+        ///@todo use doc->children instead?
+        AddNodes ( this, xmlDocGetRootElement ( document ) );
         xmlFreeDoc ( document );
     }
 
     Document::~Document() = default;
 
-    Element* Document::AddElement ( std::unique_ptr<Element> aElement )
+    Node* Document::AddNode ( std::unique_ptr<Node> aNode )
     {
-        return mChildren.emplace_back ( std::move ( aElement ) ).get();
+        return mChildren.emplace_back ( std::move ( aNode ) ).get();
     }
 
-    std::unique_ptr<Element> Document::RemoveElement ( const Element* aElement )
+    std::unique_ptr<Node> Document::RemoveNode ( const Node* aNode )
     {
-        std::unique_ptr<Element> result{};
-        auto i = std::find_if ( mChildren.begin(), mChildren.end(), [aElement] ( const std::unique_ptr<Element>& Element )
+        std::unique_ptr<Node> result{};
+        auto i = std::find_if ( mChildren.begin(), mChildren.end(), [aNode] ( const std::unique_ptr<Node>& Node )
         {
-            return aElement == Element.get();
+            return aNode == Node.get();
         } );
         if ( i != mChildren.end() )
         {
@@ -105,100 +106,100 @@ namespace AeonGUI
         return result;
     }
 
-    void Document::TraverseDepthFirstPreOrder ( const std::function<void ( Element& ) >& aAction )
+    void Document::TraverseDepthFirstPreOrder ( const std::function<void ( Node& ) >& aAction )
     {
-        for ( auto & mRootElement : mChildren )
+        for ( auto & mRootNode : mChildren )
         {
-            mRootElement->TraverseDepthFirstPreOrder ( aAction );
+            mRootNode->TraverseDepthFirstPreOrder ( aAction );
         }
     }
 
-    void Document::TraverseDepthFirstPreOrder ( const std::function<void ( const Element& ) >& aAction ) const
+    void Document::TraverseDepthFirstPreOrder ( const std::function<void ( const Node& ) >& aAction ) const
     {
-        for ( const auto& mRootElement : mChildren )
+        for ( const auto& mRootNode : mChildren )
         {
-            static_cast<const Element*> ( mRootElement.get() )->TraverseDepthFirstPreOrder ( aAction );
+            static_cast<const Node*> ( mRootNode.get() )->TraverseDepthFirstPreOrder ( aAction );
         }
     }
 
-    void Document::TraverseDepthFirstPostOrder ( const std::function<void ( Element& ) >& aAction )
+    void Document::TraverseDepthFirstPostOrder ( const std::function<void ( Node& ) >& aAction )
     {
-        for ( auto & mRootElement : mChildren )
+        for ( auto & mRootNode : mChildren )
         {
-            mRootElement->TraverseDepthFirstPostOrder ( aAction );
+            mRootNode->TraverseDepthFirstPostOrder ( aAction );
         }
     }
 
-    void Document::TraverseDepthFirstPostOrder ( const std::function<void ( const Element& ) >& aAction ) const
+    void Document::TraverseDepthFirstPostOrder ( const std::function<void ( const Node& ) >& aAction ) const
     {
-        for ( const auto& mRootElement : mChildren )
+        for ( const auto& mRootNode : mChildren )
         {
-            static_cast<const Element*> ( mRootElement.get() )->TraverseDepthFirstPostOrder ( aAction );
+            static_cast<const Node*> ( mRootNode.get() )->TraverseDepthFirstPostOrder ( aAction );
         }
     }
 
-    void Document::TraverseDepthFirstPreOrder ( const std::function<void ( Element& ) >& aPreamble, const std::function<void ( Element& ) >& aPostamble )
+    void Document::TraverseDepthFirstPreOrder ( const std::function<void ( Node& ) >& aPreamble, const std::function<void ( Node& ) >& aPostamble )
     {
-        for ( auto & mRootElement : mChildren )
+        for ( auto & mRootNode : mChildren )
         {
-            mRootElement->TraverseDepthFirstPreOrder ( aPreamble, aPostamble );
+            mRootNode->TraverseDepthFirstPreOrder ( aPreamble, aPostamble );
         }
     }
 
-    void Document::TraverseDepthFirstPreOrder ( const std::function<void ( const Element& ) >& aPreamble, const std::function<void ( const Element& ) >& aPostamble ) const
+    void Document::TraverseDepthFirstPreOrder ( const std::function<void ( const Node& ) >& aPreamble, const std::function<void ( const Node& ) >& aPostamble ) const
     {
-        for ( const auto& mRootElement : mChildren )
+        for ( const auto& mRootNode : mChildren )
         {
-            static_cast<const Element*> ( mRootElement.get() )->TraverseDepthFirstPreOrder ( aPreamble, aPostamble );
+            static_cast<const Node*> ( mRootNode.get() )->TraverseDepthFirstPreOrder ( aPreamble, aPostamble );
         }
     }
 
-    void Document::TraverseDepthFirstPreOrder ( const std::function<void ( Element& ) >& aPreamble, const std::function<void ( Element& ) >& aPostamble, const std::function<bool ( Element& ) >& aUnaryPredicate )
+    void Document::TraverseDepthFirstPreOrder ( const std::function<void ( Node& ) >& aPreamble, const std::function<void ( Node& ) >& aPostamble, const std::function<bool ( Node& ) >& aUnaryPredicate )
     {
-        for ( auto & mRootElement : mChildren )
+        for ( auto & mRootNode : mChildren )
         {
-            mRootElement->TraverseDepthFirstPreOrder ( aPreamble, aPostamble, aUnaryPredicate );
+            mRootNode->TraverseDepthFirstPreOrder ( aPreamble, aPostamble, aUnaryPredicate );
         }
     }
 
-    void Document::TraverseDepthFirstPreOrder ( const std::function<void ( const Element& ) >& aPreamble, const std::function<void ( const Element& ) >& aPostamble, const std::function<bool ( const Element& ) >& aUnaryPredicate ) const
+    void Document::TraverseDepthFirstPreOrder ( const std::function<void ( const Node& ) >& aPreamble, const std::function<void ( const Node& ) >& aPostamble, const std::function<bool ( const Node& ) >& aUnaryPredicate ) const
     {
-        for ( const auto& mRootElement : mChildren )
+        for ( const auto& mRootNode : mChildren )
         {
-            static_cast<const Element*> ( mRootElement.get() )->TraverseDepthFirstPreOrder ( aPreamble, aPostamble, aUnaryPredicate );
+            static_cast<const Node*> ( mRootNode.get() )->TraverseDepthFirstPreOrder ( aPreamble, aPostamble, aUnaryPredicate );
         }
     }
 
     void Document::Draw ( Canvas& aCanvas ) const
     {
         TraverseDepthFirstPreOrder (
-            [&aCanvas] ( const Element & aElement )
+            [&aCanvas] ( const Node & aNode )
         {
-            aElement.DrawStart ( aCanvas );
+            aNode.DrawStart ( aCanvas );
         },
-        [&aCanvas] ( const Element & aElement )
+        [&aCanvas] ( const Node & aNode )
         {
-            aElement.DrawFinish ( aCanvas );
+            aNode.DrawFinish ( aCanvas );
         },
-        [] ( const Element & aElement )
+        [] ( const Node & aNode )
         {
-            return aElement.IsDrawEnabled();
+            return aNode.IsDrawEnabled();
         } );
     }
     void Document::Load ( JavaScript& aJavaScript )
     {
         TraverseDepthFirstPreOrder (
-            [&aJavaScript] ( Element & aElement )
+            [&aJavaScript] ( Node & aNode )
         {
-            aElement.Load ( aJavaScript );
+            aNode.Load ( aJavaScript );
         } );
     }
     void Document::Unload ( JavaScript& aJavaScript )
     {
         TraverseDepthFirstPreOrder (
-            [&aJavaScript] ( Element & aElement )
+            [&aJavaScript] ( Node & aNode )
         {
-            aElement.Unload ( aJavaScript );
+            aNode.Unload ( aJavaScript );
         } );
     }
 }
