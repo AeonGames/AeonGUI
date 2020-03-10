@@ -59,6 +59,7 @@ set(AEONGUI_SOURCES
         dom/SVGCircleElement.cpp
         dom/SVGEllipseElement.cpp
         dom/Script.cpp
+        dom/Text.cpp
         dom/Node.h
         dom/Element.h
         dom/SVGGElement.h
@@ -79,6 +80,7 @@ set(AEONGUI_SOURCES
         dom/SVGCircleElement.h
         dom/SVGEllipseElement.h
         dom/Script.h
+        dom/Text.h
 )
 
 if(USE_CUDA)

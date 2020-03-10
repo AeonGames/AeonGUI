@@ -20,6 +20,7 @@ limitations under the License.
 #include <libxml/parser.h>
 #include "aeongui/Document.h"
 #include "aeongui/ElementFactory.h"
+#include "dom/Text.h"
 
 namespace AeonGUI
 {
@@ -54,6 +55,10 @@ namespace AeonGUI
             {
                 xmlElementPtr element = reinterpret_cast<xmlElementPtr> ( node );
                 AddNodes ( aNode->AddNode ( Construct ( reinterpret_cast<const char*> ( element->name ), ExtractElementAttributes ( element ) ) ), node->children );
+            }
+            else if ( xmlNodeIsText ( node ) && !xmlIsBlankNode ( node ) )
+            {
+                AddNodes ( aNode->AddNode ( std::make_unique<Text> ( reinterpret_cast<const char*> ( node->content ) ) ), node->children );
             }
         }
     }

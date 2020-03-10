@@ -20,9 +20,14 @@ Copyright (C) 2010-2013,2019,2020 Rodrigo Hernandez Cordoba
 
 namespace AeonGUI
 {
-    Node::Node ( const AttributeMap& ) {};
     Node::Node() = default;
     Node::~Node() = default;
+
+    const std::vector<std::unique_ptr<Node>>& Node::childNodes() const
+    {
+        return mChildren;
+    }
+
     bool Node::IsDrawEnabled() const
     {
         return true;

@@ -57,8 +57,7 @@
       </cc:Work>
     </rdf:RDF>
   </metadata>
-  <script
-     id="script3726">window.console.log(&quot;Hello World!&quot;);</script>
+  <script id="script3726">window.console.log(&quot;Hello World!&quot;);</script>
   <g
      inkscape:label="Layer 1"
      inkscape:groupmode="layer"

@@ -46,7 +46,6 @@ namespace AeonGUI
             DOCUMENT_FRAGMENT_NODE = 11,
             NOTATION_NODE = 12,
         };
-        DLL Node ( const AttributeMap& );
         DLL Node();
         DLL Node* AddNode ( std::unique_ptr<Node> aNode );
         DLL std::unique_ptr<Node> RemoveNode ( const Node* aNode );
@@ -73,6 +72,7 @@ namespace AeonGUI
         DLL Node* parentNode() const;
         DLL Node* parentElement() const;
         virtual NodeType nodeType() const = 0;
+        const std::vector<std::unique_ptr<Node>>& childNodes() const;
         /**@}*/
     private:
         Node* mParent{};
