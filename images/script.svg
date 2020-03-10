@@ -1,0 +1,26 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="300" height="300">
+<script type="text/javascript">
+document.documentElement.onload = function(){
+  var rect = document.createElementNS(document.documentElement.namespaceURI,"rect");
+  rect.setAttribute("id","rectangle");
+  rect.setAttribute("x","50");
+  rect.setAttribute("y","20");
+  rect.setAttribute("width","150");
+  rect.setAttribute("height","150");
+  rect.setAttribute("style","fill:blue;stroke-width:5;fill-opacity:0.1;stroke-opacity:0.9");
+  rect.setAttribute("stroke","pink");  
+  rect.onclick = function(){
+    var rect = document.getElementById("rectangle");
+    if(rect.getAttribute("stroke") == "pink")
+    {
+      rect.setAttribute("stroke","red");
+    }
+    else
+    {
+      rect.setAttribute("stroke","pink");
+    }
+  }
+  document.documentElement.appendChild(rect);
+}
+</script>
+</svg>
