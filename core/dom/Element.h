@@ -18,7 +18,7 @@ limitations under the License.
 #include <cstdint>
 #include <vector>
 #include <memory>
-#include <functional>
+#include <string>
 #include <variant>
 #include "aeongui/Platform.h"
 #include "aeongui/AttributeMap.h"
@@ -32,7 +32,7 @@ namespace AeonGUI
     class Element : public Node
     {
     public:
-        DLL Element ( const AttributeMap& aAttributes );
+        DLL Element ( const std::string& aTagName, const AttributeMap& aAttributes );
         DLL AttributeType GetAttribute ( const char* attrName, const AttributeType& aDefault = {} ) const;
         DLL AttributeType GetInheritedAttribute ( const char* attrName, const AttributeType& aDefault = {} ) const;
         DLL virtual ~Element();
@@ -40,6 +40,7 @@ namespace AeonGUI
         NodeType nodeType() const final;
         /**@}*/
     private:
+        const std::string mTagName;
         AttributeMap mAttributeMap{};
     };
 }

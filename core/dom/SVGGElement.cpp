@@ -22,7 +22,7 @@ namespace AeonGUI
 {
     namespace DOM
     {
-        SVGGElement::SVGGElement ( const AttributeMap& aAttributeMap ) : SVGGraphicsElement {aAttributeMap}
+        SVGGElement::SVGGElement ( const std::string& aTagName, const AttributeMap& aAttributes ) : SVGGraphicsElement {aTagName, aAttributes}
         {
         }
         SVGGElement::~SVGGElement() = default;

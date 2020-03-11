@@ -25,7 +25,7 @@ namespace AeonGUI
         class Script : public Element
         {
         public:
-            Script ( const AttributeMap& aAttributeMap );
+            Script ( const std::string& aTagName, const AttributeMap& aAttributes );
             ~Script () final;
             void Load ( JavaScript& aJavaScript ) final;
             void Unload ( JavaScript& aJavaScript ) final;

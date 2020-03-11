@@ -23,7 +23,7 @@ namespace AeonGUI
 {
     namespace DOM
     {
-        Script::Script ( const AttributeMap& aAttributeMap ) : Element ( aAttributeMap )
+        Script::Script ( const std::string& aTagName, const AttributeMap& aAttributes ) : Element ( aTagName, aAttributes )
         {
         }
         Script::~Script()

@@ -41,107 +41,36 @@ limitations under the License.
 
 namespace AeonGUI
 {
-    using Constructor = std::tuple<StringLiteral, std::function < std::unique_ptr<Element> ( const AttributeMap& aAttributeMap ) >>;
+    using Constructor = std::tuple<StringLiteral, std::function < std::unique_ptr<Element> ( const std::string& aTagName, const AttributeMap& aAttributeMap ) >>;
+
+    template<class T> Constructor MakeConstructor ( StringLiteral aId )
+    {
+        return
+        {
+            aId,
+            [] ( const std::string & aTagName, const AttributeMap & aAttributeMap )
+            {
+                return std::make_unique<T> ( aTagName, aAttributeMap );
+            }
+        };
+    }
+
     static std::vector<Constructor> Constructors
     {
-        {
-            "svg",
-            [] ( const AttributeMap & aAttributeMap )
-            {
-                return std::make_unique<DOM::SVGSVGElement> ( aAttributeMap );
-            }
-        },
-        {
-            "g",
-            [] ( const AttributeMap & aAttributeMap )
-            {
-                return std::make_unique<DOM::SVGGElement> ( aAttributeMap );
-            }
-        },
-        {
-            "path",
-            [] ( const AttributeMap & aAttributeMap )
-            {
-                return std::make_unique<DOM::SVGPathElement> ( aAttributeMap );
-            }
-        },
-        {
-            "rect",
-            [] ( const AttributeMap & aAttributeMap )
-            {
-                return std::make_unique<DOM::SVGRectElement> ( aAttributeMap );
-            }
-        },
-        {
-            "line",
-            [] ( const AttributeMap & aAttributeMap )
-            {
-                return std::make_unique<DOM::SVGLineElement> ( aAttributeMap );
-            }
-        },
-        {
-            "polyline",
-            [] ( const AttributeMap & aAttributeMap )
-            {
-                return std::make_unique<DOM::SVGPolylineElement> ( aAttributeMap );
-            }
-        },
-        {
-            "polygon",
-            [] ( const AttributeMap & aAttributeMap )
-            {
-                return std::make_unique<DOM::SVGPolygonElement> ( aAttributeMap );
-            }
-        },
-        {
-            "circle",
-            [] ( const AttributeMap & aAttributeMap )
-            {
-                return std::make_unique<DOM::SVGCircleElement> ( aAttributeMap );
-            }
-        },
-        {
-            "ellipse",
-            [] ( const AttributeMap & aAttributeMap )
-            {
-                return std::make_unique<DOM::SVGEllipseElement> ( aAttributeMap );
-            }
-        },
-        {
-            "script",
-            [] ( const AttributeMap & aAttributeMap )
-            {
-                return std::make_unique<DOM::Script> ( aAttributeMap );
-            }
-        },
-        {
-            "defs",
-            [] ( const AttributeMap & aAttributeMap )
-            {
-                return std::make_unique<DOM::SVGDefsElement> ( aAttributeMap );
-            }
-        },
-        {
-            "use",
-            [] ( const AttributeMap & aAttributeMap )
-            {
-                return std::make_unique<DOM::SVGUseElement> ( aAttributeMap );
-            }
-        },
-        {
-            "linearGradient",
-            [] ( const AttributeMap & aAttributeMap )
-            {
-                return std::make_unique<DOM::SVGLinearGradientElement> ( aAttributeMap );
-            }
-        },
-        {
-            "stop",
-            [] ( const AttributeMap & aAttributeMap )
-            {
-                return std::make_unique<DOM::SVGStopElement> ( aAttributeMap );
-            }
-        },
+        MakeConstructor<DOM::SVGSVGElement> ( "svg" ),
+        MakeConstructor<DOM::SVGGElement> ( "g" ),
+        MakeConstructor<DOM::SVGPathElement> ( "path" ),
+        MakeConstructor<DOM::SVGRectElement> ( "rect" ),
+        MakeConstructor<DOM::SVGLineElement> ( "line" ),
+        MakeConstructor<DOM::SVGPolylineElement> ( "polyline" ),
+        MakeConstructor<DOM::SVGPolygonElement> ( "polygon" ),
+        MakeConstructor<DOM::SVGCircleElement> ( "circle" ),
+        MakeConstructor<DOM::SVGEllipseElement> ( "ellipse" ),
+        MakeConstructor<DOM::Script> ( "script" ),
+        MakeConstructor<DOM::SVGDefsElement> ( "defs" ),
+        MakeConstructor<DOM::SVGUseElement> ( "use" ),
+        MakeConstructor<DOM::SVGLinearGradientElement> ( "linearGradient" ),
+        MakeConstructor<DOM::SVGStopElement> ( "stop" ),
     };
 
     std::unique_ptr<Node> Construct ( const char* aIdentifier, const AttributeMap& aAttributeMap )
@@ -153,11 +82,11 @@ namespace AeonGUI
         } );
         if ( it != Constructors.end() )
         {
-            return std::get<1> ( *it ) ( aAttributeMap );
+            return std::get<1> ( *it ) ( aIdentifier, aAttributeMap );
         }
-        return std::make_unique<Element> ( aAttributeMap );
+        return std::make_unique<Element> ( aIdentifier, aAttributeMap );
     }
-    bool RegisterConstructor ( const StringLiteral& aIdentifier, const std::function < std::unique_ptr<Element> ( const AttributeMap& aAttributeMap ) > & aConstructor )
+    bool RegisterConstructor ( const StringLiteral& aIdentifier, const std::function < std::unique_ptr<Element> ( const std::string& aTagName, const AttributeMap& aAttributeMap ) > & aConstructor )
     {
         auto it = std::find_if ( Constructors.begin(), Constructors.end(),
                                  [aIdentifier] ( const Constructor & aConstructor )

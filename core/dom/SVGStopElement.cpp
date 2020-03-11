@@ -20,7 +20,7 @@ namespace AeonGUI
 {
     namespace DOM
     {
-        SVGStopElement::SVGStopElement ( const AttributeMap& aAttributeMap ) : SVGElement {aAttributeMap}
+        SVGStopElement::SVGStopElement ( const std::string& aTagName, const AttributeMap& aAttributes ) : SVGElement {aTagName, aAttributes}
         {
         }
         SVGStopElement::~SVGStopElement() = default;

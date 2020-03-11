@@ -27,7 +27,7 @@ namespace AeonGUI
         class SVGLinearGradientElement : public SVGGradientElement
         {
         public:
-            SVGLinearGradientElement ( const AttributeMap& aAttributeMap );
+            SVGLinearGradientElement ( const std::string& aTagName, const AttributeMap& aAttributes );
             ~SVGLinearGradientElement() final;
         };
     }

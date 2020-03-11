@@ -25,7 +25,7 @@ namespace AeonGUI
         class SVGDefsElement : public SVGGraphicsElement
         {
         public:
-            SVGDefsElement ( const AttributeMap& aAttributeMap );
+            SVGDefsElement ( const std::string& aTagName, const AttributeMap& aAttributes );
             ~SVGDefsElement() final;
             bool IsDrawEnabled() const final;
         };

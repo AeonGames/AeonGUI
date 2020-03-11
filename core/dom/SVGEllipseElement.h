@@ -25,7 +25,7 @@ namespace AeonGUI
         class SVGEllipseElement : public SVGGeometryElement
         {
         public:
-            SVGEllipseElement ( const AttributeMap& aAttributeMap );
+            SVGEllipseElement ( const std::string& aTagName, const AttributeMap& aAttributes );
             ~SVGEllipseElement() final;
         };
     }

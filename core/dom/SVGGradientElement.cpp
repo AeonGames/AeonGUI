@@ -19,7 +19,7 @@ namespace AeonGUI
 {
     namespace DOM
     {
-        SVGGradientElement::SVGGradientElement ( const AttributeMap& aAttributeMap ) : SVGElement {aAttributeMap}
+        SVGGradientElement::SVGGradientElement ( const std::string& aTagName, const AttributeMap& aAttributes ) : SVGElement {aTagName, aAttributes}
         {
         }
         SVGGradientElement::~SVGGradientElement() = default;

@@ -21,7 +21,7 @@ Copyright (C) 2010-2013,2019,2020 Rodrigo Hernandez Cordoba
 namespace AeonGUI
 {
     int ParseStyle ( AttributeMap& aAttributeMap, const char* s );
-    Element::Element ( const AttributeMap& aAttributes ) : mAttributeMap{aAttributes}
+    Element::Element ( const std::string& aTagName, const AttributeMap& aAttributes ) : mTagName{aTagName}, mAttributeMap{aAttributes}
     {
         auto style = mAttributeMap.find ( "style" );
         if ( style != mAttributeMap.end() )

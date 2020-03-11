@@ -25,7 +25,7 @@ namespace AeonGUI
         class SVGPolygonElement : public SVGGeometryElement
         {
         public:
-            SVGPolygonElement ( const AttributeMap& aAttributeMap );
+            SVGPolygonElement ( const std::string& aTagName, const AttributeMap& aAttributes );
             ~SVGPolygonElement() final;
         };
     }
