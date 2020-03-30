@@ -23,17 +23,10 @@ namespace AeonGUI
 {
     Window::Window () = default;
     Window::Window ( const std::string aFilename, uint32_t aWidth, uint32_t aHeight ) :
-        mJavaScript{},
         mDocument{aFilename},
-        mCanvas{aWidth, aHeight}
-    {
-        mDocument.Load ( mJavaScript );
-    }
+        mCanvas{aWidth, aHeight} {}
 
-    Window::~Window()
-    {
-        mDocument.Unload ( mJavaScript );
-    }
+    Window::~Window() = default;
 
     void Window::ResizeViewport ( uint32_t aWidth, uint32_t aHeight )
     {

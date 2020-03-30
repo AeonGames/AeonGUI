@@ -24,7 +24,6 @@ limitations under the License.
 #include "aeongui/Platform.h"
 ///@todo Canvas and JavaScript implementations should be selectable.
 #include "aeongui/CairoCanvas.h"
-#include "aeongui/Duktape.h"
 
 namespace AeonGUI
 {
@@ -41,7 +40,6 @@ namespace AeonGUI
         DLL size_t GetStride() const;
         DLL void Draw();
     private:
-        Duktape mJavaScript{};
         Document mDocument{};
         CairoCanvas mCanvas{};
     };

@@ -27,8 +27,8 @@ namespace AeonGUI
         public:
             Script ( const std::string& aTagName, const AttributeMap& aAttributes );
             ~Script () final;
-            void Load ( JavaScript& aJavaScript ) final;
-            void Unload ( JavaScript& aJavaScript ) final;
+            void Load () final;
+            void Unload () final;
         };
     }
 }

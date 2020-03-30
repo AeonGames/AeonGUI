@@ -22,6 +22,7 @@ limitations under the License.
 #include "aeongui/Platform.h"
 #include "aeongui/Canvas.h"
 #include "aeongui/JavaScript.h"
+#include "aeongui/Duktape.h"
 #include "dom/Node.h"
 
 namespace AeonGUI
@@ -33,19 +34,18 @@ namespace AeonGUI
         DLL Document ( const std::string& aFilename );
         DLL ~Document();
         DLL void Draw ( Canvas& aCanvas ) const;
-        DLL void Load ( JavaScript& aJavaScript );
-        DLL void Unload ( JavaScript& aJavaScript );
         DLL Node* AddNode ( std::unique_ptr<Node> aNode );
         DLL std::unique_ptr<Node> RemoveNode ( const Node* aNode );
-        DLL void TraverseDepthFirstPreOrder ( const std::function<void ( Node& ) >& aAction );
-        DLL void TraverseDepthFirstPreOrder ( const std::function<void ( const Node& ) >& aAction ) const;
-        DLL void TraverseDepthFirstPostOrder ( const std::function<void ( Node& ) >& aAction );
-        DLL void TraverseDepthFirstPostOrder ( const std::function<void ( const Node& ) >& aAction ) const;
-        DLL void TraverseDepthFirstPreOrder ( const std::function<void ( Node& ) >& aPreamble, const std::function<void ( Node& ) >& aPostamble );
-        DLL void TraverseDepthFirstPreOrder ( const std::function<void ( const Node& ) >& aPreamble, const std::function<void ( const Node& ) >& aPostamble ) const;
-        DLL void TraverseDepthFirstPreOrder ( const std::function<void ( Node& ) >& aPreamble, const std::function<void ( Node& ) >& aPostamble, const std::function<bool ( Node& ) >& aUnaryPredicate );
-        DLL void TraverseDepthFirstPreOrder ( const std::function<void ( const Node& ) >& aPreamble, const std::function<void ( const Node& ) >& aPostamble, const std::function<bool ( const Node& ) >& aUnaryPredicate ) const;
+        DLL void TraverseDepthFirstPreOrder ( const std::function<void ( Node* ) >& aAction );
+        DLL void TraverseDepthFirstPreOrder ( const std::function<void ( const Node* ) >& aAction ) const;
+        DLL void TraverseDepthFirstPostOrder ( const std::function<void ( Node* ) >& aAction );
+        DLL void TraverseDepthFirstPostOrder ( const std::function<void ( const Node* ) >& aAction ) const;
+        DLL void TraverseDepthFirstPreOrder ( const std::function<void ( Node* ) >& aPreamble, const std::function<void ( Node* ) >& aPostamble );
+        DLL void TraverseDepthFirstPreOrder ( const std::function<void ( const Node* ) >& aPreamble, const std::function<void ( const Node* ) >& aPostamble ) const;
+        DLL void TraverseDepthFirstPreOrder ( const std::function<void ( Node* ) >& aPreamble, const std::function<void ( Node* ) >& aPostamble, const std::function<bool ( Node* ) >& aUnaryPredicate );
+        DLL void TraverseDepthFirstPreOrder ( const std::function<void ( const Node* ) >& aPreamble, const std::function<void ( const Node* ) >& aPostamble, const std::function<bool ( const Node* ) >& aUnaryPredicate ) const;
     private:
+        Duktape mJavaScript{};
         std::vector<std::unique_ptr<Node>> mChildren{};
     };
 }

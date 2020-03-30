@@ -21,6 +21,7 @@ limitations under the License.
 #include "aeongui/Document.h"
 #include "aeongui/ElementFactory.h"
 #include "dom/Text.h"
+#include "dom/Element.h"
 
 namespace AeonGUI
 {
@@ -87,6 +88,26 @@ namespace AeonGUI
         ///@todo use doc->children instead?
         AddNodes ( this, xmlDocGetRootElement ( document ) );
         xmlFreeDoc ( document );
+
+        // Evaluate all script nodes.
+        TraverseDepthFirstPreOrder (
+            [this] ( Node * aNode )
+        {
+            if ( aNode->nodeType() == Node::ELEMENT_NODE && reinterpret_cast<Element*> ( aNode )->tagName() == "script" )
+            {
+                const auto& children = aNode->childNodes();
+                ///@todo Do not asume script elements contain elements or more than one text node.
+                auto text_node = std::find_if ( children.begin(), children.end(), [] ( const std::unique_ptr<Node>& aChild )
+                {
+                    return aChild->nodeType() == Node::TEXT_NODE;
+                } );
+                if ( text_node != children.end() )
+                {
+                    mJavaScript.Eval ( reinterpret_cast<const Text*> ( text_node->get() )->wholeText() );
+                }
+            }
+        } );
+        /**@todo Emit onload event.*/
     }
 
     Document::~Document() = default;
@@ -111,7 +132,7 @@ namespace AeonGUI
         return result;
     }
 
-    void Document::TraverseDepthFirstPreOrder ( const std::function<void ( Node& ) >& aAction )
+    void Document::TraverseDepthFirstPreOrder ( const std::function<void ( Node* ) >& aAction )
     {
         for ( auto & mRootNode : mChildren )
         {
@@ -119,7 +140,7 @@ namespace AeonGUI
         }
     }
 
-    void Document::TraverseDepthFirstPreOrder ( const std::function<void ( const Node& ) >& aAction ) const
+    void Document::TraverseDepthFirstPreOrder ( const std::function<void ( const Node* ) >& aAction ) const
     {
         for ( const auto& mRootNode : mChildren )
         {
@@ -127,7 +148,7 @@ namespace AeonGUI
         }
     }
 
-    void Document::TraverseDepthFirstPostOrder ( const std::function<void ( Node& ) >& aAction )
+    void Document::TraverseDepthFirstPostOrder ( const std::function<void ( Node* ) >& aAction )
     {
         for ( auto & mRootNode : mChildren )
         {
@@ -135,7 +156,7 @@ namespace AeonGUI
         }
     }
 
-    void Document::TraverseDepthFirstPostOrder ( const std::function<void ( const Node& ) >& aAction ) const
+    void Document::TraverseDepthFirstPostOrder ( const std::function<void ( const Node* ) >& aAction ) const
     {
         for ( const auto& mRootNode : mChildren )
         {
@@ -143,7 +164,7 @@ namespace AeonGUI
         }
     }
 
-    void Document::TraverseDepthFirstPreOrder ( const std::function<void ( Node& ) >& aPreamble, const std::function<void ( Node& ) >& aPostamble )
+    void Document::TraverseDepthFirstPreOrder ( const std::function<void ( Node* ) >& aPreamble, const std::function<void ( Node* ) >& aPostamble )
     {
         for ( auto & mRootNode : mChildren )
         {
@@ -151,7 +172,7 @@ namespace AeonGUI
         }
     }
 
-    void Document::TraverseDepthFirstPreOrder ( const std::function<void ( const Node& ) >& aPreamble, const std::function<void ( const Node& ) >& aPostamble ) const
+    void Document::TraverseDepthFirstPreOrder ( const std::function<void ( const Node* ) >& aPreamble, const std::function<void ( const Node* ) >& aPostamble ) const
     {
         for ( const auto& mRootNode : mChildren )
         {
@@ -159,7 +180,7 @@ namespace AeonGUI
         }
     }
 
-    void Document::TraverseDepthFirstPreOrder ( const std::function<void ( Node& ) >& aPreamble, const std::function<void ( Node& ) >& aPostamble, const std::function<bool ( Node& ) >& aUnaryPredicate )
+    void Document::TraverseDepthFirstPreOrder ( const std::function<void ( Node* ) >& aPreamble, const std::function<void ( Node* ) >& aPostamble, const std::function<bool ( Node* ) >& aUnaryPredicate )
     {
         for ( auto & mRootNode : mChildren )
         {
@@ -167,7 +188,7 @@ namespace AeonGUI
         }
     }
 
-    void Document::TraverseDepthFirstPreOrder ( const std::function<void ( const Node& ) >& aPreamble, const std::function<void ( const Node& ) >& aPostamble, const std::function<bool ( const Node& ) >& aUnaryPredicate ) const
+    void Document::TraverseDepthFirstPreOrder ( const std::function<void ( const Node* ) >& aPreamble, const std::function<void ( const Node* ) >& aPostamble, const std::function<bool ( const Node* ) >& aUnaryPredicate ) const
     {
         for ( const auto& mRootNode : mChildren )
         {
@@ -178,33 +199,17 @@ namespace AeonGUI
     void Document::Draw ( Canvas& aCanvas ) const
     {
         TraverseDepthFirstPreOrder (
-            [&aCanvas] ( const Node & aNode )
+            [&aCanvas] ( const Node * aNode )
         {
-            aNode.DrawStart ( aCanvas );
+            aNode->DrawStart ( aCanvas );
         },
-        [&aCanvas] ( const Node & aNode )
+        [&aCanvas] ( const Node * aNode )
         {
-            aNode.DrawFinish ( aCanvas );
+            aNode->DrawFinish ( aCanvas );
         },
-        [] ( const Node & aNode )
+        [] ( const Node * aNode )
         {
-            return aNode.IsDrawEnabled();
-        } );
-    }
-    void Document::Load ( JavaScript& aJavaScript )
-    {
-        TraverseDepthFirstPreOrder (
-            [&aJavaScript] ( Node & aNode )
-        {
-            aNode.Load ( aJavaScript );
-        } );
-    }
-    void Document::Unload ( JavaScript& aJavaScript )
-    {
-        TraverseDepthFirstPreOrder (
-            [&aJavaScript] ( Node & aNode )
-        {
-            aNode.Unload ( aJavaScript );
+            return aNode->IsDrawEnabled();
         } );
     }
 }

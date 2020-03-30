@@ -49,19 +49,19 @@ namespace AeonGUI
         DLL Node();
         DLL Node* AddNode ( std::unique_ptr<Node> aNode );
         DLL std::unique_ptr<Node> RemoveNode ( const Node* aNode );
-        DLL void TraverseDepthFirstPreOrder ( const std::function<void ( Node& ) >& aAction );
-        DLL void TraverseDepthFirstPreOrder ( const std::function<void ( const Node& ) >& aAction ) const;
-        DLL void TraverseDepthFirstPostOrder ( const std::function<void ( Node& ) >& aAction );
-        DLL void TraverseDepthFirstPostOrder ( const std::function<void ( const Node& ) >& aAction ) const;
-        DLL void TraverseDepthFirstPreOrder ( const std::function<void ( Node& ) >& aPreamble, const std::function<void ( Node& ) >& aPostamble );
-        DLL void TraverseDepthFirstPreOrder ( const std::function<void ( const Node& ) >& aPreamble, const std::function<void ( const Node& ) >& aPostamble ) const;
-        DLL void TraverseDepthFirstPreOrder ( const std::function<void ( Node& ) >& aPreamble, const std::function<void ( Node& ) >& aPostamble, const std::function<bool ( Node& ) >& aUnaryPredicate );
-        DLL void TraverseDepthFirstPreOrder ( const std::function<void ( const Node& ) >& aPreamble, const std::function<void ( const Node& ) >& aPostamble, const std::function<bool ( const Node& ) >& aUnaryPredicate ) const;
+        DLL void TraverseDepthFirstPreOrder ( const std::function<void ( Node* ) >& aAction );
+        DLL void TraverseDepthFirstPreOrder ( const std::function<void ( const Node* ) >& aAction ) const;
+        DLL void TraverseDepthFirstPostOrder ( const std::function<void ( Node* ) >& aAction );
+        DLL void TraverseDepthFirstPostOrder ( const std::function<void ( const Node* ) >& aAction ) const;
+        DLL void TraverseDepthFirstPreOrder ( const std::function<void ( Node* ) >& aPreamble, const std::function<void ( Node* ) >& aPostamble );
+        DLL void TraverseDepthFirstPreOrder ( const std::function<void ( const Node* ) >& aPreamble, const std::function<void ( const Node* ) >& aPostamble ) const;
+        DLL void TraverseDepthFirstPreOrder ( const std::function<void ( Node* ) >& aPreamble, const std::function<void ( Node* ) >& aPostamble, const std::function<bool ( Node* ) >& aUnaryPredicate );
+        DLL void TraverseDepthFirstPreOrder ( const std::function<void ( const Node* ) >& aPreamble, const std::function<void ( const Node* ) >& aPostamble, const std::function<bool ( const Node* ) >& aUnaryPredicate ) const;
 
         DLL virtual void DrawStart ( Canvas& aCanvas ) const;
         DLL virtual void DrawFinish ( Canvas& aCanvas ) const;
-        DLL virtual void Load ( JavaScript& aJavaScript );
-        DLL virtual void Unload ( JavaScript& aJavaScript );
+        DLL virtual void Load ();
+        DLL virtual void Unload ();
         /** Returns whether this node and all descendants should be skipped
          *  in a drawing operation.
          *  @return true by default override to disable drawing.

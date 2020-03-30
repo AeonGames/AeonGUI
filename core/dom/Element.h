@@ -38,6 +38,7 @@ namespace AeonGUI
         DLL virtual ~Element();
         /**DOM Properties and Methods @{*/
         NodeType nodeType() const final;
+        const std::string& tagName() const;
         /**@}*/
     private:
         const std::string mTagName;

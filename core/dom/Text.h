@@ -28,7 +28,7 @@ namespace AeonGUI
         DLL ~Text() final;
         /**DOM Properties and Methods @{*/
         NodeType nodeType() const final;
-        const std::string& wholeText() const;
+        std::string wholeText() const;
         /**@}*/
     private:
         std::string mText{};

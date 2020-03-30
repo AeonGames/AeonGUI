@@ -69,4 +69,8 @@ namespace AeonGUI
     {
         return ELEMENT_NODE;
     }
+    const std::string& Element::tagName() const
+    {
+        return mTagName;
+    }
 }

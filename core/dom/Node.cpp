@@ -45,16 +45,12 @@ namespace AeonGUI
         ( void ) aCanvas;
     }
 
-    void Node::Load ( JavaScript& aJavaScript )
+    void Node::Load ()
     {
-        // Do nothing by default
-        ( void ) aJavaScript;
     }
 
-    void Node::Unload ( JavaScript& aJavaScript )
+    void Node::Unload ()
     {
-        // Do nothing by default
-        ( void ) aJavaScript;
     }
 
     Node* Node::parentNode() const
@@ -73,28 +69,28 @@ namespace AeonGUI
     /*  This is ugly, but it is only way to use the same code for the const and the non const version
         without having to add template or friend members to the class declaration. */
 #define TraverseDepthFirstPreOrder(...) \
-    void Node::TraverseDepthFirstPreOrder ( const std::function<void ( __VA_ARGS__ Node& ) >& aAction ) __VA_ARGS__ \
+    void Node::TraverseDepthFirstPreOrder ( const std::function<void ( __VA_ARGS__ Node* ) >& aAction ) __VA_ARGS__ \
     {\
         /** @todo (EC++ Item 3) This code is the same as the constant overload,\
         but can't easily be implemented in terms of that because of aAction's Node parameter\
         need to also be const.\
         */\
-        auto Node{this};\
-        aAction ( *Node );\
+        auto node{this};\
+        aAction ( node );\
         auto parent = mParent;\
-        while ( Node != parent )\
+        while ( node != parent )\
         {\
-            if ( Node->mIterator < Node->mChildren.size() )\
+            if ( node->mIterator < node->mChildren.size() )\
             {\
-                auto prev = Node;\
-                Node = Node->mChildren[Node->mIterator].get();\
-                aAction ( *Node );\
+                auto prev = node;\
+                node = node->mChildren[node->mIterator].get();\
+                aAction ( node );\
                 prev->mIterator++;\
             }\
             else\
             {\
-                Node->mIterator = 0; /* Reset counter for next traversal.*/\
-                Node = Node->mParent;\
+                node->mIterator = 0; /* Reset counter for next traversal.*/\
+                node = node->mParent;\
             }\
         }\
     }
@@ -104,13 +100,13 @@ namespace AeonGUI
 #undef TraverseDepthFirstPreOrder
 
 #define TraverseDepthFirstPostOrder(...) \
-    void Node::TraverseDepthFirstPostOrder ( const std::function<void ( __VA_ARGS__ Node& ) >& aAction ) __VA_ARGS__ \
+    void Node::TraverseDepthFirstPostOrder ( const std::function<void ( __VA_ARGS__ Node* ) >& aAction ) __VA_ARGS__ \
     { \
         /* \
         This code implements a similar solution to this stackoverflow answer: \
         http://stackoverflow.com/questions/5987867/traversing-a-n-ary-tree-without-using-recurrsion/5988138#5988138 \
         */ \
-        auto node = this; \
+        auto node{this}; \
         auto parent = mParent; \
         while ( node != parent ) \
         { \
@@ -122,7 +118,7 @@ namespace AeonGUI
             } \
             else \
             { \
-                aAction ( *node ); \
+                aAction ( node ); \
                 node->mIterator = 0; /* Reset counter for next traversal. */ \
                 node = node->mParent; \
             } \
@@ -136,11 +132,11 @@ namespace AeonGUI
 
 #define TraverseDepthFirstPostOrder(...) \
     void Node::TraverseDepthFirstPreOrder ( \
-        const std::function<void ( __VA_ARGS__ Node& ) >& aPreamble, \
-        const std::function<void ( __VA_ARGS__ Node& ) >& aPostamble ) __VA_ARGS__ \
+        const std::function<void ( __VA_ARGS__ Node* ) >& aPreamble, \
+        const std::function<void ( __VA_ARGS__ Node* ) >& aPostamble ) __VA_ARGS__ \
     { \
         auto node = this; \
-        aPreamble ( *node ); \
+        aPreamble ( node ); \
         auto parent = mParent; \
         while ( node != parent ) \
         { \
@@ -148,12 +144,12 @@ namespace AeonGUI
             { \
                 auto prev = node; \
                 node = node->mChildren[node->mIterator].get(); \
-                aPreamble ( *node ); \
+                aPreamble ( node ); \
                 ++prev->mIterator; \
             } \
             else \
             { \
-                aPostamble ( *node ); \
+                aPostamble ( node ); \
                 node->mIterator = 0; \
                 node = node->mParent; \
             } \
@@ -166,26 +162,26 @@ namespace AeonGUI
 
 #define TraverseDepthFirstPostOrder(...) \
     void Node::TraverseDepthFirstPreOrder ( \
-        const std::function<void ( __VA_ARGS__ Node& ) >& aPreamble, \
-        const std::function<void ( __VA_ARGS__ Node& ) >& aPostamble, \
-        const std::function<bool ( __VA_ARGS__ Node& ) >& aUnaryPredicate ) __VA_ARGS__ \
+        const std::function<void ( __VA_ARGS__ Node* ) >& aPreamble, \
+        const std::function<void ( __VA_ARGS__ Node* ) >& aPostamble, \
+        const std::function<bool ( __VA_ARGS__ Node* ) >& aUnaryPredicate ) __VA_ARGS__ \
     { \
-        if(!aUnaryPredicate(*this)){return;} \
+        if(!aUnaryPredicate(this)){return;} \
         auto node = this; \
-        aPreamble ( *node ); \
+        aPreamble ( node ); \
         auto parent = mParent; \
         while ( node != parent ) \
         { \
-            if ( node->mIterator < node->mChildren.size() && aUnaryPredicate(*node)) \
+            if ( node->mIterator < node->mChildren.size() && aUnaryPredicate(node)) \
             { \
                 auto prev = node; \
                 node = node->mChildren[node->mIterator].get(); \
-                aPreamble ( *node ); \
+                aPreamble ( node ); \
                 ++prev->mIterator; \
             } \
             else \
             { \
-                aPostamble ( *node ); \
+                aPostamble ( node ); \
                 node->mIterator = 0; \
                 node = node->mParent; \
             } \
