@@ -86,6 +86,8 @@ if(CMAKE_GENERATOR MATCHES "(MSYS|Unix) Makefiles")
                  "${CMAKE_SOURCE_DIR}/.vscode/settings.json")
   configure_file("${CMAKE_SOURCE_DIR}/cmake/launch.json.in"
                  "${CMAKE_SOURCE_DIR}/.vscode/launch.json")
+  configure_file("${CMAKE_SOURCE_DIR}/cmake/tasks.json.in"
+                 "${CMAKE_SOURCE_DIR}/.vscode/tasks.json")
   configure_file("${CMAKE_SOURCE_DIR}/cmake/c_cpp_properties.json.in"
                  "${CMAKE_SOURCE_DIR}/.vscode/c_cpp_properties.json" @ONLY)
 endif()
