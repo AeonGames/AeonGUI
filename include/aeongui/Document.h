@@ -34,19 +34,12 @@ namespace AeonGUI
         DLL Document ( const std::string& aFilename );
         DLL ~Document();
         DLL void Draw ( Canvas& aCanvas ) const;
-        DLL Node* AddNode ( std::unique_ptr<Node> aNode );
-        DLL std::unique_ptr<Node> RemoveNode ( const Node* aNode );
-        DLL void TraverseDepthFirstPreOrder ( const std::function<void ( Node* ) >& aAction );
-        DLL void TraverseDepthFirstPreOrder ( const std::function<void ( const Node* ) >& aAction ) const;
-        DLL void TraverseDepthFirstPostOrder ( const std::function<void ( Node* ) >& aAction );
-        DLL void TraverseDepthFirstPostOrder ( const std::function<void ( const Node* ) >& aAction ) const;
-        DLL void TraverseDepthFirstPreOrder ( const std::function<void ( Node* ) >& aPreamble, const std::function<void ( Node* ) >& aPostamble );
-        DLL void TraverseDepthFirstPreOrder ( const std::function<void ( const Node* ) >& aPreamble, const std::function<void ( const Node* ) >& aPostamble ) const;
-        DLL void TraverseDepthFirstPreOrder ( const std::function<void ( Node* ) >& aPreamble, const std::function<void ( Node* ) >& aPostamble, const std::function<bool ( Node* ) >& aUnaryPredicate );
-        DLL void TraverseDepthFirstPreOrder ( const std::function<void ( const Node* ) >& aPreamble, const std::function<void ( const Node* ) >& aPostamble, const std::function<bool ( const Node* ) >& aUnaryPredicate ) const;
+        /**DOM Properties and Methods @{*/
+        DLL Node* documentElement();
+        /**@}*/
     private:
         Duktape mJavaScript{};
-        std::vector<std::unique_ptr<Node>> mChildren{};
+        std::unique_ptr<Node> mDocumentElement{};
     };
 }
 #endif

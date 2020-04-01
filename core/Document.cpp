@@ -64,18 +64,6 @@ namespace AeonGUI
         }
     }
 
-    static void AddNodes ( Document* aDocument, xmlNode * aNode )
-    {
-        for ( xmlNode * node = aNode; node; node = node->next )
-        {
-            if ( node->type == XML_ELEMENT_NODE )
-            {
-                xmlElementPtr element = reinterpret_cast<xmlElementPtr> ( node );
-                AddNodes ( aDocument->AddNode ( Construct ( reinterpret_cast<const char*> ( element->name ), ExtractElementAttributes ( element ) ) ), node->children );
-            }
-        }
-    }
-
     Document::Document () = default;
 
     Document::Document ( const std::string& aFilename )
@@ -85,12 +73,14 @@ namespace AeonGUI
         {
             throw std::runtime_error ( "Could not parse xml file" );
         }
-        ///@todo use doc->children instead?
-        AddNodes ( this, xmlDocGetRootElement ( document ) );
+        ///@todo use document->children instead?
+        xmlElementPtr root_element = reinterpret_cast<xmlElementPtr> ( xmlDocGetRootElement ( document ) );
+        mDocumentElement = Construct ( reinterpret_cast<const char*> ( root_element->name ), ExtractElementAttributes ( root_element ) );
+        AddNodes ( mDocumentElement.get(), root_element->children );
         xmlFreeDoc ( document );
 
         // Evaluate all script nodes.
-        TraverseDepthFirstPreOrder (
+        mDocumentElement->TraverseDepthFirstPreOrder (
             [this] ( Node * aNode )
         {
             if ( aNode->nodeType() == Node::ELEMENT_NODE && reinterpret_cast<Element*> ( aNode )->tagName() == "script" )
@@ -111,94 +101,14 @@ namespace AeonGUI
     }
 
     Document::~Document() = default;
-
-    Node* Document::AddNode ( std::unique_ptr<Node> aNode )
+    Node* Document::documentElement()
     {
-        return mChildren.emplace_back ( std::move ( aNode ) ).get();
-    }
-
-    std::unique_ptr<Node> Document::RemoveNode ( const Node* aNode )
-    {
-        std::unique_ptr<Node> result{};
-        auto i = std::find_if ( mChildren.begin(), mChildren.end(), [aNode] ( const std::unique_ptr<Node>& Node )
-        {
-            return aNode == Node.get();
-        } );
-        if ( i != mChildren.end() )
-        {
-            result = std::move ( *i );
-            mChildren.erase ( std::remove ( i, mChildren.end(), *i ), mChildren.end() );
-        }
-        return result;
-    }
-
-    void Document::TraverseDepthFirstPreOrder ( const std::function<void ( Node* ) >& aAction )
-    {
-        for ( auto & mRootNode : mChildren )
-        {
-            mRootNode->TraverseDepthFirstPreOrder ( aAction );
-        }
-    }
-
-    void Document::TraverseDepthFirstPreOrder ( const std::function<void ( const Node* ) >& aAction ) const
-    {
-        for ( const auto& mRootNode : mChildren )
-        {
-            static_cast<const Node*> ( mRootNode.get() )->TraverseDepthFirstPreOrder ( aAction );
-        }
-    }
-
-    void Document::TraverseDepthFirstPostOrder ( const std::function<void ( Node* ) >& aAction )
-    {
-        for ( auto & mRootNode : mChildren )
-        {
-            mRootNode->TraverseDepthFirstPostOrder ( aAction );
-        }
-    }
-
-    void Document::TraverseDepthFirstPostOrder ( const std::function<void ( const Node* ) >& aAction ) const
-    {
-        for ( const auto& mRootNode : mChildren )
-        {
-            static_cast<const Node*> ( mRootNode.get() )->TraverseDepthFirstPostOrder ( aAction );
-        }
-    }
-
-    void Document::TraverseDepthFirstPreOrder ( const std::function<void ( Node* ) >& aPreamble, const std::function<void ( Node* ) >& aPostamble )
-    {
-        for ( auto & mRootNode : mChildren )
-        {
-            mRootNode->TraverseDepthFirstPreOrder ( aPreamble, aPostamble );
-        }
-    }
-
-    void Document::TraverseDepthFirstPreOrder ( const std::function<void ( const Node* ) >& aPreamble, const std::function<void ( const Node* ) >& aPostamble ) const
-    {
-        for ( const auto& mRootNode : mChildren )
-        {
-            static_cast<const Node*> ( mRootNode.get() )->TraverseDepthFirstPreOrder ( aPreamble, aPostamble );
-        }
-    }
-
-    void Document::TraverseDepthFirstPreOrder ( const std::function<void ( Node* ) >& aPreamble, const std::function<void ( Node* ) >& aPostamble, const std::function<bool ( Node* ) >& aUnaryPredicate )
-    {
-        for ( auto & mRootNode : mChildren )
-        {
-            mRootNode->TraverseDepthFirstPreOrder ( aPreamble, aPostamble, aUnaryPredicate );
-        }
-    }
-
-    void Document::TraverseDepthFirstPreOrder ( const std::function<void ( const Node* ) >& aPreamble, const std::function<void ( const Node* ) >& aPostamble, const std::function<bool ( const Node* ) >& aUnaryPredicate ) const
-    {
-        for ( const auto& mRootNode : mChildren )
-        {
-            static_cast<const Node*> ( mRootNode.get() )->TraverseDepthFirstPreOrder ( aPreamble, aPostamble, aUnaryPredicate );
-        }
+        return mDocumentElement.get();
     }
 
     void Document::Draw ( Canvas& aCanvas ) const
     {
-        TraverseDepthFirstPreOrder (
+        mDocumentElement->TraverseDepthFirstPreOrder (
             [&aCanvas] ( const Node * aNode )
         {
             aNode->DrawStart ( aCanvas );
