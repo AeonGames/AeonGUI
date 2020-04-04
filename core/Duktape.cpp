@@ -16,13 +16,21 @@ limitations under the License.
 
 #include <stdexcept>
 #include <iostream>
+#include <iomanip>
 #include "aeongui/Duktape.h"
 #include "duktape.h"
 #include "duk_console.h"
 
 namespace AeonGUI
 {
-    Duktape::Duktape() : mDukContext{duk_create_heap_default() }
+    void Duktape::Fatal ( void* udata, const char* msg )
+    {
+        ( void ) udata;
+        std::cerr << "ERROR: " << ( msg ? msg : "no message" ) << std::endl;
+        abort();
+    }
+
+    Duktape::Duktape() : mDukContext{duk_create_heap ( nullptr, nullptr, nullptr, nullptr, Duktape::Fatal ) }
     {
         std::cout << "Duktape" << std::endl;
         if ( !mDukContext )
@@ -49,6 +57,12 @@ Object.defineProperty(new Function('return this')(), 'window', {
     }
     void Duktape::Eval ( const std::string& aString )
     {
-        duk_eval_string_noresult ( mDukContext, aString.c_str() );
+        try{
+            duk_eval_string_noresult ( mDukContext, aString.c_str() );
+        }
+        catch(std::runtime_error& e)
+        {
+            std::cerr << e.what();
+        }
     }
 }

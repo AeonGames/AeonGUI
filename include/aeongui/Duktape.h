@@ -31,6 +31,7 @@ namespace AeonGUI
         void Eval ( const std::string& aString ) final;
     private:
         duk_context* mDukContext{};
+        static void Fatal ( void* udata, const char* msg );
     };
 }
 #endif
