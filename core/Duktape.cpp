@@ -18,6 +18,8 @@ limitations under the License.
 #include <iostream>
 #include <iomanip>
 #include "aeongui/Duktape.h"
+#include "aeongui/Window.h"
+#include "aeongui/Document.h"
 #include "duktape.h"
 #include "duk_console.h"
 
@@ -27,10 +29,13 @@ namespace AeonGUI
     {
         ( void ) udata;
         std::cerr << "ERROR: " << ( msg ? msg : "no message" ) << std::endl;
+#ifndef DEBUG
+        // Only abort on production builds, helps debugging
         abort();
+#endif
     }
 
-    Duktape::Duktape() : mDukContext{duk_create_heap ( nullptr, nullptr, nullptr, nullptr, Duktape::Fatal ) }
+    Duktape::Duktape ( Window* aWindow, Document* aDocument ) : mDukContext{duk_create_heap ( nullptr, nullptr, nullptr, nullptr, Duktape::Fatal ) }
     {
         std::cout << "Duktape" << std::endl;
         if ( !mDukContext )
@@ -44,9 +49,27 @@ Object.defineProperty(new Function('return this')(), 'window', {
     value: new Function('return this')(),
     writable: false, enumerable: true, configurable: false});
 )");
+        // Store Window object pointer as a global hidden symbol
+        duk_push_pointer(mDukContext,aWindow);
+        duk_put_global_string(mDukContext,DUK_HIDDEN_SYMBOL("window"));
+
+        // Create Document Global Object
+        duk_idx_t document = duk_push_object(mDukContext);
+        duk_push_pointer(mDukContext,aDocument);
+        duk_put_prop_string(mDukContext,document,DUK_HIDDEN_SYMBOL("document"));
+        duk_push_object(mDukContext); ///@todo This should point to the document root
+        duk_put_prop_string(mDukContext,document,"documentElement");
+
+        duk_put_global_string(mDukContext,"document");
+
         // Register Console
         duk_console_init ( mDukContext, 0 );
     }
+
+    void Duktape::CreateObject(Node* aNode)
+    {
+    }
+
     Duktape::~Duktape()
     {
         if ( mDukContext )

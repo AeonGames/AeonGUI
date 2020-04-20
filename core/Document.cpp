@@ -78,26 +78,25 @@ namespace AeonGUI
         mDocumentElement = Construct ( reinterpret_cast<const char*> ( root_element->name ), ExtractElementAttributes ( root_element ) );
         AddNodes ( mDocumentElement.get(), root_element->children );
         xmlFreeDoc ( document );
-
-        // Evaluate all script nodes.
-        mDocumentElement->TraverseDepthFirstPreOrder (
-            [this] ( Node * aNode )
-        {
-            if ( aNode->nodeType() == Node::ELEMENT_NODE && reinterpret_cast<Element*> ( aNode )->tagName() == "script" )
-            {
-                const auto& children = aNode->childNodes();
-                ///@todo Do not asume script elements contain elements or more than one text node.
-                auto text_node = std::find_if ( children.begin(), children.end(), [] ( const std::unique_ptr<Node>& aChild )
-                {
-                    return aChild->nodeType() == Node::TEXT_NODE;
-                } );
-                if ( text_node != children.end() )
-                {
-                    mJavaScript.Eval ( reinterpret_cast<const Text*> ( text_node->get() )->wholeText() );
-                }
-            }
-        } );
         /**@todo Emit onload event.*/
+    }
+
+    void Document::Load ( JavaScript& aJavascript )
+    {
+        mDocumentElement->TraverseDepthFirstPreOrder (
+            [&aJavascript] ( Node * aNode )
+        {
+            aNode->Load ( aJavascript );
+        } );
+    }
+
+    void Document::Unload ( JavaScript& aJavascript )
+    {
+        mDocumentElement->TraverseDepthFirstPreOrder (
+            [&aJavascript] ( Node * aNode )
+        {
+            aNode->Unload ( aJavascript );
+        } );
     }
 
     Document::~Document() = default;

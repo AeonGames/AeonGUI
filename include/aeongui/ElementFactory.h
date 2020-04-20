@@ -24,7 +24,6 @@ limitations under the License.
 namespace AeonGUI
 {
     class Node;
-    //using Constructor = std::tuple<StringLiteral, std::function < std::unique_ptr<Element>(xmlElementPtr aAttributeMap) >>;
     DLL std::unique_ptr<Node> Construct ( const char* aIdentifier, const AttributeMap& aAttributeMap );
     DLL bool RegisterConstructor ( const StringLiteral& aIdentifier, const std::function < std::unique_ptr<Node> ( const AttributeMap& aAttributeMap ) > & aConstructor );
     DLL bool UnregisterConstructor ( const StringLiteral& aIdentifier );

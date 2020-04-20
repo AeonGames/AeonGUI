@@ -29,11 +29,9 @@ namespace AeonGUI
         Script::~Script()
         {
         }
-        void Script::Load ()
+        void Script::Load ( JavaScript& aJavaScript )
         {
-#if 0
             const auto& children = childNodes();
-            ///@todo Don't asume script elements don't contain more elements or more than one text node.
             auto text_node = std::find_if ( children.begin(), children.end(), [] ( const std::unique_ptr<Node>& aNode )
             {
                 return aNode->nodeType() == TEXT_NODE;
@@ -42,10 +40,6 @@ namespace AeonGUI
             {
                 aJavaScript.Eval ( reinterpret_cast<const Text*> ( text_node->get() )->wholeText() );
             }
-#endif
-        }
-        void Script::Unload ()
-        {
         }
     }
 }

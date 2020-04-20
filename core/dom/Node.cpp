@@ -45,12 +45,16 @@ namespace AeonGUI
         ( void ) aCanvas;
     }
 
-    void Node::Load ()
+    void Node::Load ( JavaScript& aJavaScript )
     {
+        // Do nothing by default
+        ( void ) aJavaScript;
     }
 
-    void Node::Unload ()
+    void Node::Unload ( JavaScript& aJavaScript )
     {
+        // Do nothing by default
+        ( void ) aJavaScript;
     }
 
     Node* Node::parentNode() const

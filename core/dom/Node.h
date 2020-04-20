@@ -60,8 +60,8 @@ namespace AeonGUI
 
         DLL virtual void DrawStart ( Canvas& aCanvas ) const;
         DLL virtual void DrawFinish ( Canvas& aCanvas ) const;
-        DLL virtual void Load ();
-        DLL virtual void Unload ();
+        DLL virtual void Load ( JavaScript& aJavaScript );
+        DLL virtual void Unload ( JavaScript& aJavaScript );
         /** Returns whether this node and all descendants should be skipped
          *  in a drawing operation.
          *  @return true by default override to disable drawing.

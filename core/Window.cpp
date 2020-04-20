@@ -21,12 +21,22 @@ limitations under the License.
 
 namespace AeonGUI
 {
-    Window::Window () = default;
+    Window::Window ()
+    {
+        mDocument.Load ( mJavaScript );
+    }
     Window::Window ( const std::string aFilename, uint32_t aWidth, uint32_t aHeight ) :
         mDocument{aFilename},
-        mCanvas{aWidth, aHeight} {}
+        mJavaScript{this, &mDocument},
+        mCanvas{aWidth, aHeight}
+    {
+        mDocument.Load ( mJavaScript );
+    }
 
-    Window::~Window() = default;
+    Window::~Window()
+    {
+        mDocument.Unload ( mJavaScript );
+    }
 
     void Window::ResizeViewport ( uint32_t aWidth, uint32_t aHeight )
     {

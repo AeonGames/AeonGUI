@@ -34,11 +34,12 @@ namespace AeonGUI
         DLL Document ( const std::string& aFilename );
         DLL ~Document();
         DLL void Draw ( Canvas& aCanvas ) const;
+        DLL void Load ( JavaScript& aJavascript );
+        DLL void Unload ( JavaScript& aJavascript );
         /**DOM Properties and Methods @{*/
         DLL Node* documentElement();
         /**@}*/
     private:
-        Duktape mJavaScript{};
         std::unique_ptr<Node> mDocumentElement{};
     };
 }

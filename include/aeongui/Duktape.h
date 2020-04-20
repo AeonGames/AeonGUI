@@ -23,12 +23,16 @@ typedef struct duk_hthread duk_context;
 
 namespace AeonGUI
 {
+    class Node;
+    class Window;
+    class Document;
     class Duktape : public JavaScript
     {
     public:
-        Duktape();
+        Duktape ( Window* aWindow, Document* aDocument );
         ~Duktape() final;
         void Eval ( const std::string& aString ) final;
+        void CreateObject ( Node* aNode );
     private:
         duk_context* mDukContext{};
         static void Fatal ( void* udata, const char* msg );
