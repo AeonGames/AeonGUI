@@ -15,12 +15,10 @@ set(CMAKE_EXPORT_COMPILE_COMMANDS ON
 include(CheckIncludeFile)
 include(CheckIncludeFileCXX)
 include(CheckIncludeFiles)
-include(duktape)
 include(vscode)
 
 find_package(OpenGL)
 find_package(Git)
-aeongui_configure_duktape()
 
 find_program(BASH_EXECUTABLE bash HINTS ENV MINGW_PREFIX MSYS2_PATH)
 find_program(SED_EXECUTABLE sed
@@ -99,7 +97,6 @@ if(PKG_CONFIG_FOUND AND BASH_EXECUTABLE AND MSYS)
 endif()
 if(PKG_CONFIG_FOUND)
   pkg_check_modules(CAIRO cairo)
-#  pkg_check_modules(LIBRSVG librsvg-2.0)
 endif()
 
 if(VCPKG_TARGET_TRIPLET AND NOT CAIRO_FOUND)
@@ -107,11 +104,9 @@ if(VCPKG_TARGET_TRIPLET AND NOT CAIRO_FOUND)
   find_package(unofficial-cairo CONFIG REQUIRED)
   set(CAIRO_LIBRARIES unofficial::cairo::cairo)
   set(CAIRO_INCLUDE_DIRS "")
-  # librsvg
-  #find_package(unofficial-librsvg CONFIG REQUIRED)
-  #set(LIBRSVG_LIBRARIES unofficial::librsvg::rsvg-2.0)
-  #set(LIBRSVG_INCLUDE_DIRS "")
 endif()
+
+include(v8)
 
 include(opensans)
 find_package(Freetype)
@@ -153,7 +148,7 @@ add_subdirectory(core)
 add_subdirectory(demos/OpenGL)
 configure_vscode(${CMAKE_SOURCE_DIR}/demos/OpenGL)
 
-install(TARGETS AeonGUI duktape
+install(TARGETS AeonGUI
     EXPORT aeongui
     RUNTIME DESTINATION bin
     LIBRARY DESTINATION lib
@@ -170,7 +165,6 @@ install(
     include/aeongui/Platform.h
     include/aeongui/Canvas.h
     include/aeongui/CairoCanvas.h
-    include/aeongui/Duktape.h
     include/aeongui/DrawType.h
     include/aeongui/Color.h
     include/aeongui/Vector2.h

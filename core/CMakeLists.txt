@@ -19,7 +19,7 @@ set(AEONGUI_HEADERS
     ../include/aeongui/Vector2.h
     ../include/aeongui/DrawType.h
     ../include/aeongui/JavaScript.h
-    ../include/aeongui/Duktape.h
+    ../include/aeongui/V8.h
     ../include/aeongui/Color.h
 )
 
@@ -37,7 +37,7 @@ set(AEONGUI_SOURCES
         Path.cpp
         CairoPath.cpp
         JavaScript.cpp
-        Duktape.cpp
+        V8.cpp
         Color.cpp
         dom/Node.cpp
         dom/Element.cpp
@@ -144,10 +144,10 @@ else()
     endif()
 endif()
 
-include_directories(${CAIRO_INCLUDE_DIRS} ${DUKTAPE_INCLUDE_DIRS} ${FREETYPE_INCLUDE_DIR_freetype2} ${FREETYPE_INCLUDE_DIR_ft2build})
+include_directories(${CAIRO_INCLUDE_DIRS} ${FREETYPE_INCLUDE_DIR_freetype2} ${FREETYPE_INCLUDE_DIR_ft2build} ${V8_INCLUDE})
 add_library(AeonGUI SHARED ${AEONGUI_HEADERS} ${AEONGUI_SOURCES} ${AEONGUI_RESOURCES})
 set_target_properties(AeonGUI PROPERTIES COMPILE_FLAGS "-DNOMINMAX -D_CRT_SECURE_NO_WARNINGS")
-target_link_libraries(AeonGUI PRIVATE duk_console PUBLIC ${CAIRO_LIBRARIES} ${DUKTAPE_LIBRARY} ${LIBXML2_LIBRARIES} ${FREETYPE_LIBRARIES})
+target_link_libraries(AeonGUI PUBLIC ${CAIRO_LIBRARIES} ${LIBXML2_LIBRARIES} ${FREETYPE_LIBRARIES} ${V8_LIBRARY})
 
 if(BUILD_UNIT_TESTS)
 	subdirs(tests)

@@ -13,33 +13,25 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 */
-#ifndef AEONGUI_DOCUMENT_H
-#define AEONGUI_DOCUMENT_H
-#include <cstdint>
-#include <vector>
-#include <memory>
-#include <algorithm>
+#ifndef AEONGUI_V8_H
+#define AEONGUI_V8_H
 #include "aeongui/Platform.h"
-#include "aeongui/Canvas.h"
 #include "aeongui/JavaScript.h"
-#include "dom/Node.h"
 
 namespace AeonGUI
 {
-    class Document
+    class Node;
+    class Window;
+    class Document;
+    class V8 : public JavaScript
     {
     public:
-        DLL Document();
-        DLL Document ( const std::string& aFilename );
-        DLL ~Document();
-        DLL void Draw ( Canvas& aCanvas ) const;
-        DLL void Load ( JavaScript& aJavascript );
-        DLL void Unload ( JavaScript& aJavascript );
-        /**DOM Properties and Methods @{*/
-        DLL Node* documentElement();
-        /**@}*/
+        V8 ( Window* aWindow, Document* aDocument );
+        ~V8() final;
+        void Eval ( const std::string& aString ) final;
+        void CreateObject ( Node* aNode );
     private:
-        std::unique_ptr<Node> mDocumentElement{};
+        static void Fatal ( void* udata, const char* msg );
     };
 }
 #endif

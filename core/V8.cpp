@@ -13,29 +13,30 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 */
-#ifndef AEONGUI_DUKTAPE_H
-#define AEONGUI_DUKTAPE_H
-#include "aeongui/Platform.h"
-#include "aeongui/JavaScript.h"
 
-struct duk_hthread;
-typedef struct duk_hthread duk_context;
+#include <stdexcept>
+#include <iostream>
+#include <iomanip>
+#include "aeongui/V8.h"
+#include "aeongui/Window.h"
+#include "aeongui/Document.h"
+#include "v8.h"
 
 namespace AeonGUI
 {
-    class Node;
-    class Window;
-    class Document;
-    class Duktape : public JavaScript
+    V8::V8 ( Window* aWindow, Document* aDocument )
     {
-    public:
-        Duktape ( Window* aWindow, Document* aDocument );
-        ~Duktape() final;
-        void Eval ( const std::string& aString ) final;
-        void CreateObject ( Node* aNode );
-    private:
-        duk_context* mDukContext{};
-        static void Fatal ( void* udata, const char* msg );
-    };
+        std::cout << "V8" << std::endl;
+    }
+
+    void V8::CreateObject ( Node* aNode )
+    {
+    }
+
+    V8::~V8()
+    {
+    }
+    void V8::Eval ( const std::string& aString )
+    {
+    }
 }
-#endif
