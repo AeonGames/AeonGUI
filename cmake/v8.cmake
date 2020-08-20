@@ -12,5 +12,5 @@
 # License for the specific language governing permissions and limitations under
 # the License.
 
-find_library(V8_LIBRARY v8)
-find_path(V8_INCLUDE v8.h PATH_SUFFIXES nodejs/deps/v8/include)
+pkg_check_modules(V8 REQUIRED IMPORTED_TARGET GLOBAL v8)
+
