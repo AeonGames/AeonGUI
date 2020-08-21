@@ -20,13 +20,13 @@ limitations under the License.
 #include "aeongui/V8.h"
 #include "aeongui/Window.h"
 #include "aeongui/Document.h"
+#include "v8-platform.h"
 #include "v8.h"
 
 namespace AeonGUI
 {
     V8::V8 ( Window* aWindow, Document* aDocument )
     {
-        std::cout << "V8" << std::endl;
     }
 
     void V8::CreateObject ( Node* aNode )
@@ -36,6 +36,7 @@ namespace AeonGUI
     V8::~V8()
     {
     }
+
     void V8::Eval ( const std::string& aString )
     {
     }

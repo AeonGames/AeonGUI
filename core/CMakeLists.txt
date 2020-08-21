@@ -3,6 +3,7 @@ find_package(BISON)
 find_package(FLEX)
 
 set(AEONGUI_HEADERS
+    ../include/aeongui/AeonGUI.h
     ../include/aeongui/Platform.h
     ../include/aeongui/Rect.h
     ../include/aeongui/ElementFactory.h
@@ -24,63 +25,64 @@ set(AEONGUI_HEADERS
 )
 
 set(AEONGUI_SOURCES
-        ElementFactory.cpp
-        Window.cpp
-        Document.cpp
-        Rect.cpp
-		Transform.cpp
-        Vector2.cpp
-        Matrix2x3.cpp
-        AABB.cpp
-        Canvas.cpp
-        CairoCanvas.cpp
-        Path.cpp
-        CairoPath.cpp
-        JavaScript.cpp
-        V8.cpp
-        Color.cpp
-        dom/Node.cpp
-        dom/Element.cpp
-        dom/SVGElement.cpp
-        dom/SVGSVGElement.cpp
-        dom/SVGGradientElement.cpp
-        dom/SVGLinearGradientElement.cpp
-        dom/SVGGElement.cpp
-        dom/SVGUseElement.cpp
-        dom/SVGStopElement.cpp
-        dom/SVGDefsElement.cpp
-        dom/SVGPathElement.cpp
-        dom/SVGGeometryElement.cpp
-        dom/SVGGraphicsElement.cpp
-        dom/SVGRectElement.cpp
-        dom/SVGLineElement.cpp
-        dom/SVGPolylineElement.cpp
-        dom/SVGPolygonElement.cpp
-        dom/SVGCircleElement.cpp
-        dom/SVGEllipseElement.cpp
-        dom/Script.cpp
-        dom/Text.cpp
-        dom/Node.h
-        dom/Element.h
-        dom/SVGGElement.h
-        dom/SVGSVGElement.h
-        dom/SVGElement.h
-        dom/SVGGradientElement.h
-        dom/SVGLinearGradientElement.h
-        dom/SVGUseElement.h
-        dom/SVGStopElement.h
-        dom/SVGDefsElement.h
-        dom/SVGPathElement.h
-        dom/SVGGraphicsElement.h
-        dom/SVGGeometryElement.h
-        dom/SVGRectElement.h
-        dom/SVGLineElement.h
-        dom/SVGPolylineElement.h
-        dom/SVGPolygonElement.h
-        dom/SVGCircleElement.h
-        dom/SVGEllipseElement.h
-        dom/Script.h
-        dom/Text.h
+    AeonGUI.cpp
+    ElementFactory.cpp
+    Window.cpp
+    Document.cpp
+    Rect.cpp
+    Transform.cpp
+    Vector2.cpp
+    Matrix2x3.cpp
+    AABB.cpp
+    Canvas.cpp
+    CairoCanvas.cpp
+    Path.cpp
+    CairoPath.cpp
+    JavaScript.cpp
+    V8.cpp
+    Color.cpp
+    dom/Node.cpp
+    dom/Element.cpp
+    dom/SVGElement.cpp
+    dom/SVGSVGElement.cpp
+    dom/SVGGradientElement.cpp
+    dom/SVGLinearGradientElement.cpp
+    dom/SVGGElement.cpp
+    dom/SVGUseElement.cpp
+    dom/SVGStopElement.cpp
+    dom/SVGDefsElement.cpp
+    dom/SVGPathElement.cpp
+    dom/SVGGeometryElement.cpp
+    dom/SVGGraphicsElement.cpp
+    dom/SVGRectElement.cpp
+    dom/SVGLineElement.cpp
+    dom/SVGPolylineElement.cpp
+    dom/SVGPolygonElement.cpp
+    dom/SVGCircleElement.cpp
+    dom/SVGEllipseElement.cpp
+    dom/Script.cpp
+    dom/Text.cpp
+    dom/Node.h
+    dom/Element.h
+    dom/SVGGElement.h
+    dom/SVGSVGElement.h
+    dom/SVGElement.h
+    dom/SVGGradientElement.h
+    dom/SVGLinearGradientElement.h
+    dom/SVGUseElement.h
+    dom/SVGStopElement.h
+    dom/SVGDefsElement.h
+    dom/SVGPathElement.h
+    dom/SVGGraphicsElement.h
+    dom/SVGGeometryElement.h
+    dom/SVGRectElement.h
+    dom/SVGLineElement.h
+    dom/SVGPolylineElement.h
+    dom/SVGPolygonElement.h
+    dom/SVGCircleElement.h
+    dom/SVGEllipseElement.h
+    dom/Script.h
+    dom/Text.h
 )
 
 if(USE_CUDA)

@@ -1,5 +1,5 @@
 /*
-Copyright (C) 2013,2019 Rodrigo Jose Hernandez Cordoba
+Copyright (C) 2013,2019,2020 Rodrigo Jose Hernandez Cordoba
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -23,7 +23,7 @@ namespace AeonGUI
         \return true if initialization succeded, false if not.
         \sa Finalize
     */
-    bool DLL Initialize();
+    bool DLL Initialize ( int argc, char *argv[] );
     /*! \brief Finalizes any global resources allocated by Initialize.
         \sa Initialize
     */

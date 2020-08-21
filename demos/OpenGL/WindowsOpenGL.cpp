@@ -1,5 +1,5 @@
 /*
-Copyright (C) 2010-2012,2019 Rodrigo Jose Hernandez Cordoba
+Copyright (C) 2010-2012,2019,2020 Rodrigo Jose Hernandez Cordoba
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -26,6 +26,7 @@ limitations under the License.
 #include <cassert>
 #include <cstdint>
 #include <crtdbg.h>
+#include "aeongui/AeonGUI.h"
 #include "aeongui/Window.h"
 
 #define GLGETPROCADDRESS(glFunctionType,glFunction) \
@@ -519,6 +520,7 @@ LRESULT Window::OnMouseButtonUp ( uint8_t button, int32_t x, int32_t y )
 
 int WINAPI WinMain ( HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nCmdShow )
 {
+    AeonGUI::Initialize();
     Window window ( hInstance, lpCmdLine, 800, 600 );
     MSG msg;
     memset ( &msg, 0, sizeof ( MSG ) );
@@ -538,6 +540,7 @@ int WINAPI WinMain ( HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLi
         }
     }
     assert ( msg.message == WM_QUIT );
+    AeonGUI::Finalize();
     return static_cast<int> ( msg.wParam );
 }
 

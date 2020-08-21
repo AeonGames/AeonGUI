@@ -158,6 +158,7 @@ install(TARGETS AeonGUI
 
 install(
   FILES
+    include/aeongui/AeonGUI.h
     include/aeongui/AABB.h
     include/aeongui/AttributeMap.h
     include/aeongui/Window.h
