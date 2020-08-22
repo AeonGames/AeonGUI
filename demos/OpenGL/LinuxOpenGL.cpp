@@ -1,5 +1,5 @@
 /*
-Copyright (C) 2013,2019 Rodrigo Jose Hernandez Cordoba
+Copyright (C) 2013,2019,2020 Rodrigo Jose Hernandez Cordoba
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -28,6 +28,7 @@ limitations under the License.
 #include <X11/keysymdef.h>
 #include <GL/gl.h>
 #include <GL/glx.h>
+#include "aeongui/AeonGUI.h"
 #include "aeongui/Window.h"
 #include "Common.h"
 
@@ -562,6 +563,7 @@ GLWindow::~GLWindow()
 
 int main ( int argc, char ** argv )
 {
+    AeonGUI::Initialize ( argc, argv );
     GLWindow glWindow ( ( argc > 1 ) ? argv[1] : nullptr );
     int glx_major, glx_minor;
 
@@ -612,5 +614,6 @@ int main ( int argc, char ** argv )
     }
     glWindow.Destroy();
     XCloseDisplay ( display );
+    AeonGUI::Finalize();
     return EXIT_SUCCESS;
 }

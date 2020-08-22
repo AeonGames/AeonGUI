@@ -15,19 +15,19 @@ limitations under the License.
 */
 
 #include "aeongui/AeonGUI.h"
-#include "v8-platform.h"
+#include "libplatform/libplatform.h"
 #include "v8.h"
 
 namespace AeonGUI
 {
     static std::unique_ptr<v8::Platform> gPlatform;
-    bool Initialize ( int argc, char *argv[] )
+    bool Initialize ( int argc = 0, char *argv[] = nullptr )
     {
         // Initialize V8.
         v8::V8::InitializeICUDefaultLocation ( argv[0] );
         v8::V8::InitializeExternalStartupData ( argv[0] );
         gPlatform = v8::platform::NewDefaultPlatform();
-        v8::V8::InitializePlatform ( platform.get() );
+        v8::V8::InitializePlatform ( gPlatform.get() );
         v8::V8::Initialize();
         return true;
     }

@@ -517,11 +517,59 @@ LRESULT Window::OnMouseButtonUp ( uint8_t button, int32_t x, int32_t y )
     return 0;
 }
 
-
-int WINAPI WinMain ( HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nCmdShow )
+/** Convert a WinMain command line (lpCmdLine) into a regular argc,argv pair.
+ * @param aCmdLine Windows API WinMain format command line.
+ * @return tuple containing a vector of char* (std::get<0>) and a string
+ * containing the argument strings separated each by a null character(std::get<1>).
+ * @note The string part is meant only as managed storage for the char* vector,
+ * as those point into the string memory, so there should not be a real reason
+ * to read it directly.
+*/
+static std::tuple<std::vector<char*>, const std::string> GetArgs ( char* aCmdLine )
 {
-    AeonGUI::Initialize();
-    Window window ( hInstance, lpCmdLine, 800, 600 );
+    /*Match any whitespace OR any whitespace followed by eol OR eol.*/
+    std::regex whitespace{"\\s+|\\s+$|$"};
+    std::tuple<std::vector<char*>, std::string>
+    /*Replace all matches with a single plain old space character.
+        Note: using "\0" instead of " " would be great, but "\0"
+        gets converted as per the spec into the empty string rather
+        than a size 1 string containing the null character.
+        And no, "\0\0" does not work, std::string("\0\0",2) does not either.*/
+    result{std::vector<char*>{}, std::regex_replace ( aCmdLine, whitespace, " " ) };
+
+    size_t count{0};
+    for ( size_t i = 0; i < std::get<1> ( result ).size(); ++i )
+    {
+        if ( std::get<1> ( result ) [i] == ' ' )
+        {
+            std::get<1> ( result ) [i] = '\0';
+            ++count;
+        }
+    }
+
+    if ( count )
+    {
+        std::get<0> ( result ).reserve ( count );
+        std::get<0> ( result ).emplace_back ( std::get<1> ( result ).data() );
+        for ( uint32_t i = 0; i < std::get<1> ( result ).size() - 1; ++i )
+        {
+            if ( std::get<1> ( result ) [i] == '\0' )
+            {
+                std::get<0> ( result ).emplace_back ( std::get<1> ( result ).data() + ( i + 1 ) );
+            }
+        }
+    }
+    return result;
+}
+
+int main ( int argc, char *argv[] )
+{
+    AeonGUI::Initialize ( argc, argv );
+    if ( argc <= 1 )
+    {
+        return -1;
+    }
+    Window window ( GetModuleHandle ( NULL ), argv[1], 800, 600 );
     MSG msg;
     memset ( &msg, 0, sizeof ( MSG ) );
     while ( msg.message != WM_QUIT )
@@ -544,8 +592,8 @@ int WINAPI WinMain ( HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLi
     return static_cast<int> ( msg.wParam );
 }
 
-int main ( int argc, char *argv[] )
+int WINAPI WinMain ( HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nCmdShow )
 {
-    int ret = WinMain ( GetModuleHandle ( NULL ), nullptr, ( argc > 1 ) ? argv[1] : nullptr, 0 );
-    return ret;
+    auto args = GetArgs ( lpCmdLine );
+    return main ( std::get<0> ( args ).size(), std::get<0> ( args ).data() );
 }

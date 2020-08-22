@@ -12,5 +12,5 @@
 # License for the specific language governing permissions and limitations under
 # the License.
 
-pkg_check_modules(V8 REQUIRED IMPORTED_TARGET GLOBAL v8)
+pkg_check_modules(V8 REQUIRED IMPORTED_TARGET GLOBAL v8 v8_libplatform)
 
