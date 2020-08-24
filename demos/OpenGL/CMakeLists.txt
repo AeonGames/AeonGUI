@@ -32,3 +32,4 @@ endif()
 
 set_target_properties(OpenGLDemo PROPERTIES DEBUG_ARGUMENTS "${CMAKE_SOURCE_DIR}/images/script.svg")
 target_link_libraries(OpenGLDemo AeonGUI ${X11_LIBRARIES} ${OPENGL_glx_LIBRARY} ${OPENGL_opengl_LIBRARY} ${OPENGL_gl_LIBRARY} ${OPENGL_glu_LIBRARY})
+fix_compile_commands(OpenGLDemo)

@@ -52,7 +52,6 @@ configure_file("${CMAKE_SOURCE_DIR}/cmake/pre-commit.in"
 
 find_program(XXD_EXECUTABLE xxd HINTS ENV ProgramData PATH_SUFFIXES /usr/bin chocolatey/bin)
 
-
 set_property(GLOBAL PROPERTY USE_FOLDERS ON)
 
 option(USE_ZLIB "Use the zlib compression library")
@@ -141,6 +140,14 @@ add_definitions(-D_USE_MATH_DEFINES)
 if(BUILD_UNIT_TESTS)
 	include(gmock)
 endif()
+
+function(fix_compile_commands target)
+  add_custom_command(TARGET ${target} POST_BUILD
+      COMMAND ${SED_EXECUTABLE} -i 's/\\/\\\(.\\\)\\//\\1:\\//g' ${CMAKE_BINARY_DIR}/compile_commands.json
+      WORKING_DIRECTORY ${CMAKE_BINARY_DIR}
+      COMMENT "Fixing compilation Database."
+  )
+endfunction()
 
 include_directories(include common demos/common core)
 add_subdirectory(core)

@@ -23,8 +23,10 @@ namespace AeonGUI
     static std::unique_ptr<v8::Platform> gPlatform;
     bool Initialize ( int argc = 0, char *argv[] = nullptr )
     {
+        /** @todo Provide a plugin loading mechanism,
+         *  so different JavaScript engines can be used */
         // Initialize V8.
-        v8::V8::InitializeICUDefaultLocation ( argv[0] );
+        v8::V8::InitializeICU();
         v8::V8::InitializeExternalStartupData ( argv[0] );
         gPlatform = v8::platform::NewDefaultPlatform();
         v8::V8::InitializePlatform ( gPlatform.get() );
