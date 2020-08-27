@@ -29,6 +29,8 @@ before_build:
 
     C:\msys64\usr\bin\bash.exe -lc "pacman -Syu --noconfirm"
 
+    powershell -Command "Get-Process | Where-Object {$_.path -like 'C:\msys64*'} | Stop-Process"
+
     C:\msys64\usr\bin\bash.exe -lc "pacman -Syuu --noconfirm"
 
     C:\msys64\usr\bin\bash.exe -lc "pacman -S --needed --noconfirm mingw-w64-i686-make mingw-w64-i686-cmake mingw-w64-i686-python2 mingw-w64-i686-python2-pip flex bison mingw-w64-i686-libxml2 mingw-w64-i686-zlib mingw-w64-i686-libpng mingw-w64-i686-cairo mingw-w64-i686-v8"
