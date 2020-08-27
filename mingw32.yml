@@ -7,7 +7,7 @@ configuration: Release
 platform: x64
 before_build:
 - cmd: >-
-    set PATH=c:\msys64\mingw64\bin;c:\msys64\usr\bin
+    set PATH=c:\msys64\mingw64\bin;c:\msys64\usr\bin;%PATH%
 
     set MSYSTEM=MINGW32
 
