@@ -25,7 +25,7 @@ before_build:
 
     C:\msys64\usr\bin\bash.exe -lc "pacman-key --verify msys2-keyring-r21.b39fb11-1-any.pkg.tar.xz.sig
 
-    C:\msys64\usr\bin\bash.exe -lc "pacman -U msys2-keyring-r21.b39fb11-1-any.pkg.tar.xz"
+    C:\msys64\usr\bin\bash.exe -lc "pacman -U --noconfirm msys2-keyring-r21.b39fb11-1-any.pkg.tar.xz"
 
     C:\msys64\usr\bin\bash.exe -lc "pacman -Syu --noconfirm"
 
