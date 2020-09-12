@@ -1,5 +1,8 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="300" height="300">
 <script type="text/javascript">
+console.log("Running Inline JavaScript code.");
+window.console.log("Running Inline JavaScript code through the window object.");
+/*
 document.documentElement.onload = function(){
   var rect = document.createElementNS(document.documentElement.namespaceURI,"rect");
   rect.setAttribute("id","rectangle");
@@ -22,5 +25,6 @@ document.documentElement.onload = function(){
   }
   document.documentElement.appendChild(rect);
 }
+*/
 </script>
 </svg>

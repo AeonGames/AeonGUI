@@ -17,12 +17,24 @@ limitations under the License.
 #define AEONGUI_V8_H
 #include "aeongui/Platform.h"
 #include "aeongui/JavaScript.h"
+#include "v8-platform.h"
+#include "v8.h"
 
 namespace AeonGUI
 {
     class Node;
     class Window;
     class Document;
+
+    struct IsolateDeleter
+    {
+        void operator() ( std::unique_ptr<v8::Isolate>::pointer p )
+        {
+            p->Dispose();
+        }
+    };
+    using IsolatePtr =  std::unique_ptr<v8::Isolate, IsolateDeleter>;
+
     class V8 : public JavaScript
     {
     public:
@@ -31,7 +43,8 @@ namespace AeonGUI
         void Eval ( const std::string& aString ) final;
         void CreateObject ( Node* aNode );
     private:
-        static void Fatal ( void* udata, const char* msg );
+        IsolatePtr mIsolate{};
+        v8::Persistent<v8::Context> mGlobalContext{};
     };
 }
 #endif

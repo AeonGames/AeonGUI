@@ -20,7 +20,7 @@ limitations under the License.
 
 namespace AeonGUI
 {
-    static std::unique_ptr<v8::Platform> gPlatform;
+    static std::unique_ptr<v8::Platform> gPlatform{};
     bool Initialize ( int argc = 0, char *argv[] = nullptr )
     {
         /** @todo Provide a plugin loading mechanism,

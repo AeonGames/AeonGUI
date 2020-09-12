@@ -20,7 +20,7 @@ set(AEONGUI_HEADERS
     ../include/aeongui/Vector2.h
     ../include/aeongui/DrawType.h
     ../include/aeongui/JavaScript.h
-    ../include/aeongui/V8.h
+    ../include/aeongui/JsV8.h
     ../include/aeongui/Color.h
 )
 
@@ -39,7 +39,7 @@ set(AEONGUI_SOURCES
     Path.cpp
     CairoPath.cpp
     JavaScript.cpp
-    V8.cpp
+    JsV8.cpp
     Color.cpp
     dom/Node.cpp
     dom/Element.cpp
@@ -149,7 +149,7 @@ endif()
 include_directories(${CAIRO_INCLUDE_DIRS} ${FREETYPE_INCLUDE_DIR_freetype2} ${FREETYPE_INCLUDE_DIR_ft2build} ${V8_INCLUDE_DIRS})
 add_library(AeonGUI SHARED ${AEONGUI_HEADERS} ${AEONGUI_SOURCES} ${AEONGUI_RESOURCES})
 set_target_properties(AeonGUI PROPERTIES COMPILE_FLAGS "-DNOMINMAX -D_CRT_SECURE_NO_WARNINGS")
-target_link_libraries(AeonGUI PUBLIC ${CAIRO_LIBRARIES} ${LIBXML2_LIBRARIES} ${FREETYPE_LIBRARIES} ${V8_LIBRARIES})
+target_link_libraries(AeonGUI PUBLIC ${CAIRO_LIBRARIES} ${LIBXML2_LIBRARIES} ${FREETYPE_LIBRARIES} PkgConfig::V8)
 
 fix_compile_commands(AeonGUI)
 

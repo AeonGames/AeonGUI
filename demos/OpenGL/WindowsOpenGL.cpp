@@ -567,24 +567,29 @@ int main ( int argc, char *argv[] )
     AeonGUI::Initialize ( argc, argv );
     if ( argc <= 1 )
     {
+        std::cout << "You must provide the path to a SVG document" << std::endl;
         return -1;
     }
-    Window window ( GetModuleHandle ( NULL ), argv[1], 800, 600 );
+
     MSG msg;
-    memset ( &msg, 0, sizeof ( MSG ) );
-    while ( msg.message != WM_QUIT )
+    // This Context allows the window variable to be destroyed before the call to AeonGUI::Finalize
     {
-        if ( PeekMessage ( &msg, NULL, 0, 0, PM_REMOVE ) )
+        Window window ( GetModuleHandle ( NULL ), argv[1], 800, 600 );
+        memset ( &msg, 0, sizeof ( MSG ) );
+        while ( msg.message != WM_QUIT )
         {
-            if ( msg.message != WM_QUIT )
+            if ( PeekMessage ( &msg, NULL, 0, 0, PM_REMOVE ) )
             {
-                TranslateMessage ( &msg );
-                DispatchMessage ( &msg );
+                if ( msg.message != WM_QUIT )
+                {
+                    TranslateMessage ( &msg );
+                    DispatchMessage ( &msg );
+                }
             }
-        }
-        else
-        {
-            window.RenderLoop();
+            else
+            {
+                window.RenderLoop();
+            }
         }
     }
     assert ( msg.message == WM_QUIT );

@@ -24,7 +24,7 @@ limitations under the License.
 #include "aeongui/Platform.h"
 ///@todo Canvas and JavaScript implementations should be selectable.
 #include "aeongui/CairoCanvas.h"
-#include "aeongui/V8.h"
+#include "aeongui/JsV8.h"
 
 namespace AeonGUI
 {
