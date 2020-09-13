@@ -12,5 +12,13 @@
 # License for the specific language governing permissions and limitations under
 # the License.
 
-pkg_check_modules(V8 REQUIRED IMPORTED_TARGET GLOBAL v8 v8_libplatform)
+find_package(PkgConfig)
+if(PKG_CONFIG_FOUND)
+    pkg_check_modules(V8 REQUIRED IMPORTED_TARGET GLOBAL v8 v8_libplatform)
+    set(V8_TARGET PkgConfig::V8)
+else()
+    find_package(V8 REQUIRED)
+    set(V8_TARGET V8::V8 V8::V8LIBBASE V8::V8LIBPLATFORM)
+endif()
+
 

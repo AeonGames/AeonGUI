@@ -23,7 +23,7 @@ limitations under the License.
 namespace AeonGUI
 {
     /// W3C CSS3 color keyword names (see https://en.wikipedia.org/wiki/Web_colors)
-    enum CSS3Color
+    enum CSS3Color : uint32_t
     {
         aliceblue = 0xfff0f8ff,
         antiquewhite = 0xfffaebd7,

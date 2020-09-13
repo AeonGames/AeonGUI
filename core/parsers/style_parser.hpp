@@ -1,4 +1,4 @@
-/* A Bison parser, made by GNU Bison 3.5.2.  */
+/* A Bison parser, made by GNU Bison 3.6.4.  */
 
 /* Bison interface for Yacc-like parsers in C
 
@@ -31,8 +31,9 @@
    This special exception was added by the Free Software Foundation in
    version 2.2 of Bison.  */
 
-/* Undocumented macros, especially those whose name start with YY_,
-   are private implementation details.  Do not rely on them.  */
+/* DO NOT RELY ON FEATURES THAT ARE NOT DOCUMENTED in the manual,
+   especially those whose name start with YY_ or yy_.  They are
+   private implementation details that can be changed or removed.  */
 
 #ifndef YY_STYLE_C_CODE_AEONGUI_MINGW64_CORE_STYLE_PARSER_HPP_INCLUDED
 # define YY_STYLE_C_CODE_AEONGUI_MINGW64_CORE_STYLE_PARSER_HPP_INCLUDED
@@ -67,17 +68,22 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-#line 71 "C:/Code/AeonGUI/mingw64/core/style_parser.hpp"
+#line 72 "C:/Code/AeonGUI/mingw64/core/style_parser.hpp"
 
-/* Token type.  */
+/* Token kinds.  */
 #ifndef STYLETOKENTYPE
 # define STYLETOKENTYPE
 enum styletokentype
 {
-    IDENT = 258,
-    COLOR = 259,
-    NUMBER = 260
+    STYLEEMPTY = -2,
+    STYLEEOF = 0,                  /* "end of file"  */
+    STYLEerror = 256,              /* error  */
+    STYLEUNDEF = 257,              /* "invalid token"  */
+    IDENT = 258,                   /* IDENT  */
+    COLOR = 259,                   /* COLOR  */
+    NUMBER = 260                   /* NUMBER  */
 };
+typedef enum styletokentype styletoken_kind_t;
 #endif
 
 /* Value type.  */

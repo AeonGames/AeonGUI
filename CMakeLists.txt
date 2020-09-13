@@ -119,7 +119,7 @@ endif()
 
 find_package(X11)
 
-set(CMAKE_CXX_STANDARD 17)
+set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_EXTENSIONS OFF)
 
@@ -142,11 +142,13 @@ if(BUILD_UNIT_TESTS)
 endif()
 
 function(fix_compile_commands target)
+  if(SED_EXECUTABLE)
   add_custom_command(TARGET ${target} POST_BUILD
       COMMAND ${SED_EXECUTABLE} -i 's/\\/\\\(.\\\)\\//\\1:\\//g' ${CMAKE_BINARY_DIR}/compile_commands.json
       WORKING_DIRECTORY ${CMAKE_BINARY_DIR}
       COMMENT "Fixing compilation Database."
   )
+  endif()
 endfunction()
 
 include_directories(include common demos/common core)

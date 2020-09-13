@@ -1,4 +1,4 @@
-/* A Bison parser, made by GNU Bison 3.5.2.  */
+/* A Bison parser, made by GNU Bison 3.6.4.  */
 
 /* Bison interface for Yacc-like parsers in C
 
@@ -31,8 +31,9 @@
    This special exception was added by the Free Software Foundation in
    version 2.2 of Bison.  */
 
-/* Undocumented macros, especially those whose name start with YY_,
-   are private implementation details.  Do not rely on them.  */
+/* DO NOT RELY ON FEATURES THAT ARE NOT DOCUMENTED in the manual,
+   especially those whose name start with YY_ or yy_.  They are
+   private implementation details that can be changed or removed.  */
 
 #ifndef YY_D_C_CODE_AEONGUI_MINGW64_CORE_PATH_DATA_PARSER_HPP_INCLUDED
 # define YY_D_C_CODE_AEONGUI_MINGW64_CORE_PATH_DATA_PARSER_HPP_INCLUDED
@@ -67,15 +68,20 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-#line 71 "C:/Code/AeonGUI/mingw64/core/path_data_parser.hpp"
+#line 72 "C:/Code/AeonGUI/mingw64/core/path_data_parser.hpp"
 
-/* Token type.  */
+/* Token kinds.  */
 #ifndef DTOKENTYPE
 # define DTOKENTYPE
 enum dtokentype
 {
-    NUMBER = 258
+    DEMPTY = -2,
+    DEOF = 0,                      /* "end of file"  */
+    Derror = 256,                  /* error  */
+    DUNDEF = 257,                  /* "invalid token"  */
+    NUMBER = 258                   /* NUMBER  */
 };
+typedef enum dtokentype dtoken_kind_t;
 #endif
 
 /* Value type.  */

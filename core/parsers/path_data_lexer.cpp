@@ -2723,7 +2723,7 @@ void yyfree ( void * ptr )
 
 namespace AeonGUI
 {
-    namespace Elements
+    namespace DOM
     {
         int ParsePathData ( std::vector<DrawType>& aPath, const char* string )
         {
