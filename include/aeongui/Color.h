@@ -187,7 +187,7 @@ namespace AeonGUI
         /*! \brief 32 bit Unsigned integer constructor.
             \param value 32 bit color value.
         */
-        DLL Color ( uint32_t value );
+        DLL explicit Color ( uint32_t value );
 
         DLL Color ( const std::string& value );
         /*! \brief 4 8 bit Unsigned integer component constructor.

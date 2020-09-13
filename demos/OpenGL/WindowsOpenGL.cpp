@@ -600,5 +600,5 @@ int main ( int argc, char *argv[] )
 int WINAPI WinMain ( HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nCmdShow )
 {
     auto args = GetArgs ( lpCmdLine );
-    return main ( std::get<0> ( args ).size(), std::get<0> ( args ).data() );
+    return main ( static_cast<int> ( std::get<0> ( args ).size() ), std::get<0> ( args ).data() );
 }
