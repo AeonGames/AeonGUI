@@ -24,21 +24,35 @@ limitations under the License.
 
 namespace AeonGUI
 {
-    void Console_Log ( const v8::FunctionCallbackInfo<v8::Value>& args )
+    static void log ( const v8::FunctionCallbackInfo<v8::Value>& info )
     {
-        v8::Isolate* isolate = args.GetIsolate();
+        v8::Isolate* isolate = info.GetIsolate();
         v8::HandleScope scope ( isolate );
-        for ( int i = 0; i < args.Length(); ++i )
+        for ( int i = 0; i < info.Length(); ++i )
         {
             if ( i > 0 )
             {
                 std::cout << " ";
             }
-            v8::String::Utf8Value utf8 ( isolate, args[i] );
+            v8::String::Utf8Value utf8 ( isolate, info[i] );
             std::cout << *utf8;
         }
         std::cout << std::endl;
-        args.GetReturnValue().Set ( args.Holder() );
+        info.GetReturnValue().Set ( info.Holder() );
+    }
+
+    static void createElementNS ( const v8::FunctionCallbackInfo<v8::Value>& info )
+    {
+        v8::Isolate* isolate = info.GetIsolate();
+        v8::HandleScope scope ( isolate );
+        info.GetReturnValue().Set ( info.Holder() );
+    }
+
+    static void getElementById ( const v8::FunctionCallbackInfo<v8::Value>& info )
+    {
+        v8::Isolate* isolate = info.GetIsolate();
+        v8::HandleScope scope ( isolate );
+        info.GetReturnValue().Set ( info.Holder() );
     }
 
     V8::V8 ( Window* aWindow, Document* aDocument )
@@ -57,7 +71,15 @@ namespace AeonGUI
 
             // Create Console Object Template
             v8::Handle<v8::ObjectTemplate> console = v8::ObjectTemplate::New ( mIsolate.get() );
-            console->Set ( v8::String::NewFromUtf8Literal ( mIsolate.get(), "log" ), v8::FunctionTemplate::New ( mIsolate.get(), Console_Log ) );
+            console->Set ( v8::String::NewFromUtf8Literal ( mIsolate.get(), "log" ), v8::FunctionTemplate::New ( mIsolate.get(), log ) );
+            console->Set ( v8::String::NewFromUtf8Literal ( mIsolate.get(), "warn" ), v8::FunctionTemplate::New ( mIsolate.get(), log ) );
+            console->Set ( v8::String::NewFromUtf8Literal ( mIsolate.get(), "info" ), v8::FunctionTemplate::New ( mIsolate.get(), log ) );
+            console->Set ( v8::String::NewFromUtf8Literal ( mIsolate.get(), "error" ), v8::FunctionTemplate::New ( mIsolate.get(), log ) );
+
+            // Create Document Object Template
+            v8::Handle<v8::ObjectTemplate> document = v8::ObjectTemplate::New ( mIsolate.get() );
+            document->Set ( v8::String::NewFromUtf8Literal ( mIsolate.get(), "createElementNS" ), v8::FunctionTemplate::New ( mIsolate.get(), createElementNS ) );
+            document->Set ( v8::String::NewFromUtf8Literal ( mIsolate.get(), "getElementById" ), v8::FunctionTemplate::New ( mIsolate.get(), getElementById ) );
 
             // Create Context
             v8::Local<v8::Context> context = v8::Context::New ( mIsolate.get(), nullptr, global );
@@ -76,6 +98,11 @@ namespace AeonGUI
             context->Global()->Set ( context,
                                      v8::String::NewFromUtf8Literal ( mIsolate.get(), "console" ),
                                      console->NewInstance ( context ).ToLocalChecked() ).Check();
+
+            // Add the document object to the global object
+            context->Global()->Set ( context,
+                                     v8::String::NewFromUtf8Literal ( mIsolate.get(), "document" ),
+                                     document->NewInstance ( context ).ToLocalChecked() ).Check();
         }
     }
 
