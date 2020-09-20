@@ -47,8 +47,8 @@ namespace AeonGUI
             NOTATION_NODE = 12,
         };
         DLL Node();
-        DLL Node* AddNode ( std::unique_ptr<Node> aNode );
-        DLL std::unique_ptr<Node> RemoveNode ( const Node* aNode );
+        DLL Node* AddNode ( Node* aNode );
+        DLL Node* RemoveNode ( const Node* aNode );
         DLL void TraverseDepthFirstPreOrder ( const std::function<void ( Node* ) >& aAction );
         DLL void TraverseDepthFirstPreOrder ( const std::function<void ( const Node* ) >& aAction ) const;
         DLL void TraverseDepthFirstPostOrder ( const std::function<void ( Node* ) >& aAction );
@@ -72,12 +72,12 @@ namespace AeonGUI
         DLL Node* parentNode() const;
         DLL Node* parentElement() const;
         virtual NodeType nodeType() const = 0;
-        const std::vector<std::unique_ptr<Node>>& childNodes() const;
+        const std::vector<Node*>& childNodes() const;
         /**@}*/
     private:
         Node* mParent{};
-        std::vector<std::unique_ptr<Node>> mChildren{};
-        mutable std::vector<std::unique_ptr<Node>>::size_type mIterator{ 0 };
+        std::vector<Node*> mChildren{};
+        mutable std::vector<Node*>::size_type mIterator{ 0 };
     };
 }
 #endif

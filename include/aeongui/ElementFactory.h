@@ -24,8 +24,9 @@ limitations under the License.
 namespace AeonGUI
 {
     class Node;
-    DLL std::unique_ptr<Node> Construct ( const char* aIdentifier, const AttributeMap& aAttributeMap );
-    DLL bool RegisterConstructor ( const StringLiteral& aIdentifier, const std::function < std::unique_ptr<Node> ( const AttributeMap& aAttributeMap ) > & aConstructor );
+    DLL Node* Construct ( const char* aIdentifier, const AttributeMap& aAttributeMap );
+    DLL void Destroy ( Node* aNode );
+    DLL bool RegisterConstructor ( const StringLiteral& aIdentifier, const std::function < Node* ( const AttributeMap& aAttributeMap ) > & aConstructor );
     DLL bool UnregisterConstructor ( const StringLiteral& aIdentifier );
     DLL void EnumerateConstructors ( const std::function<bool ( const StringLiteral& ) >& aEnumerator );
 }

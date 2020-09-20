@@ -41,7 +41,7 @@ limitations under the License.
 
 namespace AeonGUI
 {
-    using Constructor = std::tuple<StringLiteral, std::function < std::unique_ptr<Element> ( const std::string& aTagName, const AttributeMap& aAttributeMap ) >>;
+    using Constructor = std::tuple<StringLiteral, std::function < Element* ( const std::string& aTagName, const AttributeMap& aAttributeMap ) >>;
 
     template<class T> Constructor MakeConstructor ( StringLiteral aId )
     {
@@ -50,7 +50,7 @@ namespace AeonGUI
             aId,
             [] ( const std::string & aTagName, const AttributeMap & aAttributeMap )
             {
-                return std::make_unique<T> ( aTagName, aAttributeMap );
+                return new T{ aTagName, aAttributeMap };
             }
         };
     }
@@ -73,7 +73,7 @@ namespace AeonGUI
         MakeConstructor<DOM::SVGStopElement> ( "stop" ),
     };
 
-    std::unique_ptr<Node> Construct ( const char* aIdentifier, const AttributeMap& aAttributeMap )
+    Node* Construct ( const char* aIdentifier, const AttributeMap& aAttributeMap )
     {
         auto it = std::find_if ( Constructors.begin(), Constructors.end(),
                                  [&aAttributeMap, aIdentifier] ( const Constructor & aConstructor )
@@ -84,9 +84,15 @@ namespace AeonGUI
         {
             return std::get<1> ( *it ) ( aIdentifier, aAttributeMap );
         }
-        return std::make_unique<Element> ( aIdentifier, aAttributeMap );
+        return new Element { aIdentifier, aAttributeMap };
     }
-    bool RegisterConstructor ( const StringLiteral& aIdentifier, const std::function < std::unique_ptr<Element> ( const std::string& aTagName, const AttributeMap& aAttributeMap ) > & aConstructor )
+
+    void Destroy ( Node* aNode )
+    {
+        delete aNode;
+    }
+
+    bool RegisterConstructor ( const StringLiteral& aIdentifier, const std::function < Element* ( const std::string& aTagName, const AttributeMap& aAttributeMap ) > & aConstructor )
     {
         auto it = std::find_if ( Constructors.begin(), Constructors.end(),
                                  [aIdentifier] ( const Constructor & aConstructor )

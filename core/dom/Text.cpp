@@ -36,7 +36,7 @@ namespace AeonGUI
             {
                 if ( i->nodeType() == Node::TEXT_NODE )
                 {
-                    capacity += reinterpret_cast<const Text*> ( i.get() )->mText.size();
+                    capacity += reinterpret_cast<const Text*> ( i )->mText.size();
                     node_count++;
                 }
             }
@@ -50,7 +50,7 @@ namespace AeonGUI
             {
                 if ( i->nodeType() == Node::TEXT_NODE )
                 {
-                    result += reinterpret_cast<const Text*> ( i.get() )->mText;
+                    result += reinterpret_cast<const Text*> ( i )->mText;
                 }
             }
             return result;

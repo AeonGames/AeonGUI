@@ -59,7 +59,7 @@ namespace AeonGUI
             }
             else if ( xmlNodeIsText ( node ) && !xmlIsBlankNode ( node ) )
             {
-                AddNodes ( aNode->AddNode ( std::make_unique<Text> ( reinterpret_cast<const char*> ( node->content ) ) ), node->children );
+                AddNodes ( aNode->AddNode ( new Text { reinterpret_cast<const char*> ( node->content ) } ), node->children );
             }
         }
     }
@@ -76,7 +76,7 @@ namespace AeonGUI
         ///@todo use document->children instead?
         xmlElementPtr root_element = reinterpret_cast<xmlElementPtr> ( xmlDocGetRootElement ( document ) );
         mDocumentElement = Construct ( reinterpret_cast<const char*> ( root_element->name ), ExtractElementAttributes ( root_element ) );
-        AddNodes ( mDocumentElement.get(), root_element->children );
+        AddNodes ( mDocumentElement, root_element->children );
         xmlFreeDoc ( document );
         /**@todo Emit onload event.*/
     }
@@ -102,7 +102,7 @@ namespace AeonGUI
     Document::~Document() = default;
     Node* Document::documentElement()
     {
-        return mDocumentElement.get();
+        return mDocumentElement;
     }
 
     void Document::Draw ( Canvas& aCanvas ) const

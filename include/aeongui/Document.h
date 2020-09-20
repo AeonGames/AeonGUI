@@ -39,7 +39,7 @@ namespace AeonGUI
         DLL Node* documentElement();
         /**@}*/
     private:
-        std::unique_ptr<Node> mDocumentElement{};
+        Node* mDocumentElement{};
     };
 }
 #endif

@@ -32,13 +32,13 @@ namespace AeonGUI
         void Script::Load ( JavaScript& aJavaScript )
         {
             const auto& children = childNodes();
-            auto text_node = std::find_if ( children.begin(), children.end(), [] ( const std::unique_ptr<Node>& aNode )
+            auto text_node = std::find_if ( children.begin(), children.end(), [] ( const Node * aNode )
             {
                 return aNode->nodeType() == TEXT_NODE;
             } );
             if ( text_node != children.end() )
             {
-                aJavaScript.Eval ( reinterpret_cast<const Text*> ( text_node->get() )->wholeText() );
+                aJavaScript.Eval ( reinterpret_cast<const Text*> ( *text_node )->wholeText() );
             }
         }
     }

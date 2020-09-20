@@ -23,7 +23,7 @@ namespace AeonGUI
     Node::Node() = default;
     Node::~Node() = default;
 
-    const std::vector<std::unique_ptr<Node>>& Node::childNodes() const
+    const std::vector<Node*>& Node::childNodes() const
     {
         return mChildren;
     }
@@ -87,7 +87,7 @@ namespace AeonGUI
             if ( node->mIterator < node->mChildren.size() )\
             {\
                 auto prev = node;\
-                node = node->mChildren[node->mIterator].get();\
+                node = node->mChildren[node->mIterator];\
                 aAction ( node );\
                 prev->mIterator++;\
             }\
@@ -117,7 +117,7 @@ namespace AeonGUI
             if ( node->mIterator < node->mChildren.size() ) \
             { \
                 auto prev = node; \
-                node = node->mChildren[node->mIterator].get(); \
+                node = node->mChildren[node->mIterator]; \
                 ++prev->mIterator; \
             } \
             else \
@@ -147,7 +147,7 @@ namespace AeonGUI
             if ( node->mIterator < node->mChildren.size() ) \
             { \
                 auto prev = node; \
-                node = node->mChildren[node->mIterator].get(); \
+                node = node->mChildren[node->mIterator]; \
                 aPreamble ( node ); \
                 ++prev->mIterator; \
             } \
@@ -179,7 +179,7 @@ namespace AeonGUI
             if ( node->mIterator < node->mChildren.size() && aUnaryPredicate(node)) \
             { \
                 auto prev = node; \
-                node = node->mChildren[node->mIterator].get(); \
+                node = node->mChildren[node->mIterator]; \
                 aPreamble ( node ); \
                 ++prev->mIterator; \
             } \
@@ -196,18 +196,18 @@ namespace AeonGUI
     TraverseDepthFirstPostOrder( )
 #undef TraverseDepthFirstPostOrder
 
-    Node* Node::AddNode ( std::unique_ptr<Node> aNode )
+    Node* Node::AddNode ( Node* aNode )
     {
         aNode->mParent = this;
-        return mChildren.emplace_back ( std::move ( aNode ) ).get();
+        return mChildren.emplace_back ( aNode );
     }
 
-    std::unique_ptr<Node> Node::RemoveNode ( const Node* aNode )
+    Node* Node::RemoveNode ( const Node* aNode )
     {
-        std::unique_ptr<Node> result{};
-        auto i = std::find_if ( mChildren.begin(), mChildren.end(), [aNode] ( const std::unique_ptr<Node>& Node )
+        Node* result{};
+        auto i = std::find_if ( mChildren.begin(), mChildren.end(), [aNode] ( const Node * node )
         {
-            return aNode == Node.get();
+            return aNode == node;
         } );
         if ( i != mChildren.end() )
         {
