@@ -44,7 +44,7 @@ namespace AeonGUI
         {
             return static_cast<T*> ( Unwrap ( aHandle ) );
         }
-
+        DLL uint32_t GetReferenceCount() const;
     protected:
         DLL void Wrap ( v8::Handle<v8::Object> handle );
         DLL void MakeWeak();
@@ -65,20 +65,9 @@ namespace AeonGUI
         * DO NOT CALL THIS FROM DESTRUCTOR
         */
         DLL void Unref();
-
-        DLL uint32_t GetRefereceCount() const;
-
     private:
-        static void WeakCallback (
-            const v8::WeakCallbackInfo<JsObjectWrap>& aInfo )
-        {
-            JsObjectWrap* wrap = aInfo.GetParameter();
-            assert ( wrap->mReferenceCount == 0 );
-            wrap->mHandle.Reset();
-            delete wrap;
-        }
         uint32_t mReferenceCount{};
-        v8::Persistent<v8::Object> mHandle;
+        v8::Persistent<v8::Object> mHandle{};
     };
 }
 #endif

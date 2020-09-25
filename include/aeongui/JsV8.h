@@ -25,16 +25,6 @@ namespace AeonGUI
     class Node;
     class Window;
     class Document;
-
-    struct IsolateDeleter
-    {
-        void operator() ( std::unique_ptr<v8::Isolate>::pointer p )
-        {
-            p->Dispose();
-        }
-    };
-    using IsolatePtr =  std::unique_ptr<v8::Isolate, IsolateDeleter>;
-
     class V8 : public JavaScript
     {
     public:
@@ -43,7 +33,7 @@ namespace AeonGUI
         void Eval ( const std::string& aString ) final;
         void CreateObject ( Node* aNode );
     private:
-        IsolatePtr mIsolate{};
+        v8::Isolate* mIsolate{};
         v8::Persistent<v8::Context> mGlobalContext{};
     };
 }

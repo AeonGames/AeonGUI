@@ -17,6 +17,15 @@ limitations under the License.
 
 namespace AeonGUI
 {
+    static void WeakCallback (
+        const v8::WeakCallbackInfo<JsObjectWrap>& aInfo )
+    {
+        JsObjectWrap* wrap = aInfo.GetParameter();
+        assert ( wrap->GetReferenceCount() == 0 );
+        wrap->GetPersistentHandle().Reset();
+        delete wrap;
+    }
+
     JsObjectWrap::~JsObjectWrap()
     {
         if ( GetPersistentHandle().IsEmpty() )
@@ -25,6 +34,11 @@ namespace AeonGUI
         }
         GetPersistentHandle().ClearWeak();
         GetPersistentHandle().Reset();
+    }
+
+    uint32_t JsObjectWrap::GetReferenceCount() const
+    {
+        return mReferenceCount;
     }
 
     JsObjectWrap* JsObjectWrap::Unwrap ( v8::Handle<v8::Object> handle )
@@ -76,14 +90,9 @@ namespace AeonGUI
         assert ( !GetPersistentHandle().IsEmpty() );
         assert ( !GetPersistentHandle().IsWeak() );
         assert ( mReferenceCount > 0 );
-        if ( --mReferenceCount == 0 )
+        if ( mReferenceCount > 0 && --mReferenceCount == 0 )
         {
             MakeWeak();
         }
-    }
-
-    uint32_t JsObjectWrap::GetRefereceCount() const
-    {
-        return mReferenceCount;
     }
 }

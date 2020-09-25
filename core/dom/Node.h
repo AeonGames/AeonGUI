@@ -22,13 +22,14 @@ limitations under the License.
 #include <variant>
 #include "aeongui/Platform.h"
 #include "aeongui/AttributeMap.h"
+#include "aeongui/JsObjectWrap.h"
 
 namespace AeonGUI
 {
     class Canvas;
     class JavaScript;
     class Document;
-    class Node
+    class Node : public JsObjectWrap
     {
     public:
         enum NodeType

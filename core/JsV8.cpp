@@ -58,79 +58,76 @@ namespace AeonGUI
     V8::V8 ( Window* aWindow, Document* aDocument )
     {
         // Create a new Isolate and make it the current one.
-        v8::Isolate::CreateParams create_params;
+        v8::Isolate::CreateParams create_params{};
         create_params.array_buffer_allocator = v8::ArrayBuffer::Allocator::NewDefaultAllocator();
-        mIsolate = IsolatePtr{v8::Isolate::New ( create_params ) };
+        mIsolate = v8::Isolate::New ( create_params );
         {
-            v8::Isolate::Scope isolate_scope ( mIsolate.get() );
-            v8::HandleScope handle_scope ( mIsolate.get() );
+            v8::Isolate::Scope isolate_scope ( mIsolate );
+            v8::HandleScope handle_scope ( mIsolate );
 
             // Create Global Object Template
-            v8::Handle<v8::ObjectTemplate> global = v8::ObjectTemplate::New ( mIsolate.get() );
+            v8::Handle<v8::ObjectTemplate> global = v8::ObjectTemplate::New ( mIsolate );
             global->SetInternalFieldCount ( 1 );
 
             // Create Console Object Template
-            v8::Handle<v8::ObjectTemplate> console = v8::ObjectTemplate::New ( mIsolate.get() );
-            console->Set ( v8::String::NewFromUtf8Literal ( mIsolate.get(), "log" ), v8::FunctionTemplate::New ( mIsolate.get(), log ) );
-            console->Set ( v8::String::NewFromUtf8Literal ( mIsolate.get(), "warn" ), v8::FunctionTemplate::New ( mIsolate.get(), log ) );
-            console->Set ( v8::String::NewFromUtf8Literal ( mIsolate.get(), "info" ), v8::FunctionTemplate::New ( mIsolate.get(), log ) );
-            console->Set ( v8::String::NewFromUtf8Literal ( mIsolate.get(), "error" ), v8::FunctionTemplate::New ( mIsolate.get(), log ) );
+            v8::Handle<v8::ObjectTemplate> console = v8::ObjectTemplate::New ( mIsolate );
+            console->Set ( v8::String::NewFromUtf8Literal ( mIsolate, "log" ), v8::FunctionTemplate::New ( mIsolate, log ) );
+            console->Set ( v8::String::NewFromUtf8Literal ( mIsolate, "warn" ), v8::FunctionTemplate::New ( mIsolate, log ) );
+            console->Set ( v8::String::NewFromUtf8Literal ( mIsolate, "info" ), v8::FunctionTemplate::New ( mIsolate, log ) );
+            console->Set ( v8::String::NewFromUtf8Literal ( mIsolate, "error" ), v8::FunctionTemplate::New ( mIsolate, log ) );
 
             // Create Document Object Template
-            v8::Handle<v8::ObjectTemplate> document = v8::ObjectTemplate::New ( mIsolate.get() );
-            document->Set ( v8::String::NewFromUtf8Literal ( mIsolate.get(), "createElementNS" ), v8::FunctionTemplate::New ( mIsolate.get(), createElementNS ) );
-            document->Set ( v8::String::NewFromUtf8Literal ( mIsolate.get(), "getElementById" ), v8::FunctionTemplate::New ( mIsolate.get(), getElementById ) );
+            v8::Handle<v8::ObjectTemplate> document = v8::ObjectTemplate::New ( mIsolate );
+            document->Set ( v8::String::NewFromUtf8Literal ( mIsolate, "createElementNS" ), v8::FunctionTemplate::New ( mIsolate, createElementNS ) );
+            document->Set ( v8::String::NewFromUtf8Literal ( mIsolate, "getElementById" ), v8::FunctionTemplate::New ( mIsolate, getElementById ) );
 
             // Create Context
-            v8::Local<v8::Context> context = v8::Context::New ( mIsolate.get(), nullptr, global );
-            mGlobalContext.Reset ( mIsolate.get(), context );
+            v8::Local<v8::Context> context = v8::Context::New ( mIsolate, nullptr, global );
+            mGlobalContext.Reset ( mIsolate, context );
             v8::Context::Scope context_scope ( context );
 
             // Store the Window pointer at the global object
-            context->Global()->SetInternalField ( 0, v8::External::New ( mIsolate.get(), aWindow ) );
+            context->Global()->SetInternalField ( 0, v8::External::New ( mIsolate, aWindow ) );
 
             // Proxy the global object thru the window property
             context->Global()->Set ( context,
-                                     v8::String::NewFromUtf8Literal ( mIsolate.get(), "window" ),
+                                     v8::String::NewFromUtf8Literal ( mIsolate, "window" ),
                                      context->Global() ).Check();
 
             // Add the console object to the global object
             context->Global()->Set ( context,
-                                     v8::String::NewFromUtf8Literal ( mIsolate.get(), "console" ),
+                                     v8::String::NewFromUtf8Literal ( mIsolate, "console" ),
                                      console->NewInstance ( context ).ToLocalChecked() ).Check();
 
             // Add the document object to the global object
             context->Global()->Set ( context,
-                                     v8::String::NewFromUtf8Literal ( mIsolate.get(), "document" ),
+                                     v8::String::NewFromUtf8Literal ( mIsolate, "document" ),
                                      document->NewInstance ( context ).ToLocalChecked() ).Check();
         }
-    }
-
-    void V8::CreateObject ( Node* aNode )
-    {
     }
 
     V8::~V8()
     {
         mGlobalContext.Reset();
+        mIsolate->Dispose();
     }
 
     void V8::Eval ( const std::string& aString )
     {
-        v8::Isolate::Scope isolate_scope ( mIsolate.get() );
-        v8::HandleScope handle_scope ( mIsolate.get() );
+        v8::Isolate::Scope isolate_scope ( mIsolate );
+        v8::HandleScope handle_scope ( mIsolate );
         v8::Local<v8::Context> context =
-            v8::Local<v8::Context>::New ( mIsolate.get(), mGlobalContext );
+            v8::Local<v8::Context>::New ( mIsolate, mGlobalContext );
         v8::Context::Scope context_scope ( context );
         v8::Local<v8::String> source =
-            v8::String::NewFromUtf8 ( mIsolate.get(), aString.data(),
+            v8::String::NewFromUtf8 ( mIsolate, aString.data(),
                                       v8::NewStringType::kNormal )
             .ToLocalChecked();
         v8::Local<v8::Script> script =
             v8::Script::Compile ( context, source ).ToLocalChecked();
 #if 0
         v8::Local<v8::Value> result = script->Run ( context ).ToLocalChecked();
-        v8::String::Utf8Value utf8 ( mIsolate.get(), result );
+        v8::String::Utf8Value utf8 ( mIsolate, result );
         std::cout << *utf8 << std::endl;
 #else
         /**@todo Eval should return a value,
