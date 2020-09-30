@@ -2,6 +2,26 @@
 <script type="text/javascript">
 console.log("Running Inline JavaScript code.");
 window.console.log("Running Inline JavaScript code through the window object.");
+event_target_1 = new EventTarget();
+event_target_2 = EventTarget();
+console.log('Event Target Object 1 ' + event_target_1);
+console.log('Event Target Object 2 ' + event_target_2);
+
+function callback(event)
+{
+  console.log('callback ' + event);
+}
+
+event_target_1.addEventListener('event',callback);
+event_target_2.addEventListener('event',
+  function (event)
+  {
+    console.log('event_target_2 ' + event);
+  }
+);
+
+event_target_1.removeEventListener('event',callback);
+
 /*
 document.documentElement.onload = function(){
   var rect = document.createElementNS(document.documentElement.namespaceURI,"rect");

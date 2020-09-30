@@ -31,10 +31,11 @@ namespace AeonGUI
         V8 ( Window* aWindow, Document* aDocument );
         ~V8() final;
         void Eval ( const std::string& aString ) final;
-        void CreateObject ( Node* aNode );
     private:
         v8::Isolate* mIsolate{};
-        v8::Persistent<v8::Context> mGlobalContext{};
+        v8::Persistent<v8::Context> mContext{};
     };
+    bool InitializeJavaScript ( int argc = 0, char *argv[] = nullptr );
+    void FinalizeJavaScript();
 }
 #endif

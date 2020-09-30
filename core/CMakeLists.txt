@@ -43,6 +43,7 @@ set(AEONGUI_SOURCES
     JsV8.cpp
     JsObjectWrap.cpp
     Color.cpp
+    dom/EventTarget.cpp
     dom/Node.cpp
     dom/Element.cpp
     dom/SVGElement.cpp
@@ -64,6 +65,7 @@ set(AEONGUI_SOURCES
     dom/SVGEllipseElement.cpp
     dom/Script.cpp
     dom/Text.cpp
+    dom/EventTarget.h
     dom/Node.h
     dom/Element.h
     dom/SVGGElement.h
@@ -152,6 +154,26 @@ include_directories(${CAIRO_INCLUDE_DIRS} ${FREETYPE_INCLUDE_DIR_freetype2} ${FR
 add_library(AeonGUI SHARED ${AEONGUI_HEADERS} ${AEONGUI_SOURCES} ${AEONGUI_RESOURCES})
 set_target_properties(AeonGUI PROPERTIES COMPILE_FLAGS "-DNOMINMAX -D_CRT_SECURE_NO_WARNINGS")
 target_link_libraries(AeonGUI PUBLIC ${CAIRO_LIBRARIES} ${LIBXML2_LIBRARIES} ${FREETYPE_LIBRARIES} ${V8_TARGET})
+target_precompile_headers(AeonGUI
+  PUBLIC
+    ${AEONGUI_HEADERS}
+  PRIVATE
+    [["v8.h"]]
+    [["libplatform/libplatform.h"]]
+    <cairo.h>
+    <string>
+    <unordered_map>
+    <iostream>
+    <algorithm>
+    <cmath>
+    <limits>
+    <vector>
+    <functional>
+    <memory>
+    <utility>
+    <tuple>
+    <regex>
+)
 
 fix_compile_commands(AeonGUI)
 

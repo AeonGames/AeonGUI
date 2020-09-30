@@ -17,16 +17,18 @@ limitations under the License.
 #ifndef AEONGAMES_AEONGUI_H
 #define AEONGAMES_AEONGUI_H
 #include "aeongui/Platform.h"
+#include "v8.h"
+
 namespace AeonGUI
 {
     /*! \brief Initializes extensions and global resources required by the library.
         \return true if initialization succeded, false if not.
         \sa Finalize
     */
-    bool DLL Initialize ( int argc, char *argv[] );
+    DLL bool Initialize ( int argc, char *argv[] );
     /*! \brief Finalizes any global resources allocated by Initialize.
         \sa Initialize
     */
-    void DLL Finalize();
+    DLL void Finalize();
 }
 #endif

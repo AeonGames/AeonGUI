@@ -22,7 +22,7 @@ limitations under the License.
 #include <variant>
 #include "aeongui/Platform.h"
 #include "aeongui/AttributeMap.h"
-#include "aeongui/JsObjectWrap.h"
+#include "EventTarget.h"
 
 namespace AeonGUI
 {

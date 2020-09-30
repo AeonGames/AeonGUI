@@ -150,6 +150,14 @@ function(fix_compile_commands target)
   )
   endif()
 endfunction()
+if(SED_EXECUTABLE)
+  add_custom_target(fix_compile_commands ALL
+      COMMAND ${SED_EXECUTABLE} -i 's/\\/\\\(.\\\)\\//\\1:\\//g' ${CMAKE_BINARY_DIR}/compile_commands.json
+      WORKING_DIRECTORY ${CMAKE_BINARY_DIR}
+      COMMENT "Fixing compilation Database."
+  )
+endif()
+
 
 include_directories(include common demos/common core)
 add_subdirectory(core)

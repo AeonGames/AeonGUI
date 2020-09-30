@@ -1,4 +1,4 @@
-include_directories(${CMAKE_CURRENT_BINARY_DIR})
+include_directories(${CMAKE_CURRENT_BINARY_DIR} ${CAIRO_INCLUDE_DIRS})
 set(CMAKE_REQUIRED_QUIET OFF)
 set(CMAKE_REQUIRED_INCLUDES ${CMAKE_CURRENT_BINARY_DIR})
 
@@ -31,5 +31,6 @@ else()
 endif()
 
 set_target_properties(OpenGLDemo PROPERTIES DEBUG_ARGUMENTS "${CMAKE_SOURCE_DIR}/images/script.svg")
+set_target_properties(OpenGLDemo PROPERTIES COMPILE_FLAGS "-DNOMINMAX -D_CRT_SECURE_NO_WARNINGS")
 target_link_libraries(OpenGLDemo AeonGUI ${X11_LIBRARIES} ${OPENGL_glx_LIBRARY} ${OPENGL_opengl_LIBRARY} ${OPENGL_gl_LIBRARY} ${OPENGL_glu_LIBRARY})
 fix_compile_commands(OpenGLDemo)

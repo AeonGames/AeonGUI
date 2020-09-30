@@ -18,12 +18,36 @@ limitations under the License.
 #include <iostream>
 #include <iomanip>
 #include <sstream>
+#include "aeongui/AeonGUI.h"
 #include "aeongui/JsV8.h"
 #include "aeongui/Window.h"
 #include "aeongui/Document.h"
+#include "dom/EventTarget.h"
+#include "libplatform/libplatform.h"
 
 namespace AeonGUI
 {
+    static std::unique_ptr<v8::Platform> gPlatform{};
+    bool InitializeJavaScript ( int argc, char *argv[] )
+    {
+        /** @todo Provide a plugin loading mechanism,
+         *  so different JavaScript engines can be used */
+        // Initialize V8.
+        v8::V8::InitializeICU();
+        v8::V8::InitializeExternalStartupData ( argv[0] );
+        gPlatform = v8::platform::NewDefaultPlatform();
+        v8::V8::InitializePlatform ( gPlatform.get() );
+        v8::V8::Initialize();
+        return true;
+    }
+
+    void FinalizeJavaScript()
+    {
+        v8::V8::Dispose();
+        v8::V8::ShutdownPlatform();
+        gPlatform.reset();
+    }
+
     static void log ( const v8::FunctionCallbackInfo<v8::Value>& info )
     {
         v8::Isolate* isolate = info.GetIsolate();
@@ -83,7 +107,7 @@ namespace AeonGUI
 
             // Create Context
             v8::Local<v8::Context> context = v8::Context::New ( mIsolate, nullptr, global );
-            mGlobalContext.Reset ( mIsolate, context );
+            mContext.Reset ( mIsolate, context );
             v8::Context::Scope context_scope ( context );
 
             // Store the Window pointer at the global object
@@ -103,13 +127,20 @@ namespace AeonGUI
             context->Global()->Set ( context,
                                      v8::String::NewFromUtf8Literal ( mIsolate, "document" ),
                                      document->NewInstance ( context ).ToLocalChecked() ).Check();
+            EventTarget::InitIsolate ( mIsolate );
+            EventTarget::InitContext ( context );
         }
     }
 
     V8::~V8()
     {
-        mGlobalContext.Reset();
-        mIsolate->Dispose();
+        EventTarget::Finalize ( mIsolate );
+        mContext.Reset();
+        if ( mIsolate )
+        {
+            mIsolate->Dispose();
+            mIsolate = nullptr;
+        }
     }
 
     void V8::Eval ( const std::string& aString )
@@ -117,7 +148,7 @@ namespace AeonGUI
         v8::Isolate::Scope isolate_scope ( mIsolate );
         v8::HandleScope handle_scope ( mIsolate );
         v8::Local<v8::Context> context =
-            v8::Local<v8::Context>::New ( mIsolate, mGlobalContext );
+            v8::Local<v8::Context>::New ( mIsolate, mContext );
         v8::Context::Scope context_scope ( context );
         v8::Local<v8::String> source =
             v8::String::NewFromUtf8 ( mIsolate, aString.data(),

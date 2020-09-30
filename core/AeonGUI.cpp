@@ -16,28 +16,18 @@ limitations under the License.
 
 #include <memory>
 #include "aeongui/AeonGUI.h"
+#include "aeongui/JsV8.h"
 #include "libplatform/libplatform.h"
 #include "v8.h"
 
 namespace AeonGUI
 {
-    static std::unique_ptr<v8::Platform> gPlatform{};
-    bool Initialize ( int argc = 0, char *argv[] = nullptr )
+    bool Initialize ( int argc, char *argv[] )
     {
-        /** @todo Provide a plugin loading mechanism,
-         *  so different JavaScript engines can be used */
-        // Initialize V8.
-        v8::V8::InitializeICU();
-        v8::V8::InitializeExternalStartupData ( argv[0] );
-        gPlatform = v8::platform::NewDefaultPlatform();
-        v8::V8::InitializePlatform ( gPlatform.get() );
-        v8::V8::Initialize();
-        return true;
+        return InitializeJavaScript ( argc, argv );
     }
     void Finalize()
     {
-        v8::V8::Dispose();
-        v8::V8::ShutdownPlatform();
-        gPlatform.reset();
+        FinalizeJavaScript();
     }
 }
