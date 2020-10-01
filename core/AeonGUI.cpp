@@ -16,7 +16,7 @@ limitations under the License.
 
 #include <memory>
 #include "aeongui/AeonGUI.h"
-#include "aeongui/JsV8.h"
+#include "aeongui/JavaScript.h"
 #include "libplatform/libplatform.h"
 #include "v8.h"
 

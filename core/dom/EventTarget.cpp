@@ -16,7 +16,7 @@ limitations under the License.
 #include <iostream>
 #include <unordered_map>
 #include "EventTarget.h"
-#include "aeongui/JsV8.h"
+#include "aeongui/JavaScript.h"
 
 namespace AeonGUI
 {
@@ -27,9 +27,15 @@ namespace AeonGUI
         return ConstructorsPerIsolate.at ( aIsolate );
     }
 
-    void EventTarget::InitIsolate ( v8::Isolate* aIsolate )
+    void EventTarget::Initialize ( v8::Isolate* aIsolate, v8::Local<v8::Context>& aContext )
     {
-        // Prepare constructor template
+        // Prepare EventTarget constructor template
+        v8::Local<v8::FunctionTemplate> event_tpl = v8::FunctionTemplate::New ( aIsolate );
+        event_tpl->SetClassName ( v8::String::NewFromUtf8 ( aIsolate, "Event" ).ToLocalChecked() );
+        /**@todo Add all official Event properties */
+        event_tpl->PrototypeTemplate()->Set ( aIsolate, "type", v8::String::NewFromUtf8 ( aIsolate, "" ).ToLocalChecked() );
+
+        // Prepare EventTarget constructor template
         v8::Local<v8::FunctionTemplate> tpl = v8::FunctionTemplate::New ( aIsolate, New );
         tpl->SetClassName ( v8::String::NewFromUtf8 ( aIsolate, "EventTarget" ).ToLocalChecked() );
         tpl->InstanceTemplate()->SetInternalFieldCount ( 1 );
@@ -49,25 +55,23 @@ namespace AeonGUI
             v8::FunctionTemplate::New ( aIsolate, dispatchEvent )
         );
         ConstructorsPerIsolate.emplace ( aIsolate, v8::Persistent<v8::FunctionTemplate> {aIsolate, tpl} );
+
+        v8::Isolate* isolate = aContext->GetIsolate();
+
+        v8::Local<v8::FunctionTemplate> constructor_template =
+            v8::Local<v8::FunctionTemplate>::New ( aIsolate, ConstructorsPerIsolate.at ( aIsolate ) );
+
+        v8::Local<v8::Function> constructor = constructor_template->GetFunction ( aContext ).ToLocalChecked();
+        aContext->Global()->Set ( aContext, v8::String::NewFromUtf8 (
+                                      isolate, "EventTarget" ).ToLocalChecked(),
+                                  constructor ).FromJust();
+
     }
 
     void EventTarget::Finalize ( v8::Isolate* aIsolate )
     {
         ConstructorsPerIsolate.at ( aIsolate ).Reset();
         ConstructorsPerIsolate.erase ( aIsolate );
-    }
-
-    void EventTarget::InitContext ( v8::Local<v8::Context>& aContext )
-    {
-        v8::Isolate* isolate = aContext->GetIsolate();
-
-        v8::Local<v8::FunctionTemplate> constructor_template =
-            v8::Local<v8::FunctionTemplate>::New ( isolate, ConstructorsPerIsolate.at ( isolate ) );
-
-        v8::Local<v8::Function> constructor = constructor_template->GetFunction ( aContext ).ToLocalChecked();
-        aContext->Global()->Set ( aContext, v8::String::NewFromUtf8 (
-                                      isolate, "EventTarget" ).ToLocalChecked(),
-                                  constructor ).FromJust();
     }
 
     void EventTarget::New ( const v8::FunctionCallbackInfo<v8::Value>& aArgs )

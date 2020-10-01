@@ -16,14 +16,26 @@ limitations under the License.
 #ifndef AEONGUI_JAVASCRIPT_H
 #define AEONGUI_JAVASCRIPT_H
 #include "aeongui/Platform.h"
-#include <string>
+#include "aeongui/JavaScript.h"
+#include "v8-platform.h"
+#include "v8.h"
+
 namespace AeonGUI
 {
+    class Node;
+    class Window;
+    class Document;
     class JavaScript
     {
     public:
-        virtual void Eval ( const std::string& aString ) = 0;
-        DLL virtual ~JavaScript() = 0;
+        JavaScript ( Window* aWindow, Document* aDocument );
+        ~JavaScript();
+        void Eval ( const std::string& aString );
+    private:
+        v8::Isolate* mIsolate{};
+        v8::Persistent<v8::Context> mContext{};
     };
+    bool InitializeJavaScript ( int argc = 0, char *argv[] = nullptr );
+    void FinalizeJavaScript();
 }
 #endif

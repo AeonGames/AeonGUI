@@ -20,7 +20,6 @@ set(AEONGUI_HEADERS
     ../include/aeongui/Vector2.h
     ../include/aeongui/DrawType.h
     ../include/aeongui/JavaScript.h
-    ../include/aeongui/JsV8.h
     ../include/aeongui/JsObjectWrap.h
     ../include/aeongui/Color.h
 )
@@ -40,7 +39,6 @@ set(AEONGUI_SOURCES
     Path.cpp
     CairoPath.cpp
     JavaScript.cpp
-    JsV8.cpp
     JsObjectWrap.cpp
     Color.cpp
     dom/EventTarget.cpp
