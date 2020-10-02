@@ -30,7 +30,7 @@ namespace AeonGUI
         DLL void removeEventListener ( const std::string& aType, v8::Local<v8::Function> aCallback );
         DLL bool dispatchEvent ( v8::Local<v8::Object> aEvent );
         static DLL v8::Persistent<v8::FunctionTemplate, v8::CopyablePersistentTraits<v8::FunctionTemplate>>& GetFunctionTemplate ( v8::Isolate* aIsolate );
-        static DLL void Initialize ( v8::Isolate* aIsolate, v8::Local<v8::Context>& aContext );
+        static DLL void Initialize ( v8::Isolate* aIsolate );
         static DLL void Finalize ( v8::Isolate* aIsolate );
         static DLL void New ( const v8::FunctionCallbackInfo<v8::Value>& aArgs );
         static DLL void addEventListener ( const v8::FunctionCallbackInfo<v8::Value>& aArgs );

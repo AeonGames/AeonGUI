@@ -128,7 +128,7 @@ namespace AeonGUI
                                      v8::String::NewFromUtf8Literal ( mIsolate, "document" ),
                                      document->NewInstance ( context ).ToLocalChecked() ).Check();
             /// @todo Add a mechanism to have each Js wrapped class register itself to be called here.
-            EventTarget::Initialize ( mIsolate, context );
+            EventTarget::Initialize ( mIsolate );
         }
     }
 

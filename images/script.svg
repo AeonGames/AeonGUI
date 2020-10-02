@@ -9,16 +9,22 @@ console.log('Event Target Object 2 ' + event_target_2);
 
 function callback(event)
 {
-  console.log('callback ' + event);
+  console.log('callback ' + event.type);
 }
 
 event_target_1.addEventListener('event',callback);
 event_target_2.addEventListener('event',
   function (event)
   {
-    console.log('event_target_2 ' + event);
+    console.log('event_target_2 ' + event.type);
   }
 );
+
+event = new Event();
+event.type='event';
+
+event_target_1.dispatchEvent(event);
+event_target_2.dispatchEvent(event);
 
 event_target_1.removeEventListener('event',callback);
 

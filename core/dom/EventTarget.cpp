@@ -27,45 +27,52 @@ namespace AeonGUI
         return ConstructorsPerIsolate.at ( aIsolate );
     }
 
-    void EventTarget::Initialize ( v8::Isolate* aIsolate, v8::Local<v8::Context>& aContext )
+    void EventTarget::Initialize ( v8::Isolate* aIsolate )
     {
+        if ( ConstructorsPerIsolate.find ( aIsolate ) != ConstructorsPerIsolate.end() )
+        {
+            throw std::runtime_error ( "Isolate already initialized." );
+        }
+
         // Prepare EventTarget constructor template
-        v8::Local<v8::FunctionTemplate> event_tpl = v8::FunctionTemplate::New ( aIsolate );
-        event_tpl->SetClassName ( v8::String::NewFromUtf8 ( aIsolate, "Event" ).ToLocalChecked() );
+        v8::Local<v8::FunctionTemplate> event_template = v8::FunctionTemplate::New ( aIsolate );
+        event_template->SetClassName ( v8::String::NewFromUtf8 ( aIsolate, "Event" ).ToLocalChecked() );
         /**@todo Add all official Event properties */
-        event_tpl->PrototypeTemplate()->Set ( aIsolate, "type", v8::String::NewFromUtf8 ( aIsolate, "" ).ToLocalChecked() );
+        event_template->PrototypeTemplate()->Set ( aIsolate, "type", v8::String::NewFromUtf8 ( aIsolate, "" ).ToLocalChecked() );
 
         // Prepare EventTarget constructor template
-        v8::Local<v8::FunctionTemplate> tpl = v8::FunctionTemplate::New ( aIsolate, New );
-        tpl->SetClassName ( v8::String::NewFromUtf8 ( aIsolate, "EventTarget" ).ToLocalChecked() );
-        tpl->InstanceTemplate()->SetInternalFieldCount ( 1 );
+        v8::Local<v8::FunctionTemplate> constructor_template = v8::FunctionTemplate::New ( aIsolate, New );
+        constructor_template->SetClassName ( v8::String::NewFromUtf8 ( aIsolate, "EventTarget" ).ToLocalChecked() );
+        constructor_template->InstanceTemplate()->SetInternalFieldCount ( 1 );
 
-        tpl->PrototypeTemplate()->Set (
+        constructor_template->PrototypeTemplate()->Set (
             aIsolate, "addEventListener",
             v8::FunctionTemplate::New ( aIsolate, addEventListener )
         );
 
-        tpl->PrototypeTemplate()->Set (
+        constructor_template->PrototypeTemplate()->Set (
             aIsolate, "removeEventListener",
             v8::FunctionTemplate::New ( aIsolate, removeEventListener )
         );
 
-        tpl->PrototypeTemplate()->Set (
+        constructor_template->PrototypeTemplate()->Set (
             aIsolate, "dispatchEvent",
             v8::FunctionTemplate::New ( aIsolate, dispatchEvent )
         );
-        ConstructorsPerIsolate.emplace ( aIsolate, v8::Persistent<v8::FunctionTemplate> {aIsolate, tpl} );
+        ConstructorsPerIsolate.emplace ( aIsolate, v8::Persistent<v8::FunctionTemplate> {aIsolate, constructor_template} );
 
-        v8::Isolate* isolate = aContext->GetIsolate();
+        //----------------------------------------------------------------
+        v8::Local<v8::Context> context = aIsolate->GetCurrentContext();
 
-        v8::Local<v8::FunctionTemplate> constructor_template =
-            v8::Local<v8::FunctionTemplate>::New ( aIsolate, ConstructorsPerIsolate.at ( aIsolate ) );
+        v8::Local<v8::Function> event = event_template->GetFunction ( context ).ToLocalChecked();
+        context->Global()->Set ( context, v8::String::NewFromUtf8 (
+                                     aIsolate, "Event" ).ToLocalChecked(),
+                                 event ).FromJust();
 
-        v8::Local<v8::Function> constructor = constructor_template->GetFunction ( aContext ).ToLocalChecked();
-        aContext->Global()->Set ( aContext, v8::String::NewFromUtf8 (
-                                      isolate, "EventTarget" ).ToLocalChecked(),
-                                  constructor ).FromJust();
-
+        v8::Local<v8::Function> constructor = constructor_template->GetFunction ( context ).ToLocalChecked();
+        context->Global()->Set ( context, v8::String::NewFromUtf8 (
+                                     aIsolate, "EventTarget" ).ToLocalChecked(),
+                                 constructor ).FromJust();
     }
 
     void EventTarget::Finalize ( v8::Isolate* aIsolate )
@@ -143,6 +150,20 @@ namespace AeonGUI
 
     bool EventTarget::dispatchEvent ( v8::Local<v8::Object> aEvent )
     {
+        v8::Isolate* isolate = aEvent->GetIsolate();
+        v8::Local<v8::Context> context = isolate->GetCurrentContext();
+
+        auto it = mEventListeners.find ( {*v8::String::Utf8Value{isolate, aEvent->Get ( context, v8::String::NewFromUtf8 ( isolate, "type" ).ToLocalChecked() ).ToLocalChecked() }} );
+        if ( it != mEventListeners.end() )
+        {
+            const int argc = 1;
+            v8::Local<v8::Value> argv[argc] = { aEvent };
+            for ( auto& i : it->second )
+            {
+                v8::Local<v8::Function> callback = v8::Local<v8::Function>::New ( isolate, i );
+                callback->Call ( context, context->Global(), argc, argv ).ToLocalChecked();
+            }
+        }
         return false;
     }
 
@@ -173,5 +194,16 @@ namespace AeonGUI
         aArgs.GetReturnValue().Set ( v8::Undefined ( isolate ) );
     }
     void EventTarget::dispatchEvent ( const v8::FunctionCallbackInfo<v8::Value>& aArgs )
-    {}
+    {
+        v8::Isolate* isolate = aArgs.GetIsolate();
+        if ( aArgs.Length() != 1 || !aArgs[0]->IsObject() )
+        {
+            isolate->ThrowException (
+                v8::String::NewFromUtf8Literal ( aArgs.GetIsolate(), "removeEventListener: Expected (object) as arguments" ) );
+            return;
+        }
+        v8::Local<v8::Object> event = v8::Local<v8::Object>::Cast ( aArgs[0] );
+        EventTarget* event_target = JsObjectWrap::Unwrap<EventTarget> ( aArgs.Holder() );
+        aArgs.GetReturnValue().Set ( v8::Boolean::New ( isolate, event_target->dispatchEvent ( event ) ) );
+    }
 }
