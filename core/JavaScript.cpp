@@ -23,6 +23,8 @@ limitations under the License.
 #include "aeongui/Window.h"
 #include "aeongui/Document.h"
 #include "dom/EventTarget.h"
+#include "dom/Node.h"
+#include "dom/Element.h"
 #include "libplatform/libplatform.h"
 
 namespace AeonGUI
@@ -129,11 +131,15 @@ namespace AeonGUI
                                      document->NewInstance ( context ).ToLocalChecked() ).Check();
             /// @todo Add a mechanism to have each Js wrapped class register itself to be called here.
             EventTarget::Initialize ( mIsolate );
+            Node::Initialize ( mIsolate );
+            Element::Initialize ( mIsolate );
         }
     }
 
     JavaScript::~JavaScript()
     {
+        Element::Finalize ( mIsolate );
+        Node::Finalize ( mIsolate );
         EventTarget::Finalize ( mIsolate );
         mContext.Reset();
         if ( mIsolate )

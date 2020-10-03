@@ -40,6 +40,9 @@ namespace AeonGUI
         NodeType nodeType() const final;
         const std::string& tagName() const;
         /**@}*/
+        static DLL void Initialize ( v8::Isolate* aIsolate );
+        static DLL void Finalize ( v8::Isolate* aIsolate );
+        static DLL void New ( const v8::FunctionCallbackInfo<v8::Value>& aArgs );
     private:
         const std::string mTagName;
         AttributeMap mAttributeMap{};

@@ -217,4 +217,31 @@ namespace AeonGUI
         result->mParent = nullptr;
         return result;
     }
+
+    void Node::Initialize ( v8::Isolate* aIsolate )
+    {
+        if ( HasFunctionTemplate ( aIsolate, typeid ( Node ) ) )
+        {
+            throw std::runtime_error ( "Isolate already initialized." );
+        }
+
+        v8::Local<v8::Context> context = aIsolate->GetCurrentContext();
+
+        // Prepare Node constructor template
+        v8::Local<v8::FunctionTemplate> constructor_template = v8::FunctionTemplate::New ( aIsolate );
+        constructor_template->SetClassName ( v8::String::NewFromUtf8 ( aIsolate, "Node" ).ToLocalChecked() );
+        constructor_template->Inherit ( EventTarget::GetFunctionTemplate ( aIsolate, typeid ( EventTarget ) ) );
+
+        AddFunctionTemplate ( aIsolate, typeid ( Node ), constructor_template );
+
+        v8::Local<v8::Function> constructor = constructor_template->GetFunction ( context ).ToLocalChecked();
+        context->Global()->Set ( context, v8::String::NewFromUtf8 (
+                                     aIsolate, "Node" ).ToLocalChecked(),
+                                 constructor ).FromJust();
+    }
+
+    void Node::Finalize ( v8::Isolate* aIsolate )
+    {
+        RemoveFunctionTemplate ( aIsolate, typeid ( Node ) );
+    }
 }

@@ -29,7 +29,7 @@ namespace AeonGUI
     class Canvas;
     class JavaScript;
     class Document;
-    class Node : public JsObjectWrap
+    class Node : public EventTarget
     {
     public:
         enum NodeType
@@ -75,6 +75,8 @@ namespace AeonGUI
         virtual NodeType nodeType() const = 0;
         const std::vector<Node*>& childNodes() const;
         /**@}*/
+        static DLL void Initialize ( v8::Isolate* aIsolate );
+        static DLL void Finalize ( v8::Isolate* aIsolate );
     private:
         Node* mParent{};
         std::vector<Node*> mChildren{};

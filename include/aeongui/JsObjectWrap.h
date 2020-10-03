@@ -18,7 +18,9 @@ limitations under the License.
 
 #include <v8.h>
 #include <cassert>
+#include <typeinfo>
 #include "aeongui/Platform.h"
+#include "aeongui/ElementFactory.h"
 
 namespace AeonGUI
 {
@@ -45,6 +47,32 @@ namespace AeonGUI
             return static_cast<T*> ( Unwrap ( aHandle ) );
         }
         DLL uint32_t GetReferenceCount() const;
+
+        template<class T>
+        static void New ( const v8::FunctionCallbackInfo<v8::Value>& aArgs )
+        {
+            v8::Isolate* isolate = aArgs.GetIsolate();
+            v8::Local<v8::Context> context = isolate->GetCurrentContext();
+
+            if ( aArgs.IsConstructCall() )
+            {
+                // Invoked as constructor
+                T* obj = new T{};
+                obj->Wrap ( aArgs.This() );
+                aArgs.GetReturnValue().Set ( aArgs.This() );
+            }
+            else
+            {
+                // Invoked as plain function, turn into construct call.
+                const int argc = 1;
+                v8::Local<v8::Value> argv[argc] = { aArgs[0] };
+                v8::Local<v8::Function> constructor =
+                    aArgs.Data().As<v8::Object>()->GetInternalField ( 0 ).As<v8::Function>();
+                v8::Local<v8::Object> result =
+                    constructor->NewInstance ( context, argc, argv ).ToLocalChecked();
+                aArgs.GetReturnValue().Set ( result );
+            }
+        }
     protected:
         DLL void Wrap ( v8::Handle<v8::Object> handle );
         DLL void MakeWeak();
@@ -65,6 +93,11 @@ namespace AeonGUI
         * DO NOT CALL THIS FROM DESTRUCTOR
         */
         DLL void Unref();
+        DLL static v8::Local<v8::FunctionTemplate> GetFunctionTemplate ( v8::Isolate* aIsolate, const std::type_info& aTypeId );
+        DLL static v8::Local<v8::FunctionTemplate> GetFunctionTemplateIfExists ( v8::Isolate* aIsolate, const std::type_info& aTypeId );
+        DLL static bool HasFunctionTemplate ( v8::Isolate* aIsolate, const std::type_info& aTypeId );
+        DLL static void AddFunctionTemplate ( v8::Isolate* aIsolate, const std::type_info& aTypeId, const v8::Local<v8::FunctionTemplate>& aFunctionTemplate );
+        DLL static void RemoveFunctionTemplate ( v8::Isolate* aIsolate, const std::type_info& aTypeId );
     private:
         uint32_t mReferenceCount{};
         v8::Persistent<v8::Object> mHandle{};

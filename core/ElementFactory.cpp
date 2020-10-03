@@ -73,7 +73,7 @@ namespace AeonGUI
         MakeConstructor<DOM::SVGStopElement> ( "stop" ),
     };
 
-    Node* Construct ( const char* aIdentifier, const AttributeMap& aAttributeMap )
+    Element* Construct ( const char* aIdentifier, const AttributeMap& aAttributeMap )
     {
         auto it = std::find_if ( Constructors.begin(), Constructors.end(),
                                  [&aAttributeMap, aIdentifier] ( const Constructor & aConstructor )
@@ -87,9 +87,9 @@ namespace AeonGUI
         return new Element { aIdentifier, aAttributeMap };
     }
 
-    void Destroy ( Node* aNode )
+    void Destroy ( Element* aElement )
     {
-        delete aNode;
+        delete aElement;
     }
 
     bool RegisterConstructor ( const StringLiteral& aIdentifier, const std::function < Element* ( const std::string& aTagName, const AttributeMap& aAttributeMap ) > & aConstructor )

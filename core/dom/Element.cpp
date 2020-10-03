@@ -73,4 +73,81 @@ namespace AeonGUI
     {
         return mTagName;
     }
+
+    void Element::Initialize ( v8::Isolate* aIsolate )
+    {
+        if ( HasFunctionTemplate ( aIsolate, typeid ( Element ) ) )
+        {
+            throw std::runtime_error ( "Isolate already initialized." );
+        }
+
+        v8::Local<v8::Context> context = aIsolate->GetCurrentContext();
+
+        // Store constructor on a callback data object
+        v8::Local<v8::ObjectTemplate> constructor_data_template = v8::ObjectTemplate::New ( aIsolate );
+        constructor_data_template->SetInternalFieldCount ( 1 );
+        v8::Local<v8::Object> constructor_data =
+            constructor_data_template->NewInstance ( context ).ToLocalChecked();
+
+        // Prepare Element constructor template
+        v8::Local<v8::FunctionTemplate> constructor_template = v8::FunctionTemplate::New ( aIsolate, Element::New, constructor_data );
+        constructor_template->SetClassName ( v8::String::NewFromUtf8 ( aIsolate, "Element" ).ToLocalChecked() );
+        constructor_template->InstanceTemplate()->SetInternalFieldCount ( 1 );
+        constructor_template->Inherit ( GetFunctionTemplate ( aIsolate, typeid ( Node ) ) );
+
+        AddFunctionTemplate ( aIsolate, typeid ( Element ), constructor_template );
+
+        v8::Local<v8::Function> constructor = constructor_template->GetFunction ( context ).ToLocalChecked();
+        constructor_data->SetInternalField ( 0, constructor );
+        context->Global()->Set ( context, v8::String::NewFromUtf8 (
+                                     aIsolate, "Element" ).ToLocalChecked(),
+                                 constructor ).FromJust();
+    }
+
+    void Element::Finalize ( v8::Isolate* aIsolate )
+    {
+        RemoveFunctionTemplate ( aIsolate, typeid ( Element ) );
+    }
+
+#if 0
+    // JavaScript factory
+    Element* Element::New ( const v8::FunctionCallbackInfo<v8::Value>& aArgs )
+    {
+        v8::Isolate* isolate = aArgs.GetIsolate();
+        if ( aArgs.Length() != 1 || !aArgs[0]->IsString() )
+        {
+            isolate->ThrowException (
+                v8::String::NewFromUtf8Literal ( aArgs.GetIsolate(), "Element::New: Expected (string) as argument" ) );
+            return nullptr;
+        }
+        return new Element{*v8::String::Utf8Value{isolate, aArgs[0]}, {}};
+    }
+#endif
+    void Element::New ( const v8::FunctionCallbackInfo<v8::Value>& aArgs )
+    {
+        v8::Isolate* isolate = aArgs.GetIsolate();
+        v8::Local<v8::Context> context = isolate->GetCurrentContext();
+
+        if ( aArgs.IsConstructCall() )
+        {
+            // Invoked as constructor
+            Element* obj = Construct ( *v8::String::Utf8Value{isolate, aArgs[0]}, {} );
+            obj->Wrap ( aArgs.This() );
+            aArgs.GetReturnValue().Set ( aArgs.This() );
+        }
+        else
+        {
+            std::vector<v8::Local<v8::Value>> args{};
+            args.reserve ( aArgs.Length() );
+            for ( auto i = 0; i < aArgs.Length(); ++i )
+            {
+                args.emplace_back ( aArgs[i] );
+            }
+            v8::Local<v8::Function> constructor =
+                aArgs.Data().As<v8::Object>()->GetInternalField ( 0 ).As<v8::Function>();
+            v8::Local<v8::Object> result =
+                constructor->NewInstance ( context, args.size(), args.data() ).ToLocalChecked();
+            aArgs.GetReturnValue().Set ( result );
+        }
+    }
 }

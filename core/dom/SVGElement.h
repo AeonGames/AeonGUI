@@ -26,6 +26,8 @@ namespace AeonGUI
         public:
             SVGElement ( const std::string& aTagName, const AttributeMap& aAttributes );
             ~SVGElement() override;
+            static DLL void Initialize ( v8::Isolate* aIsolate );
+            static DLL void Finalize ( v8::Isolate* aIsolate );
         };
     }
 }

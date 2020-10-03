@@ -28,6 +28,14 @@ event_target_2.dispatchEvent(event);
 
 event_target_1.removeEventListener('event',callback);
 
+element = new Element('test');
+element.addEventListener('event',callback);
+element.dispatchEvent(event);
+
+element2 = Element('test');
+element2.addEventListener('event',function(event){console.log('Element Callback');});
+element2.dispatchEvent(event);
+
 /*
 document.documentElement.onload = function(){
   var rect = document.createElementNS(document.documentElement.namespaceURI,"rect");

@@ -13,10 +13,57 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 */
+#include <typeinfo>
 #include "aeongui/JsObjectWrap.h"
+
+namespace std
+{
+    template <> struct hash<std::pair<v8::Isolate*, size_t>>
+    {
+        size_t operator() ( const std::pair<v8::Isolate*, size_t>& aKey ) const
+        {
+            // aKey.second should already be hash value
+            return aKey.second ^ ( std::hash<v8::Isolate*> {} ( aKey.first ) + 0x9e3779b9 + ( aKey.second << 6 ) + ( aKey.second >> 2 ) );
+        }
+    };
+}
 
 namespace AeonGUI
 {
+    static std::unordered_map<std::pair<v8::Isolate*, size_t>, v8::Persistent<v8::FunctionTemplate, v8::CopyablePersistentTraits<v8::FunctionTemplate>>> FunctionTemplates{};
+
+    v8::Local<v8::FunctionTemplate> JsObjectWrap::GetFunctionTemplate ( v8::Isolate* aIsolate, const std::type_info& aTypeId )
+    {
+        return v8::Local<v8::FunctionTemplate>::New ( aIsolate, FunctionTemplates.at ( {aIsolate, aTypeId.hash_code() } ) );
+    }
+
+    v8::Local<v8::FunctionTemplate> JsObjectWrap::GetFunctionTemplateIfExists ( v8::Isolate* aIsolate, const std::type_info& aTypeId )
+    {
+        auto it = FunctionTemplates.find ( {aIsolate, aTypeId.hash_code() } );
+        if ( it != FunctionTemplates.end() )
+        {
+            return v8::Local<v8::FunctionTemplate>::New ( aIsolate, it->second );
+        }
+        return v8::Local<v8::FunctionTemplate>::Cast ( v8::Undefined ( aIsolate ) );
+    }
+
+    bool JsObjectWrap::HasFunctionTemplate ( v8::Isolate* aIsolate, const std::type_info& aTypeId )
+    {
+        return FunctionTemplates.find ( {aIsolate, aTypeId.hash_code() } ) != FunctionTemplates.end();
+    }
+
+    void JsObjectWrap::AddFunctionTemplate ( v8::Isolate* aIsolate, const std::type_info& aTypeId, const v8::Local<v8::FunctionTemplate>& aFunctionTemplate )
+    {
+        FunctionTemplates.emplace ( std::pair<v8::Isolate*, size_t> {aIsolate, aTypeId.hash_code() }, v8::Persistent<v8::FunctionTemplate> {aIsolate, aFunctionTemplate} );
+    }
+
+    void JsObjectWrap::RemoveFunctionTemplate ( v8::Isolate* aIsolate, const std::type_info& aTypeId )
+    {
+        std::pair<v8::Isolate*, size_t> key{aIsolate, aTypeId.hash_code() };
+        FunctionTemplates.at ( key ).Reset();
+        FunctionTemplates.erase ( key );
+    }
+
     static void WeakCallback (
         const v8::WeakCallbackInfo<JsObjectWrap>& aInfo )
     {

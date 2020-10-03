@@ -36,9 +36,10 @@ namespace AeonGUI
         DLL void Load ( JavaScript& aJavascript );
         DLL void Unload ( JavaScript& aJavascript );
         /**DOM Properties and Methods @{*/
-        DLL Node* documentElement();
+        //DLL Node* documentElement();
         /**@}*/
     private:
+        //v8::Persistent<v8::Object> mDocumentElement{};
         Node* mDocumentElement{};
     };
 }

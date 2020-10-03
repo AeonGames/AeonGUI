@@ -20,28 +20,30 @@ limitations under the License.
 
 namespace AeonGUI
 {
-    static std::unordered_map<v8::Isolate*, v8::Persistent<v8::FunctionTemplate, v8::CopyablePersistentTraits<v8::FunctionTemplate>>> ConstructorsPerIsolate{};
-
-    v8::Persistent<v8::FunctionTemplate, v8::CopyablePersistentTraits<v8::FunctionTemplate>>& EventTarget::GetFunctionTemplate ( v8::Isolate* aIsolate )
-    {
-        return ConstructorsPerIsolate.at ( aIsolate );
-    }
-
     void EventTarget::Initialize ( v8::Isolate* aIsolate )
     {
-        if ( ConstructorsPerIsolate.find ( aIsolate ) != ConstructorsPerIsolate.end() )
+        if ( HasFunctionTemplate ( aIsolate, typeid ( EventTarget ) ) )
         {
             throw std::runtime_error ( "Isolate already initialized." );
         }
 
-        // Prepare EventTarget constructor template
+        v8::Local<v8::Context> context = aIsolate->GetCurrentContext();
+
+        // Prepare Event constructor template
         v8::Local<v8::FunctionTemplate> event_template = v8::FunctionTemplate::New ( aIsolate );
         event_template->SetClassName ( v8::String::NewFromUtf8 ( aIsolate, "Event" ).ToLocalChecked() );
         /**@todo Add all official Event properties */
         event_template->PrototypeTemplate()->Set ( aIsolate, "type", v8::String::NewFromUtf8 ( aIsolate, "" ).ToLocalChecked() );
 
+        //---------------------------------------
+        // Store constructor on a callback data object
+        v8::Local<v8::ObjectTemplate> constructor_data_template = v8::ObjectTemplate::New ( aIsolate );
+        constructor_data_template->SetInternalFieldCount ( 1 );
+        v8::Local<v8::Object> constructor_data =
+            constructor_data_template->NewInstance ( context ).ToLocalChecked();
+
         // Prepare EventTarget constructor template
-        v8::Local<v8::FunctionTemplate> constructor_template = v8::FunctionTemplate::New ( aIsolate, New );
+        v8::Local<v8::FunctionTemplate> constructor_template = v8::FunctionTemplate::New ( aIsolate, JsObjectWrap::New<EventTarget>, constructor_data );
         constructor_template->SetClassName ( v8::String::NewFromUtf8 ( aIsolate, "EventTarget" ).ToLocalChecked() );
         constructor_template->InstanceTemplate()->SetInternalFieldCount ( 1 );
 
@@ -59,10 +61,9 @@ namespace AeonGUI
             aIsolate, "dispatchEvent",
             v8::FunctionTemplate::New ( aIsolate, dispatchEvent )
         );
-        ConstructorsPerIsolate.emplace ( aIsolate, v8::Persistent<v8::FunctionTemplate> {aIsolate, constructor_template} );
+        AddFunctionTemplate ( aIsolate, typeid ( EventTarget ), constructor_template );
 
         //----------------------------------------------------------------
-        v8::Local<v8::Context> context = aIsolate->GetCurrentContext();
 
         v8::Local<v8::Function> event = event_template->GetFunction ( context ).ToLocalChecked();
         context->Global()->Set ( context, v8::String::NewFromUtf8 (
@@ -70,6 +71,7 @@ namespace AeonGUI
                                  event ).FromJust();
 
         v8::Local<v8::Function> constructor = constructor_template->GetFunction ( context ).ToLocalChecked();
+        constructor_data->SetInternalField ( 0, constructor );
         context->Global()->Set ( context, v8::String::NewFromUtf8 (
                                      aIsolate, "EventTarget" ).ToLocalChecked(),
                                  constructor ).FromJust();
@@ -77,33 +79,7 @@ namespace AeonGUI
 
     void EventTarget::Finalize ( v8::Isolate* aIsolate )
     {
-        ConstructorsPerIsolate.at ( aIsolate ).Reset();
-        ConstructorsPerIsolate.erase ( aIsolate );
-    }
-
-    void EventTarget::New ( const v8::FunctionCallbackInfo<v8::Value>& aArgs )
-    {
-        v8::Isolate* isolate = aArgs.GetIsolate();
-        v8::Local<v8::Context> context = isolate->GetCurrentContext();
-
-        if ( aArgs.IsConstructCall() )
-        {
-            // Invoked as constructor
-            EventTarget* obj = new EventTarget{};
-            obj->Wrap ( aArgs.This() );
-            aArgs.GetReturnValue().Set ( aArgs.This() );
-        }
-        else
-        {
-            // Invoked as plain function, turn into construct call.
-            const int argc = 1;
-            v8::Local<v8::Value> argv[argc] = { aArgs[0] };
-            v8::Local<v8::Value> value = context->Global()->Get ( context, v8::String::NewFromUtf8 ( isolate, "EventTarget" ).ToLocalChecked() ).ToLocalChecked();
-            v8::Local<v8::Function> cons = v8::Local<v8::Function>::Cast ( value );
-            v8::Local<v8::Object> result =
-                cons->NewInstance ( context, argc, argv ).ToLocalChecked();
-            aArgs.GetReturnValue().Set ( result );
-        }
+        RemoveFunctionTemplate ( aIsolate, typeid ( EventTarget ) );
     }
 
     void EventTarget::addEventListener ( const std::string& aType, v8::Local<v8::Function> aCallback )
@@ -205,5 +181,11 @@ namespace AeonGUI
         v8::Local<v8::Object> event = v8::Local<v8::Object>::Cast ( aArgs[0] );
         EventTarget* event_target = JsObjectWrap::Unwrap<EventTarget> ( aArgs.Holder() );
         aArgs.GetReturnValue().Set ( v8::Boolean::New ( isolate, event_target->dispatchEvent ( event ) ) );
+    }
+
+    // JavaScript factory
+    EventTarget* EventTarget::New ( const v8::FunctionCallbackInfo<v8::Value>& aArgs )
+    {
+        return new EventTarget;
     }
 }

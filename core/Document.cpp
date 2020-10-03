@@ -100,10 +100,12 @@ namespace AeonGUI
     }
 
     Document::~Document() = default;
+    /*
     Node* Document::documentElement()
     {
         return mDocumentElement;
     }
+    */
 
     void Document::Draw ( Canvas& aCanvas ) const
     {
