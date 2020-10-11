@@ -16,9 +16,7 @@ limitations under the License.
 #ifndef AEONGUI_SVGGRAPHICSELEMENT_H
 #define AEONGUI_SVGGRAPHICSELEMENT_H
 
-#include <vector>
 #include "SVGElement.h"
-#include "aeongui/Color.h"
 
 namespace AeonGUI
 {

@@ -26,9 +26,19 @@ namespace AeonGUI
 {
     class Element;
     DLL Element* Construct ( const char* aIdentifier, const AttributeMap& aAttributeMap );
-    DLL void Destroy ( Element* aElement );
-    DLL bool RegisterConstructor ( const StringLiteral& aIdentifier, const std::function < Element* ( const AttributeMap& aAttributeMap ) > & aConstructor );
+    DLL void Destroy ( const char* aIdentifier, Element* aElement );
+    DLL bool RegisterConstructor ( const StringLiteral& aIdentifier,
+                                   const std::function < Element* ( const AttributeMap& ) > & aConstructor,
+                                   const std::function < void ( Element* ) > & aDestructor );
     DLL bool UnregisterConstructor ( const StringLiteral& aIdentifier );
     DLL void EnumerateConstructors ( const std::function<bool ( const StringLiteral& ) >& aEnumerator );
+    DLL void Initialize ( v8::Isolate* aIsolate );
+    DLL void Finalize ( v8::Isolate* aIsolate );
+    DLL bool AddInitializer (
+        const std::function < void ( Element* ) > & aInitializer,
+        const std::function < void ( Element* ) > & aFinalizer );
+    DLL bool RemoveInitializer (
+        const std::function < void ( Element* ) > & aInitializer,
+        const std::function < void ( Element* ) > & aFinalizer );
 }
 #endif

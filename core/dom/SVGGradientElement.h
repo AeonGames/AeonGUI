@@ -22,7 +22,6 @@ namespace AeonGUI
 {
     namespace DOM
     {
-
         class SVGGradientElement : public SVGElement
         {
         public:

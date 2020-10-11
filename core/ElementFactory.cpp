@@ -41,16 +41,27 @@ limitations under the License.
 
 namespace AeonGUI
 {
-    using Constructor = std::tuple<StringLiteral, std::function < Element* ( const std::string& aTagName, const AttributeMap& aAttributeMap ) >>;
+    using ConstructorTuple = std::tuple <
+                             std::function < Element* ( const std::string& aTagName, const AttributeMap& aAttributeMap ) >,
+                             std::function < void ( Element* ) >>;
+
+    using Constructor = std::tuple<StringLiteral, ConstructorTuple>;
 
     template<class T> Constructor MakeConstructor ( StringLiteral aId )
     {
         return
+            Constructor
         {
             aId,
-            [] ( const std::string & aTagName, const AttributeMap & aAttributeMap )
-            {
-                return new T{ aTagName, aAttributeMap };
+            ConstructorTuple {
+                [] ( const std::string & aTagName, const AttributeMap & aAttributeMap )
+                {
+                    return new T{ aTagName, aAttributeMap };
+                },
+                [] ( Element * aElement ) -> void
+                {
+                    delete reinterpret_cast<T*> ( aElement );
+                }
             }
         };
     }
@@ -76,23 +87,38 @@ namespace AeonGUI
     Element* Construct ( const char* aIdentifier, const AttributeMap& aAttributeMap )
     {
         auto it = std::find_if ( Constructors.begin(), Constructors.end(),
-                                 [&aAttributeMap, aIdentifier] ( const Constructor & aConstructor )
+                                 [aIdentifier] ( const Constructor & aConstructor )
         {
             return std::get<0> ( aConstructor ) == aIdentifier ;
         } );
         if ( it != Constructors.end() )
         {
-            return std::get<1> ( *it ) ( aIdentifier, aAttributeMap );
+            return std::get<0> ( std::get<1> ( *it ) ) ( aIdentifier, aAttributeMap );
         }
         return new Element { aIdentifier, aAttributeMap };
     }
 
-    void Destroy ( Element* aElement )
+    void Destroy ( const char* aIdentifier, Element* aElement )
     {
-        delete aElement;
+        auto it = std::find_if ( Constructors.begin(), Constructors.end(),
+                                 [aIdentifier] ( const Constructor & aConstructor )
+        {
+            return std::get<0> ( aConstructor ) == aIdentifier ;
+        } );
+        if ( it != Constructors.end() )
+        {
+            ( std::get<1> ( std::get<1> ( *it ) ) ) ( aElement );
+        }
+        else
+        {
+            delete aElement;
+        }
     }
 
-    bool RegisterConstructor ( const StringLiteral& aIdentifier, const std::function < Element* ( const std::string& aTagName, const AttributeMap& aAttributeMap ) > & aConstructor )
+    bool RegisterConstructor ( const StringLiteral& aIdentifier,
+                               const std::function < Element* ( const std::string& aTagName, const AttributeMap& aAttributeMap ) > & aConstructor,
+                               const std::function < void ( Element* ) > & aDestructor
+                             )
     {
         auto it = std::find_if ( Constructors.begin(), Constructors.end(),
                                  [aIdentifier] ( const Constructor & aConstructor )
@@ -101,7 +127,7 @@ namespace AeonGUI
         } );
         if ( it == Constructors.end() )
         {
-            Constructors.emplace_back ( aIdentifier, aConstructor );
+            Constructors.emplace_back ( aIdentifier, ConstructorTuple{aConstructor, aDestructor} );
             return true;
         }
         return false;
@@ -129,5 +155,79 @@ namespace AeonGUI
                 return;
             }
         }
+    }
+
+    using InitializerTuple = std::tuple <
+                             std::function < void ( v8::Isolate* ) >,
+                             std::function < void ( v8::Isolate* ) >>;
+
+    template<class T> constexpr InitializerTuple MakeInitializer()
+    {
+        return
+            InitializerTuple
+        {
+            T::Initialize,
+            T::Finalize,
+        };
+    }
+
+    static std::vector<InitializerTuple> Initializers
+    {
+        MakeInitializer<EventTarget>(),
+        MakeInitializer<Node>(),
+        MakeInitializer<Element>(),
+        MakeInitializer<DOM::SVGElement>(),
+    };
+
+    void Initialize ( v8::Isolate* aIsolate )
+    {
+        for ( auto& i : Initializers )
+        {
+            std::get<0> ( i ) ( aIsolate );
+        }
+    }
+
+    void Finalize ( v8::Isolate* aIsolate )
+    {
+        for ( auto i = Initializers.rbegin(); i != Initializers.rend(); ++i )
+        {
+            std::get<1> ( *i ) ( aIsolate );
+        }
+    }
+
+    bool AddInitializer (
+        const std::function < void ( v8::Isolate* ) > & aInitializer,
+        const std::function < void ( v8::Isolate* ) > & aFinalizer )
+    {
+        auto it = std::find_if ( Initializers.begin(), Initializers.end(),
+                                 [&aInitializer, &aFinalizer] ( const InitializerTuple & i )
+        {
+            return ( aInitializer.target<void ( v8::Isolate* ) >() == std::get<0> ( i ).target< void ( v8::Isolate* ) >() &&
+                     aFinalizer.target<void ( v8::Isolate* ) >() == std::get<1> ( i ).target< void ( v8::Isolate* ) >() );
+        } );
+        if ( it == Initializers.end() )
+        {
+            Initializers.emplace_back ( InitializerTuple{aInitializer, aFinalizer} );
+            return true;
+        }
+        return false;
+    }
+
+    bool RemoveInitializer (
+        const std::function < void ( v8::Isolate* ) > & aInitializer,
+        const std::function < void ( v8::Isolate* ) > & aFinalizer )
+    {
+        auto it = std::find_if ( Initializers.begin(), Initializers.end(),
+                                 [&aInitializer, &aFinalizer] ( const InitializerTuple & i )
+        {
+            return ( aInitializer.target<void ( v8::Isolate* ) >() == std::get<0> ( i ).target< void ( v8::Isolate* ) >() &&
+                     aFinalizer.target<void ( v8::Isolate* ) >() == std::get<1> ( i ).target< void ( v8::Isolate* ) >() );
+        } );
+        if ( it == Initializers.end() )
+        {
+            Initializers.erase ( it );
+            return true;
+        }
+        return false;
     }
 }

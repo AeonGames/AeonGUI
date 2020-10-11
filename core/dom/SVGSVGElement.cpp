@@ -20,7 +20,7 @@ namespace AeonGUI
 {
     namespace DOM
     {
-        SVGSVGElement::SVGSVGElement ( const std::string& aTagName, const AttributeMap& aAttributes ) : Element { aTagName, aAttributes }
+        SVGSVGElement::SVGSVGElement ( const std::string& aTagName, const AttributeMap& aAttributes ) : SVGGraphicsElement { aTagName, aAttributes }
         {
             std::cout << "This is a specialized implementation for the svg element." << std::endl;
         }

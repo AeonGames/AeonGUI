@@ -16,13 +16,13 @@ limitations under the License.
 #ifndef AEONGUI_SVGSVGELEMENT_H
 #define AEONGUI_SVGSVGELEMENT_H
 
-#include "Element.h"
+#include "SVGGraphicsElement.h"
 
 namespace AeonGUI
 {
     namespace DOM
     {
-        class SVGSVGElement : public Element
+        class SVGSVGElement : public SVGGraphicsElement
         {
         public:
             SVGSVGElement ( const std::string& aTagName, const AttributeMap& aAttributes );
