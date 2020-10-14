@@ -35,6 +35,7 @@ namespace AeonGUI
         DLL Element ( const std::string& aTagName, const AttributeMap& aAttributes );
         DLL AttributeType GetAttribute ( const char* attrName, const AttributeType& aDefault = {} ) const;
         DLL AttributeType GetInheritedAttribute ( const char* attrName, const AttributeType& aDefault = {} ) const;
+        DLL void SetAttribute ( const char* attrName, const AttributeType& aValue );
         DLL virtual ~Element();
         /**DOM Properties and Methods @{*/
         NodeType nodeType() const final;
@@ -43,6 +44,9 @@ namespace AeonGUI
         static DLL void Initialize ( v8::Isolate* aIsolate );
         static DLL void Finalize ( v8::Isolate* aIsolate );
         static DLL void New ( const v8::FunctionCallbackInfo<v8::Value>& aArgs );
+        static DLL void SetAttribute ( v8::Local<v8::Name> name, v8::Local<v8::Value> value,
+                                       const v8::PropertyCallbackInfo<v8::Value>& info );
+        static DLL void GetAttribute ( v8::Local<v8::Name> property, const v8::PropertyCallbackInfo<v8::Value>& info );
     private:
         const std::string mTagName;
         AttributeMap mAttributeMap{};

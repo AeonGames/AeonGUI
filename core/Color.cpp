@@ -17,6 +17,7 @@ Copyright (C) 2010-2012,2019,2020 Rodrigo Hernandez Cordoba
 #include <algorithm>
 #include <iostream>
 #include <unordered_map>
+
 namespace AeonGUI
 {
     const std::regex Color::ColorRegex{"#[0-9A-Fa-f]{8}|#[0-9A-Fa-f]{6}|#[0-9A-Fa-f]{3}|aliceblue|antiquewhite|aqua|aquamarine|azure|beige|bisque|black|blanchedalmond|blue|blueviolet|brown|burlywood|cadetblue|chartreuse|chocolate|coral|cornflowerblue|cornsilk|crimson|cyan|darkblue|darkcyan|darkgoldenrod|darkgray|darkgreen|darkgrey|darkkhaki|darkmagenta|darkolivegreen|darkorange|darkorchid|darkred|darksalmon|darkseagreen|darkslateblue|darkslategray|darkslategrey|darkturquoise|darkviolet|deeppink|deepskyblue|dimgray|dimgrey|dodgerblue|firebrick|floralwhite|forestgreen|fuchsia|gainsboro|ghostwhite|gold|goldenrod|gray|grey|green|greenyellow|honeydew|hotpink|indianred|indigo|ivory|khaki|lavender|lavenderblush|lawngreen|lemonchiffon|lightblue|lightcoral|lightcyan|lightgoldenrodyellow|lightgray|lightgreen|lightgrey|lightpink|lightsalmon|lightseagreen|lightskyblue|lightslategray|lightslategrey|lightsteelblue|lightyellow|lime|limegreen|linen|magenta|maroon|mediumaquamarine|mediumblue|mediumorchid|mediumpurple|mediumseagreen|mediumslateblue|mediumspringgreen|mediumturquoise|mediumvioletred|midnightblue|mintcream|mistyrose|moccasin|navajowhite|navy|none|oldlace|olive|olivedrab|orange|orangered|orchid|palegoldenrod|palegreen|paleturquoise|palevioletred|papayawhip|peachpuff|peru|pink|plum|powderblue|purple|red|rosybrown|royalblue|saddlebrown|salmon|sandybrown|seagreen|seashell|sienna|silver|skyblue|slateblue|slategray|slategrey|snow|springgreen|steelblue|tan|teal|thistle|tomato|transparent|turquoise|violet|wheat|white|whitesmoke|yellow|yellowgreen"};
@@ -181,34 +182,54 @@ namespace AeonGUI
     Color::Color ( uint8_t A, uint8_t R, uint8_t G, uint8_t B )
         : b ( B ), g ( G ), r ( R ), a ( A ) {}
 
-    Color::Color ( const std::string& value )
+    bool Color::IsColor ( const std::string& value, uint32_t* color_value )
     {
         std::smatch color_match;
+        if ( color_value == nullptr )
+        {
+            return std::regex_search ( value, color_match, color_regex8 ) ||
+                   std::regex_search ( value, color_match, color_regex6 ) ||
+                   std::regex_search ( value, color_match, color_regex3 ) ||
+                   color_map.find ( value ) != color_map.end();
+        }
         std::unordered_map<std::string, uint32_t>::const_iterator color_iterator;
         if ( std::regex_search ( value, color_match, color_regex8 ) )
         {
-            a = static_cast<uint8_t> ( std::stoul ( color_match[1].str(), nullptr, 16 ) );
-            r = static_cast<uint8_t> ( std::stoul ( color_match[2].str(), nullptr, 16 ) );
-            g = static_cast<uint8_t> ( std::stoul ( color_match[3].str(), nullptr, 16 ) );
-            b = static_cast<uint8_t> ( std::stoul ( color_match[4].str(), nullptr, 16 ) );
+            reinterpret_cast<uint8_t*> ( color_value ) [0] = static_cast<uint8_t> ( std::stoul ( color_match[4].str(), nullptr, 16 ) );
+            reinterpret_cast<uint8_t*> ( color_value ) [1] = static_cast<uint8_t> ( std::stoul ( color_match[3].str(), nullptr, 16 ) );
+            reinterpret_cast<uint8_t*> ( color_value ) [2] = static_cast<uint8_t> ( std::stoul ( color_match[2].str(), nullptr, 16 ) );
+            reinterpret_cast<uint8_t*> ( color_value ) [3] = static_cast<uint8_t> ( std::stoul ( color_match[1].str(), nullptr, 16 ) );
+            return true;
         }
         else if ( std::regex_search ( value, color_match, color_regex6 ) )
         {
-            a = 255;
-            r = static_cast<uint8_t> ( std::stoul ( color_match[1].str(), nullptr, 16 ) );
-            g = static_cast<uint8_t> ( std::stoul ( color_match[2].str(), nullptr, 16 ) );
-            b = static_cast<uint8_t> ( std::stoul ( color_match[3].str(), nullptr, 16 ) );
+            reinterpret_cast<uint8_t*> ( color_value ) [0] = static_cast<uint8_t> ( std::stoul ( color_match[3].str(), nullptr, 16 ) );
+            reinterpret_cast<uint8_t*> ( color_value ) [1] = static_cast<uint8_t> ( std::stoul ( color_match[2].str(), nullptr, 16 ) );
+            reinterpret_cast<uint8_t*> ( color_value ) [2] = static_cast<uint8_t> ( std::stoul ( color_match[1].str(), nullptr, 16 ) );
+            reinterpret_cast<uint8_t*> ( color_value ) [3] = 0xff;
+            return true;
         }
         else if ( std::regex_search ( value, color_match, color_regex3 ) )
         {
-            a = 255;
-            r = static_cast<uint8_t> ( std::stoul ( color_match[1].str() + color_match[1].str(), nullptr, 16 ) );
-            g = static_cast<uint8_t> ( std::stoul ( color_match[2].str() + color_match[2].str(), nullptr, 16 ) );
-            b = static_cast<uint8_t> ( std::stoul ( color_match[3].str() + color_match[3].str(), nullptr, 16 ) );
+            reinterpret_cast<uint8_t*> ( color_value ) [0] = static_cast<uint8_t> ( std::stoul ( color_match[3].str() + color_match[1].str(), nullptr, 16 ) );
+            reinterpret_cast<uint8_t*> ( color_value ) [1] = static_cast<uint8_t> ( std::stoul ( color_match[2].str() + color_match[2].str(), nullptr, 16 ) );
+            reinterpret_cast<uint8_t*> ( color_value ) [2] = static_cast<uint8_t> ( std::stoul ( color_match[1].str() + color_match[3].str(), nullptr, 16 ) );
+            reinterpret_cast<uint8_t*> ( color_value ) [3] = 0xff;
+            return true;
         }
         else if ( ( color_iterator = color_map.find ( value ) ) != color_map.end() )
         {
-            bgra = color_iterator->second;
+            *color_value = color_iterator->second;
+            return true;
+        }
+        return false;
+    }
+
+    Color::Color ( const std::string& value )
+    {
+        if ( !IsColor ( value, &bgra ) )
+        {
+            throw std::runtime_error ( "Not a color value" );
         }
     }
 
@@ -253,5 +274,12 @@ namespace AeonGUI
             // Just acumulate alpha, if something looks odd try multipling the second addend by dfactor.
             a = static_cast<uint8_t> ( std::min ( 255.0f, ( static_cast<float> ( src.a ) + static_cast<float> ( a ) ) ) );
         }
+    }
+
+    std::string Color::ToString() const
+    {
+        char color[10] = {};
+        sprintf ( color, "#%02x%02x%02x%02x", a, r, g, b );
+        return std::string{color};
     }
 }

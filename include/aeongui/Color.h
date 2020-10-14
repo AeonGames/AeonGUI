@@ -182,6 +182,7 @@ namespace AeonGUI
     */
     union Color
     {
+        DLL static bool IsColor ( const std::string& value, uint32_t* color_value = nullptr );
         DLL static const std::regex ColorRegex;
         DLL Color();
         /*! \brief 32 bit Unsigned integer constructor.
@@ -208,7 +209,7 @@ namespace AeonGUI
         DLL double G() const;
         DLL double B() const;
         DLL double A() const;
-
+        DLL std::string ToString() const;
         uint32_t bgra; ///< 32 bit Unsigned integer color value.
         struct
         {
