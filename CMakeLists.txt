@@ -17,6 +17,7 @@ include(CheckIncludeFileCXX)
 include(CheckIncludeFiles)
 include(vscode)
 
+set(OpenGL_GL_PREFERENCE GLVND)
 find_package(OpenGL)
 find_package(Git)
 

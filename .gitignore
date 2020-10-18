@@ -43,3 +43,4 @@ mingw32
 mingw64
 .vscode
 include/GL
+build
