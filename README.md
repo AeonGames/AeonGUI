@@ -1,11 +1,13 @@
 AeonGUI
 =======
+
 [![MinGW64 Build status](https://ci.appveyor.com/api/projects/status/g1hx08cchdmkbw3m?svg=true)](https://ci.appveyor.com/project/Kwizatz/aeongui) [![MinGW32 Build status](https://ci.appveyor.com/api/projects/status/yogupd65ow1dr8pq?svg=true)](https://ci.appveyor.com/project/Kwizatz/aeongui-altq2)
 
 Last Updated: 07-31-2019
 
 DESCRIPTION
 -----------
+
 Right now AeonGUI is a project to create a graphic user interface library to be used primarily on video games and interactive media.
 It's primary goal is to stay agnostic of any advanced/dedicated graphics rendering API such as OpenGL, Vulkan, Direct3D, X11 or GDI.
 
@@ -13,6 +15,7 @@ It's primary goal is to stay agnostic of any advanced/dedicated graphics renderi
 
 HISTORY
 -------
+
 The idea for the library was born around 2004 or 2005 under the name 'Glitch', and has evolved overtime but never quite reached maturity.
 The name change to AeonGUI came about as a way to identify the library as part of the AeonGames brand
 and to avoid confusion since originaly the name 'GLitch' was chosen to emphasize OpenGL support, which is no longer the priority.
@@ -31,20 +34,19 @@ Right now, in 2019 the idea is to create a SVG agent that implements a subset of
 
 COMPILATION
 -----------
-The library uses CMake to build the required files used to build the binary depending on the platform.
-For information on how to use CMake refer to the [CMake official site](https://www.cmake.org).
-There is only "official" support for Windows(MSYS2 and Visual Studio) and Linux at this time,
-however, Linux builds may break from time to time as most development is done on Windows.
 
-Optional USE variables are available to add support for various features such as freetype font rendering and PNG file format loading, these add external dependencies to the library, so they are all initially set to OFF, if turned ON, the user has the option to provide the dependencies or let CMake download and configure the dependencies which will show up as projects inside the build environment.
-The rules to download and configure external dependencies are most useful to Windows users as Linux distributions usually provide
-development libraries for most software packages.
+The library uses CMake to build the required files used to build the binary depending on the platform.
+For information on how to use CMake refer to its [official site](https://www.cmake.org).
+There is only official support for Windows (MSYS2 and Visual Studio) and Linux at this time,
+however, Linux builds may break from time to time as most development is done on Windows.
 
 LICENSE
 -------
+
 The library is released under the terms of the permisive [Apache 2.0 license](http://www.apache.org/licenses/LICENSE-2.0)
 The Aeon Games logo is __NOT__ covered by the Apache license, it is a Trade Mark and may not be used for any purpose without permision.
 
 AUTHORS
 -------
+
 Rodrigo Hernandez (kwizatz at aeongames dot com).
