@@ -73,6 +73,33 @@ namespace AeonGUI
                 aArgs.GetReturnValue().Set ( result );
             }
         }
+
+        template<class T, class Parent = T>
+        static void Initialize ( v8::Isolate* aIsolate, const std::string& aClassName )
+        {
+            if ( HasFunctionTemplate ( aIsolate, typeid ( T ) ) )
+            {
+                throw std::runtime_error ( "Isolate already initialized." );
+            }
+
+            v8::Local<v8::Context> context = aIsolate->GetCurrentContext();
+
+            // Create constructor template
+            v8::Local<v8::FunctionTemplate> constructor_template = v8::FunctionTemplate::New ( aIsolate );
+            constructor_template->SetClassName ( v8::String::NewFromUtf8 ( aIsolate, aClassName.c_str() ).ToLocalChecked() );
+            if ( !std::is_same<T, Parent>::value )
+            {
+                constructor_template->Inherit ( GetFunctionTemplate ( aIsolate, typeid ( Parent ) ) );
+            }
+            AddFunctionTemplate ( aIsolate, typeid ( T ), constructor_template );
+        }
+
+        template<class T>
+        static void Finalize ( v8::Isolate* aIsolate )
+        {
+            RemoveFunctionTemplate ( aIsolate, typeid ( T ) );
+        }
+
     protected:
         DLL void Wrap ( v8::Handle<v8::Object> handle );
         DLL void MakeWeak();

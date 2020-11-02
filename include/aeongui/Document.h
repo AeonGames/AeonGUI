@@ -39,8 +39,7 @@ namespace AeonGUI
         //DLL Node* documentElement();
         /**@}*/
     private:
-        //v8::Persistent<v8::Object> mDocumentElement{};
-        Node* mDocumentElement{};
+        Element* mDocumentElement{};
     };
 }
 #endif

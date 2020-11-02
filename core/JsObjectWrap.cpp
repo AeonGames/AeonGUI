@@ -22,7 +22,7 @@ namespace std
     {
         size_t operator() ( const std::pair<v8::Isolate*, size_t>& aKey ) const
         {
-            // aKey.second should already be hash value
+            // aKey.second should already be a hash value
             return aKey.second ^ ( std::hash<v8::Isolate*> {} ( aKey.first ) + 0x9e3779b9 + ( aKey.second << 6 ) + ( aKey.second >> 2 ) );
         }
     };
