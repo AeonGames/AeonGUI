@@ -1,5 +1,5 @@
 /*
-Copyright (C) 2019 Rodrigo Jose Hernandez Cordoba
+Copyright (C) 2019,2020 Rodrigo Jose Hernandez Cordoba
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -62,7 +62,6 @@ layout (location = 0) uniform sampler2D screenTexture;
 
 void main()
 { 
-    //FragColor = vec4((Pos.x+1.0)/2,(Pos.y+1.0)/2,0,1);
     FragColor = texture(screenTexture, TexCoords);
 }
 )";

@@ -126,7 +126,6 @@ private:
     uint32_t mWidth;
     uint32_t mHeight;
     GLuint mProgram{};
-    GLuint mVAO{};
     GLuint mScreenQuad{};
     GLuint mScreenTexture{};
     AeonGUI::Window mWindow;
@@ -264,9 +263,9 @@ bool GLWindow::Create ( Display* dpy )
     {
         int context_attribs[] =
         {
-            GLX_CONTEXT_MAJOR_VERSION_ARB, 4,
-            GLX_CONTEXT_MINOR_VERSION_ARB, 5,
-            GLX_CONTEXT_PROFILE_MASK_ARB, GLX_CONTEXT_CORE_PROFILE_BIT_ARB,
+            GLX_CONTEXT_MAJOR_VERSION_ARB, 1 /*4*/,
+            GLX_CONTEXT_MINOR_VERSION_ARB, 4 /*5*/,
+            //GLX_CONTEXT_PROFILE_MASK_ARB, GLX_CONTEXT_CORE_PROFILE_BIT_ARB,
             None
         };
 
@@ -408,10 +407,6 @@ bool GLWindow::Create ( Display* dpy )
     OPENGL_CHECK_ERROR;
 
     //---------------------------------------------------------------------------
-    glGenVertexArrays ( 1, &mVAO );
-    OPENGL_CHECK_ERROR;
-    glBindVertexArray ( mVAO );
-    OPENGL_CHECK_ERROR;
     glGenBuffers ( 1, &mScreenQuad );
     OPENGL_CHECK_ERROR;
     glBindBuffer ( GL_ARRAY_BUFFER, mScreenQuad );
@@ -476,9 +471,6 @@ bool GLWindow::Create ( Display* dpy )
                 glViewport ( 0, 0, mWidth, mHeight );
                 OPENGL_CHECK_ERROR;
                 mWindow.ResizeViewport ( static_cast<size_t> ( mWidth ), static_cast<size_t> ( mHeight ) );
-                std::cout << "Width: " << mWindow.GetWidth() << std::endl;
-                std::cout << "Height: " << mWindow.GetHeight() << std::endl;
-                std::cout << "Stride: " << mWindow.GetStride() << std::endl;
                 glTexImage2D ( GL_TEXTURE_2D,
                                0,
                                GL_RGBA,
@@ -510,22 +502,38 @@ bool GLWindow::Create ( Display* dpy )
         last_time = current_time;
 
         glClear ( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT );
+        OPENGL_CHECK_ERROR;
         glUseProgram ( mProgram );
-        glBindVertexArray ( mVAO );
+        OPENGL_CHECK_ERROR;
+
+        glBindBuffer ( GL_ARRAY_BUFFER, mScreenQuad );
+        OPENGL_CHECK_ERROR;
+        glEnableVertexAttribArray ( 0 );
+        OPENGL_CHECK_ERROR;
+        glVertexAttribPointer ( 0, 2, GL_FLOAT, GL_FALSE, sizeof ( float ) * 4, 0 );
+        OPENGL_CHECK_ERROR;
+        glEnableVertexAttribArray ( 1 );
+        OPENGL_CHECK_ERROR;
+        glVertexAttribPointer ( 1, 2, GL_FLOAT, GL_FALSE, sizeof ( float ) * 4, reinterpret_cast<const void *> ( sizeof ( float ) * 2 ) );
+        OPENGL_CHECK_ERROR;
+
         glDisable ( GL_DEPTH_TEST );
+        OPENGL_CHECK_ERROR;
         mWindow.Draw();
         glBindTexture ( GL_TEXTURE_2D, mScreenTexture );
-        glTexImage2D ( GL_TEXTURE_2D,
-                       0,
-                       GL_RGBA,
-                       static_cast<GLsizei> ( mWindow.GetWidth() ),
-                       static_cast<GLsizei> ( mWindow.GetHeight() ),
-                       0,
-                       GL_BGRA,
-                       GL_UNSIGNED_INT_8_8_8_8_REV,
-                       mWindow.GetPixels() );
+        OPENGL_CHECK_ERROR;
+        glTexSubImage2D ( GL_TEXTURE_2D,
+                          0,
+                          0,
+                          0,
+                          static_cast<GLsizei> ( mWindow.GetWidth() ),
+                          static_cast<GLsizei> ( mWindow.GetHeight() ),
+                          GL_BGRA,
+                          GL_UNSIGNED_INT_8_8_8_8_REV,
+                          mWindow.GetPixels() );
+        OPENGL_CHECK_ERROR;
         glDrawArrays ( GL_TRIANGLE_FAN, 0, 4 );
-
+        OPENGL_CHECK_ERROR;
         glXSwapBuffers ( display, window );
     }
     return true;

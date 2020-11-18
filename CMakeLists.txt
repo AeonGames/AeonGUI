@@ -59,7 +59,7 @@ option(USE_ZLIB "Use the zlib compression library")
 option(USE_PNG "Enable PNG image support (Requires zlib)")
 option(USE_CUDA "Enable CUDA support")
 option(BUILD_UNIT_TESTS "Enable Unit Tests using GTest/GMock")
-set(CMAKE_BUILD_TYPE "DEBUG" CACHE STRING "One of DEBUG|RELEASE|RELWITHDEBINFO|MINSIZEREL")
+set(CMAKE_BUILD_TYPE "Debug" CACHE STRING "One of Debug|Release|RelWithDebInfo|MinSizeRel")
 set(HTTP_PROXY "" CACHE STRING "Specify a proxy server if required for downloads")
 set(HTTPS_PROXY "" CACHE STRING "Specify a proxy server if required for downloads")
 
