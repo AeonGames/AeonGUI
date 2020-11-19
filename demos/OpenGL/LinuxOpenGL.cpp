@@ -32,85 +32,6 @@ limitations under the License.
 #include "aeongui/Window.h"
 #include "Common.h"
 
-#define GLGETPROCADDRESS(glFunctionType,glFunction) \
-    if(glFunction==nullptr) { \
-    glFunction = ( glFunctionType ) glXGetProcAddress ( (const GLubyte*) #glFunction ); \
-        if (glFunction == nullptr) \
-        { \
-            std::ostringstream stream; \
-            stream << "OpenGL: Unable to load " #glFunction " function."; \
-            throw std::runtime_error(stream.str().c_str()); \
-        } \
-    }
-
-GLDEFINEFUNCTION ( PFNGLISPROGRAMPROC, glIsProgram );
-GLDEFINEFUNCTION ( PFNGLISSHADERPROC, glIsShader );
-GLDEFINEFUNCTION ( PFNGLCREATEPROGRAMPROC, glCreateProgram );
-GLDEFINEFUNCTION ( PFNGLCREATESHADERPROC, glCreateShader );
-GLDEFINEFUNCTION ( PFNGLCOMPILESHADERPROC, glCompileShader );
-GLDEFINEFUNCTION ( PFNGLDETACHSHADERPROC, glDetachShader );
-GLDEFINEFUNCTION ( PFNGLDELETESHADERPROC, glDeleteShader );
-GLDEFINEFUNCTION ( PFNGLDELETEPROGRAMPROC, glDeleteProgram );
-GLDEFINEFUNCTION ( PFNGLATTACHSHADERPROC, glAttachShader );
-GLDEFINEFUNCTION ( PFNGLSHADERSOURCEPROC, glShaderSource );
-GLDEFINEFUNCTION ( PFNGLUSEPROGRAMPROC, glUseProgram );
-GLDEFINEFUNCTION ( PFNGLLINKPROGRAMPROC, glLinkProgram );
-GLDEFINEFUNCTION ( PFNGLGENVERTEXARRAYSPROC, glGenVertexArrays );
-GLDEFINEFUNCTION ( PFNGLBINDVERTEXARRAYPROC, glBindVertexArray );
-GLDEFINEFUNCTION ( PFNGLGENBUFFERSPROC, glGenBuffers );
-GLDEFINEFUNCTION ( PFNGLBINDBUFFERPROC, glBindBuffer );
-GLDEFINEFUNCTION ( PFNGLBUFFERDATAPROC, glBufferData );
-GLDEFINEFUNCTION ( PFNGLISBUFFERPROC, glIsBuffer );
-GLDEFINEFUNCTION ( PFNGLISVERTEXARRAYPROC, glIsVertexArray );
-GLDEFINEFUNCTION ( PFNGLDELETEBUFFERSPROC, glDeleteBuffers );
-GLDEFINEFUNCTION ( PFNGLDELETEVERTEXARRAYSPROC, glDeleteVertexArrays );
-GLDEFINEFUNCTION ( PFNGLUNIFORM1IPROC, glUniform1i );
-GLDEFINEFUNCTION ( PFNGLGETSHADERIVPROC, glGetShaderiv );
-GLDEFINEFUNCTION ( PFNGLGETSHADERINFOLOGPROC, glGetShaderInfoLog );
-GLDEFINEFUNCTION ( PFNGLENABLEVERTEXATTRIBARRAYPROC, glEnableVertexAttribArray );
-GLDEFINEFUNCTION ( PFNGLVERTEXATTRIBPOINTERPROC, glVertexAttribPointer );
-GLDEFINEFUNCTION ( PFNGLXCREATECONTEXTATTRIBSARBPROC, glXCreateContextAttribsARB );
-
-// Helper to check for extension string presence.  Adapted from:
-//   http://www.opengl.org/resources/features/OGLextensions/
-static bool isExtensionSupported ( const char *extList, const char *extension )
-{
-    const char *start;
-    const char *where, *terminator;
-
-    /* Extension names should not have spaces. */
-    where = strchr ( extension, ' ' );
-    if ( where || *extension == '\0' )
-    {
-        return false;
-    }
-
-    /* It takes a bit of care to be fool-proof about parsing the
-       OpenGL extensions string. Don't be fooled by sub-strings,
-       etc. */
-    for ( start = extList; ; )
-    {
-        where = strstr ( start, extension );
-
-        if ( !where )
-        {
-            break;
-        }
-
-        terminator = where + strlen ( extension );
-
-        if ( where == start || * ( where - 1 ) == ' ' )
-            if ( *terminator == ' ' || *terminator == '\0' )
-            {
-                return true;
-            }
-
-        start = terminator;
-    }
-
-    return false;
-}
-
 class GLWindow
 {
 public:
@@ -125,7 +46,6 @@ private:
     Window window;
     uint32_t mWidth;
     uint32_t mHeight;
-    GLuint mProgram{};
     GLuint mScreenQuad{};
     GLuint mScreenTexture{};
     AeonGUI::Window mWindow;
@@ -240,9 +160,6 @@ bool GLWindow::Create ( Display* dpy )
         return false;
     }
 
-    // Done with the visual info data
-    XFree ( vi );
-
     XStoreName ( display, window, "AeonGUI" );
 
     XSelectInput ( display, window,
@@ -258,31 +175,12 @@ bool GLWindow::Create ( Display* dpy )
 
     printf ( "Mapping window\n" );
     XMapWindow ( display, window );
-
-    if ( glXCreateContextAttribsARB )
-    {
-        int context_attribs[] =
-        {
-            GLX_CONTEXT_MAJOR_VERSION_ARB, 1 /*4*/,
-            GLX_CONTEXT_MINOR_VERSION_ARB, 4 /*5*/,
-            //GLX_CONTEXT_PROFILE_MASK_ARB, GLX_CONTEXT_CORE_PROFILE_BIT_ARB,
-            None
-        };
-
-        printf ( "Creating context\n" );
-        ctx = glXCreateContextAttribsARB ( display, bestFbc, 0,
-                                           True, context_attribs );
-        XSync ( display, False );
-        if ( ctx != NULL )
-        {
-            printf ( "Created GL %d.%d context\n", context_attribs[1], context_attribs[3] );
-        }
-        else
-        {
-            return false;
-        }
-    }
-    else
+    printf ( "Creating context\n" );
+    ctx = glXCreateContext ( display, vi, nullptr, True );
+    // Done with the visual info data
+    XFree ( vi );
+    XSync ( display, False );
+    if ( ctx == NULL )
     {
         return false;
     }
@@ -298,33 +196,7 @@ bool GLWindow::Create ( Display* dpy )
 
     printf ( "Making context current\n" );
     glXMakeCurrent ( display, window, ctx );
-
-    GLGETPROCADDRESS ( PFNGLISPROGRAMPROC, glIsProgram );
-    GLGETPROCADDRESS ( PFNGLISSHADERPROC, glIsShader );
-    GLGETPROCADDRESS ( PFNGLCREATEPROGRAMPROC, glCreateProgram );
-    GLGETPROCADDRESS ( PFNGLCREATESHADERPROC, glCreateShader );
-    GLGETPROCADDRESS ( PFNGLCOMPILESHADERPROC, glCompileShader );
-    GLGETPROCADDRESS ( PFNGLDETACHSHADERPROC, glDetachShader );
-    GLGETPROCADDRESS ( PFNGLDELETESHADERPROC, glDeleteShader );
-    GLGETPROCADDRESS ( PFNGLDELETEPROGRAMPROC, glDeleteProgram );
-    GLGETPROCADDRESS ( PFNGLATTACHSHADERPROC, glAttachShader );
-    GLGETPROCADDRESS ( PFNGLSHADERSOURCEPROC, glShaderSource );
-    GLGETPROCADDRESS ( PFNGLUSEPROGRAMPROC, glUseProgram );
-    GLGETPROCADDRESS ( PFNGLLINKPROGRAMPROC, glLinkProgram );
-    GLGETPROCADDRESS ( PFNGLGENVERTEXARRAYSPROC, glGenVertexArrays );
-    GLGETPROCADDRESS ( PFNGLBINDVERTEXARRAYPROC, glBindVertexArray );
-    GLGETPROCADDRESS ( PFNGLGENBUFFERSPROC, glGenBuffers );
-    GLGETPROCADDRESS ( PFNGLBINDBUFFERPROC, glBindBuffer );
-    GLGETPROCADDRESS ( PFNGLBUFFERDATAPROC, glBufferData );
-    GLGETPROCADDRESS ( PFNGLISBUFFERPROC, glIsBuffer );
-    GLGETPROCADDRESS ( PFNGLISVERTEXARRAYPROC, glIsVertexArray );
-    GLGETPROCADDRESS ( PFNGLDELETEBUFFERSPROC, glDeleteBuffers );
-    GLGETPROCADDRESS ( PFNGLDELETEVERTEXARRAYSPROC, glDeleteVertexArrays );
-    GLGETPROCADDRESS ( PFNGLUNIFORM1IPROC, glUniform1i );
-    GLGETPROCADDRESS ( PFNGLGETSHADERIVPROC, glGetShaderiv );
-    GLGETPROCADDRESS ( PFNGLGETSHADERINFOLOGPROC, glGetShaderInfoLog );
-    GLGETPROCADDRESS ( PFNGLENABLEVERTEXATTRIBARRAYPROC, glEnableVertexAttribArray );
-    GLGETPROCADDRESS ( PFNGLVERTEXATTRIBPOINTERPROC, glVertexAttribPointer );
+    printf ( "GL_VERSION: %s\n", glGetString ( GL_VERSION ) );
 
     bool running = true;
     XEvent xEvent;
@@ -335,94 +207,6 @@ bool GLWindow::Create ( Display* dpy )
     OPENGL_CHECK_ERROR;
     glEnable ( GL_BLEND );
     OPENGL_CHECK_ERROR;
-
-    GLint compile_status{};
-    mProgram = glCreateProgram();
-    OPENGL_CHECK_ERROR;
-    GLuint vertex_shader = glCreateShader ( GL_VERTEX_SHADER );
-    OPENGL_CHECK_ERROR;
-    glShaderSource ( vertex_shader, 1, &vertex_shader_code_ptr, &vertex_shader_len );
-    OPENGL_CHECK_ERROR;
-    glCompileShader ( vertex_shader );
-    OPENGL_CHECK_ERROR;
-    glGetShaderiv ( vertex_shader, GL_COMPILE_STATUS, &compile_status );
-    OPENGL_CHECK_ERROR;
-    if ( compile_status != GL_TRUE )
-    {
-        GLint info_log_len;
-        glGetShaderiv ( vertex_shader, GL_INFO_LOG_LENGTH, &info_log_len );
-        OPENGL_CHECK_ERROR;
-        std::string log_string;
-        log_string.resize ( info_log_len );
-        if ( info_log_len > 1 )
-        {
-            glGetShaderInfoLog ( vertex_shader, info_log_len, nullptr, const_cast<GLchar*> ( log_string.data() ) );
-            OPENGL_CHECK_ERROR;
-            std::cout << vertex_shader_code << std::endl;
-            std::cout << log_string << std::endl;
-        }
-    }
-    glAttachShader ( mProgram, vertex_shader );
-    OPENGL_CHECK_ERROR
-    //-------------------------
-    uint32_t fragment_shader = glCreateShader ( GL_FRAGMENT_SHADER );
-    OPENGL_CHECK_ERROR
-    glShaderSource ( fragment_shader, 1, &fragment_shader_code_ptr, &fragment_shader_len );
-    OPENGL_CHECK_ERROR
-    glCompileShader ( fragment_shader );
-    OPENGL_CHECK_ERROR;
-    glGetShaderiv ( fragment_shader, GL_COMPILE_STATUS, &compile_status );
-    OPENGL_CHECK_ERROR;
-    if ( compile_status != GL_TRUE )
-    {
-        GLint info_log_len;
-        glGetShaderiv ( fragment_shader, GL_INFO_LOG_LENGTH, &info_log_len );
-        OPENGL_CHECK_ERROR;
-        std::string log_string;
-        log_string.resize ( info_log_len );
-        if ( info_log_len > 1 )
-        {
-            glGetShaderInfoLog ( fragment_shader, info_log_len, nullptr, const_cast<GLchar*> ( log_string.data() ) );
-            OPENGL_CHECK_ERROR;
-            std::cout << fragment_shader_code << std::endl;
-            std::cout << log_string << std::endl;
-        }
-    }
-    glAttachShader ( mProgram, fragment_shader );
-    OPENGL_CHECK_ERROR;
-    //-------------------------
-    glLinkProgram ( mProgram );
-    OPENGL_CHECK_ERROR;
-    glDetachShader ( mProgram, vertex_shader );
-    OPENGL_CHECK_ERROR;
-    glDetachShader ( mProgram, fragment_shader );
-    OPENGL_CHECK_ERROR;
-    glDeleteShader ( vertex_shader );
-    OPENGL_CHECK_ERROR;
-    glDeleteShader ( fragment_shader );
-    OPENGL_CHECK_ERROR;
-    glUseProgram ( mProgram );
-    OPENGL_CHECK_ERROR;
-    glUniform1i ( 0, 0 );
-    OPENGL_CHECK_ERROR;
-
-    //---------------------------------------------------------------------------
-    glGenBuffers ( 1, &mScreenQuad );
-    OPENGL_CHECK_ERROR;
-    glBindBuffer ( GL_ARRAY_BUFFER, mScreenQuad );
-    OPENGL_CHECK_ERROR;
-    glBufferData ( GL_ARRAY_BUFFER, vertex_size, vertices, GL_STATIC_DRAW );
-    OPENGL_CHECK_ERROR;
-    glEnableVertexAttribArray ( 0 );
-    OPENGL_CHECK_ERROR;
-    glVertexAttribPointer ( 0, 2, GL_FLOAT, GL_FALSE, sizeof ( float ) * 4, 0 );
-    OPENGL_CHECK_ERROR;
-    glEnableVertexAttribArray ( 1 );
-    OPENGL_CHECK_ERROR;
-    glVertexAttribPointer ( 1, 2, GL_FLOAT, GL_FALSE, sizeof ( float ) * 4, reinterpret_cast<const void*> ( sizeof ( float ) * 2 ) );
-    OPENGL_CHECK_ERROR;
-
-    //---------------------------------------------------------------------------
     glGenTextures ( 1, &mScreenTexture );
     OPENGL_CHECK_ERROR;
     glBindTexture ( GL_TEXTURE_2D, mScreenTexture );
@@ -501,25 +285,10 @@ bool GLWindow::Create ( Display* dpy )
         }
         last_time = current_time;
 
+        mWindow.Draw();
+
         glClear ( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT );
         OPENGL_CHECK_ERROR;
-        glUseProgram ( mProgram );
-        OPENGL_CHECK_ERROR;
-
-        glBindBuffer ( GL_ARRAY_BUFFER, mScreenQuad );
-        OPENGL_CHECK_ERROR;
-        glEnableVertexAttribArray ( 0 );
-        OPENGL_CHECK_ERROR;
-        glVertexAttribPointer ( 0, 2, GL_FLOAT, GL_FALSE, sizeof ( float ) * 4, 0 );
-        OPENGL_CHECK_ERROR;
-        glEnableVertexAttribArray ( 1 );
-        OPENGL_CHECK_ERROR;
-        glVertexAttribPointer ( 1, 2, GL_FLOAT, GL_FALSE, sizeof ( float ) * 4, reinterpret_cast<const void *> ( sizeof ( float ) * 2 ) );
-        OPENGL_CHECK_ERROR;
-
-        glDisable ( GL_DEPTH_TEST );
-        OPENGL_CHECK_ERROR;
-        mWindow.Draw();
         glBindTexture ( GL_TEXTURE_2D, mScreenTexture );
         OPENGL_CHECK_ERROR;
         glTexSubImage2D ( GL_TEXTURE_2D,
@@ -532,7 +301,19 @@ bool GLWindow::Create ( Display* dpy )
                           GL_UNSIGNED_INT_8_8_8_8_REV,
                           mWindow.GetPixels() );
         OPENGL_CHECK_ERROR;
-        glDrawArrays ( GL_TRIANGLE_FAN, 0, 4 );
+        glEnable ( GL_TEXTURE_2D );
+        glBegin ( GL_TRIANGLE_FAN );
+        {
+            glVertex2f ( vertices[0], vertices[1] );
+            glTexCoord2f ( vertices[2], vertices[3] );
+            glVertex2f ( vertices[4], vertices[5] );
+            glTexCoord2f ( vertices[6], vertices[7] );
+            glVertex2f ( vertices[8], vertices[9] );
+            glTexCoord2f ( vertices[10], vertices[11] );
+            glVertex2f ( vertices[12], vertices[13] );
+            glTexCoord2f ( vertices[14], vertices[15] );
+        }
+        glEnd();
         OPENGL_CHECK_ERROR;
         glXSwapBuffers ( display, window );
     }
@@ -591,29 +372,6 @@ int main ( int argc, char ** argv )
         return EXIT_FAILURE;
     }
     printf ( "GLX Version: %d.%d\n", glx_major, glx_minor );
-
-    // Get the default screen's GLX extension list
-    const char *glxExts = glXQueryExtensionsString ( display,
-                          DefaultScreen ( display ) );
-
-    // Check for the GLX_ARB_create_context extension string and the function.
-    if ( !isExtensionSupported ( glxExts, "GLX_ARB_create_context" ) )
-    {
-        printf ( "GLX_ARB_create_context not supported\n" );
-        XCloseDisplay ( display );
-        return EXIT_FAILURE;
-    }
-
-    // NOTE: It is not necessary to create or make current to a context before
-    // calling glXGetProcAddressARB
-    glXCreateContextAttribsARB = ( PFNGLXCREATECONTEXTATTRIBSARBPROC )
-                                 glXGetProcAddressARB ( ( const GLubyte * ) "glXCreateContextAttribsARB" );
-    if ( glXCreateContextAttribsARB == NULL )
-    {
-        printf ( "Pointer for glXCreateContextAttribsARB is NULL\n" );
-        XCloseDisplay ( display );
-        return EXIT_FAILURE;
-    }
 
     if ( !glWindow.Create ( display ) )
     {
