@@ -304,14 +304,14 @@ bool GLWindow::Create ( Display* dpy )
         glEnable ( GL_TEXTURE_2D );
         glBegin ( GL_TRIANGLE_FAN );
         {
-            glVertex2f ( vertices[0], vertices[1] );
             glTexCoord2f ( vertices[2], vertices[3] );
-            glVertex2f ( vertices[4], vertices[5] );
+            glVertex2f ( vertices[0], vertices[1] );
             glTexCoord2f ( vertices[6], vertices[7] );
-            glVertex2f ( vertices[8], vertices[9] );
+            glVertex2f ( vertices[4], vertices[5] );
             glTexCoord2f ( vertices[10], vertices[11] );
-            glVertex2f ( vertices[12], vertices[13] );
+            glVertex2f ( vertices[8], vertices[9] );
             glTexCoord2f ( vertices[14], vertices[15] );
+            glVertex2f ( vertices[12], vertices[13] );
         }
         glEnd();
         OPENGL_CHECK_ERROR;

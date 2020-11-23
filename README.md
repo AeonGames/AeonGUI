@@ -3,7 +3,7 @@ AeonGUI
 
 [![MinGW64 Build status](https://ci.appveyor.com/api/projects/status/g1hx08cchdmkbw3m?svg=true)](https://ci.appveyor.com/project/Kwizatz/aeongui) [![MinGW32 Build status](https://ci.appveyor.com/api/projects/status/yogupd65ow1dr8pq?svg=true)](https://ci.appveyor.com/project/Kwizatz/aeongui-altq2)
 
-Last Updated: 07-31-2019
+Last Updated: 11-23-2020
 
 DESCRIPTION
 -----------
@@ -18,7 +18,7 @@ HISTORY
 
 The idea for the library was born around 2004 or 2005 under the name 'Glitch', and has evolved overtime but never quite reached maturity.
 The name change to AeonGUI came about as a way to identify the library as part of the AeonGames brand
-and to avoid confusion since originaly the name 'GLitch' was chosen to emphasize OpenGL support, which is no longer the priority.
+and to avoid confusion since originally the name 'GLitch' was chosen to emphasize OpenGL support, which is no longer the priority.
 
 On 2013 the goal of the library was to create a widget toolkit similar to Qt or GTK+ to be rendered inside the contexts of different
 graphic APIs, but that idea was dropped due to the complexity required and the fact that the target for the library was video games,
@@ -40,11 +40,19 @@ For information on how to use CMake refer to its [official site](https://www.cma
 There is only official support for Windows (MSYS2 and Visual Studio) and Linux at this time,
 however, Linux builds may break from time to time as most development is done on Windows.
 
+As of 11/23/2020 the library has a hard dependency on [v8](https://v8.dev/), Google's JavaScript engine,
+the binaries for which can be obtained from [vcpkg](https://github.com/microsoft/vcpkg) for MSVC or Ubuntu,
+or directly from [MSYS2](https://www.msys2.org/)'s repositories in the case of mingw-w64 builds.
+
 LICENSE
 -------
 
-The library is released under the terms of the permisive [Apache 2.0 license](http://www.apache.org/licenses/LICENSE-2.0)
-The Aeon Games logo is __NOT__ covered by the Apache license, it is a Trade Mark and may not be used for any purpose without permision.
+The library is released under the terms of the permissive [Apache 2.0 license](http://www.apache.org/licenses/LICENSE-2.0)
+The Aeon Games logo is __NOT__ covered by the Apache license, it is a Trade Mark and may not be used for any purpose without permission.
+
+TO-DO List
+
+* Have the code that reads a document create element nodes wrapped into JavaScript classes.
 
 AUTHORS
 -------
