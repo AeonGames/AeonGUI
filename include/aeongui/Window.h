@@ -20,7 +20,6 @@ limitations under the License.
 #include <memory>
 #include <algorithm>
 #include <string>
-#include "aeongui/Document.h"
 #include "aeongui/Platform.h"
 ///@todo Canvas and JavaScript implementations should be selectable.
 #include "aeongui/CairoCanvas.h"
@@ -41,8 +40,7 @@ namespace AeonGUI
         DLL size_t GetStride() const;
         DLL void Draw();
     private:
-        Document mDocument{};
-        JavaScript mJavaScript{this, &mDocument};
+        JavaScript mJavaScript{this};
         CairoCanvas mCanvas{};
     };
 }

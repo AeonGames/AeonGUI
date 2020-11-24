@@ -31,10 +31,15 @@ limitations under the License.
 namespace AeonGUI
 {
     static std::unique_ptr<v8::Platform> gPlatform{};
+
+    enum GlobalInternalFields
+    {
+        WINDOW = 0,
+        LOCATION,
+        COUNT
+    };
     bool InitializeJavaScript ( int argc, char *argv[] )
     {
-        /** @todo Provide a plugin loading mechanism,
-         *  so different JavaScript engines can be used */
         // Initialize V8.
         v8::V8::InitializeICU();
         v8::V8::InitializeExternalStartupData ( argv[0] );
@@ -82,7 +87,28 @@ namespace AeonGUI
         info.GetReturnValue().Set ( info.Holder() );
     }
 
-    JavaScript::JavaScript ( Window* aWindow, Document* aDocument )
+    /** @note document.location and window.location *SHOULD* be a Location object
+     * according to the W3C specification but since we're not interested in dealing with remote
+     * resources yet, we'll deal with it as a simple string.
+     */
+    static void GetLocation ( v8::Local<v8::String> property,
+                              const v8::PropertyCallbackInfo<v8::Value>& info )
+    {
+        v8::Isolate* isolate = info.GetIsolate();
+        info.GetReturnValue().Set ( isolate->GetCurrentContext()->Global()->GetInternalField ( GlobalInternalFields::LOCATION ) );
+    }
+
+    static void SetLocation ( v8::Local<v8::String> property, v8::Local<v8::Value> value,
+                              const v8::PropertyCallbackInfo<void>& info )
+    {
+        v8::Isolate* isolate = info.GetIsolate();
+        v8::String::Utf8Value utf8 ( isolate, value );
+        std::cout << __FUNCTION__ << "( \"" << *utf8 << "\" )" << std::endl;
+        isolate->GetCurrentContext()->Global()->SetInternalField ( GlobalInternalFields::LOCATION, value );
+        /** @todo Load Document */
+    }
+
+    JavaScript::JavaScript ( Window* aWindow )
     {
         // Create a new Isolate and make it the current one.
         v8::Isolate::CreateParams create_params{};
@@ -94,7 +120,7 @@ namespace AeonGUI
 
             // Create Global Object Template
             v8::Handle<v8::ObjectTemplate> global = v8::ObjectTemplate::New ( mIsolate );
-            global->SetInternalFieldCount ( 1 );
+            global->SetInternalFieldCount ( GlobalInternalFields::COUNT );
 
             // Create Console Object Template
             v8::Handle<v8::ObjectTemplate> console = v8::ObjectTemplate::New ( mIsolate );
@@ -105,8 +131,10 @@ namespace AeonGUI
 
             // Create Document Object Template
             v8::Handle<v8::ObjectTemplate> document = v8::ObjectTemplate::New ( mIsolate );
-            document->Set ( v8::String::NewFromUtf8Literal ( mIsolate, "createElementNS" ), v8::FunctionTemplate::New ( mIsolate, createElementNS ) );
+            document->Set ( v8::String::NewFromUtf8Literal ( mIsolate, "createElementNS" ), v8::FunctionTemplate::New ( mIsolate, AeonGUI::createElementNS ) );
             document->Set ( v8::String::NewFromUtf8Literal ( mIsolate, "getElementById" ), v8::FunctionTemplate::New ( mIsolate, getElementById ) );
+            document->SetAccessor ( v8::String::NewFromUtf8Literal ( mIsolate, "location" ), AeonGUI::GetLocation, AeonGUI::SetLocation );
+            global->SetAccessor ( v8::String::NewFromUtf8Literal ( mIsolate, "location" ), AeonGUI::GetLocation, AeonGUI::SetLocation );
 
             // Create Context
             v8::Local<v8::Context> context = v8::Context::New ( mIsolate, nullptr, global );
@@ -167,5 +195,17 @@ namespace AeonGUI
          * but it must an engine independent wrapper.*/
         script->Run ( context ).ToLocalChecked();
 #endif
+    }
+
+    void JavaScript::SetLocation ( const std::string& aString )
+    {
+        v8::Isolate::Scope isolate_scope ( mIsolate );
+        v8::HandleScope handle_scope ( mIsolate );
+        v8::Local<v8::Context> context =
+            v8::Local<v8::Context>::New ( mIsolate, mContext );
+        v8::Context::Scope context_scope ( context );
+        context->Global()->Set ( context,
+                                 v8::String::NewFromUtf8Literal ( mIsolate, "location" ),
+                                 v8::String::NewFromUtf8 ( mIsolate, aString.data(), v8::NewStringType::kNormal ).ToLocalChecked() ).Check();
     }
 }

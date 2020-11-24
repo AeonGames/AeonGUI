@@ -28,9 +28,10 @@ namespace AeonGUI
     class JavaScript
     {
     public:
-        JavaScript ( Window* aWindow, Document* aDocument );
+        JavaScript ( Window* aWindow );
         ~JavaScript();
         void Eval ( const std::string& aString );
+        void SetLocation ( const std::string& aString );
     private:
         v8::Isolate* mIsolate{};
         v8::Persistent<v8::Context> mContext{};

@@ -17,26 +17,22 @@ limitations under the License.
 #include <iostream>
 #include <stdexcept>
 #include <string>
+#include <libxml/tree.h>
+#include <libxml/parser.h>
+
 #include "aeongui/Window.h"
 
 namespace AeonGUI
 {
-    Window::Window ()
-    {
-        mDocument.Load ( mJavaScript );
-    }
+    Window::Window () : mJavaScript{this} {}
     Window::Window ( const std::string aFilename, uint32_t aWidth, uint32_t aHeight ) :
-        mDocument{aFilename},
-        mJavaScript{this, &mDocument},
+        mJavaScript{this},
         mCanvas{aWidth, aHeight}
     {
-        mDocument.Load ( mJavaScript );
+        mJavaScript.SetLocation ( aFilename );
     }
 
-    Window::~Window()
-    {
-        mDocument.Unload ( mJavaScript );
-    }
+    Window::~Window() = default;
 
     void Window::ResizeViewport ( uint32_t aWidth, uint32_t aHeight )
     {
@@ -64,6 +60,21 @@ namespace AeonGUI
     void Window::Draw()
     {
         mCanvas.Clear();
-        mDocument.Draw ( mCanvas );
+        // TODO Get Document Element from JavaScript object and enable the following code.
+#if 0
+        mDocumentElement->TraverseDepthFirstPreOrder (
+            [&mCanvas] ( const Node * aNode )
+        {
+            aNode->DrawStart ( mCanvas );
+        },
+        [&mCanvas] ( const Node * aNode )
+        {
+            aNode->DrawFinish ( mCanvas );
+        },
+        [] ( const Node * aNode )
+        {
+            return aNode->IsDrawEnabled();
+        } );
+#endif
     }
 }
