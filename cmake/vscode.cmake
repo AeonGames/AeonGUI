@@ -58,7 +58,7 @@ if(CMAKE_GENERATOR MATCHES "(MSYS|Unix) Makefiles")
                       }                    
                   ],
                   \"externalConsole\": true,
-                        \"program\": \"${CMAKE_BINARY_DIR}/bin/${TARGET}${CMAKE_EXECUTABLE_SUFFIX}\",
+                        \"program\": \"${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/${TARGET}${CMAKE_EXECUTABLE_SUFFIX}\",
                         \"miDebuggerPath\": \"${GDB_EXECUTABLE}\",
                         \"MIMode\": \"gdb\",
                         \"setupCommands\": [
