@@ -20,6 +20,7 @@ limitations under the License.
 #include <sstream>
 #include "aeongui/AeonGUI.h"
 #include "aeongui/JavaScript.h"
+#include "aeongui/JsObjectWrap.h"
 #include "aeongui/Window.h"
 #include "aeongui/Document.h"
 #include "aeongui/ElementFactory.h"
@@ -207,5 +208,28 @@ namespace AeonGUI
         context->Global()->Set ( context,
                                  v8::String::NewFromUtf8Literal ( mIsolate, "location" ),
                                  v8::String::NewFromUtf8 ( mIsolate, aString.data(), v8::NewStringType::kNormal ).ToLocalChecked() ).Check();
+    }
+
+    Element* JavaScript::GetDocumentElement()
+    {
+#if 0
+        /*
+        This function was added so Window can retrieve a pointer to the document element
+        and trigger drawing of the SVG document, but it should really be private and
+        have a separate draw function.
+        */
+        v8::Isolate::Scope isolate_scope ( mIsolate );
+        v8::HandleScope handle_scope ( mIsolate );
+        v8::Local<v8::Context> context =
+            v8::Local<v8::Context>::New ( mIsolate, mContext );
+        v8::Context::Scope context_scope ( context );
+        v8::Local<v8::Value> document_element = context->Global()->Get ( context, v8::String::NewFromUtf8Literal ( mIsolate, "document" ) ).ToLocalChecked();
+        // Need to get document.documentElement here.
+        if ( document_element->IsObject() && document_element->IsExternal() )
+        {
+            return JsObjectWrap::Unwrap<Element> ( document_element.As<v8::Object>() );
+        }
+#endif
+        return nullptr;
     }
 }

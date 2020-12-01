@@ -20,6 +20,7 @@ limitations under the License.
 #include <libxml/tree.h>
 #include <libxml/parser.h>
 
+#include "dom/Element.h"
 #include "aeongui/Window.h"
 
 namespace AeonGUI
@@ -60,21 +61,22 @@ namespace AeonGUI
     void Window::Draw()
     {
         mCanvas.Clear();
-        // TODO Get Document Element from JavaScript object and enable the following code.
-#if 0
-        mDocumentElement->TraverseDepthFirstPreOrder (
-            [&mCanvas] ( const Node * aNode )
+        // Only draw if document_element is valid.
+        if ( Element* document_element = mJavaScript.GetDocumentElement() )
         {
-            aNode->DrawStart ( mCanvas );
-        },
-        [&mCanvas] ( const Node * aNode )
-        {
-            aNode->DrawFinish ( mCanvas );
-        },
-        [] ( const Node * aNode )
-        {
-            return aNode->IsDrawEnabled();
-        } );
-#endif
+            document_element->TraverseDepthFirstPreOrder (
+                [this] ( const Node * aNode )
+            {
+                aNode->DrawStart ( mCanvas );
+            },
+            [this] ( const Node * aNode )
+            {
+                aNode->DrawFinish ( mCanvas );
+            },
+            [] ( const Node * aNode )
+            {
+                return aNode->IsDrawEnabled();
+            } );
+        }
     }
 }

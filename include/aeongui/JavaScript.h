@@ -24,7 +24,7 @@ namespace AeonGUI
 {
     class Node;
     class Window;
-    class Document;
+    class Element;
     class JavaScript
     {
     public:
@@ -32,6 +32,7 @@ namespace AeonGUI
         ~JavaScript();
         void Eval ( const std::string& aString );
         void SetLocation ( const std::string& aString );
+        Element* GetDocumentElement();
     private:
         v8::Isolate* mIsolate{};
         v8::Persistent<v8::Context> mContext{};
