@@ -32,5 +32,5 @@ endif()
 
 set_target_properties(OpenGLDemo PROPERTIES DEBUG_ARGUMENTS "${CMAKE_SOURCE_DIR}/images/tiger.svg")
 set_target_properties(OpenGLDemo PROPERTIES COMPILE_FLAGS "-DNOMINMAX -D_CRT_SECURE_NO_WARNINGS")
-target_link_libraries(OpenGLDemo AeonGUI ${X11_LIBRARIES} ${OPENGL_glx_LIBRARY} ${OPENGL_opengl_LIBRARY} ${OPENGL_gl_LIBRARY} ${OPENGL_glu_LIBRARY})
+target_link_libraries(OpenGLDemo AeonGUI ${X11_LIBRARIES} OpenGL::GL)
 fix_compile_commands(OpenGLDemo)
