@@ -1,5 +1,5 @@
 /*
-Copyright (C) 2013,2019,2020 Rodrigo Jose Hernandez Cordoba
+Copyright (C) 2013,2019-2021 Rodrigo Jose Hernandez Cordoba
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -353,33 +353,35 @@ GLWindow::~GLWindow()
 int main ( int argc, char ** argv )
 {
     AeonGUI::Initialize ( argc, argv );
-    GLWindow glWindow ( ( argc > 1 ) ? argv[1] : nullptr );
-    int glx_major, glx_minor;
-
-    Display* display = XOpenDisplay ( 0 );
-    if ( !display )
     {
-        printf ( "Failed to open X display\n" );
-        return EXIT_FAILURE;
-    }
+        GLWindow glWindow ( ( argc > 1 ) ? argv[1] : nullptr );
+        int glx_major, glx_minor;
 
-    // FBConfigs were added in GLX version 1.3.
-    if ( !glXQueryVersion ( display, &glx_major, &glx_minor ) ||
-         ( ( glx_major == 1 ) && ( glx_minor < 3 ) ) || ( glx_major < 1 ) )
-    {
-        printf ( "Invalid GLX version %d.%d\n", glx_major, glx_minor );
+        Display* display = XOpenDisplay ( 0 );
+        if ( !display )
+        {
+            printf ( "Failed to open X display\n" );
+            return EXIT_FAILURE;
+        }
+
+        // FBConfigs were added in GLX version 1.3.
+        if ( !glXQueryVersion ( display, &glx_major, &glx_minor ) ||
+             ( ( glx_major == 1 ) && ( glx_minor < 3 ) ) || ( glx_major < 1 ) )
+        {
+            printf ( "Invalid GLX version %d.%d\n", glx_major, glx_minor );
+            XCloseDisplay ( display );
+            return EXIT_FAILURE;
+        }
+        printf ( "GLX Version: %d.%d\n", glx_major, glx_minor );
+
+        if ( !glWindow.Create ( display ) )
+        {
+            XCloseDisplay ( display );
+            return EXIT_FAILURE;
+        }
+        glWindow.Destroy();
         XCloseDisplay ( display );
-        return EXIT_FAILURE;
     }
-    printf ( "GLX Version: %d.%d\n", glx_major, glx_minor );
-
-    if ( !glWindow.Create ( display ) )
-    {
-        XCloseDisplay ( display );
-        return EXIT_FAILURE;
-    }
-    glWindow.Destroy();
-    XCloseDisplay ( display );
     AeonGUI::Finalize();
     return EXIT_SUCCESS;
 }
