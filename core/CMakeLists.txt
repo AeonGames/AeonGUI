@@ -154,10 +154,10 @@ set_target_properties(AeonGUI PROPERTIES COMPILE_FLAGS "-DNOMINMAX -D_CRT_SECURE
 target_link_libraries(AeonGUI PUBLIC ${CAIRO_LIBRARIES} ${LIBXML2_LIBRARIES} ${FREETYPE_LIBRARIES} ${V8_TARGET})
 
 if(V8_SNAPSHOT_BLOB)
-add_custom_command(TARGET AeonGUI
-    COMMAND ${CMAKE_COMMAND} -E copy ${V8_SNAPSHOT_BLOB} ${RUNTIME_OUTPUT_DIRECTORY}/snapshot_blob.bin
-    MAIN_DEPENDENCY ${V8_SNAPSHOT_BLOB}
-    COMMENT "Copying V8 snapshot blob")
+    add_custom_command(TARGET AeonGUI
+        COMMAND ${CMAKE_COMMAND} -E copy ${V8_SNAPSHOT_BLOB} $<TARGET_FILE_DIR:AeonGUI>/
+        MAIN_DEPENDENCY ${V8_SNAPSHOT_BLOB}
+        COMMENT "Copying V8 snapshot blob")
 endif()
 
 target_precompile_headers(AeonGUI
