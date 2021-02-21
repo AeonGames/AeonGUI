@@ -1,5 +1,5 @@
 /*
-Copyright (C) 2019,2020 Rodrigo Jose Hernandez Cordoba
+Copyright (C) 2019,2021 Rodrigo Jose Hernandez Cordoba
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -18,6 +18,9 @@ limitations under the License.
 #include <iostream>
 #include <iomanip>
 #include <sstream>
+#include <array>
+#include <libxml/tree.h>
+#include <libxml/parser.h>
 #include "aeongui/AeonGUI.h"
 #include "aeongui/JavaScript.h"
 #include "aeongui/JsObjectWrap.h"
@@ -39,6 +42,49 @@ namespace AeonGUI
         LOCATION,
         COUNT
     };
+
+    static const std::regex number{ "-?([0-9]+|[0-9]*\\.[0-9]+([eE][-+]?[0-9]+)?)" };
+    static AttributeMap ExtractElementAttributes ( xmlElementPtr aXmlElementPtr )
+    {
+        AttributeMap attribute_map{};
+        for ( xmlNodePtr attribute = reinterpret_cast<xmlNodePtr> ( aXmlElementPtr->attributes ); attribute; attribute = attribute->next )
+        {
+            std::cmatch match;
+            const char* value = reinterpret_cast<const char*> ( xmlGetProp ( reinterpret_cast<xmlNodePtr> ( aXmlElementPtr ), attribute->name ) );
+            if ( std::regex_match ( value, match, number ) )
+            {
+                attribute_map[reinterpret_cast<const char*> ( attribute->name )] = std::stod ( match[0].str() );
+            }
+            else if ( std::regex_match ( value, match, Color::ColorRegex ) )
+            {
+                attribute_map[reinterpret_cast<const char*> ( attribute->name )] = Color{ match[0].str() };
+            }
+            else
+            {
+                attribute_map[reinterpret_cast<const char*> ( attribute->name )] = value;
+            }
+        }
+        return attribute_map;
+    }
+
+    static void AddNodes ( Node* aNode, xmlNode* aXmlNode )
+    {
+        for ( xmlNode* node = aXmlNode; node; node = node->next )
+        {
+            if ( node->type == XML_ELEMENT_NODE )
+            {
+                xmlElementPtr element = reinterpret_cast<xmlElementPtr> ( node );
+                AddNodes ( aNode->AddNode ( Construct ( reinterpret_cast<const char*> ( element->name ), ExtractElementAttributes ( element ) ) ), node->children );
+            }
+#if 0
+            else if ( xmlNodeIsText ( node ) && !xmlIsBlankNode ( node ) )
+            {
+                AddNodes ( aNode->AddNode ( new Text{ reinterpret_cast<const char*> ( node->content ) } ), node->children );
+            }
+#endif
+        }
+    }
+
     bool InitializeJavaScript ( int argc, char *argv[] )
     {
         // Initialize V8.
@@ -90,7 +136,7 @@ namespace AeonGUI
 
     /** @note document.location and window.location *SHOULD* be a Location object
      * according to the W3C specification but since we're not interested in dealing with remote
-     * resources yet, we'll deal with it as a simple string.
+     * resources yet, we'll deal with it as a simple string for now.
      */
     static void GetLocation ( v8::Local<v8::String> property,
                               const v8::PropertyCallbackInfo<v8::Value>& info )
@@ -105,8 +151,34 @@ namespace AeonGUI
         v8::Isolate* isolate = info.GetIsolate();
         v8::String::Utf8Value utf8 ( isolate, value );
         std::cout << __FUNCTION__ << "( \"" << *utf8 << "\" )" << std::endl;
-        isolate->GetCurrentContext()->Global()->SetInternalField ( GlobalInternalFields::LOCATION, value );
-        /** @todo Load Document */
+        v8::Local<v8::Context> context = isolate->GetCurrentContext();
+        v8::Local<v8::Object> global = context->Global();
+        global->SetInternalField ( GlobalInternalFields::LOCATION, value );
+        v8::Local<v8::Object> document = global->Get ( context, v8::String::NewFromUtf8Literal ( isolate, "document" ) ).ToLocalChecked().As<v8::Object>();
+        xmlDocPtr xml{ xmlReadFile ( *utf8, nullptr, 0 ) };
+
+        if ( xml == nullptr )
+        {
+            /** @todo This should be a Js exception. */
+            throw std::runtime_error ( "Could not parse xml file" );
+        }
+
+        xmlElementPtr root_element = reinterpret_cast<xmlElementPtr> ( xmlDocGetRootElement ( xml ) );
+        std::array<v8::Local<v8::Value>, 2> args
+        {
+            v8::String::NewFromUtf8Literal ( isolate, "http://www.w3.org/2000/svg" ),
+            v8::String::NewFromUtf8 ( isolate, reinterpret_cast<const char*> ( root_element->name ) ).ToLocalChecked(),
+        };
+
+        v8::Local<v8::Object> documentElement = document->Get ( context, v8::String::NewFromUtf8Literal ( isolate, "createElementNS" ) ).ToLocalChecked().As<v8::Function>()->Call ( context, document, args.size(), args.data() ).ToLocalChecked().As<v8::Object>();
+#if 0
+        mDocumentElement = Construct ( reinterpret_cast<const char*> ( root_element->name ), ExtractElementAttributes ( root_element ) );
+        AddNodes ( mDocumentElement, root_element->children );
+        xmlFreeDoc ( document );
+#endif
+        document->Set ( context, v8::String::NewFromUtf8Literal ( isolate, "documentElement" ), documentElement ).Check();
+
+        /**@todo Emit onload event.*/
     }
 
     JavaScript::JavaScript ( Window* aWindow )
@@ -193,7 +265,7 @@ namespace AeonGUI
         std::cout << *utf8 << std::endl;
 #else
         /**@todo Eval should return a value,
-         * but it must an engine independent wrapper.*/
+         * but it must be an engine independent wrapper.*/
         script->Run ( context ).ToLocalChecked();
 #endif
     }

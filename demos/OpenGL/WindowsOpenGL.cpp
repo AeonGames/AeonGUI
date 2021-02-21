@@ -1,5 +1,5 @@
 /*
-Copyright (C) 2010-2012,2019,2020 Rodrigo Jose Hernandez Cordoba
+Copyright (C) 2010-2012,2019-2021 Rodrigo Jose Hernandez Cordoba
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -132,27 +132,8 @@ void Window::Initialize ( HINSTANCE hInstance, LONG aWidth, LONG aHeight )
     pfd.dwFlags = PFD_DRAW_TO_WINDOW | PFD_SUPPORT_OPENGL | PFD_DOUBLEBUFFER;
     pfd.iPixelType = PFD_TYPE_RGBA;
     pfd.cColorBits = 24;
-    pfd.cRedBits = 0;
-    pfd.cRedShift = 0;
-    pfd.cGreenBits = 0;
-    pfd.cGreenShift = 0;
-    pfd.cBlueBits = 0;
-    pfd.cBlueShift = 0;
-    pfd.cAlphaBits = 0;
-    pfd.cAlphaShift = 0;
-    pfd.cAccumBits = 0;
-    pfd.cAccumRedBits = 0;
-    pfd.cAccumGreenBits = 0;
-    pfd.cAccumBlueBits = 0;
-    pfd.cAccumAlphaBits = 0;
     pfd.cDepthBits = 16;
-    pfd.cStencilBits = 0;
-    pfd.cAuxBuffers = 0;
     pfd.iLayerType = PFD_MAIN_PLANE;
-    pfd.bReserved = 0;
-    pfd.dwLayerMask = 0;
-    pfd.dwVisibleMask = 0;
-    pfd.dwDamageMask = 0;
     pf = ChoosePixelFormat ( hDC, &pfd );
     SetPixelFormat ( hDC, pf, &pfd );
     hRC = wglCreateContext ( hDC );
