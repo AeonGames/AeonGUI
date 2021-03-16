@@ -108,7 +108,7 @@ endif()
 
 include(v8)
 
-include(opensans)
+# include(opensans)
 find_package(Freetype)
 if(FREETYPE_FOUND)
 	include_directories(${FREETYPE_INCLUDE_DIRS})
