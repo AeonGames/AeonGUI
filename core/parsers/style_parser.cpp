@@ -1,8 +1,8 @@
-/* A Bison parser, made by GNU Bison 3.6.4.  */
+/* A Bison parser, made by GNU Bison 3.7.6.  */
 
 /* Bison implementation for Yacc-like parsers in C
 
-   Copyright (C) 1984, 1989-1990, 2000-2015, 2018-2020 Free Software Foundation,
+   Copyright (C) 1984, 1989-1990, 2000-2015, 2018-2021 Free Software Foundation,
    Inc.
 
    This program is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
    GNU General Public License for more details.
 
    You should have received a copy of the GNU General Public License
-   along with this program.  If not, see <http://www.gnu.org/licenses/>.  */
+   along with this program.  If not, see <https://www.gnu.org/licenses/>.  */
 
 /* As a special exception, you may create a larger work that contains
    part or all of the Bison parser skeleton and distribute that work
@@ -45,11 +45,11 @@
    define necessary library symbols; they are noted "INFRINGES ON
    USER NAME SPACE" below.  */
 
-/* Identify Bison output.  */
-#define YYBISON 1
+/* Identify Bison output, and Bison version.  */
+#define YYBISON 30706
 
-/* Bison version.  */
-#define YYBISON_VERSION "3.6.4"
+/* Bison version string.  */
+#define YYBISON_VERSION "3.7.6"
 
 /* Skeleton name.  */
 #define YYSKELETON_NAME "yacc.c"
@@ -117,72 +117,7 @@ extern "C"
 #  endif
 # endif
 
-/* Use api.header.include to #include this header
-   instead of duplicating it here.  */
-#ifndef YY_STYLE_C_CODE_AEONGUI_MINGW64_CORE_STYLE_PARSER_HPP_INCLUDED
-# define YY_STYLE_C_CODE_AEONGUI_MINGW64_CORE_STYLE_PARSER_HPP_INCLUDED
-/* Debug traces.  */
-#ifndef STYLEDEBUG
-# if defined YYDEBUG
-#if YYDEBUG
-#   define STYLEDEBUG 1
-#  else
-#   define STYLEDEBUG 0
-#  endif
-# else /* ! defined YYDEBUG */
-#  define STYLEDEBUG 0
-# endif /* ! defined YYDEBUG */
-#endif  /* ! defined STYLEDEBUG */
-#if STYLEDEBUG
-extern int styledebug;
-#endif
-/* "%code requires" blocks.  */
-#line 1 "C:/Code/AeonGUI/core/parsers/style.ypp"
-
-/*
-Copyright (C) 2019,2020 Rodrigo Jose Hernandez Cordoba
-Licensed under the Apache License, Version 2.0 (the "License");
-you may not use this file except in compliance with the License.
-You may obtain a copy of the License at
-http://www.apache.org/licenses/LICENSE-2.0
-Unless required by applicable law or agreed to in writing, software
-distributed under the License is distributed on an "AS IS" BASIS,
-WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-See the License for the specific language governing permissions and
-limitations under the License.
-*/
-
-#line 156 "C:/Code/AeonGUI/mingw64/core/style_parser.cpp"
-
-/* Token kinds.  */
-#ifndef STYLETOKENTYPE
-# define STYLETOKENTYPE
-enum styletokentype
-{
-    STYLEEMPTY = -2,
-    STYLEEOF = 0,                  /* "end of file"  */
-    STYLEerror = 256,              /* error  */
-    STYLEUNDEF = 257,              /* "invalid token"  */
-    IDENT = 258,                   /* IDENT  */
-    COLOR = 259,                   /* COLOR  */
-    NUMBER = 260                   /* NUMBER  */
-};
-typedef enum styletokentype styletoken_kind_t;
-#endif
-
-/* Value type.  */
-#if ! defined STYLESTYPE && ! defined STYLESTYPE_IS_DECLARED
-typedef int STYLESTYPE;
-# define STYLESTYPE_IS_TRIVIAL 1
-# define STYLESTYPE_IS_DECLARED 1
-#endif
-
-
-extern STYLESTYPE stylelval;
-
-int styleparse ( AeonGUI::AttributeMap& aAttributeMap );
-
-#endif /* !YY_STYLE_C_CODE_AEONGUI_MINGW64_CORE_STYLE_PARSER_HPP_INCLUDED  */
+#include "style_parser.hpp"
 /* Symbol kind.  */
 enum yysymbol_kind_t
 {
@@ -240,6 +175,18 @@ typedef __INT_LEAST16_TYPE__ yytype_int16;
 typedef int_least16_t yytype_int16;
 #else
 typedef short yytype_int16;
+#endif
+
+/* Work around bug in HP-UX 11.23, which defines these macros
+   incorrectly for preprocessor constants.  This workaround can likely
+   be removed in 2023, as HPE has promised support for HP-UX 11.23
+   (aka HP-UX 11i v2) only through the end of 2022; see Table 2 of
+   <https://h20195.www2.hpe.com/V2/getpdf.aspx/4AA4-7673ENW.pdf>.  */
+#ifdef __hpux
+# undef UINT_LEAST8_MAX
+# undef UINT_LEAST16_MAX
+# define UINT_LEAST8_MAX 255
+# define UINT_LEAST16_MAX 65535
 #endif
 
 #if defined __UINT_LEAST8_MAX__ && __UINT_LEAST8_MAX__ <= __INT_MAX__
@@ -339,9 +286,9 @@ typedef int yy_state_fast_t;
 
 /* Suppress unused-variable warnings by "using" E.  */
 #if ! defined lint || defined __GNUC__
-# define YYUSE(E) ((void) (E))
+# define YY_USE(E) ((void) (E))
 #else
-# define YYUSE(E) /* empty */
+# define YY_USE(E) /* empty */
 #endif
 
 #if defined __GNUC__ && ! defined __ICC && 407 <= __GNUC__ * 100 + __GNUC_MINOR__
@@ -519,6 +466,7 @@ union yyalloc
 /* YYNSTATES -- Number of states.  */
 #define YYNSTATES  11
 
+/* YYMAXUTOK -- Last valid token kind.  */
 #define YYMAXUTOK   260
 
 
@@ -639,8 +587,8 @@ static const yytype_int8 yypgoto[] =
 /* YYDEFGOTO[NTERM-NUM].  */
 static const yytype_int8 yydefgoto[] =
 {
-    -1,     2,     3,     9
-    };
+    0,     2,     3,     9
+};
 
 /* YYTABLE[YYPACT[STATE-NUM]] -- What to do in state STATE-NUM.  If
    positive, shift that token.  If negative, reduce the rule whose
@@ -751,8 +699,8 @@ yy_symbol_value_print ( FILE *yyo,
                         yysymbol_kind_t yykind, YYSTYPE const * const yyvaluep, AeonGUI::AttributeMap& aAttributeMap )
 {
     FILE *yyoutput = yyo;
-    YYUSE ( yyoutput );
-    YYUSE ( aAttributeMap );
+    YY_USE ( yyoutput );
+    YY_USE ( aAttributeMap );
     if ( !yyvaluep )
     {
         return;
@@ -764,7 +712,7 @@ yy_symbol_value_print ( FILE *yyo,
     }
 # endif
     YY_IGNORE_MAYBE_UNINITIALIZED_BEGIN
-    YYUSE ( yykind );
+    YY_USE ( yykind );
     YY_IGNORE_MAYBE_UNINITIALIZED_END
 }
 
@@ -878,8 +826,8 @@ static void
 yydestruct ( const char *yymsg,
              yysymbol_kind_t yykind, YYSTYPE *yyvaluep, AeonGUI::AttributeMap& aAttributeMap )
 {
-    YYUSE ( yyvaluep );
-    YYUSE ( aAttributeMap );
+    YY_USE ( yyvaluep );
+    YY_USE ( aAttributeMap );
     if ( !yymsg )
     {
         yymsg = "Deleting";
@@ -887,12 +835,12 @@ yydestruct ( const char *yymsg,
     YY_SYMBOL_PRINT ( yymsg, yykind, yyvaluep, yylocationp );
 
     YY_IGNORE_MAYBE_UNINITIALIZED_BEGIN
-    YYUSE ( yykind );
+    YY_USE ( yykind );
     YY_IGNORE_MAYBE_UNINITIALIZED_END
 }
 
 
-/* The lookahead symbol.  */
+/* Lookahead token kind.  */
 int yychar;
 
 /* The semantic value of the lookahead symbol.  */
@@ -910,34 +858,30 @@ int yynerrs;
 int
 yyparse ( AeonGUI::AttributeMap& aAttributeMap )
 {
-    yy_state_fast_t yystate;
+    yy_state_fast_t yystate = 0;
     /* Number of tokens to shift before error messages enabled.  */
-    int yyerrstatus;
+    int yyerrstatus = 0;
 
-    /* The stacks and their tools:
-       'yyss': related to states.
-       'yyvs': related to semantic values.
-
-       Refer to the stacks through separate pointers, to allow yyoverflow
+    /* Refer to the stacks through separate pointers, to allow yyoverflow
        to reallocate them elsewhere.  */
 
     /* Their size.  */
-    YYPTRDIFF_T yystacksize;
+    YYPTRDIFF_T yystacksize = YYINITDEPTH;
 
-    /* The state stack.  */
+    /* The state stack: array, bottom, top.  */
     yy_state_t yyssa[YYINITDEPTH];
-    yy_state_t *yyss;
-    yy_state_t *yyssp;
+    yy_state_t *yyss = yyssa;
+    yy_state_t *yyssp = yyss;
 
-    /* The semantic value stack.  */
+    /* The semantic value stack: array, bottom, top.  */
     YYSTYPE yyvsa[YYINITDEPTH];
-    YYSTYPE *yyvs;
-    YYSTYPE *yyvsp;
+    YYSTYPE *yyvs = yyvsa;
+    YYSTYPE *yyvsp = yyvs;
 
     int yyn;
     /* The return value of yyparse.  */
     int yyresult;
-    /* Lookahead token as an internal (translated) token number.  */
+    /* Lookahead symbol kind.  */
     yysymbol_kind_t yytoken = YYSYMBOL_YYEMPTY;
     /* The variables used to return semantic value and location from the
        action routines.  */
@@ -950,15 +894,6 @@ yyparse ( AeonGUI::AttributeMap& aAttributeMap )
     /* The number of symbols on the RHS of the reduced rule.
        Keep to zero when no symbol should be popped.  */
     int yylen = 0;
-
-    yynerrs = 0;
-    yystate = 0;
-    yyerrstatus = 0;
-
-    yystacksize = YYINITDEPTH;
-    yyssp = yyss = yyssa;
-    yyvsp = yyvs = yyvsa;
-
 
     YYDPRINTF ( ( stderr, "Starting parse\n" ) );
 
@@ -1182,16 +1117,16 @@ yyreduce:
     YY_REDUCE_PRINT ( yyn );
     switch ( yyn )
     {
-    case 4:
+    case 4: /* declaration: IDENT ':' value  */
 #line 43 "C:/Code/AeonGUI/core/parsers/style.ypp"
         {
             aAttributeMap[std::get<std::string> ( yyvsp[-2] )] = yyvsp[0];
         }
-#line 1161 "C:/Code/AeonGUI/mingw64/core/style_parser.cpp"
+#line 1096 "C:/Code/AeonGUI/mingw64/core/style_parser.cpp"
         break;
 
 
-#line 1165 "C:/Code/AeonGUI/mingw64/core/style_parser.cpp"
+#line 1100 "C:/Code/AeonGUI/mingw64/core/style_parser.cpp"
 
     default:
         break;
@@ -1360,13 +1295,13 @@ yyabortlab:
 yyexhaustedlab:
     yyerror ( aAttributeMap, YY_ ( "memory exhausted" ) );
     yyresult = 2;
-    /* Fall through.  */
+    goto yyreturn;
 #endif
 
 
-    /*-----------------------------------------------------.
-    | yyreturn -- parsing is finished, return the result.  |
-    `-----------------------------------------------------*/
+    /*-------------------------------------------------------.
+    | yyreturn -- parsing is finished, clean up and return.  |
+    `-------------------------------------------------------*/
 yyreturn:
     if ( yychar != STYLEEMPTY )
     {

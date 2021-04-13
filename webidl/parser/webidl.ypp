@@ -1,0 +1,670 @@
+%code requires {
+/*
+Copyright (C) 2021 Rodrigo Jose Hernandez Cordoba
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+http://www.apache.org/licenses/LICENSE-2.0
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+*/
+}
+%{
+#define YY_NO_UNISTD_H 1
+#include <variant>
+#include <string>
+#include <cstddef>
+#include <cstdint>
+#include <cmath>
+#include <iostream>
+
+extern int webidllex();
+
+extern "C"
+{
+    int webidlerror (const char *s);
+}
+
+%}
+%define api.prefix {webidl}
+%token  integer decimal identifier string
+        null
+        ellipsis
+        async
+        attribute
+        callback
+        CONST
+        constructor
+        deleter
+        dictionary
+        ENUM
+        getter
+        includes
+        inherit
+        interface
+        iterable
+        maplike
+        mixin
+        NAMESPACE
+        partial
+        readonly
+        required
+        setlike
+        setter
+        STATIC
+        stringifier
+        TYPEDEF
+        unrestricted
+        OR
+        FLOAT
+        DOUBLE
+        TRUEK
+        FALSEK
+        UNSIGNED
+        INF
+        NEGINF
+        NaN
+        optional
+        any
+        other
+        sequence
+        object
+        symbol
+        FrozenArray
+        ObservableArray
+        boolean
+        byte
+        octet
+        bigint
+        SHORT
+        LONG
+        Promise
+        record
+        ArrayBuffer
+        DataView
+        Int8Array
+        Int16Array
+        Int32Array
+        Uint8Array
+        Uint16Array
+        Uint32Array
+        Uint8ClampedArray
+        Float32Array
+        Float64Array
+        undefined
+        ByteString
+        DOMString
+        USVString
+
+%%
+
+Definitions:
+    ExtendedAttributeList Definition Definitions |
+    ;
+
+Definition:
+    CallbackOrInterfaceOrMixin |
+    Namespace |
+    Partial |
+    Dictionary |
+    Enum |
+    Typedef |
+    IncludesStatement
+    ;
+
+ArgumentNameKeyword:
+    async |
+    attribute |
+    callback |
+    CONST |
+    constructor |
+    deleter |
+    dictionary |
+    ENUM |
+    getter |
+    includes |
+    inherit |
+    interface |
+    iterable |
+    maplike |
+    mixin |
+    NAMESPACE |
+    partial |
+    readonly |
+    required |
+    setlike |
+    setter |
+    STATIC |
+    stringifier |
+    TYPEDEF |
+    unrestricted
+    ;
+
+CallbackOrInterfaceOrMixin:
+    callback CallbackRestOrInterface
+    interface InterfaceOrMixin
+    ;
+
+InterfaceOrMixin:
+    InterfaceRest |
+    MixinRest;
+
+InterfaceRest:
+    identifier Inheritance '{' InterfaceMembers '}' ';'
+    ;
+
+Partial:
+    partial PartialDefinition;
+
+PartialDefinition:
+    interface PartialInterfaceOrPartialMixin
+    PartialDictionary |
+    Namespace
+    ;
+
+PartialInterfaceOrPartialMixin:
+    PartialInterfaceRest |
+    MixinRest
+    ;
+
+PartialInterfaceRest:
+    identifier '{' PartialInterfaceMembers '}' ';'
+    ;
+
+InterfaceMembers:
+    ExtendedAttributeList InterfaceMember InterfaceMembers |
+    ;
+
+InterfaceMember:
+    PartialInterfaceMember |
+    Constructor
+    ;
+
+PartialInterfaceMembers:
+    ExtendedAttributeList PartialInterfaceMember PartialInterfaceMembers |
+    ;
+
+PartialInterfaceMember:
+    Const |
+    Operation |
+    Stringifier |
+    StaticMember |
+    Iterable |
+    AsyncIterable |
+    ReadOnlyMember |
+    ReadWriteAttribute |
+    ReadWriteMaplike |
+    ReadWriteSetlike |
+    InheritAttribute
+    ;
+
+Inheritance:
+    ':' identifier |
+    ;
+
+MixinRest:
+    mixin identifier '{' MixinMembers '}' ';'
+    ;
+
+MixinMembers:
+    ExtendedAttributeList MixinMember MixinMembers |
+    ;
+
+MixinMember:
+    Const |
+    RegularOperation |
+    Stringifier |
+    OptionalReadOnly AttributeRest
+    ;
+
+IncludesStatement:
+    identifier includes identifier ';'
+    ;
+
+CallbackRestOrInterface:
+    CallbackRest |
+    interface identifier '{' CallbackInterfaceMembers '}' ';'
+    ;
+
+CallbackInterfaceMembers:
+    ExtendedAttributeList CallbackInterfaceMember CallbackInterfaceMembers |
+    ;
+
+CallbackInterfaceMember:
+    Const |
+    RegularOperation
+    ;
+
+Const:
+    CONST ConstType identifier '=' ConstValue ';'
+    ;
+
+ConstValue:
+    BooleanLiteral |
+    FloatLiteral |
+    integer
+    ;
+
+BooleanLiteral:
+    TRUEK |
+    FALSEK
+    ;
+
+FloatLiteral:
+    decimal |
+    NEGINF |
+    INF |
+    NaN
+    ;
+
+ConstType:
+    PrimitiveType |
+    identifier
+    ;
+
+ReadOnlyMember:
+    readonly ReadOnlyMemberRest
+    ;
+
+ReadOnlyMemberRest:
+    AttributeRest |
+    MaplikeRest |
+    SetlikeRest
+    ;
+
+ReadWriteAttribute:
+    AttributeRest
+    ;
+
+InheritAttribute:
+    inherit AttributeRest
+    ;
+
+AttributeRest:
+    attribute TypeWithExtendedAttributes AttributeName ';'
+    ;
+
+AttributeName:
+    AttributeNameKeyword |
+    identifier
+    ;
+
+AttributeNameKeyword:
+    async |
+    required
+    ;
+
+OptionalReadOnly:
+    readonly |
+    ;
+
+DefaultValue:
+    ConstValue |
+    string |
+    '[' ']'
+    '{' '}'
+    null
+    ;
+
+Operation:
+    RegularOperation |
+    SpecialOperation
+    ;
+
+RegularOperation:
+    Type OperationRest
+    ;
+
+SpecialOperation:
+    Special RegularOperation
+    ;
+
+Special:
+    getter |
+    setter |
+    deleter
+    ;
+
+OperationRest:
+    OptionalOperationName '(' ArgumentList ')' ';'
+    ;
+
+OptionalOperationName:
+    OperationName |
+    ;
+
+OperationName:
+    OperationNameKeyword |
+    identifier
+    ;
+
+OperationNameKeyword:
+    includes
+    ;
+
+ArgumentList:
+    Argument Arguments |
+    ;
+
+Arguments:
+    ',' Argument Arguments |
+    ;
+
+Argument:
+    ExtendedAttributeList ArgumentRest
+    ;
+
+ArgumentRest:
+    optional TypeWithExtendedAttributes ArgumentName Default
+    Type Ellipsis ArgumentName
+    ;
+
+ArgumentName:
+    ArgumentNameKeyword |
+    identifier
+    ;
+
+Ellipsis:
+    ellipsis |
+    ;
+
+Constructor:
+    constructor '(' ArgumentList ')' ';'
+    ;
+
+Stringifier:
+    stringifier StringifierRest
+    ;
+
+StringifierRest:
+    OptionalReadOnly AttributeRest
+    RegularOperation |
+    ';'
+    ;
+
+StaticMember:
+    STATIC StaticMemberRest
+    ;
+
+StaticMemberRest:
+    OptionalReadOnly AttributeRest
+    RegularOperation
+    ;
+
+Iterable:
+    iterable '<' TypeWithExtendedAttributes OptionalType '>' ';'
+    ;
+
+OptionalType:
+    ',' TypeWithExtendedAttributes |
+    ;
+
+AsyncIterable:
+    async iterable '<' TypeWithExtendedAttributes OptionalType '>' OptionalArgumentList ';'
+    ;
+
+OptionalArgumentList:
+    '(' ArgumentList ')' |
+    ;
+
+ReadWriteMaplike:
+    MaplikeRest;
+
+MaplikeRest:
+    maplike '<' TypeWithExtendedAttributes ',' TypeWithExtendedAttributes '>' ';'
+    ;
+
+ReadWriteSetlike:
+    SetlikeRest;
+
+SetlikeRest:
+    setlike '<' TypeWithExtendedAttributes '>' ';';
+
+Namespace:
+    NAMESPACE identifier '{' NamespaceMembers '}' ';';
+
+NamespaceMembers:
+    ExtendedAttributeList NamespaceMember NamespaceMembers |
+    ;
+
+NamespaceMember:
+    RegularOperation |
+    readonly AttributeRest
+    ;
+
+Dictionary:
+    dictionary identifier Inheritance '{' DictionaryMembers '}' ';'
+    ;
+
+DictionaryMembers:
+    DictionaryMember DictionaryMembers |
+    ;
+
+DictionaryMember:
+    ExtendedAttributeList DictionaryMemberRest
+    ;
+
+DictionaryMemberRest:
+    required TypeWithExtendedAttributes identifier ';'
+    Type identifier Default ';'
+    ;
+
+PartialDictionary:
+    dictionary identifier '{' DictionaryMembers '}' ';'
+    ;
+
+Default:
+    '=' DefaultValue |
+    ;
+
+Enum:
+    ENUM identifier '{' EnumValueList '}' ';'
+    ;
+
+EnumValueList:
+    string EnumValueListComma
+    ;
+
+EnumValueListComma:
+    ',' EnumValueListString |
+    ;
+
+EnumValueListString:
+    string EnumValueListComma |
+    ;
+
+CallbackRest:
+    identifier '=' Type '(' ArgumentList ')' ';'
+    ;
+
+Typedef:
+    TYPEDEF TypeWithExtendedAttributes identifier ';'
+    ;
+
+Type:
+    SingleType |
+    UnionType Null
+    ;
+
+TypeWithExtendedAttributes:
+    ExtendedAttributeList Type
+    ;
+
+SingleType:
+    DistinguishableType |
+    any |
+    PromiseType
+    ;
+
+UnionType:
+    '(' UnionMemberType OR UnionMemberType UnionMemberTypes ')'
+    ;
+
+UnionMemberType:
+    ExtendedAttributeList DistinguishableType |
+    UnionType Null
+    ;
+
+UnionMemberTypes:
+    OR UnionMemberType UnionMemberTypes |
+    ;
+
+DistinguishableType:
+    PrimitiveType Null
+    StringType Null
+    identifier Null
+    sequence '<' TypeWithExtendedAttributes '>' Null
+    object Null
+    symbol Null
+    BufferRelatedType Null
+    FrozenArray '<' TypeWithExtendedAttributes '>' Null
+    ObservableArray '<' TypeWithExtendedAttributes '>' Null
+    RecordType Null
+    ;
+
+PrimitiveType:
+    UnsignedIntegerType |
+    UnrestrictedFloatType |
+    undefined |
+    boolean |
+    byte |
+    octet |
+    bigint
+    ;
+
+UnrestrictedFloatType:
+    unrestricted FloatType
+    FloatType
+    ;
+
+FloatType:
+    FLOAT |
+    DOUBLE
+    ;
+
+UnsignedIntegerType:
+    UNSIGNED IntegerType |
+    IntegerType
+    ;
+
+IntegerType:
+    SHORT |
+    LONG OptionalLong
+    ;
+
+OptionalLong:
+    LONG |
+    ;
+
+StringType:
+    ByteString |
+    DOMString |
+    USVString
+    ;
+
+PromiseType:
+    Promise '<' Type '>'
+    ;
+
+RecordType:
+    record '<' StringType ',' TypeWithExtendedAttributes '>'
+    ;
+
+Null:
+    '?' |
+    ;
+
+BufferRelatedType:
+    ArrayBuffer |
+    DataView |
+    Int8Array |
+    Int16Array |
+    Int32Array |
+    Uint8Array |
+    Uint16Array |
+    Uint32Array |
+    Uint8ClampedArray |
+    Float32Array |
+    Float64Array
+    ;
+
+ExtendedAttributeList:
+    '[' ExtendedAttribute ExtendedAttributes ']' |
+    ;
+
+ExtendedAttributes:
+    ',' ExtendedAttribute ExtendedAttributes |
+    ;
+
+StringLiteral:
+    string
+    ;
+
+StringLiteralList:
+    StringLiteral ',' StringLiteralList |
+    StringLiteral
+    ;
+
+// We'll follow Chromium's idl parser here
+ExtendedAttribute:
+    ExtendedAttributeNoArgs |
+    ExtendedAttributeArgList |
+    ExtendedAttributeIdent |
+    ExtendedAttributeIdentList |
+    ExtendedAttributeNamedArgList |
+    ExtendedAttributeStringLiteral |
+    ExtendedAttributeStringLiteralList
+    ;
+
+IdentifierList:
+    identifier Identifiers
+    ;
+
+Identifiers:
+    ',' identifier Identifiers |
+    ;
+
+ExtendedAttributeNoArgs:
+    identifier
+    ;
+
+ExtendedAttributeArgList:
+    identifier '(' ArgumentList ')'
+    ;
+
+ExtendedAttributeIdent:
+    identifier '=' identifier
+    ;
+
+ExtendedAttributeIdentList:
+    identifier '=' '(' IdentifierList ')'
+    ;
+
+ExtendedAttributeNamedArgList:
+    identifier '=' identifier '(' ArgumentList ')'
+    ;
+
+ExtendedAttributeStringLiteral:
+    identifier '=' StringLiteral
+    ;
+
+ExtendedAttributeStringLiteralList:
+    identifier '=' '(' StringLiteralList ')'
+    ;
+%%
+extern "C"
+{
+    int webidlerror (const char *s)
+    {
+        std::cerr << s << std::endl;
+        return 0;
+    }
+
+    int main(int argc, char* argv[])
+    {
+        return 0;
+    }
+}

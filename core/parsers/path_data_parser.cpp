@@ -1,8 +1,8 @@
-/* A Bison parser, made by GNU Bison 3.6.4.  */
+/* A Bison parser, made by GNU Bison 3.7.6.  */
 
 /* Bison implementation for Yacc-like parsers in C
 
-   Copyright (C) 1984, 1989-1990, 2000-2015, 2018-2020 Free Software Foundation,
+   Copyright (C) 1984, 1989-1990, 2000-2015, 2018-2021 Free Software Foundation,
    Inc.
 
    This program is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
    GNU General Public License for more details.
 
    You should have received a copy of the GNU General Public License
-   along with this program.  If not, see <http://www.gnu.org/licenses/>.  */
+   along with this program.  If not, see <https://www.gnu.org/licenses/>.  */
 
 /* As a special exception, you may create a larger work that contains
    part or all of the Bison parser skeleton and distribute that work
@@ -45,11 +45,11 @@
    define necessary library symbols; they are noted "INFRINGES ON
    USER NAME SPACE" below.  */
 
-/* Identify Bison output.  */
-#define YYBISON 1
+/* Identify Bison output, and Bison version.  */
+#define YYBISON 30706
 
-/* Bison version.  */
-#define YYBISON_VERSION "3.6.4"
+/* Bison version string.  */
+#define YYBISON_VERSION "3.7.6"
 
 /* Skeleton name.  */
 #define YYSKELETON_NAME "yacc.c"
@@ -139,70 +139,7 @@ static dstype GetArcArgs ( const dstype& aRadii, const dstype& aRotation, const 
 #  endif
 # endif
 
-/* Use api.header.include to #include this header
-   instead of duplicating it here.  */
-#ifndef YY_D_C_CODE_AEONGUI_MINGW64_CORE_PATH_DATA_PARSER_HPP_INCLUDED
-# define YY_D_C_CODE_AEONGUI_MINGW64_CORE_PATH_DATA_PARSER_HPP_INCLUDED
-/* Debug traces.  */
-#ifndef DDEBUG
-# if defined YYDEBUG
-#if YYDEBUG
-#   define DDEBUG 1
-#  else
-#   define DDEBUG 0
-#  endif
-# else /* ! defined YYDEBUG */
-#  define DDEBUG 0
-# endif /* ! defined YYDEBUG */
-#endif  /* ! defined DDEBUG */
-#if DDEBUG
-extern int ddebug;
-#endif
-/* "%code requires" blocks.  */
-#line 1 "C:/Code/AeonGUI/core/parsers/path_data.ypp"
-
-/*
-Copyright (C) 2019,2020 Rodrigo Jose Hernandez Cordoba
-Licensed under the Apache License, Version 2.0 (the "License");
-you may not use this file except in compliance with the License.
-You may obtain a copy of the License at
-http://www.apache.org/licenses/LICENSE-2.0
-Unless required by applicable law or agreed to in writing, software
-distributed under the License is distributed on an "AS IS" BASIS,
-WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-See the License for the specific language governing permissions and
-limitations under the License.
-*/
-
-#line 178 "C:/Code/AeonGUI/mingw64/core/path_data_parser.cpp"
-
-/* Token kinds.  */
-#ifndef DTOKENTYPE
-# define DTOKENTYPE
-enum dtokentype
-{
-    DEMPTY = -2,
-    DEOF = 0,                      /* "end of file"  */
-    Derror = 256,                  /* error  */
-    DUNDEF = 257,                  /* "invalid token"  */
-    NUMBER = 258                   /* NUMBER  */
-};
-typedef enum dtokentype dtoken_kind_t;
-#endif
-
-/* Value type.  */
-#if ! defined DSTYPE && ! defined DSTYPE_IS_DECLARED
-typedef int DSTYPE;
-# define DSTYPE_IS_TRIVIAL 1
-# define DSTYPE_IS_DECLARED 1
-#endif
-
-
-extern DSTYPE dlval;
-
-int dparse ( std::vector<AeonGUI::DrawType>& aPath );
-
-#endif /* !YY_D_C_CODE_AEONGUI_MINGW64_CORE_PATH_DATA_PARSER_HPP_INCLUDED  */
+#include "path_data_parser.hpp"
 /* Symbol kind.  */
 enum yysymbol_kind_t
 {
@@ -298,6 +235,18 @@ typedef __INT_LEAST16_TYPE__ yytype_int16;
 typedef int_least16_t yytype_int16;
 #else
 typedef short yytype_int16;
+#endif
+
+/* Work around bug in HP-UX 11.23, which defines these macros
+   incorrectly for preprocessor constants.  This workaround can likely
+   be removed in 2023, as HPE has promised support for HP-UX 11.23
+   (aka HP-UX 11i v2) only through the end of 2022; see Table 2 of
+   <https://h20195.www2.hpe.com/V2/getpdf.aspx/4AA4-7673ENW.pdf>.  */
+#ifdef __hpux
+# undef UINT_LEAST8_MAX
+# undef UINT_LEAST16_MAX
+# define UINT_LEAST8_MAX 255
+# define UINT_LEAST16_MAX 65535
 #endif
 
 #if defined __UINT_LEAST8_MAX__ && __UINT_LEAST8_MAX__ <= __INT_MAX__
@@ -397,9 +346,9 @@ typedef int yy_state_fast_t;
 
 /* Suppress unused-variable warnings by "using" E.  */
 #if ! defined lint || defined __GNUC__
-# define YYUSE(E) ((void) (E))
+# define YY_USE(E) ((void) (E))
 #else
-# define YYUSE(E) /* empty */
+# define YY_USE(E) /* empty */
 #endif
 
 #if defined __GNUC__ && ! defined __ICC && 407 <= __GNUC__ * 100 + __GNUC_MINOR__
@@ -577,6 +526,7 @@ union yyalloc
 /* YYNSTATES -- Number of states.  */
 #define YYNSTATES  80
 
+/* YYMAXUTOK -- Last valid token kind.  */
 #define YYMAXUTOK   258
 
 
@@ -729,10 +679,10 @@ static const yytype_int8 yypgoto[] =
 /* YYDEFGOTO[NTERM-NUM].  */
 static const yytype_int8 yydefgoto[] =
 {
-    -1,     3,     4,     5,    32,    33,     6,    34,    35,    36,
-        37,    38,    39,    40,    41,    42,    64,    65,    52,    53,
-        56,    57,     8,    58,    47,    10
-    };
+    0,     3,     4,     5,    32,    33,     6,    34,    35,    36,
+    37,    38,    39,    40,    41,    42,    64,    65,    52,    53,
+    56,    57,     8,    58,    47,    10
+};
 
 /* YYTABLE[YYPACT[STATE-NUM]] -- What to do in state STATE-NUM.  If
    positive, shift that token.  If negative, reduce the rule whose
@@ -881,8 +831,8 @@ yy_symbol_value_print ( FILE *yyo,
                         yysymbol_kind_t yykind, YYSTYPE const * const yyvaluep, std::vector<AeonGUI::DrawType>& aPath )
 {
     FILE *yyoutput = yyo;
-    YYUSE ( yyoutput );
-    YYUSE ( aPath );
+    YY_USE ( yyoutput );
+    YY_USE ( aPath );
     if ( !yyvaluep )
     {
         return;
@@ -894,7 +844,7 @@ yy_symbol_value_print ( FILE *yyo,
     }
 # endif
     YY_IGNORE_MAYBE_UNINITIALIZED_BEGIN
-    YYUSE ( yykind );
+    YY_USE ( yykind );
     YY_IGNORE_MAYBE_UNINITIALIZED_END
 }
 
@@ -1008,8 +958,8 @@ static void
 yydestruct ( const char *yymsg,
              yysymbol_kind_t yykind, YYSTYPE *yyvaluep, std::vector<AeonGUI::DrawType>& aPath )
 {
-    YYUSE ( yyvaluep );
-    YYUSE ( aPath );
+    YY_USE ( yyvaluep );
+    YY_USE ( aPath );
     if ( !yymsg )
     {
         yymsg = "Deleting";
@@ -1017,12 +967,12 @@ yydestruct ( const char *yymsg,
     YY_SYMBOL_PRINT ( yymsg, yykind, yyvaluep, yylocationp );
 
     YY_IGNORE_MAYBE_UNINITIALIZED_BEGIN
-    YYUSE ( yykind );
+    YY_USE ( yykind );
     YY_IGNORE_MAYBE_UNINITIALIZED_END
 }
 
 
-/* The lookahead symbol.  */
+/* Lookahead token kind.  */
 int yychar;
 
 /* The semantic value of the lookahead symbol.  */
@@ -1040,34 +990,30 @@ int yynerrs;
 int
 yyparse ( std::vector<AeonGUI::DrawType>& aPath )
 {
-    yy_state_fast_t yystate;
+    yy_state_fast_t yystate = 0;
     /* Number of tokens to shift before error messages enabled.  */
-    int yyerrstatus;
+    int yyerrstatus = 0;
 
-    /* The stacks and their tools:
-       'yyss': related to states.
-       'yyvs': related to semantic values.
-
-       Refer to the stacks through separate pointers, to allow yyoverflow
+    /* Refer to the stacks through separate pointers, to allow yyoverflow
        to reallocate them elsewhere.  */
 
     /* Their size.  */
-    YYPTRDIFF_T yystacksize;
+    YYPTRDIFF_T yystacksize = YYINITDEPTH;
 
-    /* The state stack.  */
+    /* The state stack: array, bottom, top.  */
     yy_state_t yyssa[YYINITDEPTH];
-    yy_state_t *yyss;
-    yy_state_t *yyssp;
+    yy_state_t *yyss = yyssa;
+    yy_state_t *yyssp = yyss;
 
-    /* The semantic value stack.  */
+    /* The semantic value stack: array, bottom, top.  */
     YYSTYPE yyvsa[YYINITDEPTH];
-    YYSTYPE *yyvs;
-    YYSTYPE *yyvsp;
+    YYSTYPE *yyvs = yyvsa;
+    YYSTYPE *yyvsp = yyvs;
 
     int yyn;
     /* The return value of yyparse.  */
     int yyresult;
-    /* Lookahead token as an internal (translated) token number.  */
+    /* Lookahead symbol kind.  */
     yysymbol_kind_t yytoken = YYSYMBOL_YYEMPTY;
     /* The variables used to return semantic value and location from the
        action routines.  */
@@ -1080,15 +1026,6 @@ yyparse ( std::vector<AeonGUI::DrawType>& aPath )
     /* The number of symbols on the RHS of the reduced rule.
        Keep to zero when no symbol should be popped.  */
     int yylen = 0;
-
-    yynerrs = 0;
-    yystate = 0;
-    yyerrstatus = 0;
-
-    yystacksize = YYINITDEPTH;
-    yyssp = yyss = yyssa;
-    yyvsp = yyvs = yyvsa;
-
 
     YYDPRINTF ( ( stderr, "Starting parse\n" ) );
 
@@ -1312,209 +1249,209 @@ yyreduce:
     YY_REDUCE_PRINT ( yyn );
     switch ( yyn )
     {
-    case 19:
+    case 19: /* moveto: 'M' single-coordinate-pair-argument-sequence  */
 #line 83 "C:/Code/AeonGUI/core/parsers/path_data.ypp"
         {
             AddCommandToPath ( aPath, std::get<AeonGUI::DrawType> ( yyvsp[-1] ), std::get<std::vector<AeonGUI::DrawType>> ( yyvsp[0] ) );
         }
-#line 1291 "C:/Code/AeonGUI/mingw64/core/path_data_parser.cpp"
+#line 1228 "C:/Code/AeonGUI/mingw64/core/path_data_parser.cpp"
         break;
 
-    case 20:
+    case 20: /* moveto: 'm' single-coordinate-pair-argument-sequence  */
 #line 85 "C:/Code/AeonGUI/core/parsers/path_data.ypp"
         {
             AddCommandToPath ( aPath, std::get<AeonGUI::DrawType> ( yyvsp[-1] ), std::get<std::vector<AeonGUI::DrawType>> ( yyvsp[0] ) );
         }
-#line 1297 "C:/Code/AeonGUI/mingw64/core/path_data_parser.cpp"
+#line 1234 "C:/Code/AeonGUI/mingw64/core/path_data_parser.cpp"
         break;
 
-    case 21:
+    case 21: /* closepath: 'Z'  */
 #line 88 "C:/Code/AeonGUI/core/parsers/path_data.ypp"
         {
             aPath.emplace_back ( std::get<AeonGUI::DrawType> ( yyvsp[0] ) );
         }
-#line 1303 "C:/Code/AeonGUI/mingw64/core/path_data_parser.cpp"
+#line 1240 "C:/Code/AeonGUI/mingw64/core/path_data_parser.cpp"
         break;
 
-    case 22:
+    case 22: /* closepath: 'z'  */
 #line 89 "C:/Code/AeonGUI/core/parsers/path_data.ypp"
         {
             aPath.emplace_back ( std::get<AeonGUI::DrawType> ( yyvsp[0] ) );
         }
-#line 1309 "C:/Code/AeonGUI/mingw64/core/path_data_parser.cpp"
+#line 1246 "C:/Code/AeonGUI/mingw64/core/path_data_parser.cpp"
         break;
 
-    case 23:
+    case 23: /* lineto: 'L' single-coordinate-pair-argument-sequence  */
 #line 92 "C:/Code/AeonGUI/core/parsers/path_data.ypp"
         {
             AddCommandToPath ( aPath, std::get<AeonGUI::DrawType> ( yyvsp[-1] ), std::get<std::vector<AeonGUI::DrawType>> ( yyvsp[0] ) );
         }
-#line 1315 "C:/Code/AeonGUI/mingw64/core/path_data_parser.cpp"
+#line 1252 "C:/Code/AeonGUI/mingw64/core/path_data_parser.cpp"
         break;
 
-    case 24:
+    case 24: /* lineto: 'l' single-coordinate-pair-argument-sequence  */
 #line 94 "C:/Code/AeonGUI/core/parsers/path_data.ypp"
         {
             AddCommandToPath ( aPath, std::get<AeonGUI::DrawType> ( yyvsp[-1] ), std::get<std::vector<AeonGUI::DrawType>> ( yyvsp[0] ) );
         }
-#line 1321 "C:/Code/AeonGUI/mingw64/core/path_data_parser.cpp"
+#line 1258 "C:/Code/AeonGUI/mingw64/core/path_data_parser.cpp"
         break;
 
-    case 25:
+    case 25: /* horizontal-lineto: 'H' coordinate-argument-sequence  */
 #line 97 "C:/Code/AeonGUI/core/parsers/path_data.ypp"
         {
             AddCommandToPath ( aPath, std::get<AeonGUI::DrawType> ( yyvsp[-1] ), std::get<std::vector<AeonGUI::DrawType>> ( yyvsp[0] ) );
         }
-#line 1327 "C:/Code/AeonGUI/mingw64/core/path_data_parser.cpp"
+#line 1264 "C:/Code/AeonGUI/mingw64/core/path_data_parser.cpp"
         break;
 
-    case 26:
+    case 26: /* horizontal-lineto: 'h' coordinate-argument-sequence  */
 #line 98 "C:/Code/AeonGUI/core/parsers/path_data.ypp"
         {
             AddCommandToPath ( aPath, std::get<AeonGUI::DrawType> ( yyvsp[-1] ), std::get<std::vector<AeonGUI::DrawType>> ( yyvsp[0] ) );
         }
-#line 1333 "C:/Code/AeonGUI/mingw64/core/path_data_parser.cpp"
+#line 1270 "C:/Code/AeonGUI/mingw64/core/path_data_parser.cpp"
         break;
 
-    case 27:
+    case 27: /* vertical-lineto: 'V' coordinate-argument-sequence  */
 #line 101 "C:/Code/AeonGUI/core/parsers/path_data.ypp"
         {
             AddCommandToPath ( aPath, std::get<AeonGUI::DrawType> ( yyvsp[-1] ), std::get<std::vector<AeonGUI::DrawType>> ( yyvsp[0] ) );
         }
-#line 1339 "C:/Code/AeonGUI/mingw64/core/path_data_parser.cpp"
+#line 1276 "C:/Code/AeonGUI/mingw64/core/path_data_parser.cpp"
         break;
 
-    case 28:
+    case 28: /* vertical-lineto: 'v' coordinate-argument-sequence  */
 #line 102 "C:/Code/AeonGUI/core/parsers/path_data.ypp"
         {
             AddCommandToPath ( aPath, std::get<AeonGUI::DrawType> ( yyvsp[-1] ), std::get<std::vector<AeonGUI::DrawType>> ( yyvsp[0] ) );
         }
-#line 1345 "C:/Code/AeonGUI/mingw64/core/path_data_parser.cpp"
+#line 1282 "C:/Code/AeonGUI/mingw64/core/path_data_parser.cpp"
         break;
 
-    case 29:
+    case 29: /* curveto: 'C' triple-coordinate-pair-argument-sequence  */
 #line 105 "C:/Code/AeonGUI/core/parsers/path_data.ypp"
         {
             AddCommandToPath ( aPath, std::get<AeonGUI::DrawType> ( yyvsp[-1] ), std::get<std::vector<AeonGUI::DrawType>> ( yyvsp[0] ) );
         }
-#line 1351 "C:/Code/AeonGUI/mingw64/core/path_data_parser.cpp"
+#line 1288 "C:/Code/AeonGUI/mingw64/core/path_data_parser.cpp"
         break;
 
-    case 30:
+    case 30: /* curveto: 'c' triple-coordinate-pair-argument-sequence  */
 #line 106 "C:/Code/AeonGUI/core/parsers/path_data.ypp"
         {
             AddCommandToPath ( aPath, std::get<AeonGUI::DrawType> ( yyvsp[-1] ), std::get<std::vector<AeonGUI::DrawType>> ( yyvsp[0] ) );
         }
-#line 1357 "C:/Code/AeonGUI/mingw64/core/path_data_parser.cpp"
+#line 1294 "C:/Code/AeonGUI/mingw64/core/path_data_parser.cpp"
         break;
 
-    case 31:
+    case 31: /* smooth-curveto: 'S' double-coordinate-pair-argument-sequence  */
 #line 109 "C:/Code/AeonGUI/core/parsers/path_data.ypp"
         {
             AddCommandToPath ( aPath, std::get<AeonGUI::DrawType> ( yyvsp[-1] ), std::get<std::vector<AeonGUI::DrawType>> ( yyvsp[0] ) );
         }
-#line 1363 "C:/Code/AeonGUI/mingw64/core/path_data_parser.cpp"
+#line 1300 "C:/Code/AeonGUI/mingw64/core/path_data_parser.cpp"
         break;
 
-    case 32:
+    case 32: /* smooth-curveto: 's' double-coordinate-pair-argument-sequence  */
 #line 110 "C:/Code/AeonGUI/core/parsers/path_data.ypp"
         {
             AddCommandToPath ( aPath, std::get<AeonGUI::DrawType> ( yyvsp[-1] ), std::get<std::vector<AeonGUI::DrawType>> ( yyvsp[0] ) );
         }
-#line 1369 "C:/Code/AeonGUI/mingw64/core/path_data_parser.cpp"
+#line 1306 "C:/Code/AeonGUI/mingw64/core/path_data_parser.cpp"
         break;
 
-    case 33:
+    case 33: /* quadratic-bezier-curveto: 'Q' double-coordinate-pair-argument-sequence  */
 #line 113 "C:/Code/AeonGUI/core/parsers/path_data.ypp"
         {
             AddCommandToPath ( aPath, std::get<AeonGUI::DrawType> ( yyvsp[-1] ), std::get<std::vector<AeonGUI::DrawType>> ( yyvsp[0] ) );
         }
-#line 1375 "C:/Code/AeonGUI/mingw64/core/path_data_parser.cpp"
+#line 1312 "C:/Code/AeonGUI/mingw64/core/path_data_parser.cpp"
         break;
 
-    case 34:
+    case 34: /* quadratic-bezier-curveto: 'q' double-coordinate-pair-argument-sequence  */
 #line 114 "C:/Code/AeonGUI/core/parsers/path_data.ypp"
         {
             AddCommandToPath ( aPath, std::get<AeonGUI::DrawType> ( yyvsp[-1] ), std::get<std::vector<AeonGUI::DrawType>> ( yyvsp[0] ) );
         }
-#line 1381 "C:/Code/AeonGUI/mingw64/core/path_data_parser.cpp"
+#line 1318 "C:/Code/AeonGUI/mingw64/core/path_data_parser.cpp"
         break;
 
-    case 35:
+    case 35: /* smooth-quadratic-bezier-curveto: 'T' single-coordinate-pair-argument-sequence  */
 #line 117 "C:/Code/AeonGUI/core/parsers/path_data.ypp"
         {
             AddCommandToPath ( aPath, std::get<AeonGUI::DrawType> ( yyvsp[-1] ), std::get<std::vector<AeonGUI::DrawType>> ( yyvsp[0] ) );
         }
-#line 1387 "C:/Code/AeonGUI/mingw64/core/path_data_parser.cpp"
+#line 1324 "C:/Code/AeonGUI/mingw64/core/path_data_parser.cpp"
         break;
 
-    case 36:
+    case 36: /* smooth-quadratic-bezier-curveto: 't' single-coordinate-pair-argument-sequence  */
 #line 118 "C:/Code/AeonGUI/core/parsers/path_data.ypp"
         {
             AddCommandToPath ( aPath, std::get<AeonGUI::DrawType> ( yyvsp[-1] ), std::get<std::vector<AeonGUI::DrawType>> ( yyvsp[0] ) );
         }
-#line 1393 "C:/Code/AeonGUI/mingw64/core/path_data_parser.cpp"
+#line 1330 "C:/Code/AeonGUI/mingw64/core/path_data_parser.cpp"
         break;
 
-    case 37:
+    case 37: /* elliptical-arc: 'A' elliptical-arc-argument-sequence  */
 #line 121 "C:/Code/AeonGUI/core/parsers/path_data.ypp"
         {
             AddCommandToPath ( aPath, std::get<AeonGUI::DrawType> ( yyvsp[-1] ), std::get<std::vector<AeonGUI::DrawType>> ( yyvsp[0] ) );
         }
-#line 1399 "C:/Code/AeonGUI/mingw64/core/path_data_parser.cpp"
+#line 1336 "C:/Code/AeonGUI/mingw64/core/path_data_parser.cpp"
         break;
 
-    case 38:
+    case 38: /* elliptical-arc: 'a' elliptical-arc-argument-sequence  */
 #line 123 "C:/Code/AeonGUI/core/parsers/path_data.ypp"
         {
             AddCommandToPath ( aPath, std::get<AeonGUI::DrawType> ( yyvsp[-1] ), std::get<std::vector<AeonGUI::DrawType>> ( yyvsp[0] ) );
         }
-#line 1405 "C:/Code/AeonGUI/mingw64/core/path_data_parser.cpp"
+#line 1342 "C:/Code/AeonGUI/mingw64/core/path_data_parser.cpp"
         break;
 
-    case 39:
+    case 39: /* elliptical-arc-argument-sequence: elliptical-arc-argument  */
 #line 126 "C:/Code/AeonGUI/core/parsers/path_data.ypp"
         {
             yyval = std::move ( yyvsp[0] );
         }
-#line 1411 "C:/Code/AeonGUI/mingw64/core/path_data_parser.cpp"
+#line 1348 "C:/Code/AeonGUI/mingw64/core/path_data_parser.cpp"
         break;
 
-    case 40:
+    case 40: /* elliptical-arc-argument-sequence: elliptical-arc-argument-sequence elliptical-arc-argument  */
 #line 128 "C:/Code/AeonGUI/core/parsers/path_data.ypp"
         {
             Merge ( yyvsp[-1], yyvsp[0] );
             yyval = std::move ( yyvsp[-1] );
         }
-#line 1420 "C:/Code/AeonGUI/mingw64/core/path_data_parser.cpp"
+#line 1357 "C:/Code/AeonGUI/mingw64/core/path_data_parser.cpp"
         break;
 
-    case 41:
+    case 41: /* elliptical-arc-argument: coordinate-pair coordinate coordinate coordinate coordinate-pair  */
 #line 135 "C:/Code/AeonGUI/core/parsers/path_data.ypp"
         {
             yyval = GetArcArgs ( yyvsp[-4], yyvsp[-3], yyvsp[-2], yyvsp[-1], yyvsp[0] );
         }
-#line 1428 "C:/Code/AeonGUI/mingw64/core/path_data_parser.cpp"
+#line 1365 "C:/Code/AeonGUI/mingw64/core/path_data_parser.cpp"
         break;
 
-    case 42:
+    case 42: /* triple-coordinate-pair-argument-sequence: triple-coordinate-pair-argument  */
 #line 140 "C:/Code/AeonGUI/core/parsers/path_data.ypp"
         {
             yyval = std::move ( yyvsp[0] );
         }
-#line 1434 "C:/Code/AeonGUI/mingw64/core/path_data_parser.cpp"
+#line 1371 "C:/Code/AeonGUI/mingw64/core/path_data_parser.cpp"
         break;
 
-    case 43:
+    case 43: /* triple-coordinate-pair-argument-sequence: triple-coordinate-pair-argument-sequence triple-coordinate-pair-argument  */
 #line 142 "C:/Code/AeonGUI/core/parsers/path_data.ypp"
         {
             Merge ( yyvsp[-1], yyvsp[0] );
             yyval = std::move ( yyvsp[-1] );
         }
-#line 1443 "C:/Code/AeonGUI/mingw64/core/path_data_parser.cpp"
+#line 1380 "C:/Code/AeonGUI/mingw64/core/path_data_parser.cpp"
         break;
 
-    case 44:
+    case 44: /* triple-coordinate-pair-argument: coordinate-pair coordinate-pair coordinate-pair  */
 #line 149 "C:/Code/AeonGUI/core/parsers/path_data.ypp"
         {
             auto& left = std::get<std::vector<AeonGUI::DrawType>> ( yyvsp[-2] );
@@ -1525,79 +1462,79 @@ yyreduce:
             left.insert ( left.end(), right.begin(), right.end() );
             yyval = std::move ( yyvsp[-2] );
         }
-#line 1457 "C:/Code/AeonGUI/mingw64/core/path_data_parser.cpp"
+#line 1394 "C:/Code/AeonGUI/mingw64/core/path_data_parser.cpp"
         break;
 
-    case 45:
+    case 45: /* double-coordinate-pair-argument-sequence: double-coordinate-pair-argument  */
 #line 160 "C:/Code/AeonGUI/core/parsers/path_data.ypp"
         {
             yyval = std::move ( yyvsp[0] );
         }
-#line 1463 "C:/Code/AeonGUI/mingw64/core/path_data_parser.cpp"
+#line 1400 "C:/Code/AeonGUI/mingw64/core/path_data_parser.cpp"
         break;
 
-    case 46:
+    case 46: /* double-coordinate-pair-argument-sequence: double-coordinate-pair-argument-sequence double-coordinate-pair-argument  */
 #line 163 "C:/Code/AeonGUI/core/parsers/path_data.ypp"
         {
             Merge ( yyvsp[-1], yyvsp[0] );
             yyval = std::move ( yyvsp[-1] );
         }
-#line 1472 "C:/Code/AeonGUI/mingw64/core/path_data_parser.cpp"
+#line 1409 "C:/Code/AeonGUI/mingw64/core/path_data_parser.cpp"
         break;
 
-    case 47:
+    case 47: /* double-coordinate-pair-argument: coordinate-pair coordinate-pair  */
 #line 170 "C:/Code/AeonGUI/core/parsers/path_data.ypp"
         {
             Merge ( yyvsp[-1], yyvsp[0] );
             yyval = std::move ( yyvsp[-1] );
         }
-#line 1481 "C:/Code/AeonGUI/mingw64/core/path_data_parser.cpp"
+#line 1418 "C:/Code/AeonGUI/mingw64/core/path_data_parser.cpp"
         break;
 
-    case 48:
+    case 48: /* single-coordinate-pair-argument-sequence: coordinate-pair  */
 #line 176 "C:/Code/AeonGUI/core/parsers/path_data.ypp"
         {
             yyval = std::move ( yyvsp[0] );
         }
-#line 1487 "C:/Code/AeonGUI/mingw64/core/path_data_parser.cpp"
+#line 1424 "C:/Code/AeonGUI/mingw64/core/path_data_parser.cpp"
         break;
 
-    case 49:
+    case 49: /* single-coordinate-pair-argument-sequence: single-coordinate-pair-argument-sequence coordinate-pair  */
 #line 179 "C:/Code/AeonGUI/core/parsers/path_data.ypp"
         {
             Merge ( yyvsp[-1], yyvsp[0] );
             yyval = std::move ( yyvsp[-1] );
         }
-#line 1496 "C:/Code/AeonGUI/mingw64/core/path_data_parser.cpp"
+#line 1433 "C:/Code/AeonGUI/mingw64/core/path_data_parser.cpp"
         break;
 
-    case 50:
+    case 50: /* coordinate-pair: coordinate coordinate  */
 #line 185 "C:/Code/AeonGUI/core/parsers/path_data.ypp"
         {
             yyval = std::vector<AeonGUI::DrawType> {std::get<AeonGUI::DrawType> ( yyvsp[-1] ), std::get<AeonGUI::DrawType> ( yyvsp[0] ) };
         }
-#line 1502 "C:/Code/AeonGUI/mingw64/core/path_data_parser.cpp"
+#line 1439 "C:/Code/AeonGUI/mingw64/core/path_data_parser.cpp"
         break;
 
-    case 51:
+    case 51: /* coordinate-argument-sequence: coordinate  */
 #line 189 "C:/Code/AeonGUI/core/parsers/path_data.ypp"
         {
             yyval = std::vector<AeonGUI::DrawType> {std::get<AeonGUI::DrawType> ( yyvsp[0] ) };
         }
-#line 1510 "C:/Code/AeonGUI/mingw64/core/path_data_parser.cpp"
+#line 1447 "C:/Code/AeonGUI/mingw64/core/path_data_parser.cpp"
         break;
 
-    case 52:
+    case 52: /* coordinate-argument-sequence: coordinate-argument-sequence coordinate  */
 #line 194 "C:/Code/AeonGUI/core/parsers/path_data.ypp"
         {
             std::get<std::vector<AeonGUI::DrawType>> ( yyvsp[-1] ).emplace_back ( std::get<AeonGUI::DrawType> ( yyvsp[0] ) );
             yyval = std::move ( yyvsp[-1] );
         }
-#line 1519 "C:/Code/AeonGUI/mingw64/core/path_data_parser.cpp"
+#line 1456 "C:/Code/AeonGUI/mingw64/core/path_data_parser.cpp"
         break;
 
 
-#line 1523 "C:/Code/AeonGUI/mingw64/core/path_data_parser.cpp"
+#line 1460 "C:/Code/AeonGUI/mingw64/core/path_data_parser.cpp"
 
     default:
         break;
@@ -1766,13 +1703,13 @@ yyabortlab:
 yyexhaustedlab:
     yyerror ( aPath, YY_ ( "memory exhausted" ) );
     yyresult = 2;
-    /* Fall through.  */
+    goto yyreturn;
 #endif
 
 
-    /*-----------------------------------------------------.
-    | yyreturn -- parsing is finished, return the result.  |
-    `-----------------------------------------------------*/
+    /*-------------------------------------------------------.
+    | yyreturn -- parsing is finished, clean up and return.  |
+    `-------------------------------------------------------*/
 yyreturn:
     if ( yychar != DEMPTY )
     {

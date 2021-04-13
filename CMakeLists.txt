@@ -160,9 +160,10 @@ if(SED_EXECUTABLE)
 endif()
 
 
+include(parser)
 include_directories(include common demos/common core)
+add_subdirectory(webidl)
 add_subdirectory(core)
-
 add_subdirectory(demos/OpenGL)
 configure_vscode(${CMAKE_SOURCE_DIR}/demos/OpenGL)
 
