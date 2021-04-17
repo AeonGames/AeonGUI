@@ -27,12 +27,11 @@ limitations under the License.
 
 %option nounput
 %option nounistd
-%option never-interactive
 %option noreject
 %option nostdinit
-%option nodebug
 %option noyywrap
-%option noyylineno
+%option yylineno
+%option never-interactive
 %option prefix="webidl"
 
 integer                 -?([1-9][0-9]*|0[Xx][0-9A-Fa-f]+|0[0-7]*)
@@ -92,8 +91,8 @@ boolean       			return boolean;
 byte       				return byte;
 octet       			return octet;
 bigint       			return bigint;
-SHORT       			return SHORT;
-LONG       				return LONG;
+short       			return SHORT;
+long       				return LONG;
 Promise       			return Promise;
 record       			return record;
 ArrayBuffer       		return ArrayBuffer;
@@ -120,6 +119,37 @@ or                      return OR;
 {identifier}			return identifier;
 {string}			    return string;
 \.\.\.                  return ellipsis;
+{comment}
 {whitespace}
 
 %%
+
+void webidlerror (const char *s)
+{
+	std::cerr << "Error: '" << s << "' at line " << webidllineno << std::endl;
+}
+
+namespace AeonGUI
+{
+	namespace WebIDL
+	{
+		int ParseString(const char* string)
+		{
+			YY_BUFFER_STATE state=webidl_scan_string(string);
+			webidl_switch_to_buffer(state);
+			BEGIN(INITIAL);
+			return webidlparse();
+		}
+		int ParseFile(const char* filename)
+		{
+			int result = -1;
+			yyin = fopen(filename, "r");
+			if(yyin)
+			{
+				result = webidlparse();
+				fclose(yyin);
+			}
+			return result;
+		}
+	}
+}

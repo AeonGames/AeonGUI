@@ -22,13 +22,11 @@ limitations under the License.
 #include <iostream>
 
 extern int webidllex();
-
-extern "C"
-{
-    int webidlerror (const char *s);
-}
+void webidlerror (const char *s);
 
 %}
+%define parse.error detailed
+%locations
 %define api.prefix {webidl}
 %token  integer decimal identifier string
         null
@@ -144,7 +142,7 @@ ArgumentNameKeyword:
     ;
 
 CallbackOrInterfaceOrMixin:
-    callback CallbackRestOrInterface
+    callback CallbackRestOrInterface |
     interface InterfaceOrMixin
     ;
 
@@ -303,9 +301,9 @@ OptionalReadOnly:
 
 DefaultValue:
     ConstValue |
-    string |
-    '[' ']'
-    '{' '}'
+    string  |
+    '[' ']' |
+    '{' '}' |
     null
     ;
 
@@ -354,12 +352,8 @@ Arguments:
     ;
 
 Argument:
-    ExtendedAttributeList ArgumentRest
-    ;
-
-ArgumentRest:
-    optional TypeWithExtendedAttributes ArgumentName Default
-    Type Ellipsis ArgumentName
+    ExtendedAttributeList optional TypeWithExtendedAttributes ArgumentName Default |
+    ExtendedAttributeList Type Ellipsis ArgumentName
     ;
 
 ArgumentName:
@@ -448,7 +442,7 @@ DictionaryMember:
     ;
 
 DictionaryMemberRest:
-    required TypeWithExtendedAttributes identifier ';'
+    required TypeWithExtendedAttributes identifier ';' |
     Type identifier Default ';'
     ;
 
@@ -513,15 +507,15 @@ UnionMemberTypes:
     ;
 
 DistinguishableType:
-    PrimitiveType Null
-    StringType Null
-    identifier Null
-    sequence '<' TypeWithExtendedAttributes '>' Null
-    object Null
-    symbol Null
-    BufferRelatedType Null
-    FrozenArray '<' TypeWithExtendedAttributes '>' Null
-    ObservableArray '<' TypeWithExtendedAttributes '>' Null
+    PrimitiveType Null |
+    StringType Null |
+    identifier Null |
+    sequence '<' TypeWithExtendedAttributes '>' Null |
+    object Null |
+    symbol Null |
+    BufferRelatedType Null |
+    FrozenArray '<' TypeWithExtendedAttributes '>' Null |
+    ObservableArray '<' TypeWithExtendedAttributes '>' Null |
     RecordType Null
     ;
 
@@ -655,16 +649,3 @@ ExtendedAttributeStringLiteralList:
     identifier '=' '(' StringLiteralList ')'
     ;
 %%
-extern "C"
-{
-    int webidlerror (const char *s)
-    {
-        std::cerr << s << std::endl;
-        return 0;
-    }
-
-    int main(int argc, char* argv[])
-    {
-        return 0;
-    }
-}

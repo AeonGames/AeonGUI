@@ -161,9 +161,23 @@ typedef int WEBIDLSTYPE;
 # define WEBIDLSTYPE_IS_DECLARED 1
 #endif
 
+/* Location type.  */
+#if ! defined WEBIDLLTYPE && ! defined WEBIDLLTYPE_IS_DECLARED
+typedef struct WEBIDLLTYPE WEBIDLLTYPE;
+struct WEBIDLLTYPE
+{
+    int first_line;
+    int first_column;
+    int last_line;
+    int last_column;
+};
+# define WEBIDLLTYPE_IS_DECLARED 1
+# define WEBIDLLTYPE_IS_TRIVIAL 1
+#endif
+
 
 extern WEBIDLSTYPE webidllval;
-
+extern WEBIDLLTYPE webidllloc;
 int webidlparse ( void );
 
 #endif /* !YY_WEBIDL_C_CODE_AEONGUI_MINGW64_WEBIDL_PARSER_WEBIDL_PARSER_HPP_INCLUDED  */

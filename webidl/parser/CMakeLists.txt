@@ -15,4 +15,11 @@
 
 parser_code(webidl ${CMAKE_CURRENT_SOURCE_DIR} ${CMAKE_CURRENT_SOURCE_DIR})
 
-add_executable(webidl ${BISON_webidl_parser_OUTPUTS} ${FLEX_webidl_lexer_OUTPUTS})
+set(WEBIDL_SOURCES webidl.cpp)
+set(WEBIDL_HEADERS webidl.h)
+add_executable(webidl
+    ${WEBIDL_SOURCES}
+    ${WEBIDL_HEADERS}
+    ${BISON_webidl_parser_OUTPUTS}
+    ${FLEX_webidl_lexer_OUTPUTS}
+)
