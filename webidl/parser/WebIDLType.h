@@ -20,9 +20,14 @@ limitations under the License.
 #include <vector>
 #include <variant>
 #include "Attribute.h"
+#include "Interface.h"
 namespace AeonGUI
 {
-    using WebIDLAtom = std::variant<std::string, Attribute>;
+    using WebIDLAtom = std::variant <
+                       std::string,
+                       Attribute,
+                       Interface
+                       >;
     using WebIDLType = std::variant<std::vector<WebIDLAtom>, WebIDLAtom>;
 #define WEBIDLSTYPE AeonGUI::WebIDLType
 }

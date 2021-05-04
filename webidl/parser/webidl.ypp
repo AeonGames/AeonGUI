@@ -492,7 +492,7 @@ TypeWithExtendedAttributes:
 
 SingleType:
     DistinguishableType |
-    any |
+    any { $$=$1; } |
     PromiseType
     ;
 
@@ -557,9 +557,9 @@ OptionalLong:
     ;
 
 StringType:
-    ByteString |
-    DOMString |
-    USVString
+    ByteString {$$ = $1;} |
+    DOMString  {$$ = $1;} |
+    USVString  {$$ = $1;}
     ;
 
 PromiseType:
