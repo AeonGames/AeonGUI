@@ -12,11 +12,10 @@
 # License for the specific language governing permissions and limitations under
 # the License.
 
-
+include_directories(${CMAKE_CURRENT_BINARY_DIR} ${CMAKE_CURRENT_SOURCE_DIR})
 parser_code(webidl ${CMAKE_CURRENT_SOURCE_DIR} ${CMAKE_CURRENT_SOURCE_DIR})
-
 set(WEBIDL_SOURCES webidl.cpp)
-set(WEBIDL_HEADERS webidl.h)
+set(WEBIDL_HEADERS webidl.h WebIDLType.h Attribute.h)
 add_executable(webidl
     ${WEBIDL_SOURCES}
     ${WEBIDL_HEADERS}

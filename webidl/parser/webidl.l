@@ -21,6 +21,10 @@ limitations under the License.
 #include <cstdint>
 #include <cstdlib>
 #include <iostream>
+#include <string>
+
+#include "WebIDLType.h"
+
 #include "webidl_parser.hpp"
 #define YY_NO_UNISTD_H 1
 %}
@@ -116,8 +120,14 @@ or                      return OR;
 {literal}				{
 							return yytext[0];
 						}
-{identifier}			return identifier;
-{string}			    return string;
+{identifier}			{
+							webidllval = webidltext;
+							return identifier;
+						}
+{string}			    {
+							webidllval = webidltext;
+							return string;
+						}
 \.\.\.                  return ellipsis;
 {comment}
 {whitespace}

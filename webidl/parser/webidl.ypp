@@ -21,6 +21,9 @@ limitations under the License.
 #include <cmath>
 #include <iostream>
 
+using webidlstype = std::string;
+#define WEBIDLSTYPE webidlstype
+
 extern int webidllex();
 void webidlerror (const char *s);
 
@@ -151,7 +154,7 @@ InterfaceOrMixin:
     MixinRest;
 
 InterfaceRest:
-    identifier Inheritance '{' InterfaceMembers '}' ';'
+    identifier Inheritance '{' InterfaceMembers '}' ';' { std::cout << "class " << $1 << std::endl; }
     ;
 
 Partial:
@@ -430,7 +433,7 @@ NamespaceMember:
     ;
 
 Dictionary:
-    dictionary identifier Inheritance '{' DictionaryMembers '}' ';'
+    dictionary identifier Inheritance '{' DictionaryMembers '}' ';' { std::cout << "dictionary " << $2 << std::endl; }
     ;
 
 DictionaryMembers:
