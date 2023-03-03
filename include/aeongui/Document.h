@@ -1,5 +1,5 @@
 /*
-Copyright (C) 2019,2020 Rodrigo Jose Hernandez Cordoba
+Copyright (C) 2019,2020,2023 Rodrigo Jose Hernandez Cordoba
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -21,7 +21,6 @@ limitations under the License.
 #include <algorithm>
 #include "aeongui/Platform.h"
 #include "aeongui/Canvas.h"
-#include "aeongui/JavaScript.h"
 #include "dom/Node.h"
 
 namespace AeonGUI
@@ -33,8 +32,8 @@ namespace AeonGUI
         DLL Document ( const std::string& aFilename );
         DLL ~Document();
         DLL void Draw ( Canvas& aCanvas ) const;
-        DLL void Load ( JavaScript& aJavascript );
-        DLL void Unload ( JavaScript& aJavascript );
+        DLL void Load ();
+        DLL void Unload ();
         /**DOM Properties and Methods @{*/
         //DLL Node* documentElement();
         /**@}*/

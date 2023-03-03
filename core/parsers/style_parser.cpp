@@ -1,4 +1,4 @@
-/* A Bison parser, made by GNU Bison 3.7.6.  */
+/* A Bison parser, made by GNU Bison 3.8.2.  */
 
 /* Bison implementation for Yacc-like parsers in C
 
@@ -46,10 +46,10 @@
    USER NAME SPACE" below.  */
 
 /* Identify Bison output, and Bison version.  */
-#define YYBISON 30706
+#define YYBISON 30802
 
 /* Bison version string.  */
-#define YYBISON_VERSION "3.7.6"
+#define YYBISON_VERSION "3.8.2"
 
 /* Skeleton name.  */
 #define YYSKELETON_NAME "yacc.c"
@@ -63,6 +63,23 @@
 /* Pull parsers.  */
 #define YYPULL 1
 
+/* "%code top" blocks.  */
+#line 1 "C:/Code/AeonGUI/core/parsers/style.ypp"
+
+/*
+Copyright (C) 2019-2021,2023 Rodrigo Jose Hernandez Cordoba
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+http://www.apache.org/licenses/LICENSE-2.0
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+*/
+
+#line 83 "C:/Code/AeonGUI/mingw64/core/style_parser.cpp"
 /* Substitute the type names.  */
 #define YYSTYPE         STYLESTYPE
 /* Substitute the variable and function names.  */
@@ -75,7 +92,7 @@
 #define yychar          stylechar
 
 /* First part of user prologue.  */
-#line 15 "C:/Code/AeonGUI/core/parsers/style.ypp"
+#line 29 "C:/Code/AeonGUI/core/parsers/style.ypp"
 
 #define YY_NO_UNISTD_H 1
 #include <variant>
@@ -94,7 +111,7 @@ extern "C"
     int styleerror ( AeonGUI::AttributeMap& aAttributeMap, const char *s );
 }
 
-#line 98 "C:/Code/AeonGUI/mingw64/core/style_parser.cpp"
+#line 115 "C:/Code/AeonGUI/mingw64/core/style_parser.cpp"
 
 # ifndef YY_CAST
 #  ifdef __cplusplus
@@ -291,12 +308,18 @@ typedef int yy_state_fast_t;
 # define YY_USE(E) /* empty */
 #endif
 
-#if defined __GNUC__ && ! defined __ICC && 407 <= __GNUC__ * 100 + __GNUC_MINOR__
 /* Suppress an incorrect diagnostic about yylval being uninitialized.  */
-# define YY_IGNORE_MAYBE_UNINITIALIZED_BEGIN                            \
+#if defined __GNUC__ && ! defined __ICC && 406 <= __GNUC__ * 100 + __GNUC_MINOR__
+# if __GNUC__ * 100 + __GNUC_MINOR__ < 407
+#  define YY_IGNORE_MAYBE_UNINITIALIZED_BEGIN                           \
+    _Pragma ("GCC diagnostic push")                                     \
+    _Pragma ("GCC diagnostic ignored \"-Wuninitialized\"")
+# else
+#  define YY_IGNORE_MAYBE_UNINITIALIZED_BEGIN                           \
     _Pragma ("GCC diagnostic push")                                     \
     _Pragma ("GCC diagnostic ignored \"-Wuninitialized\"")              \
     _Pragma ("GCC diagnostic ignored \"-Wmaybe-uninitialized\"")
+# endif
 # define YY_IGNORE_MAYBE_UNINITIALIZED_END      \
     _Pragma ("GCC diagnostic pop")
 #else
@@ -514,7 +537,7 @@ static const yytype_int8 yytranslate[] =
 /* YYRLINE[YYN] -- Source line where rule number YYN was defined.  */
 static const yytype_int8 yyrline[] =
 {
-    0,    39,    39,    40,    43,    46,    46
+    0,    53,    53,    54,    57,    60,    60
 };
 #endif
 
@@ -540,15 +563,6 @@ yysymbol_name ( yysymbol_kind_t yysymbol )
 {
     return yytname[yysymbol];
 }
-#endif
-
-#ifdef YYPRINT
-/* YYTOKNUM[NUM] -- (External) token number corresponding to the
-   (internal) symbol number NUM (which must be that of a token).  */
-static const yytype_int16 yytoknum[] =
-{
-    0,   256,   257,   258,   259,   260,    59,    58
-};
 #endif
 
 #define YYPACT_NINF (-5)
@@ -603,21 +617,21 @@ static const yytype_int8 yycheck[] =
     0,     4,     5,     7,     3,     6,     6
 };
 
-/* YYSTOS[STATE-NUM] -- The (internal number of the) accessing
-   symbol of state STATE-NUM.  */
+/* YYSTOS[STATE-NUM] -- The symbol kind of the accessing symbol of
+   state STATE-NUM.  */
 static const yytype_int8 yystos[] =
 {
     0,     3,     9,    10,     7,     0,     6,     4,     5,    11,
     10
 };
 
-/* YYR1[YYN] -- Symbol number of symbol that rule YYN derives.  */
+/* YYR1[RULE-NUM] -- Symbol kind of the left-hand side of rule RULE-NUM.  */
 static const yytype_int8 yyr1[] =
 {
     0,     8,     9,     9,    10,    11,    11
 };
 
-/* YYR2[YYN] -- Number of symbols on the right hand side of rule YYN.  */
+/* YYR2[RULE-NUM] -- Number of symbols on the right-hand side of rule RULE-NUM.  */
 static const yytype_int8 yyr2[] =
 {
     0,     2,     1,     3,     3,     1,     1
@@ -632,6 +646,7 @@ enum { YYENOMEM = -2 };
 #define YYACCEPT        goto yyacceptlab
 #define YYABORT         goto yyabortlab
 #define YYERROR         goto yyerrorlab
+#define YYNOMEM         goto yyexhaustedlab
 
 
 #define YYRECOVERING()  (!!yyerrstatus)
@@ -672,10 +687,7 @@ do {                                            \
     YYFPRINTF Args;                             \
 } while (0)
 
-/* This macro is provided for backward compatibility. */
-# ifndef YY_LOCATION_PRINT
-#  define YY_LOCATION_PRINT(File, Loc) ((void) 0)
-# endif
+
 
 
 # define YY_SYMBOL_PRINT(Title, Kind, Value, Location)                    \
@@ -705,12 +717,6 @@ yy_symbol_value_print ( FILE *yyo,
     {
         return;
     }
-# ifdef YYPRINT
-    if ( yykind < YYNTOKENS )
-    {
-        YYPRINT ( yyo, yytoknum[yykind], *yyvaluep );
-    }
-# endif
     YY_IGNORE_MAYBE_UNINITIALIZED_BEGIN
     YY_USE ( yykind );
     YY_IGNORE_MAYBE_UNINITIALIZED_END
@@ -898,6 +904,7 @@ yyparse ( AeonGUI::AttributeMap& aAttributeMap )
     YYDPRINTF ( ( stderr, "Starting parse\n" ) );
 
     yychar = STYLEEMPTY; /* Cause a token to be read.  */
+
     goto yysetstate;
 
 
@@ -923,7 +930,7 @@ yysetstate:
 
     if ( yyss + yystacksize - 1 <= yyssp )
 #if !defined yyoverflow && !defined YYSTACK_RELOCATE
-        goto yyexhaustedlab;
+        YYNOMEM;
 #else
     {
         /* Get the current used size of the three stacks, in elements.  */
@@ -952,7 +959,7 @@ yysetstate:
         /* Extend the stack our own way.  */
         if ( YYMAXDEPTH <= yystacksize )
         {
-            goto yyexhaustedlab;
+            YYNOMEM;
         }
         yystacksize *= 2;
         if ( YYMAXDEPTH < yystacksize )
@@ -967,7 +974,7 @@ yysetstate:
                               YYSTACK_ALLOC ( YY_CAST ( YYSIZE_T, YYSTACK_BYTES ( yystacksize ) ) ) );
             if ( ! yyptr )
             {
-                goto yyexhaustedlab;
+                YYNOMEM;
             }
             YYSTACK_RELOCATE ( yyss_alloc, yyss );
             YYSTACK_RELOCATE ( yyvs_alloc, yyvs );
@@ -993,6 +1000,7 @@ yysetstate:
         }
     }
 #endif /* !defined yyoverflow && !defined YYSTACK_RELOCATE */
+
 
     if ( yystate == YYFINAL )
     {
@@ -1118,15 +1126,15 @@ yyreduce:
     switch ( yyn )
     {
     case 4: /* declaration: IDENT ':' value  */
-#line 43 "C:/Code/AeonGUI/core/parsers/style.ypp"
+#line 57 "C:/Code/AeonGUI/core/parsers/style.ypp"
         {
             aAttributeMap[std::get<std::string> ( yyvsp[-2] )] = yyvsp[0];
         }
-#line 1096 "C:/Code/AeonGUI/mingw64/core/style_parser.cpp"
+#line 1106 "C:/Code/AeonGUI/mingw64/core/style_parser.cpp"
         break;
 
 
-#line 1100 "C:/Code/AeonGUI/mingw64/core/style_parser.cpp"
+#line 1110 "C:/Code/AeonGUI/mingw64/core/style_parser.cpp"
 
     default:
         break;
@@ -1213,6 +1221,7 @@ yyerrorlab:
     {
         YYERROR;
     }
+    ++yynerrs;
 
     /* Do not reclaim the symbols of the rule whose action triggered
        this YYERROR.  */
@@ -1277,7 +1286,7 @@ yyerrlab1:
     `-------------------------------------*/
 yyacceptlab:
     yyresult = 0;
-    goto yyreturn;
+    goto yyreturnlab;
 
 
     /*-----------------------------------.
@@ -1285,24 +1294,22 @@ yyacceptlab:
     `-----------------------------------*/
 yyabortlab:
     yyresult = 1;
-    goto yyreturn;
+    goto yyreturnlab;
 
 
-#if !defined yyoverflow
-    /*-------------------------------------------------.
-    | yyexhaustedlab -- memory exhaustion comes here.  |
-    `-------------------------------------------------*/
+    /*-----------------------------------------------------------.
+    | yyexhaustedlab -- YYNOMEM (memory exhaustion) comes here.  |
+    `-----------------------------------------------------------*/
 yyexhaustedlab:
     yyerror ( aAttributeMap, YY_ ( "memory exhausted" ) );
     yyresult = 2;
-    goto yyreturn;
-#endif
+    goto yyreturnlab;
 
 
-    /*-------------------------------------------------------.
-    | yyreturn -- parsing is finished, clean up and return.  |
-    `-------------------------------------------------------*/
-yyreturn:
+    /*----------------------------------------------------------.
+    | yyreturnlab -- parsing is finished, clean up and return.  |
+    `----------------------------------------------------------*/
+yyreturnlab:
     if ( yychar != STYLEEMPTY )
     {
         /* Make sure we have latest lookahead translation.  See comments at
@@ -1331,7 +1338,7 @@ yyreturn:
     return yyresult;
 }
 
-#line 47 "C:/Code/AeonGUI/core/parsers/style.ypp"
+#line 61 "C:/Code/AeonGUI/core/parsers/style.ypp"
 
 extern "C"
 {

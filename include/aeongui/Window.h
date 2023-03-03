@@ -1,5 +1,5 @@
 /*
-Copyright (C) 2019,2020 Rodrigo Jose Hernandez Cordoba
+Copyright (C) 2019,2020,2023 Rodrigo Jose Hernandez Cordoba
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -21,9 +21,7 @@ limitations under the License.
 #include <algorithm>
 #include <string>
 #include "aeongui/Platform.h"
-///@todo Canvas and JavaScript implementations should be selectable.
 #include "aeongui/CairoCanvas.h"
-#include "aeongui/JavaScript.h"
 
 namespace AeonGUI
 {
@@ -40,7 +38,6 @@ namespace AeonGUI
         DLL size_t GetStride() const;
         DLL void Draw();
     private:
-        JavaScript mJavaScript{this};
         CairoCanvas mCanvas{};
     };
 }

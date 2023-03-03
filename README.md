@@ -32,6 +32,12 @@ the actual similarities between HTML documents and video game UIs being very lim
 Right now, in 2019 the idea is to create a SVG agent that implements a subset of the SVG DOM, making UIs easily implemented via SVG files.
 **I really hope this is the last iteration of what AeonGUI actually IS**
 
+2023 Update: At one point in time implementing a full SVG agent with JavaScript bindings seemed like a good idea, it may be,
+but compiling and maintaining V8 for 2 different compilers on 2 different platforms just for this purpose is very futile.
+At this time GCC 11/12 has too many incompatibilities to be able to keep up, more time is spent trying to catch up than it is
+really worth it, so JavaScript support is being dropped at this time. C# via Mono is being considered instead,
+but the code will stay C++ for the moment and for the near future.
+
 COMPILATION
 -----------
 

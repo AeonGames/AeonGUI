@@ -1,5 +1,5 @@
 /*
-Copyright (C) 2013,2019,2020 Rodrigo Jose Hernandez Cordoba
+Copyright (C) 2013,2019,2020,2023 Rodrigo Jose Hernandez Cordoba
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -17,7 +17,6 @@ limitations under the License.
 #ifndef AEONGAMES_AEONGUI_H
 #define AEONGAMES_AEONGUI_H
 #include "aeongui/Platform.h"
-#include "v8.h"
 
 namespace AeonGUI
 {

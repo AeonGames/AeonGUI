@@ -1,5 +1,5 @@
 /*
-Copyright (C) 2019,2020 Rodrigo Jose Hernandez Cordoba
+Copyright (C) 2019,2020,2023 Rodrigo Jose Hernandez Cordoba
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -32,8 +32,8 @@ namespace AeonGUI
                                    const std::function < void ( Element* ) > & aDestructor );
     DLL bool UnregisterConstructor ( const StringLiteral& aIdentifier );
     DLL void EnumerateConstructors ( const std::function<bool ( const StringLiteral& ) >& aEnumerator );
-    DLL void Initialize ( v8::Isolate* aIsolate );
-    DLL void Finalize ( v8::Isolate* aIsolate );
+    DLL void Initialize();
+    DLL void Finalize();
     DLL bool AddInitializer (
         const std::function < void ( Element* ) > & aInitializer,
         const std::function < void ( Element* ) > & aFinalizer );

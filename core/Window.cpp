@@ -1,5 +1,5 @@
 /*
-Copyright (C) 2019,2020 Rodrigo Jose Hernandez Cordoba
+Copyright (C) 2019,2020,2023 Rodrigo Jose Hernandez Cordoba
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -25,12 +25,10 @@ limitations under the License.
 
 namespace AeonGUI
 {
-    Window::Window () : mJavaScript{this} {}
+    Window::Window () = default;
     Window::Window ( const std::string aFilename, uint32_t aWidth, uint32_t aHeight ) :
-        mJavaScript{this},
         mCanvas{aWidth, aHeight}
     {
-        mJavaScript.SetLocation ( aFilename );
     }
 
     Window::~Window() = default;
@@ -61,6 +59,8 @@ namespace AeonGUI
     void Window::Draw()
     {
         mCanvas.Clear();
+#if 0
+        /// @todo the window should have a direct pointer to the current document.
         // Only draw if document_element is valid.
         if ( Element* document_element = mJavaScript.GetDocumentElement() )
         {
@@ -78,5 +78,6 @@ namespace AeonGUI
                 return aNode->IsDrawEnabled();
             } );
         }
+#endif
     }
 }

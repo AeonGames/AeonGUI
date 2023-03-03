@@ -1,5 +1,5 @@
 /******************************************************************************
-Copyright (C) 2010-2013,2019,2020 Rodrigo Hernandez Cordoba
+Copyright (C) 2010-2013,2019,2020,2023 Rodrigo Hernandez Cordoba
 
    Licensed under the Apache License, Version 2.0 (the "License");
    you may not use this file except in compliance with the License.
@@ -45,16 +45,14 @@ namespace AeonGUI
         ( void ) aCanvas;
     }
 
-    void Node::Load ( JavaScript& aJavaScript )
+    void Node::Load ()
     {
         // Do nothing by default
-        ( void ) aJavaScript;
     }
 
-    void Node::Unload ( JavaScript& aJavaScript )
+    void Node::Unload ()
     {
         // Do nothing by default
-        ( void ) aJavaScript;
     }
 
     Node* Node::parentNode() const
@@ -216,15 +214,5 @@ namespace AeonGUI
         }
         result->mParent = nullptr;
         return result;
-    }
-
-    void Node::Initialize ( v8::Isolate* aIsolate )
-    {
-        JsObjectWrap::Initialize<Node, EventTarget> ( aIsolate, "Node" );
-    }
-
-    void Node::Finalize ( v8::Isolate* aIsolate )
-    {
-        JsObjectWrap::Finalize<Node> ( aIsolate );
     }
 }

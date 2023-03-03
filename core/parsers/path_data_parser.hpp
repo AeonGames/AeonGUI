@@ -1,4 +1,4 @@
-/* A Bison parser, made by GNU Bison 3.7.6.  */
+/* A Bison parser, made by GNU Bison 3.8.2.  */
 
 /* Bison interface for Yacc-like parsers in C
 
@@ -53,10 +53,10 @@
 extern int ddebug;
 #endif
 /* "%code requires" blocks.  */
-#line 1 "C:/Code/AeonGUI/core/parsers/path_data.ypp"
+#line 15 "C:/Code/AeonGUI/core/parsers/path_data.ypp"
 
 /*
-Copyright (C) 2019-2021 Rodrigo Jose Hernandez Cordoba
+Copyright (C) 2019-2021,2023 Rodrigo Jose Hernandez Cordoba
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
 You may obtain a copy of the License at
@@ -94,6 +94,8 @@ typedef int DSTYPE;
 
 extern DSTYPE dlval;
 
+
 int dparse ( std::vector<AeonGUI::DrawType>& aPath );
+
 
 #endif /* !YY_D_C_CODE_AEONGUI_MINGW64_CORE_PATH_DATA_PARSER_HPP_INCLUDED  */

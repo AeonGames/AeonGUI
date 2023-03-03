@@ -45,9 +45,13 @@ function(parser_code parser_name source_path output_path)
             ${output_path}/${parser_name}_lexer.cpp
         )
         if(MSVC)
-            set_source_files_properties(${PARSER_SOURCES} PROPERTIES COMPILE_FLAGS -FIcstdint)
+            set_source_files_properties(${BISON_${parser_name}_parser_OUTPUTS} ${FLEX_${parser_name}_lexer_OUTPUTS} PROPERTIES COMPILE_FLAGS -FIcstdint)
         endif()
     endif()
+    if(CMAKE_C_COMPILER_ID STREQUAL "GNU")
+        set_source_files_properties(${BISON_${parser_name}_parser_OUTPUTS} PROPERTIES COMPILE_FLAGS -Wno-free-nonheap-object)
+    endif()
+
     set(BISON_${parser_name}_parser_OUTPUTS ${BISON_${parser_name}_parser_OUTPUTS} CACHE STRING "" FORCE)
     mark_as_advanced(BISON_${parser_name}_parser_OUTPUTS)
 

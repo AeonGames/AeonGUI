@@ -1,5 +1,5 @@
 /*
-Copyright (C) 2019,2020 Rodrigo Jose Hernandez Cordoba
+Copyright (C) 2019,2020,2023 Rodrigo Jose Hernandez Cordoba
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -17,8 +17,6 @@ limitations under the License.
 #include <iostream>
 #include "Script.h"
 #include "Text.h"
-#include "aeongui/JavaScript.h"
-
 namespace AeonGUI
 {
     namespace DOM
@@ -28,18 +26,6 @@ namespace AeonGUI
         }
         Script::~Script()
         {
-        }
-        void Script::Load ( JavaScript& aJavaScript )
-        {
-            const auto& children = childNodes();
-            auto text_node = std::find_if ( children.begin(), children.end(), [] ( const Node * aNode )
-            {
-                return aNode->nodeType() == TEXT_NODE;
-            } );
-            if ( text_node != children.end() )
-            {
-                aJavaScript.Eval ( reinterpret_cast<const Text*> ( *text_node )->wholeText() );
-            }
         }
     }
 }

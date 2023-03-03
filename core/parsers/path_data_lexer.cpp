@@ -1267,7 +1267,7 @@ char *yytext;
 #line 1 "C:/Code/AeonGUI/core/parsers/path_data.l"
 #line 2 "C:/Code/AeonGUI/core/parsers/path_data.l"
 /*
-Copyright (C) 2019-2021 Rodrigo Jose Hernandez Cordoba
+Copyright (C) 2019-2021,2023 Rodrigo Jose Hernandez Cordoba
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.

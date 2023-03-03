@@ -1,5 +1,5 @@
 /*
-Copyright (C) 2019,2020 Rodrigo Jose Hernandez Cordoba
+Copyright (C) 2019,2020,2023 Rodrigo Jose Hernandez Cordoba
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -155,79 +155,5 @@ namespace AeonGUI
                 return;
             }
         }
-    }
-
-    using InitializerTuple = std::tuple <
-                             std::function < void ( v8::Isolate* ) >,
-                             std::function < void ( v8::Isolate* ) >>;
-
-    template<class T> constexpr InitializerTuple MakeInitializer()
-    {
-        return
-            InitializerTuple
-        {
-            T::Initialize,
-            T::Finalize,
-        };
-    }
-
-    static std::vector<InitializerTuple> Initializers
-    {
-        MakeInitializer<EventTarget>(),
-        MakeInitializer<Node>(),
-        MakeInitializer<Element>(),
-        MakeInitializer<DOM::SVGElement>(),
-    };
-
-    void Initialize ( v8::Isolate* aIsolate )
-    {
-        for ( auto& i : Initializers )
-        {
-            std::get<0> ( i ) ( aIsolate );
-        }
-    }
-
-    void Finalize ( v8::Isolate* aIsolate )
-    {
-        for ( auto i = Initializers.rbegin(); i != Initializers.rend(); ++i )
-        {
-            std::get<1> ( *i ) ( aIsolate );
-        }
-    }
-
-    bool AddInitializer (
-        const std::function < void ( v8::Isolate* ) > & aInitializer,
-        const std::function < void ( v8::Isolate* ) > & aFinalizer )
-    {
-        auto it = std::find_if ( Initializers.begin(), Initializers.end(),
-                                 [&aInitializer, &aFinalizer] ( const InitializerTuple & i )
-        {
-            return ( aInitializer.target<void ( v8::Isolate* ) >() == std::get<0> ( i ).target< void ( v8::Isolate* ) >() &&
-                     aFinalizer.target<void ( v8::Isolate* ) >() == std::get<1> ( i ).target< void ( v8::Isolate* ) >() );
-        } );
-        if ( it == Initializers.end() )
-        {
-            Initializers.emplace_back ( InitializerTuple{aInitializer, aFinalizer} );
-            return true;
-        }
-        return false;
-    }
-
-    bool RemoveInitializer (
-        const std::function < void ( v8::Isolate* ) > & aInitializer,
-        const std::function < void ( v8::Isolate* ) > & aFinalizer )
-    {
-        auto it = std::find_if ( Initializers.begin(), Initializers.end(),
-                                 [&aInitializer, &aFinalizer] ( const InitializerTuple & i )
-        {
-            return ( aInitializer.target<void ( v8::Isolate* ) >() == std::get<0> ( i ).target< void ( v8::Isolate* ) >() &&
-                     aFinalizer.target<void ( v8::Isolate* ) >() == std::get<1> ( i ).target< void ( v8::Isolate* ) >() );
-        } );
-        if ( it == Initializers.end() )
-        {
-            Initializers.erase ( it );
-            return true;
-        }
-        return false;
     }
 }

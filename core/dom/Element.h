@@ -1,5 +1,5 @@
 /*
-Copyright (C) 2019,2020 Rodrigo Jose Hernandez Cordoba
+Copyright (C) 2019,2020,2023 Rodrigo Jose Hernandez Cordoba
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -41,12 +41,6 @@ namespace AeonGUI
         NodeType nodeType() const final;
         const std::string& tagName() const;
         /**@}*/
-        static DLL void Initialize ( v8::Isolate* aIsolate );
-        static DLL void Finalize ( v8::Isolate* aIsolate );
-        static DLL void New ( const v8::FunctionCallbackInfo<v8::Value>& aArgs );
-        static DLL void SetAttribute ( v8::Local<v8::Name> name, v8::Local<v8::Value> value,
-                                       const v8::PropertyCallbackInfo<v8::Value>& info );
-        static DLL void GetAttribute ( v8::Local<v8::Name> property, const v8::PropertyCallbackInfo<v8::Value>& info );
     private:
         const std::string mTagName;
         AttributeMap mAttributeMap{};

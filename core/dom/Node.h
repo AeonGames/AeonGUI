@@ -1,5 +1,5 @@
 /*
-Copyright (C) 2019,2020 Rodrigo Jose Hernandez Cordoba
+Copyright (C) 2019,2020,2023 Rodrigo Jose Hernandez Cordoba
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -22,14 +22,12 @@ limitations under the License.
 #include <variant>
 #include "aeongui/Platform.h"
 #include "aeongui/AttributeMap.h"
-#include "EventTarget.h"
 
 namespace AeonGUI
 {
     class Canvas;
-    class JavaScript;
     class Document;
-    class Node : public EventTarget
+    class Node
     {
     public:
         enum NodeType
@@ -61,8 +59,8 @@ namespace AeonGUI
 
         DLL virtual void DrawStart ( Canvas& aCanvas ) const;
         DLL virtual void DrawFinish ( Canvas& aCanvas ) const;
-        DLL virtual void Load ( JavaScript& aJavaScript );
-        DLL virtual void Unload ( JavaScript& aJavaScript );
+        DLL virtual void Load ();
+        DLL virtual void Unload ();
         /** Returns whether this node and all descendants should be skipped
          *  in a drawing operation.
          *  @return true by default override to disable drawing.
@@ -75,8 +73,6 @@ namespace AeonGUI
         virtual NodeType nodeType() const = 0;
         const std::vector<Node*>& childNodes() const;
         /**@}*/
-        static DLL void Initialize ( v8::Isolate* aIsolate );
-        static DLL void Finalize ( v8::Isolate* aIsolate );
     private:
         Node* mParent{};
         std::vector<Node*> mChildren{};

@@ -19,8 +19,6 @@ set(AEONGUI_HEADERS
     ../include/aeongui/Transform.h
     ../include/aeongui/Vector2.h
     ../include/aeongui/DrawType.h
-    ../include/aeongui/JavaScript.h
-    ../include/aeongui/JsObjectWrap.h
     ../include/aeongui/Color.h
 )
 
@@ -38,10 +36,7 @@ set(AEONGUI_SOURCES
     CairoCanvas.cpp
     Path.cpp
     CairoPath.cpp
-    JavaScript.cpp
-    JsObjectWrap.cpp
     Color.cpp
-    dom/EventTarget.cpp
     dom/Node.cpp
     dom/Element.cpp
     dom/SVGElement.cpp
@@ -63,7 +58,6 @@ set(AEONGUI_SOURCES
     dom/SVGEllipseElement.cpp
     dom/Script.cpp
     dom/Text.cpp
-    dom/EventTarget.h
     dom/Node.h
     dom/Element.h
     dom/SVGGElement.h
@@ -119,8 +113,6 @@ target_precompile_headers(AeonGUI
   PUBLIC
     ${AEONGUI_HEADERS}
   PRIVATE
-    [["v8.h"]]
-    [["libplatform/libplatform.h"]]
     <cairo.h>
     <string>
     <unordered_map>

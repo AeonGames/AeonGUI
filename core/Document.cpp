@@ -1,5 +1,5 @@
 /*
-Copyright (C) 2019,2020 Rodrigo Jose Hernandez Cordoba
+Copyright (C) 2019,2020,2023 Rodrigo Jose Hernandez Cordoba
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -81,21 +81,21 @@ namespace AeonGUI
         /**@todo Emit onload event.*/
     }
 
-    void Document::Load ( JavaScript& aJavascript )
+    void Document::Load()
     {
         mDocumentElement->TraverseDepthFirstPreOrder (
-            [&aJavascript] ( Node * aNode )
+            [] ( Node * aNode )
         {
-            aNode->Load ( aJavascript );
+            aNode->Load();
         } );
     }
 
-    void Document::Unload ( JavaScript& aJavascript )
+    void Document::Unload ()
     {
         mDocumentElement->TraverseDepthFirstPreOrder (
-            [&aJavascript] ( Node * aNode )
+            [] ( Node * aNode )
         {
-            aNode->Unload ( aJavascript );
+            aNode->Unload ();
         } );
     }
 

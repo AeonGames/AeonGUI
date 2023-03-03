@@ -1,5 +1,5 @@
 /*
-Copyright (C) 2020 Rodrigo Jose Hernandez Cordoba
+Copyright (C) 2020,2023 Rodrigo Jose Hernandez Cordoba
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -26,8 +26,6 @@ namespace AeonGUI
         public:
             SVGElement ( const std::string& aTagName, const AttributeMap& aAttributes );
             ~SVGElement() override;
-            static DLL void Initialize ( v8::Isolate* aIsolate );
-            static DLL void Finalize ( v8::Isolate* aIsolate );
         };
     }
 }

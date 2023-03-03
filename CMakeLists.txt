@@ -106,8 +106,6 @@ if(VCPKG_TARGET_TRIPLET AND NOT CAIRO_FOUND)
   set(CAIRO_INCLUDE_DIRS "")
 endif()
 
-include(v8)
-
 # include(opensans)
 find_package(Freetype)
 if(FREETYPE_FOUND)
@@ -162,7 +160,6 @@ endif()
 
 include(parser)
 include_directories(include common demos/common core)
-add_subdirectory(webidl)
 add_subdirectory(core)
 add_subdirectory(demos/OpenGL)
 configure_vscode(${CMAKE_SOURCE_DIR}/demos/OpenGL)
@@ -188,7 +185,6 @@ install(
     include/aeongui/DrawType.h
     include/aeongui/Color.h
     include/aeongui/Vector2.h
-    include/aeongui/JavaScript.h
     include/aeongui/Element.h
     include/aeongui/Transform.h
     include/aeongui/Matrix2x3.h
