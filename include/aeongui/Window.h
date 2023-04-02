@@ -16,20 +16,19 @@ limitations under the License.
 #ifndef AEONGUI_WINDOW_H
 #define AEONGUI_WINDOW_H
 #include <cstdint>
-#include <vector>
-#include <memory>
-#include <algorithm>
 #include <string>
 #include "aeongui/Platform.h"
 #include "aeongui/CairoCanvas.h"
 
 namespace AeonGUI
 {
+    class Document;
     class Window
     {
     public:
         DLL Window ();
-        DLL Window ( const std::string aFilename, uint32_t aWidth, uint32_t aHeight );
+        DLL Window ( uint32_t aWidth, uint32_t aHeight );
+        DLL Window ( const Document* aDocument, uint32_t aWidth, uint32_t aHeight );
         DLL ~Window ();
         DLL void ResizeViewport ( uint32_t aWidth, uint32_t aHeight );
         DLL const uint8_t* GetPixels() const;
@@ -38,6 +37,7 @@ namespace AeonGUI
         DLL size_t GetStride() const;
         DLL void Draw();
     private:
+        const Document* mDocument{};
         CairoCanvas mCanvas{};
     };
 }

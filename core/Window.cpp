@@ -22,14 +22,21 @@ limitations under the License.
 
 #include "dom/Element.h"
 #include "aeongui/Window.h"
+#include "aeongui/Document.h"
 
 namespace AeonGUI
 {
     Window::Window () = default;
-    Window::Window ( const std::string aFilename, uint32_t aWidth, uint32_t aHeight ) :
+    Window::Window ( uint32_t aWidth, uint32_t aHeight ) :
         mCanvas{aWidth, aHeight}
     {
     }
+
+    Window::Window ( const Document* aDocument, uint32_t aWidth, uint32_t aHeight ) :
+        mDocument{aDocument}, mCanvas{aWidth, aHeight}
+    {
+    }
+
 
     Window::~Window() = default;
 
@@ -59,25 +66,9 @@ namespace AeonGUI
     void Window::Draw()
     {
         mCanvas.Clear();
-#if 0
-        /// @todo the window should have a direct pointer to the current document.
-        // Only draw if document_element is valid.
-        if ( Element* document_element = mJavaScript.GetDocumentElement() )
+        if ( mDocument != nullptr )
         {
-            document_element->TraverseDepthFirstPreOrder (
-                [this] ( const Node * aNode )
-            {
-                aNode->DrawStart ( mCanvas );
-            },
-            [this] ( const Node * aNode )
-            {
-                aNode->DrawFinish ( mCanvas );
-            },
-            [] ( const Node * aNode )
-            {
-                return aNode->IsDrawEnabled();
-            } );
+            mDocument->Draw ( mCanvas );
         }
-#endif
     }
 }

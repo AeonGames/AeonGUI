@@ -1,5 +1,5 @@
 /*
-Copyright (C) 2013,2019-2021 Rodrigo Jose Hernandez Cordoba
+Copyright (C) 2013,2019-2021,2023 Rodrigo Jose Hernandez Cordoba
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -48,6 +48,7 @@ private:
     uint32_t mHeight;
     GLuint mScreenQuad{};
     GLuint mScreenTexture{};
+    AeonGUI::Document mDocument;
     AeonGUI::Window mWindow;
 };
 
@@ -58,7 +59,8 @@ GLWindow::GLWindow ( char* aFilename ) :
     window ( 0 ),
     mWidth ( 800 ),
     mHeight ( 600 ),
-    mWindow{aFilename ? aFilename : "", static_cast<uint32_t> ( mWidth ), static_cast<uint32_t> ( mHeight ) }
+    mDocument ( aFilename ? aFilename : "" ),
+    mWindow{&mDocument, static_cast<uint32_t> ( mWidth ), static_cast<uint32_t> ( mHeight ) }
 {}
 
 bool GLWindow::Create ( Display* dpy )
