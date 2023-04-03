@@ -1,5 +1,5 @@
 /*
-Copyright (C) 2010-2012,2019-2021 Rodrigo Jose Hernandez Cordoba
+Copyright (C) 2010-2012,2019-2021,2023 Rodrigo Jose Hernandez Cordoba
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -67,7 +67,7 @@ class Window
 {
 public:
     Window ( HINSTANCE hInstance, LPSTR aFilename, LONG aWidth, LONG aHeight ) :
-        mWindow{aFilename ? aFilename : "", static_cast<uint32_t> ( aWidth ), static_cast<uint32_t> ( aHeight ) }
+        mDocument{aFilename ? aFilename : ""}, mWindow{&mDocument, static_cast<uint32_t> ( aWidth ), static_cast<uint32_t> ( aHeight ) }
     {
         Initialize ( hInstance, aWidth, aHeight );
     }
@@ -94,7 +94,8 @@ private:
     GLuint mVAO{};
     GLuint mScreenQuad{};
     GLuint mScreenTexture{};
-    AeonGUI::Window mWindow;
+    AeonGUI::Document mDocument{};
+    AeonGUI::Window mWindow{};
 };
 
 ATOM Window::atom = 0;
