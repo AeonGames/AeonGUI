@@ -12,8 +12,9 @@ set(AEONGUI_HEADERS
     ../include/aeongui/Window.h
     ../include/aeongui/Canvas.h
     ../include/aeongui/CairoCanvas.h
-    ../include/aeongui/Path.h
     ../include/aeongui/CairoPath.h
+    ../include/aeongui/CSS3Tokenizer.h
+    ../include/aeongui/Path.h
     ../include/aeongui/AABB.h
     ../include/aeongui/Matrix2x3.h
     ../include/aeongui/Transform.h
@@ -37,6 +38,7 @@ set(AEONGUI_SOURCES
     Path.cpp
     CairoPath.cpp
     Color.cpp
+    CSS3Tokenizer.cpp
     dom/Node.cpp
     dom/Element.cpp
     dom/SVGElement.cpp
