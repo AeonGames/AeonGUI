@@ -21,7 +21,7 @@ limitations under the License.
 
 namespace AeonGUI
 {
-    enum class CSS3TokenID : uint32_t
+    enum class CSS3TokenType : uint32_t
     {
         IDENT,
         FUNCTION,
@@ -46,21 +46,24 @@ namespace AeonGUI
         PARENTHESES_END,
         CURLY_BRACKET_START,
         CURLY_BRACKET_END,
+        END_OF_FILE,
     };
 
     class CSS3Token
     {
     public:
-        CSS3Token ( CSS3TokenID id );
+        DLL CSS3Token ( CSS3TokenType id );
+        DLL CSS3TokenType GetType() const;
     private:
-        CSS3TokenID mId{};
+        CSS3TokenType mId{};
     };
 
     class CSS3Tokenizer
     {
     public:
         DLL CSS3Tokenizer();
-        DLL CSS3Token Consume();
+        DLL static uint32_t GetCodePointFromUT8 ( const char* bytes, uint32_t byte_count, size_t* code_point_lenght = nullptr );
+        DLL static CSS3Token Consume ( const std::string& code_points, size_t& pos );
     private:
     };
 }

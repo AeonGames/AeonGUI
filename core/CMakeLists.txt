@@ -126,7 +126,3 @@ target_precompile_headers(AeonGUI
 if(MINGW)
   fix_compile_commands(AeonGUI)
 endif()
-
-if(BUILD_UNIT_TESTS)
-	subdirs(tests)
-endif()

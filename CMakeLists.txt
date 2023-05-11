@@ -58,7 +58,7 @@ set_property(GLOBAL PROPERTY USE_FOLDERS ON)
 option(USE_ZLIB "Use the zlib compression library")
 option(USE_PNG "Enable PNG image support (Requires zlib)")
 option(USE_CUDA "Enable CUDA support")
-option(BUILD_UNIT_TESTS "Enable Unit Tests using GTest/GMock")
+option(BUILD_UNIT_TESTS "Enable Unit Tests using GTest/GMock" ON)
 set(CMAKE_BUILD_TYPE "Debug" CACHE STRING "One of Debug|Release|RelWithDebInfo|MinSizeRel")
 set(HTTP_PROXY "" CACHE STRING "Specify a proxy server if required for downloads")
 set(HTTPS_PROXY "" CACHE STRING "Specify a proxy server if required for downloads")
@@ -133,7 +133,7 @@ endif(CMAKE_COMPILER_IS_GNUC)
 add_definitions(-D_USE_MATH_DEFINES)
 
 if(BUILD_UNIT_TESTS)
-	include(gmock)
+  add_subdirectory(tests)
 endif()
 
 function(fix_compile_commands target)
@@ -159,7 +159,7 @@ include_directories(include common demos/common core)
 add_subdirectory(css)
 add_subdirectory(core)
 add_subdirectory(demos/OpenGL)
-configure_vscode(${CMAKE_SOURCE_DIR}/demos/OpenGL)
+configure_vscode(${CMAKE_SOURCE_DIR}/demos/OpenGL ${CMAKE_SOURCE_DIR}/tests)
 
 install(TARGETS AeonGUI
     EXPORT aeongui
