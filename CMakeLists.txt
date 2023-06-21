@@ -85,28 +85,24 @@ if(USE_PNG)
 	find_package(libpng)
 endif(USE_PNG)
 
+# Install pkgconf from vcpkg on MSVC if the following does not work on Visual Studio Builds
+# vcpkg.exe --triplet=x64-windows install pkgconf
 find_package(PkgConfig)
-if(PKG_CONFIG_FOUND AND BASH_EXECUTABLE AND MSYS)
-  # In order to properly use pkg-config in a msys2 environment we need to jump
-  # through some hoops. CMake seems to call pkg-config without any of the bash
-  # environment set up, so we need to set the proper pkg config path inside the
-  # cmake process address space.
-  execute_process(COMMAND ${BASH_EXECUTABLE} --login -c "echo $PKG_CONFIG_PATH"
-                  OUTPUT_VARIABLE PKG_CONFIG_PATH)
-  set(ENV{PKG_CONFIG_PATH} ${PKG_CONFIG_PATH})
-endif()
 if(PKG_CONFIG_FOUND)
-  pkg_check_modules(CAIRO cairo)
+    if(BASH_EXECUTABLE AND MSYS)
+      # In order to properly use pkg-config in a msys2 environment we need to jump
+      # through some hoops. CMake seems to call pkg-config without any of the bash
+      # environment set up, so we need to set the proper pkg config path inside the
+      # cmake process address space.
+      execute_process(COMMAND ${BASH_EXECUTABLE} --login -c "echo $PKG_CONFIG_PATH"
+                      OUTPUT_VARIABLE PKG_CONFIG_PATH)
+      set(ENV{PKG_CONFIG_PATH} ${PKG_CONFIG_PATH})
+    elseif(MSVC AND VCPKG_INSTALLED_DIR AND VCPKG_TARGET_TRIPLET)
+      set(ENV{PKG_CONFIG_PATH} ${VCPKG_INSTALLED_DIR}/${VCPKG_TARGET_TRIPLET}/lib/pkgconfig)
+    endif()
+    pkg_check_modules(CAIRO cairo)
 endif()
 
-if(VCPKG_TARGET_TRIPLET AND NOT CAIRO_FOUND)
-  # cairo
-  find_package(unofficial-cairo CONFIG REQUIRED)
-  set(CAIRO_LIBRARIES unofficial::cairo::cairo)
-  set(CAIRO_INCLUDE_DIRS "")
-endif()
-
-# include(opensans)
 find_package(Freetype)
 if(FREETYPE_FOUND)
 	include_directories(${FREETYPE_INCLUDE_DIRS})
@@ -149,7 +145,7 @@ function(fix_compile_commands target)
   )
   endif()
 endfunction()
-if(SED_EXECUTABLE)
+if(SED_EXECUTABLE AND MINGW)
   add_custom_target(fix_compile_commands ALL
       COMMAND ${SED_EXECUTABLE} -i 's/\\/\\\(.\\\)\\//\\1:\\//g' ${CMAKE_BINARY_DIR}/compile_commands.json
       WORKING_DIRECTORY ${CMAKE_BINARY_DIR}

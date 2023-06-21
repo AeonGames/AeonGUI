@@ -14,10 +14,14 @@
 
 include(functions)
 
+if(MSVC)
+    add_definitions(-Drestrict=)
+    file(TOUCH libcss/include/strings.h)
+endif()
+
 gitclone("https://github.com/netsurf-browser/libparserutils.git" "${CMAKE_CURRENT_SOURCE_DIR}/libparserutils" 96cdd0ff114299f520e76538ab8fde39358b87f9)
 gitclone("https://github.com/netsurf-browser/libwapcaplet.git" "${CMAKE_CURRENT_SOURCE_DIR}/libwapcaplet" b5e42b12211a92339b0b62cb90f1a86a397e146e)
 gitclone("https://github.com/netsurf-browser/libcss.git" "${CMAKE_CURRENT_SOURCE_DIR}/libcss" 58f1673186a41b396d4ca4e13f43b502a305bf01)
-
 
 find_package(Python COMPONENTS Interpreter)
 
