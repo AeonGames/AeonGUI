@@ -15,7 +15,7 @@
 include(functions)
 
 if(MSVC)
-    add_definitions(-Drestrict=)
+    add_definitions(-Drestrict= -Dstrncasecmp=_strnicmp)
     file(TOUCH libcss/include/strings.h)
 endif()
 
