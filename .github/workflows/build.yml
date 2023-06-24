@@ -19,7 +19,7 @@ jobs:
     runs-on: ${{matrix.os}}
     strategy:
       matrix:
-        os: [ubuntu-latest]
+        os: [ubuntu-latest, windows-latest]
 
     steps:
     - uses: actions/checkout@v2
@@ -29,6 +29,11 @@ jobs:
         sudo apt-get update ;
         sudo apt-get install -y build-essential software-properties-common gcc g++ sed python3 tar wget cmake autoconf automake libtool curl make unzip zlib1g-dev libpng-dev vim-common git libgtest-dev google-mock libglu1-mesa-dev freeglut3-dev mesa-common-dev libcairo-dev libxml2-dev
       if: matrix.os == 'ubuntu-latest'
+
+    - name: Install Dependencies (Windows Visual Studio)
+      working-directory: ${{github.workspace}}
+      run: vcpkg integrate install
+      if: matrix.os == 'windows-latest'
 
     - name: Configure CMake (Linux)
       # Configure CMake in a 'build' subdirectory. `CMAKE_BUILD_TYPE` is only required if you are using a single-configuration generator such as make.
@@ -46,7 +51,7 @@ jobs:
       # Build your program with the given configuration
       run: cmake --build ${{github.workspace}}/build --config ${{env.BUILD_TYPE}}
 
-    - name: Test (Linux)
+    - name: Test
       working-directory: ${{github.workspace}}/build
       # Execute tests defined by the CMake configuration.
       # See https://cmake.org/cmake/help/latest/manual/ctest.1.html for more detail
