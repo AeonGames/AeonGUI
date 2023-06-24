@@ -31,7 +31,7 @@ namespace AeonGUI
         return DeBruijnHash8[ ( ( n * 0x1D ) & 0xFF ) >> 5];
     }
 
-    uint32_t CSS3Tokenizer::GetCodePointFromUT8 ( const char* bytes, uint32_t byte_count, size_t* code_point_lenght )
+    uint32_t CSS3Tokenizer::GetCodePointFromUT8 ( const char* bytes, size_t byte_count, size_t* code_point_lenght )
     {
         if ( byte_count == 0 )
         {

@@ -62,7 +62,7 @@ namespace AeonGUI
     {
     public:
         DLL CSS3Tokenizer();
-        DLL static uint32_t GetCodePointFromUT8 ( const char* bytes, uint32_t byte_count, size_t* code_point_lenght = nullptr );
+        DLL static uint32_t GetCodePointFromUT8 ( const char* bytes, size_t byte_count, size_t* code_point_lenght = nullptr );
         DLL static CSS3Token Consume ( const std::string& code_points, size_t& pos );
     private:
     };
