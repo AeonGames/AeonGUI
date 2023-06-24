@@ -32,7 +32,9 @@ jobs:
 
     - name: Install Dependencies (Windows Visual Studio)
       working-directory: ${{github.workspace}}
-      run: vcpkg integrate install
+      run: >-
+        vcpkg integrate install ;
+        vcpkg --triplet=x64-windows install cairo libxml2 pkgconf
       if: matrix.os == 'windows-latest'
 
     - name: Configure CMake (Linux)
@@ -44,7 +46,7 @@ jobs:
     - name: Configure CMake (Windows Visual Studio)
       # Configure CMake in a 'build' subdirectory. `CMAKE_BUILD_TYPE` is only required if you are using a single-configuration generator such as make.
       # See https://cmake.org/cmake/help/latest/variable/CMAKE_BUILD_TYPE.html?highlight=cmake_build_type
-      run: cmake -B ${{github.workspace}}/build
+      run: cmake -DCMAKE_TOOLCHAIN_FILE=C:/vcpkg/scripts/buildsystems/vcpkg.cmake -B ${{github.workspace}}/build
       if: matrix.os == 'windows-latest'
 
     - name: Build
