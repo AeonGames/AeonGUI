@@ -159,7 +159,6 @@ include_directories(include common demos/common core)
 add_subdirectory(css)
 add_subdirectory(core)
 add_subdirectory(demos/OpenGL)
-configure_vscode(${CMAKE_SOURCE_DIR}/demos/OpenGL ${CMAKE_SOURCE_DIR}/tests)
 
 install(TARGETS AeonGUI
     EXPORT aeongui
