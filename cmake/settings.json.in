@@ -48,5 +48,6 @@
         "*.cmake.in": "cmake",
         "*.ypp": "yacc",
     },
-    "editor.fontFamily": "'Fira Code', Consolas, 'Courier New', monospace"
+    "editor.fontFamily": "'Fira Code', Consolas, 'Courier New', monospace",
+    "terminal.integrated.fontFamily": "MesloLGS NF"
 }
