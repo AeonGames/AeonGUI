@@ -117,11 +117,14 @@ find_package(X11)
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_EXTENSIONS OFF)
+set(CMAKE_C_STANDARD 99)
+set(CMAKE_C_STANDARD_REQUIRED ON)
+set(CMAKE_C_EXTENSIONS ON)
 
 if(CMAKE_COMPILER_IS_GNUCXX)
-	set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wfatal-errors -Wall")
-  set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS} -DNDEBUG -fomit-frame-pointer -O3")
-  set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS} -DDEBUG -g -O0")
+	set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wfatal-errors -Wall -Drestrict=__restrict__")
+  set(CMAKE_CXX_FLAGS_RELEASE "-DNDEBUG -fomit-frame-pointer -O3")
+  set(CMAKE_CXX_FLAGS_DEBUG "-DDEBUG -g -O0")
 endif(CMAKE_COMPILER_IS_GNUCXX)
 
 if(CMAKE_COMPILER_IS_GNUC)
@@ -130,7 +133,8 @@ if(CMAKE_COMPILER_IS_GNUC)
 	set(CMAKE_C_FLAGS_DEBUG "-DDEBUG -g -O0")
 endif(CMAKE_COMPILER_IS_GNUC)
 
-add_definitions(-D_USE_MATH_DEFINES)
+# TODO: Set _ALIGNED to the proper attribute if/when required
+add_definitions(-D_USE_MATH_DEFINES  -D_ALIGNED=)
 
 if(BUILD_UNIT_TESTS)
   add_subdirectory(tests)

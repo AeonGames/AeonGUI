@@ -18,6 +18,7 @@ limitations under the License.
 #include <iostream>
 #include <libxml/tree.h>
 #include <libxml/parser.h>
+#include <libcss/libcss.h>
 #include "aeongui/Document.h"
 #include "aeongui/ElementFactory.h"
 #include "dom/Text.h"
@@ -66,6 +67,26 @@ namespace AeonGUI
 
     Document::Document () = default;
 
+    void Document::css_stylesheet_deleter::operator() ( css_stylesheet* p )
+    {
+        css_error code{css_stylesheet_destroy ( p ) };
+        if ( code != CSS_OK )
+        {
+            std::cerr << "css_stylesheet_destroy failed with code: " << code << std::endl;
+        }
+    }
+
+    css_error resolve_url ( void *pw,
+                            const char *base, lwc_string *rel, lwc_string **abs )
+    {
+        ( void ) pw;
+        ( void ) base;
+
+        /* About as useless as possible */
+        *abs = lwc_string_ref ( rel );
+        return CSS_OK;
+    }
+
     Document::Document ( const std::string& aFilename )
     {
         xmlDocPtr document{xmlReadFile ( aFilename.c_str(), nullptr, 0 ) };
@@ -73,6 +94,35 @@ namespace AeonGUI
         {
             throw std::runtime_error ( "Could not parse xml file" );
         }
+
+        css_error code{};
+        css_stylesheet_params params{};
+        params.params_version = CSS_STYLESHEET_PARAMS_VERSION_1;
+        params.level = CSS_LEVEL_21;
+        params.charset = "UTF-8";
+        params.url = aFilename.c_str();
+        params.title = aFilename.c_str();
+        params.allow_quirks = false;
+        params.inline_style = false;
+        params.resolve = resolve_url;
+        params.resolve_pw = NULL;
+        params.import = NULL;
+        params.import_pw = NULL;
+        params.color = NULL;
+        params.color_pw = NULL;
+        params.font = NULL;
+        params.font_pw = NULL;
+
+        {
+            css_stylesheet* stylesheet{};
+            code = css_stylesheet_create ( &params, &stylesheet );
+            if ( code != CSS_OK )
+            {
+                throw std::runtime_error ( "Could not create Style Sheet" );
+            }
+            mStyleSheet.reset ( stylesheet );
+        }
+
         ///@todo use document->children instead?
         xmlElementPtr root_element = reinterpret_cast<xmlElementPtr> ( xmlDocGetRootElement ( document ) );
         mDocumentElement = Construct ( reinterpret_cast<const char*> ( root_element->name ), ExtractElementAttributes ( root_element ) );
