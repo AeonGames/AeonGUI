@@ -21,12 +21,7 @@ limitations under the License.
 #include <algorithm>
 #include "aeongui/Platform.h"
 #include "aeongui/Canvas.h"
-
-extern "C"
-{
-    struct css_stylesheet;
-}
-
+#include "aeongui/StyleSheet.h"
 namespace AeonGUI
 {
     class Document
@@ -43,11 +38,7 @@ namespace AeonGUI
         /**@}*/
     private:
         Element* mDocumentElement{};
-        struct css_stylesheet_deleter
-        {
-            void operator() ( css_stylesheet* p );
-        };
-        std::unique_ptr<css_stylesheet, css_stylesheet_deleter> mStyleSheet{};
+        StyleSheetPtr mStyleSheet{};
     };
 }
 #endif

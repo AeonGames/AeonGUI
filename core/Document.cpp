@@ -67,15 +67,6 @@ namespace AeonGUI
 
     Document::Document () = default;
 
-    void Document::css_stylesheet_deleter::operator() ( css_stylesheet* p )
-    {
-        css_error code{css_stylesheet_destroy ( p ) };
-        if ( code != CSS_OK )
-        {
-            std::cerr << "css_stylesheet_destroy failed with code: " << code << std::endl;
-        }
-    }
-
     css_error resolve_url ( void *pw,
                             const char *base, lwc_string *rel, lwc_string **abs )
     {

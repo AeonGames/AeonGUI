@@ -21,6 +21,7 @@ set(AEONGUI_HEADERS
     ../include/aeongui/Vector2.h
     ../include/aeongui/DrawType.h
     ../include/aeongui/Color.h
+    ../include/aeongui/StyleSheet.h
 )
 
 set(AEONGUI_SOURCES
@@ -39,6 +40,7 @@ set(AEONGUI_SOURCES
     CairoPath.cpp
     Color.cpp
     CSS3Tokenizer.cpp
+    StyleSheet.cpp
     dom/Node.cpp
     dom/Element.cpp
     dom/SVGElement.cpp
