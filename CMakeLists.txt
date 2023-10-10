@@ -125,6 +125,8 @@ if(CMAKE_COMPILER_IS_GNUCXX)
 	set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wfatal-errors -Wall -Drestrict=__restrict__")
   set(CMAKE_CXX_FLAGS_RELEASE "-DNDEBUG -fomit-frame-pointer -O3")
   set(CMAKE_CXX_FLAGS_DEBUG "-DDEBUG -g -O0")
+elseif(MSVC)
+  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -D_CRT_SUPPRESS_RESTRICT -Drestrict=__restrict")
 endif(CMAKE_COMPILER_IS_GNUCXX)
 
 if(CMAKE_COMPILER_IS_GNUC)

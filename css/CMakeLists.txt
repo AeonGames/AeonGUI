@@ -51,6 +51,15 @@ set_target_properties(libparserutils
                         PREFIX "")
 target_include_directories(libparserutils PUBLIC libparserutils/include PRIVATE libparserutils/src)
 
+option(WITHOUT_ICONV_FILTER "Disable iconv on libparserutils" OFF)
+find_package(Iconv)
+if(NOT Iconv_FOUND OR WITHOUT_ICONV_FILTER)
+  add_compile_definitions(-DWITHOUT_ICONV_FILTER)
+else()
+    target_link_libraries(libparserutils PRIVATE ${Iconv_LIBRARIES})
+    target_include_directories(libparserutils PRIVATE libparserutils/src ${Iconv_INCLUDE_DIRS})
+endif()
+
 set(LIBWAPCAPLET_SOURCES
     libwapcaplet/src/libwapcaplet.c
 )
