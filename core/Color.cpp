@@ -1,5 +1,5 @@
 /******************************************************************************
-Copyright (C) 2010-2012,2019,2020 Rodrigo Hernandez Cordoba
+Copyright (C) 2010-2012,2019,2020,2023 Rodrigo Hernandez Cordoba
 
    Licensed under the Apache License, Version 2.0 (the "License");
    you may not use this file except in compliance with the License.
@@ -229,7 +229,8 @@ namespace AeonGUI
     {
         if ( !IsColor ( value, &bgra ) )
         {
-            throw std::runtime_error ( "Not a color value" );
+            std::string err{value + " is not a color value."};
+            throw std::runtime_error ( err.c_str() );
         }
     }
 

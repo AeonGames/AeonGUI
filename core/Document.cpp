@@ -40,7 +40,8 @@ namespace AeonGUI
             }
             else if ( std::regex_match ( value, match, Color::ColorRegex ) )
             {
-                attribute_map[reinterpret_cast<const char*> ( attribute->name )] = Color{match[0].str() };
+                attribute_map[reinterpret_cast<const char*> ( attribute->name )] = ( match[0].str() != "none" ) ? Color{match[0].str() } :
+                    ColorAttr{};
             }
             else
             {
@@ -109,7 +110,7 @@ namespace AeonGUI
             code = css_stylesheet_create ( &params, &stylesheet );
             if ( code != CSS_OK )
             {
-                throw std::runtime_error ( "Could not create Style Sheet" );
+                throw std::runtime_error ( css_error_to_string ( code ) );
             }
             mStyleSheet.reset ( stylesheet );
         }

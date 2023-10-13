@@ -554,27 +554,34 @@ int main ( int argc, char *argv[] )
     }
 
     MSG msg;
-    // This Context allows the window variable to be destroyed before the call to AeonGUI::Finalize
+    try
     {
-        Window window ( GetModuleHandle ( NULL ), argv[1], 800, 600 );
-        memset ( &msg, 0, sizeof ( MSG ) );
-        while ( msg.message != WM_QUIT )
+        // This Context allows the window variable to be destroyed before the call to AeonGUI::Finalize
         {
-            if ( PeekMessage ( &msg, NULL, 0, 0, PM_REMOVE ) )
+            Window window ( GetModuleHandle ( NULL ), argv[1], 800, 600 );
+            memset ( &msg, 0, sizeof ( MSG ) );
+            while ( msg.message != WM_QUIT )
             {
-                if ( msg.message != WM_QUIT )
+                if ( PeekMessage ( &msg, NULL, 0, 0, PM_REMOVE ) )
                 {
-                    TranslateMessage ( &msg );
-                    DispatchMessage ( &msg );
+                    if ( msg.message != WM_QUIT )
+                    {
+                        TranslateMessage ( &msg );
+                        DispatchMessage ( &msg );
+                    }
+                }
+                else
+                {
+                    window.RenderLoop();
                 }
             }
-            else
-            {
-                window.RenderLoop();
-            }
         }
+        assert ( msg.message == WM_QUIT );
     }
-    assert ( msg.message == WM_QUIT );
+    catch ( std::runtime_error& e )
+    {
+        std::cerr << e.what() << std::endl;
+    }
     AeonGUI::Finalize();
     return static_cast<int> ( msg.wParam );
 }

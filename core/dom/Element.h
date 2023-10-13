@@ -22,6 +22,7 @@ limitations under the License.
 #include <variant>
 #include "aeongui/Platform.h"
 #include "aeongui/AttributeMap.h"
+#include "aeongui/StyleSheet.h"
 #include "Node.h"
 
 namespace AeonGUI
@@ -44,6 +45,7 @@ namespace AeonGUI
     private:
         const std::string mTagName;
         AttributeMap mAttributeMap{};
+        StyleSheetPtr mInlineStyleSheet{};
     };
 }
 #endif
