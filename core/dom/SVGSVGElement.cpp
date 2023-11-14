@@ -1,5 +1,5 @@
 /*
-Copyright (C) 2019,2020 Rodrigo Jose Hernandez Cordoba
+Copyright (C) 2019,2020,2023 Rodrigo Jose Hernandez Cordoba
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -23,6 +23,31 @@ namespace AeonGUI
         SVGSVGElement::SVGSVGElement ( const std::string& aTagName, const AttributeMap& aAttributes ) : SVGGraphicsElement { aTagName, aAttributes }
         {
             std::cout << "This is a specialized implementation for the svg element." << std::endl;
+            auto viewBox{ GetAttribute ( "viewBox" ) };
+            auto width{ GetAttribute ( "width" ) };
+            auto height{ GetAttribute ( "height" ) };
+            if ( std::holds_alternative<std::string> ( viewBox ) )
+            {
+                static const std::regex viewBoxRegex{R"((-?(?:[0-9]*\.[0-9]+(?:[eE][-+]?[0-9]+)?|[0-9]+))[[:space:]]+(-?(?:[0-9]*\.[0-9]+(?:[eE][-+]?[0-9]+)?|[0-9]+))[[:space:]]+(-?(?:[0-9]*\.[0-9]+(?:[eE][-+]?[0-9]+)?|[0-9]+))[[:space:]]+(-?(?:[0-9]*\.[0-9]+(?:[eE][-+]?[0-9]+)?|[0-9]+)))"};
+
+                const std::string& viewBoxStr{std::get<std::string> ( viewBox ) };
+                std::smatch match{};
+                if ( std::regex_match ( viewBoxStr, match, viewBoxRegex ) )
+                {
+                    mViewBox.mWidth  = std::stod ( match[1] );
+                    mViewBox.mHeight = std::stod ( match[2] );
+                    mViewBox.mX      = std::stod ( match[3] );
+                    mViewBox.mY      = std::stod ( match[4] );
+                }
+            }
+            if ( std::holds_alternative<double> ( width ) )
+            {
+                mViewPort.mWidth = std::get<double> ( width );
+            }
+            if ( std::holds_alternative<double> ( height ) )
+            {
+                mViewPort.mHeight = std::get<double> ( height );
+            }
         }
         SVGSVGElement::~SVGSVGElement()
         {
