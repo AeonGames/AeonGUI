@@ -12,10 +12,6 @@
 # License for the specific language governing permissions and limitations under
 # the License.
 
-define_property(TARGET PROPERTY DEBUG_ARGUMENTS INHERITED
-    BRIEF_DOCS "Debug Arguments"
-    FULL_DOCS "Arguments to be passed when debugging")
-
 #
 # Generate VS Code Environment
 #
@@ -42,7 +38,7 @@ if(CMAKE_GENERATOR MATCHES "(MSYS|Unix) Makefiles")
           foreach(TARGET ${TARGETS})
               get_target_property(target_type ${TARGET} TYPE)
               if (${target_type} STREQUAL "EXECUTABLE")
-                  get_property(debug_arguments TARGET ${TARGET} PROPERTY DEBUG_ARGUMENTS)
+                  get_property(debug_arguments TARGET ${TARGET} PROPERTY VS_DEBUGGER_COMMAND_ARGUMENTS)
                   message(STATUS "Generating debug launch configuration for ${TARGET}")
                   set(DEBUG_CONFIGURATIONS "${DEBUG_CONFIGURATIONS}
                   {
