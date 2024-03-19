@@ -1,5 +1,5 @@
 /*
-Copyright (C) 2019,2020 Rodrigo Jose Hernandez Cordoba
+Copyright (C) 2019,2020,2024 Rodrigo Jose Hernandez Cordoba
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -27,6 +27,13 @@ namespace AeonGUI
         public:
             SVGRectElement ( const std::string& aTagName, const AttributeMap& aAttributes );
             ~SVGRectElement() final;
+        private:
+            double mWidth{};
+            double mHeight{};
+            double mX{};
+            double mY{};
+            double mRx{};
+            double mRy{};
         };
     }
 }

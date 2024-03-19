@@ -1,5 +1,5 @@
 /*
-Copyright (C) 2019,2020 Rodrigo Jose Hernandez Cordoba
+Copyright (C) 2019,2020,2024 Rodrigo Jose Hernandez Cordoba
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -21,7 +21,7 @@ limitations under the License.
 #include <variant>
 namespace AeonGUI
 {
-    using AttributeType = std::variant<std::monostate, double, ColorAttr, std::string>;
-    using AttributeMap = std::unordered_map<std::string, AttributeType>;
+    //using AttributeType = std::variant<std::monostate, double, ColorAttr, std::string>;
+    using AttributeMap = std::unordered_map<std::string, std::string>;
 }
 #endif

@@ -1,5 +1,5 @@
 /*
-Copyright (C) 2019,2020 Rodrigo Jose Hernandez Cordoba
+Copyright (C) 2019,2020,2024 Rodrigo Jose Hernandez Cordoba
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -24,85 +24,103 @@ namespace AeonGUI
         SVGRectElement::SVGRectElement ( const std::string& aTagName, const AttributeMap& aAttributes ) : SVGGeometryElement {aTagName, aAttributes}
         {
             std::cout << "Rect" << std::endl;
-            double width = std::get<double> ( GetAttribute ( "width", 0.0 ) );
-            double height = std::get<double> ( GetAttribute ( "height", 0.0 ) );
+            if ( aAttributes.find ( "width" ) != aAttributes.end() )
+            {
+                mWidth = std::stod ( aAttributes.at ( "width" ) );
+            }
+            if ( aAttributes.find ( "height" ) != aAttributes.end() )
+            {
+                mHeight = std::stod ( aAttributes.at ( "height" ) );
+            }
+            if ( aAttributes.find ( "x" ) != aAttributes.end() )
+            {
+                mX = std::stod ( aAttributes.at ( "x" ) );
+            }
+            if ( aAttributes.find ( "y" ) != aAttributes.end() )
+            {
+                mY = std::stod ( aAttributes.at ( "y" ) );
+            }
+            if ( aAttributes.find ( "rx" ) != aAttributes.end() )
+            {
+                mRx = std::stod ( aAttributes.at ( "rx" ) );
+            }
+            if ( aAttributes.find ( "ry" ) != aAttributes.end() )
+            {
+                mRy = std::stod ( aAttributes.at ( "ry" ) );
+            }
             /**
              * https://www.w3.org/TR/SVG/shapes.html#RectElement
              * The width and height properties define the overall width and height of the rectangle.
              * A negative value for either property is illegal and must be ignored as a parsing error.
              * A computed value of zero for either dimension disables rendering of the element.
             */
-            if ( ( width > 0.0 ) && ( height > 0.0 ) )
+            if ( ( mWidth > 0.0 ) && ( mHeight > 0.0 ) )
             {
-                double x = std::get<double> ( GetAttribute ( "x", 0.0 ) );
-                double y = std::get<double> ( GetAttribute ( "y", 0.0 ) );
-                double rx = std::get<double> ( GetAttribute ( "rx", 0.0 ) );
-                double ry = std::get<double> ( GetAttribute ( "ry", 0.0 ) );
                 std::array<DrawType, 44> path{};
                 size_t i = 0;
                 /// 1. perform an absolute moveto operation to location (x+rx,y);
                 path[i++] = static_cast<uint64_t> ( 'M' );
-                path[i++] = rx + x;
-                path[i++] = y;
+                path[i++] = mRx + mX;
+                path[i++] = mY;
                 /// 2. perform an absolute horizontal lineto with parameter x+width-rx;
                 path[i++] = static_cast<uint64_t> ( 'H' );
-                path[i++] = x + width - rx;
+                path[i++] = mX + mWidth - mRx;
                 /// 3. if both rx and ry are greater than zero, perform an absolute elliptical arc operation to coordinate (x+width,y+ry), where rx and ry are used as the equivalent parameters to the elliptical arc command, the x-axis-rotation and large-arc-flag are set to zero, the sweep-flag is set to one;
-                if ( rx > 0.0 && ry > 0.0 )
+                if ( mRx > 0.0 && mRy > 0.0 )
                 {
                     path[i++] = static_cast<uint64_t> ( 'A' );
-                    path[i++] = rx;
-                    path[i++] = ry;
+                    path[i++] = mRx;
+                    path[i++] = mRy;
                     path[i++] = 0.0;
                     path[i++] = false;
                     path[i++] = true;
-                    path[i++] = x + width;
-                    path[i++] = y + ry;
+                    path[i++] = mX + mWidth;
+                    path[i++] = mY + mRy;
                 }
                 /// 4. perform an absolute vertical lineto parameter y+height-ry;
                 path[i++] = static_cast<uint64_t> ( 'V' );
-                path[i++] = y + height - ry;
+                path[i++] = mY + mHeight - mRy;
                 /// 5. if both rx and ry are greater than zero, perform an absolute elliptical arc operation to coordinate (x+width-rx,y+height), using the same parameters as previously;
-                if ( rx > 0.0 && ry > 0.0 )
+                if ( mRx > 0.0 && mRy > 0.0 )
                 {
                     path[i++] = static_cast<uint64_t> ( 'A' );
-                    path[i++] = rx;
-                    path[i++] = ry;
+                    path[i++] = mRx;
+                    path[i++] = mRy;
                     path[i++] = 0.0;
                     path[i++] = false;
                     path[i++] = true;
-                    path[i++] = x + width - rx;
-                    path[i++] = y + height;
+                    path[i++] = mX + mWidth - mRx;
+                    path[i++] = mY + mHeight;
                 }
                 /// 6. perform an absolute horizontal lineto parameter x+rx;
                 path[i++] = static_cast<uint64_t> ( 'H' );
-                path[i++] = x + rx;
+                path[i++] = mX + mRx;
                 /// 7. if both rx and ry are greater than zero, perform an absolute elliptical arc operation to coordinate (x,y+height-ry), using the same parameters as previously;
-                if ( rx > 0.0 && ry > 0.0 )
+                if ( mRx > 0.0 && mRy > 0.0 )
                 {
                     path[i++] = static_cast<uint64_t> ( 'A' );
-                    path[i++] = rx;
-                    path[i++] = ry;
+                    path[i++] = mRx;
+                    path[i++] = mRy;
                     path[i++] = 0.0;
                     path[i++] = false;
                     path[i++] = true;
-                    path[i++] = x;
-                    path[i++] = y + height - ry;
+                    path[i++] = mX;
+                    path[i++] = mY + mHeight - mRy;
                 }
                 /// 8. perform an absolute vertical lineto parameter y+ry
                 path[i++] = static_cast<uint64_t> ( 'V' );
-                path[i++] = y + ry;
+                path[i++] = mY + mRy;
                 /// 9. if both rx and ry are greater than zero, perform an absolute elliptical arc operation with a segment-completing close path operation, using the same parameters as previously.
-                if ( rx > 0.0 && ry > 0.0 )
+                if ( mRx > 0.0 && mRy > 0.0 )
                 {
                     path[i++] = static_cast<uint64_t> ( 'A' );
-                    path[i++] = rx;
-                    path[i++] = ry;
+                    path[i++] = mRx;
+                    path[i++] = mRy;
                     path[i++] = 0.0;
                     path[i++] = false;
                     path[i++] = true;
-                    path[i++] = rx + x;
-                    path[i++] = y;
+                    path[i++] = mRx + mX;
+                    path[i++] = mY;
                 }
                 // 10. close path.
                 path[i++] = static_cast<uint64_t> ( 'Z' );

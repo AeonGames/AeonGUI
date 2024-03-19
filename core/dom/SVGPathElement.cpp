@@ -1,5 +1,5 @@
 /*
-Copyright (C) 2019,2020 Rodrigo Jose Hernandez Cordoba
+Copyright (C) 2019,2020,2024 Rodrigo Jose Hernandez Cordoba
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -24,18 +24,19 @@ namespace AeonGUI
         int ParsePathData ( std::vector<DrawType>& aPath, const char* s );
         SVGPathElement::SVGPathElement ( const std::string& aTagName, const AttributeMap& aAttributes ) : SVGGeometryElement { aTagName, aAttributes }
         {
-            auto d = GetAttribute ( "d" );
-            if ( std::holds_alternative<std::string> ( d ) )
+            if ( aAttributes.find ( "d" ) != aAttributes.end() )
             {
                 std::vector<DrawType> path;
-                if ( ParsePathData ( path, std::get<std::string> ( d ).c_str() ) )
+                if ( ParsePathData ( path, aAttributes.at ( "d" ).c_str() ) )
                 {
+#if 0
                     auto id = GetAttribute ( "id" );
                     if ( std::holds_alternative<std::string> ( id ) )
                     {
                         std::cerr << "Path Id: " << std::get<std::string> ( id ) << std::endl;
                     }
                     std::cerr << "Path Data: " << std::get<std::string> ( d ) << std::endl;
+#endif
                 }
                 mPath.Construct ( path );
             }

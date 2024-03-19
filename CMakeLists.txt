@@ -179,6 +179,7 @@ install(
     include/aeongui/AeonGUI.h
     include/aeongui/AABB.h
     include/aeongui/AttributeMap.h
+    include/aeongui/Attribute.hpp
     include/aeongui/Window.h
     include/aeongui/Document.h
     include/aeongui/Platform.h

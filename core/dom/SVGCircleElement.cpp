@@ -1,5 +1,5 @@
 /*
-Copyright (C) 2019,2020 Rodrigo Jose Hernandez Cordoba
+Copyright (C) 2019,2020,2024 Rodrigo Jose Hernandez Cordoba
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -23,9 +23,9 @@ namespace AeonGUI
         SVGCircleElement::SVGCircleElement ( const std::string& aTagName, const AttributeMap& aAttributes ) : SVGGeometryElement ( aTagName, aAttributes )
         {
             std::cout << "Circle" << std::endl;
-            double cx = std::get<double> ( GetAttribute ( "cx", 0.0 ) );
-            double cy = std::get<double> ( GetAttribute ( "cy", 0.0 ) );
-            double r = std::get<double> ( GetAttribute ( "r", 0.0 ) );
+            double cx{aAttributes.find ( "cx" ) != aAttributes.end() ? std::stod ( aAttributes.at ( "cx" ) ) : 0.0};
+            double cy{aAttributes.find ( "cy" ) != aAttributes.end() ? std::stod ( aAttributes.at ( "cy" ) ) : 0.0};
+            double r{aAttributes.find ( "r" ) != aAttributes.end() ? std::stod ( aAttributes.at ( "r" ) ) : 0.0};
             /**
              * https://www.w3.org/TR/SVG/shapes.html#CircleElement
              * The cx and cy attributes define the coordinates of the center of the circle.

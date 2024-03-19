@@ -1,5 +1,5 @@
 /*
-Copyright (C) 2023 Rodrigo Jose Hernandez Cordoba
+Copyright (C) 2023,2024 Rodrigo Jose Hernandez Cordoba
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -21,10 +21,28 @@ namespace AeonGUI
 {
     void css_stylesheet_deleter::operator() ( css_stylesheet* p )
     {
-        css_error code{css_stylesheet_destroy ( p ) };
+        css_error code{ css_stylesheet_destroy ( p ) };
         if ( code != CSS_OK )
         {
             std::cerr << "css_stylesheet_destroy failed with code: " << code << std::endl;
+        }
+    }
+
+    void css_select_ctx_deleter::operator() ( css_select_ctx* p )
+    {
+        css_error code{ css_select_ctx_destroy ( p ) };
+        if ( code != CSS_OK )
+        {
+            std::cerr << "css_select_ctx_destroy failed with code: " << code << std::endl;
+        }
+    }
+
+    void css_select_results_deleter::operator() ( css_select_results* p )
+    {
+        css_error code{ css_select_results_destroy ( p ) };
+        if ( code != CSS_OK )
+        {
+            std::cerr << "css_select_results_destroy failed with code: " << code << std::endl;
         }
     }
 }

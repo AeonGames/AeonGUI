@@ -1,5 +1,5 @@
 /*
-Copyright (C) 2019,2020,2023 Rodrigo Jose Hernandez Cordoba
+Copyright (C) 2019,2020,2023,2024 Rodrigo Jose Hernandez Cordoba
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -61,6 +61,9 @@ namespace AeonGUI
         DLL virtual void DrawFinish ( Canvas& aCanvas ) const;
         DLL virtual void Load ();
         DLL virtual void Unload ();
+        DLL virtual void OnParentAdd();
+        DLL virtual void OnParentRemove();
+
         /** Returns whether this node and all descendants should be skipped
          *  in a drawing operation.
          *  @return true by default override to disable drawing.

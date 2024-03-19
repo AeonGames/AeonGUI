@@ -1,5 +1,5 @@
 /*
-Copyright (C) 2019,2020 Rodrigo Jose Hernandez Cordoba
+Copyright (C) 2019,2020,2024 Rodrigo Jose Hernandez Cordoba
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -26,16 +26,28 @@ namespace AeonGUI
             /**
              * https://www.w3.org/TR/SVG/shapes.html#LineElement
             */
-            double x1 = std::get<double> ( GetAttribute ( "x1", 0.0 ) );
-            double y1 = std::get<double> ( GetAttribute ( "y1", 0.0 ) );
-            double x2 = std::get<double> ( GetAttribute ( "x2", 0.0 ) );
-            double y2 = std::get<double> ( GetAttribute ( "y2", 0.0 ) );
+            if ( aAttributes.find ( "x1" ) != aAttributes.end() )
+            {
+                mX1 = std::stod ( aAttributes.at ( "x1" ) );
+            }
+            if ( aAttributes.find ( "y1" ) != aAttributes.end() )
+            {
+                mY1 = std::stod ( aAttributes.at ( "y1" ) );
+            }
+            if ( aAttributes.find ( "x2" ) != aAttributes.end() )
+            {
+                mX2 = std::stod ( aAttributes.at ( "x2" ) );
+            }
+            if ( aAttributes.find ( "y2" ) != aAttributes.end() )
+            {
+                mY2 = std::stod ( aAttributes.at ( "y2" ) );
+            }
             std::vector<DrawType> path
             {
                 /// 1. perform an absolute moveto operation to absolute location (x1,y1)
-                static_cast<uint64_t> ( 'M' ), x1, y1,
+                static_cast<uint64_t> ( 'M' ), mX1, mY1,
                 /// 2. perform an absolute lineto operation to absolute location (x2,y2)
-                static_cast<uint64_t> ( 'L' ), x2, y2,
+                static_cast<uint64_t> ( 'L' ), mX2, mY2,
             };
             mPath.Construct ( path );
         }

@@ -1,5 +1,5 @@
 /*
-Copyright (C) 2019,2020,2023 Rodrigo Jose Hernandez Cordoba
+Copyright (C) 2019,2020,2023,2024 Rodrigo Jose Hernandez Cordoba
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -34,9 +34,9 @@ namespace AeonGUI
     {
     public:
         DLL Element ( const std::string& aTagName, const AttributeMap& aAttributes );
-        DLL AttributeType GetAttribute ( const char* attrName, const AttributeType& aDefault = {} ) const;
-        DLL AttributeType GetInheritedAttribute ( const char* attrName, const AttributeType& aDefault = {} ) const;
-        DLL void SetAttribute ( const char* attrName, const AttributeType& aValue );
+        //DLL AttributeType GetAttribute ( const char* attrName, const AttributeType& aDefault = {} ) const;
+        //DLL AttributeType GetInheritedAttribute ( const char* attrName, const AttributeType& aDefault = {} ) const;
+        //DLL void SetAttribute ( const char* attrName, const AttributeType& aValue );
         DLL virtual ~Element();
         /**DOM Properties and Methods @{*/
         NodeType nodeType() const final;
@@ -45,7 +45,9 @@ namespace AeonGUI
     private:
         const std::string mTagName;
         AttributeMap mAttributeMap{};
+    protected:
         StyleSheetPtr mInlineStyleSheet{};
+        SelectResultsPtr mComputedStyles{};
     };
 }
 #endif

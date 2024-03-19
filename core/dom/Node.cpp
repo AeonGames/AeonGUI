@@ -1,5 +1,5 @@
 /******************************************************************************
-Copyright (C) 2010-2013,2019,2020,2023 Rodrigo Hernandez Cordoba
+Copyright (C) 2010-2013,2019,2020,2023,2024 Rodrigo Hernandez Cordoba
 
    Licensed under the Apache License, Version 2.0 (the "License");
    you may not use this file except in compliance with the License.
@@ -194,25 +194,37 @@ namespace AeonGUI
     TraverseDepthFirstPostOrder( )
 #undef TraverseDepthFirstPostOrder
 
+    void Node::OnParentAdd()
+    {
+        // Do nothing by default
+    }
+    void Node::OnParentRemove()
+    {
+        // Do nothing by default
+    }
+
     Node* Node::AddNode ( Node* aNode )
     {
         aNode->mParent = this;
-        return mChildren.emplace_back ( aNode );
+        Node* node {mChildren.emplace_back ( aNode ) };
+        node->OnParentAdd();
+        return node;
     }
 
     Node* Node::RemoveNode ( const Node* aNode )
     {
-        Node* result{};
+        Node* node{};
         auto i = std::find_if ( mChildren.begin(), mChildren.end(), [aNode] ( const Node * node )
         {
             return aNode == node;
         } );
         if ( i != mChildren.end() )
         {
-            result = std::move ( *i );
+            node = std::move ( *i );
             mChildren.erase ( std::remove ( i, mChildren.end(), *i ), mChildren.end() );
         }
-        result->mParent = nullptr;
-        return result;
+        node->mParent = nullptr;
+        node->OnParentRemove();
+        return node;
     }
 }

@@ -1,5 +1,5 @@
 /*
-Copyright (C) 2019,2020 Rodrigo Jose Hernandez Cordoba
+Copyright (C) 2019,2020,2024 Rodrigo Jose Hernandez Cordoba
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -23,10 +23,10 @@ namespace AeonGUI
         SVGEllipseElement::SVGEllipseElement ( const std::string& aTagName, const AttributeMap& aAttributes ) : SVGGeometryElement { aTagName, aAttributes }
         {
             std::cout << "Ellipse" << std::endl;
-            double cx = std::get<double> ( GetAttribute ( "cx", 0.0 ) );
-            double cy = std::get<double> ( GetAttribute ( "cy", 0.0 ) );
-            double rx = std::get<double> ( GetAttribute ( "rx", 0.0 ) );
-            double ry = std::get<double> ( GetAttribute ( "ry", 0.0 ) );
+            double cx{aAttributes.find ( "cx" ) != aAttributes.end() ? std::stod ( aAttributes.at ( "cx" ) ) : 0.0};
+            double cy{aAttributes.find ( "cy" ) != aAttributes.end() ? std::stod ( aAttributes.at ( "cy" ) ) : 0.0};
+            double rx{aAttributes.find ( "rx" ) != aAttributes.end() ? std::stod ( aAttributes.at ( "rx" ) ) : 0.0};
+            double ry{aAttributes.find ( "ry" ) != aAttributes.end() ? std::stod ( aAttributes.at ( "ry" ) ) : 0.0};
             /**
              * https://www.w3.org/TR/SVG/shapes.html#EllipseElement
              * The cx and cy coordinates define the center of the ellipse.

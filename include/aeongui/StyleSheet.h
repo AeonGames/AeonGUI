@@ -1,5 +1,5 @@
 /*
-Copyright (C) 2023 Rodrigo Jose Hernandez Cordoba
+Copyright (C) 2023,2024 Rodrigo Jose Hernandez Cordoba
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -21,6 +21,8 @@ limitations under the License.
 extern "C"
 {
     struct css_stylesheet;
+    struct css_select_ctx;
+    struct css_select_results;
 }
 
 namespace AeonGUI
@@ -29,6 +31,19 @@ namespace AeonGUI
     {
         void operator() ( css_stylesheet* p );
     };
+
+    struct css_select_ctx_deleter
+    {
+        void operator() ( css_select_ctx* p );
+    };
+
+    struct css_select_results_deleter
+    {
+        void operator() ( css_select_results* p );
+    };
+
     using StyleSheetPtr = std::unique_ptr<css_stylesheet, css_stylesheet_deleter>;
+    using SelectCtxPtr = std::unique_ptr<css_select_ctx, css_select_ctx_deleter>;
+    using SelectResultsPtr = std::unique_ptr<css_select_results, css_select_results_deleter>;
 }
 #endif

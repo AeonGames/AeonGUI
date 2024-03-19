@@ -1,5 +1,5 @@
 /*
-Copyright (C) 2019,2020,2023 Rodrigo Jose Hernandez Cordoba
+Copyright (C) 2019,2020,2023,2024 Rodrigo Jose Hernandez Cordoba
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -17,6 +17,7 @@ limitations under the License.
 #define AEONGUI_SVGSVGELEMENT_H
 
 #include "SVGGraphicsElement.h"
+#include "aeongui/Attribute.hpp"
 
 namespace AeonGUI
 {
@@ -29,22 +30,10 @@ namespace AeonGUI
             ~SVGSVGElement() final;
             void DrawStart ( Canvas& aCanvas ) const final;
         private:
-            class ViewBox
-            {
-            public:
-                double mX{};
-                double mY{};
-                double mWidth{};
-                double mHeight{};
-            };
-            class ViewPort
-            {
-            public:
-                double mWidth{};
-                double mHeight{};
-            };
+            // Attributes
+            double mWidth{};
+            double mHeight{};
             ViewBox mViewBox{};
-            ViewPort mViewPort{};
         };
     }
 }

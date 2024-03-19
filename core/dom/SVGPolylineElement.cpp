@@ -1,5 +1,5 @@
 /*
-Copyright (C) 2019,2020 Rodrigo Jose Hernandez Cordoba
+Copyright (C) 2019,2020,2024 Rodrigo Jose Hernandez Cordoba
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -26,11 +26,10 @@ namespace AeonGUI
         {
             std::cout << "Polyline" << std::endl;
             /// https://www.w3.org/TR/SVG/shapes.html#PolylineElement
-            auto attr = GetAttribute ( "points" );
-            if ( std::holds_alternative<std::string> ( attr ) )
+            if ( aAttributes.find ( "points" ) != aAttributes.end() )
             {
                 std::vector<DrawType> path;
-                std::string& points = std::get<std::string> ( attr );
+                const std::string& points = aAttributes.at ( "points" );
                 auto it = std::sregex_iterator ( points.begin(), points.end(), coord );
                 path.reserve ( ( std::distance ( it, std::sregex_iterator() ) * 3 ) );
                 std::smatch match = *it;

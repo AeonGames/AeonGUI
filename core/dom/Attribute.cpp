@@ -1,5 +1,5 @@
 /*
-Copyright (C) 2019 Rodrigo Jose Hernandez Cordoba
+Copyright (C) 2024 Rodrigo Jose Hernandez Cordoba
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -13,13 +13,13 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 */
-#ifndef AEONGUI_STYLESTYPE_H
-#define AEONGUI_STYLESTYPE_H
-#include <variant>
-#include <string>
-#include <cstdint>
-#include <cstddef>
-#include "aeongui/AttributeMap.h"
-using stylestype = AeonGUI::AttributeType;
-#define STYLESTYPE stylestype
-#endif
+
+#include "aeongui/Attribute.hpp"
+
+namespace AeonGUI
+{
+    template<> double FromString<double> ( const std::string_view aString )
+    {
+        return std::stod ( aString.data() );
+    }
+}

@@ -1,5 +1,5 @@
 /*
-Copyright (C) 2019,2020,2023 Rodrigo Jose Hernandez Cordoba
+Copyright (C) 2019,2020,2023,2024 Rodrigo Jose Hernandez Cordoba
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -32,6 +32,7 @@ namespace AeonGUI
         AttributeMap attribute_map{};
         for ( xmlNodePtr attribute = reinterpret_cast<xmlNodePtr> ( aXmlElementPtr->attributes ); attribute; attribute = attribute->next )
         {
+#if 0
             std::cmatch match;
             const char* value = reinterpret_cast<const char*> ( xmlGetProp ( reinterpret_cast<xmlNodePtr> ( aXmlElementPtr ), attribute->name ) );
             if ( std::regex_match ( value, match, number ) )
@@ -47,6 +48,8 @@ namespace AeonGUI
             {
                 attribute_map[reinterpret_cast<const char*> ( attribute->name )] = value;
             }
+#endif
+            attribute_map[reinterpret_cast<const char*> ( attribute->name )] = reinterpret_cast<const char*> ( xmlGetProp ( reinterpret_cast<xmlNodePtr> ( aXmlElementPtr ), attribute->name ) );
         }
         return attribute_map;
     }
