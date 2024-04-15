@@ -45,9 +45,12 @@ namespace AeonGUI
     private:
         const std::string mTagName;
         AttributeMap mAttributeMap{};
+        DLL void OnAncestorChanged() override;
     protected:
         StyleSheetPtr mInlineStyleSheet{};
         SelectResultsPtr mComputedStyles{};
+        css_select_results* GetParentComputedStyles() const;
+        css_select_results* GetComputedStyles() const;
     };
 }
 #endif

@@ -194,11 +194,7 @@ namespace AeonGUI
     TraverseDepthFirstPostOrder( )
 #undef TraverseDepthFirstPostOrder
 
-    void Node::OnParentAdd()
-    {
-        // Do nothing by default
-    }
-    void Node::OnParentRemove()
+    void Node::OnAncestorChanged()
     {
         // Do nothing by default
     }
@@ -206,8 +202,12 @@ namespace AeonGUI
     Node* Node::AddNode ( Node* aNode )
     {
         aNode->mParent = this;
-        Node* node {mChildren.emplace_back ( aNode ) };
-        node->OnParentAdd();
+        Node* node { mChildren.emplace_back ( aNode ) };
+        node->TraverseDepthFirstPreOrder (  (
+                                                [] ( Node * node )
+        {
+            node->OnAncestorChanged();
+        } ) );
         return node;
     }
 
@@ -224,7 +224,11 @@ namespace AeonGUI
             mChildren.erase ( std::remove ( i, mChildren.end(), *i ), mChildren.end() );
         }
         node->mParent = nullptr;
-        node->OnParentRemove();
+        node->TraverseDepthFirstPreOrder (  (
+                                                [] ( Node * node )
+        {
+            node->OnAncestorChanged();
+        } ) );
         return node;
     }
 }

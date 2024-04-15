@@ -14,9 +14,9 @@
 
 include(functions)
 
-gitclone("https://github.com/netsurf-browser/libparserutils.git" "${CMAKE_CURRENT_SOURCE_DIR}/libparserutils" 96cdd0ff114299f520e76538ab8fde39358b87f9)
-gitclone("https://github.com/netsurf-browser/libwapcaplet.git" "${CMAKE_CURRENT_SOURCE_DIR}/libwapcaplet" b5e42b12211a92339b0b62cb90f1a86a397e146e)
-gitclone("https://github.com/netsurf-browser/libcss.git" "${CMAKE_CURRENT_SOURCE_DIR}/libcss" 58f1673186a41b396d4ca4e13f43b502a305bf01)
+gitclone("git://git.netsurf-browser.org/libparserutils.git" "${CMAKE_CURRENT_SOURCE_DIR}/libparserutils" 447c86722d4043ca10921a1746c72fea05838c11)
+gitclone("git://git.netsurf-browser.org/libwapcaplet.git" "${CMAKE_CURRENT_SOURCE_DIR}/libwapcaplet" 857ac3ff3f26dfe5a662b072d4d808f847bbac78)
+gitclone("git://git.netsurf-browser.org/libcss.git" "${CMAKE_CURRENT_SOURCE_DIR}/libcss" 703f1247b2fabd5dc685ba80bc26ccfa263c79ae)
 
 find_package(Python COMPONENTS Interpreter)
 
@@ -94,6 +94,7 @@ set(LIBCSS_SOURCES
 	libcss/src/parse/properties/cue.c
 	libcss/src/parse/properties/cursor.c
 	libcss/src/parse/properties/elevation.c
+	libcss/src/parse/properties/fill_opacity.c
 	libcss/src/parse/properties/flex.c
 	libcss/src/parse/properties/flex_flow.c
 	libcss/src/parse/properties/font.c
@@ -110,6 +111,7 @@ set(LIBCSS_SOURCES
 	libcss/src/parse/properties/play_during.c
 	libcss/src/parse/properties/properties.c
 	libcss/src/parse/properties/quotes.c
+	libcss/src/parse/properties/stroke_opacity.c
 	libcss/src/parse/properties/text_decoration.c
 	libcss/src/parse/properties/utils.c
 	libcss/src/parse/properties/voice_family.c
@@ -173,6 +175,8 @@ set(LIBCSS_SOURCES
     libcss/src/select/properties/display.c
     libcss/src/select/properties/elevation.c
     libcss/src/select/properties/empty_cells.c
+    libcss/src/select/properties/fill.c
+    libcss/src/select/properties/fill_opacity.c
     libcss/src/select/properties/flex_basis.c
     libcss/src/select/properties/flex_direction.c
     libcss/src/select/properties/flex_grow.c
@@ -230,6 +234,8 @@ set(LIBCSS_SOURCES
     libcss/src/select/properties/speak_numeral.c
     libcss/src/select/properties/speak_punctuation.c
     libcss/src/select/properties/stress.c
+    libcss/src/select/properties/stroke.c
+    libcss/src/select/properties/stroke_opacity.c
     libcss/src/select/properties/table_layout.c
     libcss/src/select/properties/text_align.c
     libcss/src/select/properties/text_decoration.c

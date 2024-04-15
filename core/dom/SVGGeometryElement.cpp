@@ -28,13 +28,31 @@ namespace AeonGUI
         SVGGeometryElement::~SVGGeometryElement() = default;
         void SVGGeometryElement::DrawStart ( Canvas& aCanvas ) const
         {
-            if ( mComputedStyles == nullptr || mComputedStyles->styles[CSS_PSEUDO_ELEMENT_NONE] )
+            css_select_results* results{ GetComputedStyles() };
+            if ( results && results->styles[CSS_PSEUDO_ELEMENT_NONE] )
             {
-                return;
+                css_color color{};
+                css_fixed opacity{};
+                float fopacity{};
+                uint8_t type{ css_computed_fill ( results->styles[CSS_PSEUDO_ELEMENT_NONE], &color ) };
+                std::cout << "Fill: " << std::hex << color << " Type: " << static_cast<uint32_t> ( type ) << std::endl;
+                aCanvas.SetFillColor ( Color{color} );
+                type = css_computed_stroke ( results->styles[CSS_PSEUDO_ELEMENT_NONE], &color );
+                std::cout << "Stroke: " << std::hex << color << " Type: " << static_cast<uint32_t> ( type ) << std::endl;
+                aCanvas.SetStrokeColor ( Color{color} );
+                type = css_computed_fill_opacity ( results->styles[CSS_PSEUDO_ELEMENT_NONE], &opacity );
+                fopacity = FIXTOFLT ( opacity );
+                std::cout << "Fill Opacity: " << fopacity << " Type: " << static_cast<uint32_t> ( type ) << std::endl;
+                aCanvas.SetFillOpacity ( FIXTOFLT ( opacity ) );
+                type = css_computed_stroke_opacity ( results->styles[CSS_PSEUDO_ELEMENT_NONE], &opacity );
+                fopacity = FIXTOFLT ( opacity );
+                std::cout << "Stroke Opacity: " << fopacity << " Type: " << static_cast<uint32_t> ( type ) << std::endl;
+                aCanvas.SetStrokeOpacity ( FIXTOFLT ( opacity ) );
+                fopacity = FIXTOFLT ( opacity );
+                type = css_computed_opacity ( results->styles[CSS_PSEUDO_ELEMENT_NONE], &opacity );
+                std::cout << "Opacity: " << fopacity << " Type: " << static_cast<uint32_t> ( type ) << std::endl;
+                aCanvas.SetOpacity ( FIXTOFLT ( opacity ) );
             }
-            css_color color{};
-            uint8_t color_type{ css_computed_color ( mComputedStyles->styles[CSS_PSEUDO_ELEMENT_NONE], &color ) };
-            aCanvas.SetFillColor ( Color{color} );
 #if 0
             // TODO: convert to use libcss
             aCanvas.SetFillColor ( std::get<ColorAttr> ( GetInheritedAttribute ( "fill", Color{black} ) ) );

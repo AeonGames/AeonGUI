@@ -61,9 +61,6 @@ namespace AeonGUI
         DLL virtual void DrawFinish ( Canvas& aCanvas ) const;
         DLL virtual void Load ();
         DLL virtual void Unload ();
-        DLL virtual void OnParentAdd();
-        DLL virtual void OnParentRemove();
-
         /** Returns whether this node and all descendants should be skipped
          *  in a drawing operation.
          *  @return true by default override to disable drawing.
@@ -77,6 +74,7 @@ namespace AeonGUI
         const std::vector<Node*>& childNodes() const;
         /**@}*/
     private:
+        DLL virtual void OnAncestorChanged();
         Node* mParent{};
         std::vector<Node*> mChildren{};
         mutable std::vector<Node*>::size_type mIterator{ 0 };

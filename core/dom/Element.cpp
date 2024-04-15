@@ -93,33 +93,57 @@ namespace AeonGUI
             }
             mComputedStyles.reset ( results );
             css_select_ctx_destroy ( css_select_ctx );
-
-            results = nullptr;
-            Node* parent{ parentNode() };
-            while ( parent != nullptr && results == nullptr )
-            {
-                if ( parent->nodeType() == ELEMENT_NODE && reinterpret_cast<Element * > ( parent )->mComputedStyles.get() != nullptr )
-                {
-                    results = reinterpret_cast<Element*> ( parent )->mComputedStyles.get();
-                }
-                parent = parent->parentNode();
-            }
-
-            if ( results != nullptr )
-            {
-                css_computed_style* computed_style{};
-                err = css_computed_style_compose ( results->styles[CSS_PSEUDO_ELEMENT_NONE], mComputedStyles->styles[CSS_PSEUDO_ELEMENT_NONE], GetUnitLenCtx(), &computed_style );
-                if ( err != CSS_OK )
-                {
-                    throw std::runtime_error ( css_error_to_string ( code ) );
-                }
-                css_computed_style_destroy ( mComputedStyles->styles[CSS_PSEUDO_ELEMENT_NONE] );
-                mComputedStyles->styles[CSS_PSEUDO_ELEMENT_NONE] = computed_style;
-            }
         }
     }
 
     Element::~Element() = default;
+
+    css_select_results* Element::GetParentComputedStyles() const
+    {
+        css_select_results* results {};
+        Node* parent{ parentNode() };
+        while ( parent != nullptr && results == nullptr )
+        {
+            if ( parent->nodeType() == ELEMENT_NODE && reinterpret_cast<Element * > ( parent )->mComputedStyles.get() != nullptr )
+            {
+                results = reinterpret_cast<Element*> ( parent )->mComputedStyles.get();
+            }
+            parent = parent->parentNode();
+        }
+        return results;
+    }
+
+    css_select_results* Element::GetComputedStyles() const
+    {
+        if ( mComputedStyles )
+        {
+            return mComputedStyles.get();
+        }
+        return GetParentComputedStyles();
+    }
+
+    void Element::OnAncestorChanged()
+    {
+        if ( !mComputedStyles )
+        {
+            return;
+        }
+        css_select_results* results {GetParentComputedStyles() };
+        if ( results != nullptr )
+        {
+            css_computed_style* computed_style{};
+            css_error err
+            {
+                css_computed_style_compose ( results->styles[CSS_PSEUDO_ELEMENT_NONE], mComputedStyles->styles[CSS_PSEUDO_ELEMENT_NONE], GetUnitLenCtx(), &computed_style )
+            };
+            if ( err != CSS_OK )
+            {
+                throw std::runtime_error ( css_error_to_string ( err ) );
+            }
+            css_computed_style_destroy ( mComputedStyles->styles[CSS_PSEUDO_ELEMENT_NONE] );
+            mComputedStyles->styles[CSS_PSEUDO_ELEMENT_NONE] = computed_style;
+        }
+    }
 #if 0
     AttributeType Element::GetAttribute ( const char* attrName, const AttributeType& aDefault ) const
     {
