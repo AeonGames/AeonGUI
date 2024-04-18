@@ -32,36 +32,27 @@ namespace AeonGUI
             if ( results && results->styles[CSS_PSEUDO_ELEMENT_NONE] )
             {
                 css_color color{};
-                css_fixed opacity{};
-                float fopacity{};
-                uint8_t type{ css_computed_fill ( results->styles[CSS_PSEUDO_ELEMENT_NONE], &color ) };
-                std::cout << "Fill: " << std::hex << color << " Type: " << static_cast<uint32_t> ( type ) << std::endl;
-                aCanvas.SetFillColor ( Color{color} );
-                type = css_computed_stroke ( results->styles[CSS_PSEUDO_ELEMENT_NONE], &color );
-                std::cout << "Stroke: " << std::hex << color << " Type: " << static_cast<uint32_t> ( type ) << std::endl;
-                aCanvas.SetStrokeColor ( Color{color} );
-                type = css_computed_fill_opacity ( results->styles[CSS_PSEUDO_ELEMENT_NONE], &opacity );
-                fopacity = FIXTOFLT ( opacity );
-                std::cout << "Fill Opacity: " << fopacity << " Type: " << static_cast<uint32_t> ( type ) << std::endl;
-                aCanvas.SetFillOpacity ( FIXTOFLT ( opacity ) );
-                type = css_computed_stroke_opacity ( results->styles[CSS_PSEUDO_ELEMENT_NONE], &opacity );
-                fopacity = FIXTOFLT ( opacity );
-                std::cout << "Stroke Opacity: " << fopacity << " Type: " << static_cast<uint32_t> ( type ) << std::endl;
-                aCanvas.SetStrokeOpacity ( FIXTOFLT ( opacity ) );
-                fopacity = FIXTOFLT ( opacity );
-                type = css_computed_opacity ( results->styles[CSS_PSEUDO_ELEMENT_NONE], &opacity );
-                std::cout << "Opacity: " << fopacity << " Type: " << static_cast<uint32_t> ( type ) << std::endl;
-                aCanvas.SetOpacity ( FIXTOFLT ( opacity ) );
+                css_fixed fixed{};
+                css_unit unit{};
+
+                if ( css_computed_fill ( results->styles[CSS_PSEUDO_ELEMENT_NONE], &color ) != CSS_PAINT_NONE )
+                {
+                    aCanvas.SetFillColor ( Color{color} );
+                    css_computed_fill_opacity ( results->styles[CSS_PSEUDO_ELEMENT_NONE], &fixed );
+                    aCanvas.SetFillOpacity ( FIXTOFLT ( fixed ) );
+                }
+                if ( css_computed_stroke ( results->styles[CSS_PSEUDO_ELEMENT_NONE], &color ) )
+                {
+                    aCanvas.SetStrokeColor ( Color{color} );
+                    css_computed_stroke_opacity ( results->styles[CSS_PSEUDO_ELEMENT_NONE], &fixed );
+                    aCanvas.SetStrokeOpacity ( FIXTOFLT ( fixed ) );
+                    css_computed_stroke_width ( results->styles[CSS_PSEUDO_ELEMENT_NONE], &fixed, &unit );
+                    /// @todo Convert unit to pixels if necessary
+                    aCanvas.SetStrokeWidth ( FIXTOFLT ( fixed ) );
+                }
+                css_computed_opacity ( results->styles[CSS_PSEUDO_ELEMENT_NONE], &fixed );
+                aCanvas.SetOpacity ( FIXTOFLT ( fixed ) );
             }
-#if 0
-            // TODO: convert to use libcss
-            aCanvas.SetFillColor ( std::get<ColorAttr> ( GetInheritedAttribute ( "fill", Color{black} ) ) );
-            aCanvas.SetStrokeColor ( std::get<ColorAttr> ( GetInheritedAttribute ( "stroke", ColorAttr{} ) ) );
-            aCanvas.SetStrokeWidth ( std::get<double> ( GetInheritedAttribute ( "stroke-width", 1.0 ) ) );
-            aCanvas.SetStrokeOpacity ( std::get<double> ( GetInheritedAttribute ( "stroke-opacity", 1.0 ) ) );
-            aCanvas.SetFillOpacity ( std::get<double> ( GetInheritedAttribute ( "fill-opacity", 1.0 ) ) );
-            aCanvas.SetOpacity ( std::get<double> ( GetInheritedAttribute ( "opacity", 1.0 ) ) );
-#endif
             aCanvas.Draw ( mPath );
         }
     }

@@ -1,24 +1,39 @@
-# Copyright 2015,2023 AeonGames, Rodrigo Hernandez
+# Copyright 2015,2023,2024 AeonGames, Rodrigo Hernandez
 # Licensed under the terms of the Apache 2.0 License.
-function(gitclone repo path tag)
-	if(NOT IS_DIRECTORY "${path}")
-		message(STATUS "Cloning ${repo}, please wait")
-		execute_process(COMMAND ${GIT_EXECUTABLE} clone --depth 1 ${repo} ${path} WORKING_DIRECTORY "${CMAKE_SOURCE_DIR}" RESULT_VARIABLE git_result OUTPUT_VARIABLE git_output ERROR_VARIABLE git_output)
+include(CMakeParseArguments)
+function(gitclone)
+	cmake_parse_arguments(
+			ARG # prefix of output variables
+			"" # list of names of the boolean arguments (only defined ones will be true)
+			"REPO;PATH;TAG" # list of names of mono-valued arguments
+			"PATCHES" # list of names of multi-valued arguments (output variables are lists)
+			${ARGN} # arguments of the function to parse, here we take the all original ones
+		)
+	if(NOT IS_DIRECTORY "${ARG_PATH}")
+		message(STATUS "Cloning ${ARG_REPO}, please wait")
+		execute_process(COMMAND ${GIT_EXECUTABLE} clone --depth 1 ${ARG_REPO} ${ARG_PATH} WORKING_DIRECTORY "${CMAKE_SOURCE_DIR}" RESULT_VARIABLE git_result OUTPUT_VARIABLE git_output ERROR_VARIABLE git_output)
 		if(NOT git_result EQUAL 0)
-			MESSAGE(FATAL_ERROR "Cloning ${repo} failed.\nResult: ${git_result}\nOutput: ${git_output}")
+			MESSAGE(FATAL_ERROR "Cloning ${ARG_REPO} failed.\nResult: ${git_result}\nOutput: ${git_output}")
 		endif(NOT git_result EQUAL 0)
 
-		execute_process(COMMAND ${GIT_EXECUTABLE} fetch --depth 1 origin ${tag} WORKING_DIRECTORY "${path}" RESULT_VARIABLE git_result OUTPUT_VARIABLE git_output ERROR_VARIABLE git_output)
+		execute_process(COMMAND ${GIT_EXECUTABLE} fetch --depth 1 origin ${ARG_TAG} WORKING_DIRECTORY "${ARG_PATH}" RESULT_VARIABLE git_result OUTPUT_VARIABLE git_output ERROR_VARIABLE git_output)
 		if(NOT git_result EQUAL 0)
-			MESSAGE(FATAL_ERROR "Fetching ${tag} failed.\nResult: ${git_result}\nOutput: ${git_output}")
+			MESSAGE(FATAL_ERROR "Fetching ${ARG_TAG} failed.\nResult: ${git_result}\nOutput: ${git_output}")
 		endif(NOT git_result EQUAL 0)
 
-		execute_process(COMMAND ${GIT_EXECUTABLE} checkout FETCH_HEAD WORKING_DIRECTORY "${path}" RESULT_VARIABLE git_result OUTPUT_VARIABLE git_output ERROR_VARIABLE git_output)
+		execute_process(COMMAND ${GIT_EXECUTABLE} checkout FETCH_HEAD WORKING_DIRECTORY "${ARG_PATH}" RESULT_VARIABLE git_result OUTPUT_VARIABLE git_output ERROR_VARIABLE git_output)
 		if(NOT git_result EQUAL 0)
 			MESSAGE(FATAL_ERROR "Checkout ${FETCH_HEAD} failed.\nResult: ${git_result}\nOutput: ${git_output}")
 		endif(NOT git_result EQUAL 0)
-	endif(NOT IS_DIRECTORY "${path}")
-endfunction(gitclone repo path)
+		foreach(PATCH ${ARG_PATCHES})
+			message(STATUS "Applying patch ${PATCH}")
+			execute_process(COMMAND ${GIT_EXECUTABLE} apply ${PATCH} WORKING_DIRECTORY "${ARG_PATH}" RESULT_VARIABLE git_result OUTPUT_VARIABLE git_output ERROR_VARIABLE git_output)
+			if(NOT git_result EQUAL 0)
+				MESSAGE(FATAL_ERROR "Failed to apply ${PATCH}.\nResult: ${git_result}\nOutput: ${git_output}")
+			endif(NOT git_result EQUAL 0)
+			endforeach()
+	endif(NOT IS_DIRECTORY "${ARG_PATH}")
+endfunction(gitclone)
 
 function(download url filename)
 	if(NOT EXISTS "${CMAKE_SOURCE_DIR}/${filename}")

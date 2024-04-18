@@ -34,7 +34,7 @@ namespace AeonGUI
             params.charset = "UTF-8";
             params.url = "";
             params.title = "Inline Style Sheet";
-            params.allow_quirks = false;
+            params.allow_quirks = true;
             params.inline_style = true;
             params.resolve =
                 [] ( void *pw,
