@@ -23,10 +23,10 @@ namespace AeonGUI
 {
     struct ViewBox
     {
-        double mX{};
-        double mY{};
-        double mWidth{};
-        double mHeight{};
+        double min_x{};
+        double min_y{};
+        double width{};
+        double height{};
     };
 
     template<typename T> T FromString ( const std::string_view aString )

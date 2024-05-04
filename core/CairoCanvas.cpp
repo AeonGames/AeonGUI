@@ -1,5 +1,5 @@
 /*
-Copyright (C) 2019,2020 Rodrigo Jose Hernandez Cordoba
+Copyright (C) 2019,2020,2024 Rodrigo Jose Hernandez Cordoba
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -171,5 +171,17 @@ namespace AeonGUI
             cairo_paint_with_alpha ( mCairoContext, mOpacity );
         }
         cairo_new_path ( mCairoContext );
+    }
+    void CairoCanvas::SetViewBox ( const ViewBox& aViewBox )
+    {
+#if 0
+        cairo_matrix_t transform
+        {
+            1.7656463, 0,
+            0, 1.7656463,
+            324.90716, 255.00942
+        };
+        cairo_set_matrix ( mCairoContext, &transform );
+#endif
     }
 }

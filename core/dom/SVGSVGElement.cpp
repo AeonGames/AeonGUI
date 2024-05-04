@@ -31,10 +31,10 @@ namespace AeonGUI
                 std::smatch match{};
                 if ( std::regex_match ( viewBoxStr, match, viewBoxRegex ) )
                 {
-                    mViewBox.mWidth  = std::stod ( match[1] );
-                    mViewBox.mHeight = std::stod ( match[2] );
-                    mViewBox.mX      = std::stod ( match[3] );
-                    mViewBox.mY      = std::stod ( match[4] );
+                    mViewBox.width  = std::stod ( match[3] );
+                    mViewBox.height = std::stod ( match[4] );
+                    mViewBox.min_x      = std::stod ( match[1] );
+                    mViewBox.min_y      = std::stod ( match[2] );
                 }
             }
             if ( aAttributes.find ( "width" ) != aAttributes.end() )
@@ -46,11 +46,12 @@ namespace AeonGUI
                 mHeight = std::stod ( aAttributes.at ( "height" ) );
             }
         }
-        SVGSVGElement::~SVGSVGElement()
-        {
-        }
+
+        SVGSVGElement::~SVGSVGElement() = default;
+
         void SVGSVGElement::DrawStart ( Canvas& aCanvas ) const
         {
+            aCanvas.SetViewBox ( mViewBox );
         }
     }
 }

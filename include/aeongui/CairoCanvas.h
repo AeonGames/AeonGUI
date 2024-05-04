@@ -1,5 +1,5 @@
 /*
-Copyright (C) 2019,2020 Rodrigo Jose Hernandez Cordoba
+Copyright (C) 2019,2020,2024 Rodrigo Jose Hernandez Cordoba
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -49,6 +49,7 @@ namespace AeonGUI
         double GetFillOpacity () const final;
         void SetOpacity ( double aWidth ) final;
         double GetOpacity () const final;
+        void SetViewBox ( const ViewBox& aViewBox ) final;
         DLL ~CairoCanvas() final;
     private:
         cairo_surface_t* mCairoSurface{};

@@ -1,5 +1,5 @@
 /*
-Copyright (C) 2019,2020 Rodrigo Jose Hernandez Cordoba
+Copyright (C) 2019,2020,2024 Rodrigo Jose Hernandez Cordoba
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -22,6 +22,7 @@ limitations under the License.
 #include "aeongui/Platform.h"
 #include "aeongui/DrawType.h"
 #include "aeongui/Color.h"
+#include "aeongui/Attribute.hpp"
 namespace AeonGUI
 {
     class Path;
@@ -47,6 +48,7 @@ namespace AeonGUI
         virtual void SetOpacity ( double aWidth ) = 0;
         virtual double GetOpacity () const = 0;
         virtual void Draw ( const Path& ) = 0;
+        virtual void SetViewBox ( const ViewBox& aViewBox ) = 0;
         DLL virtual ~Canvas() = 0;
     };
 }
