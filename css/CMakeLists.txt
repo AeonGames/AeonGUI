@@ -16,7 +16,11 @@ include(functions)
 
 gitclone(REPO "git://git.netsurf-browser.org/libparserutils.git" PATH "${CMAKE_CURRENT_SOURCE_DIR}/libparserutils" TAG 447c86722d4043ca10921a1746c72fea05838c11)
 gitclone(REPO "git://git.netsurf-browser.org/libwapcaplet.git" PATH "${CMAKE_CURRENT_SOURCE_DIR}/libwapcaplet" TAG 857ac3ff3f26dfe5a662b072d4d808f847bbac78)
-gitclone(REPO "git://git.netsurf-browser.org/libcss.git" PATH "${CMAKE_CURRENT_SOURCE_DIR}/libcss" TAG 703f1247b2fabd5dc685ba80bc26ccfa263c79ae PATCHES "${CMAKE_CURRENT_SOURCE_DIR}/0000-libcss-fill-and-stroke.patch")
+gitclone(REPO "git://git.netsurf-browser.org/libcss.git" PATH "${CMAKE_CURRENT_SOURCE_DIR}/libcss" TAG 703f1247b2fabd5dc685ba80bc26ccfa263c79ae
+    PATCHES
+    "${CMAKE_CURRENT_SOURCE_DIR}/0000-libcss-fill-and-stroke.patch"
+    "${CMAKE_CURRENT_SOURCE_DIR}/0001-libcss-transform.patch"
+)
 
 find_package(Python COMPONENTS Interpreter)
 
@@ -243,6 +247,7 @@ set(LIBCSS_SOURCES
     libcss/src/select/properties/text_indent.c
     libcss/src/select/properties/text_transform.c
     libcss/src/select/properties/top.c
+    libcss/src/select/properties/transform.c
     libcss/src/select/properties/unicode_bidi.c
     libcss/src/select/properties/vertical_align.c
     libcss/src/select/properties/visibility.c
