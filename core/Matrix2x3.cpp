@@ -1,5 +1,5 @@
 /*
-Copyright (C) 2019 Rodrigo Jose Hernandez Cordoba
+Copyright (C) 2019,2024 Rodrigo Jose Hernandez Cordoba
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -23,6 +23,19 @@ namespace AeonGUI
     {
         mMatrix2x3[0] = mMatrix2x3[3] = 1.0f;
         mMatrix2x3[1] = mMatrix2x3[2] = mMatrix2x3[4] = mMatrix2x3[5] = 0.0f;
+    }
+
+    Matrix2x3::Matrix2x3 (
+        double xx, double yx,
+        double xy, double yy,
+        double x0, double y0 )
+    {
+        mMatrix2x3[0] = xx;
+        mMatrix2x3[1] = yx;
+        mMatrix2x3[2] = xy;
+        mMatrix2x3[3] = yy;
+        mMatrix2x3[4] = x0;
+        mMatrix2x3[5] = y0;
     }
 
     Matrix2x3::Matrix2x3 ( const std::array<const double, 6> aMatrixArray )

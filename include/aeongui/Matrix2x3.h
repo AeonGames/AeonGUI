@@ -1,5 +1,5 @@
 /*
-Copyright (C) 2019 Rodrigo Jose Hernandez Cordoba
+Copyright (C) 2019,2024 Rodrigo Jose Hernandez Cordoba
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -25,6 +25,11 @@ namespace AeonGUI
     {
     public:
         DLL Matrix2x3();
+        DLL Matrix2x3 (
+            double xx, double yx,
+            double xy, double yy,
+            double x0, double y0
+        );
         DLL Matrix2x3 ( const std::array<const double, 6> aMatrixArray );
         DLL Matrix2x3 ( double aRotation );
         DLL Matrix2x3 ( const Vector2& aScale );

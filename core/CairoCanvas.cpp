@@ -184,4 +184,24 @@ namespace AeonGUI
         cairo_set_matrix ( mCairoContext, &transform );
 #endif
     }
+    void CairoCanvas::SetTransform ( const Matrix2x3& aMatrix )
+    {
+        cairo_matrix_t transform
+        {
+            aMatrix[0], aMatrix[1],
+            aMatrix[2], aMatrix[3],
+            aMatrix[4], aMatrix[5]
+        };
+        cairo_set_matrix ( mCairoContext, &transform );
+    }
+    void CairoCanvas::Transform ( const Matrix2x3& aMatrix )
+    {
+        cairo_matrix_t transform
+        {
+            aMatrix[0], aMatrix[1],
+            aMatrix[2], aMatrix[3],
+            aMatrix[4], aMatrix[5]
+        };
+        cairo_transform ( mCairoContext, &transform );
+    }
 }

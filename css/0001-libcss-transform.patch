@@ -97,8 +97,8 @@ index 09c9610..d07eabb 100644
  };
  
 +enum op_transform {
-+	TRANSFORM_NONE			    = 0x0000,
-+	TRANSFORM_SET				= 0x0001
++	TRANSFORM_SET				= 0x0080,
++	TRANSFORM_NONE			    = 0x0000
 +};
 +
  enum op_unicode_bidi {
