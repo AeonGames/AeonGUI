@@ -51,6 +51,7 @@ namespace AeonGUI
 
         void SVGSVGElement::DrawStart ( Canvas& aCanvas ) const
         {
+            SVGGraphicsElement::DrawStart ( aCanvas );
             aCanvas.SetViewBox ( mViewBox );
         }
     }

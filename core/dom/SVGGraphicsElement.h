@@ -1,5 +1,5 @@
 /*
-Copyright (C) 2020 Rodrigo Jose Hernandez Cordoba
+Copyright (C) 2020,2024 Rodrigo Jose Hernandez Cordoba
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -27,6 +27,7 @@ namespace AeonGUI
         public:
             SVGGraphicsElement ( const std::string& aTagName, const AttributeMap& aAttributes );
             ~SVGGraphicsElement() override;
+            void DrawStart ( Canvas& aCanvas ) const override;
         };
     }
 }
