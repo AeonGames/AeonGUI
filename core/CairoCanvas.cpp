@@ -174,15 +174,16 @@ namespace AeonGUI
     }
     void CairoCanvas::SetViewBox ( const ViewBox& aViewBox )
     {
-#if 0
         cairo_matrix_t transform
         {
-            1.7656463, 0,
-            0, 1.7656463,
-            324.90716, 255.00942
+            GetWidth() / aViewBox.width,
+            0,
+            0,
+            GetHeight() / aViewBox.height,
+            -aViewBox.min_x,
+            -aViewBox.min_y
         };
         cairo_set_matrix ( mCairoContext, &transform );
-#endif
     }
     void CairoCanvas::SetTransform ( const Matrix2x3& aMatrix )
     {

@@ -124,6 +124,7 @@ namespace AeonGUI
 
     void Element::OnAncestorChanged()
     {
+#if 0
         if ( !mComputedStyles )
         {
             return;
@@ -143,6 +144,7 @@ namespace AeonGUI
             css_computed_style_destroy ( mComputedStyles->styles[CSS_PSEUDO_ELEMENT_NONE] );
             mComputedStyles->styles[CSS_PSEUDO_ELEMENT_NONE] = computed_style;
         }
+#endif
     }
 #if 0
     AttributeType Element::GetAttribute ( const char* attrName, const AttributeType& aDefault ) const
