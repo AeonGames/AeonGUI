@@ -17,7 +17,7 @@ limitations under the License.
 #define AEONGUI_SVGGRAPHICSELEMENT_H
 
 #include "SVGElement.h"
-
+#include "aeongui/Matrix2x3.h"
 namespace AeonGUI
 {
     namespace DOM
@@ -28,6 +28,8 @@ namespace AeonGUI
             SVGGraphicsElement ( const std::string& aTagName, const AttributeMap& aAttributes );
             ~SVGGraphicsElement() override;
             void DrawStart ( Canvas& aCanvas ) const override;
+        private:
+            Matrix2x3 mTransform{};
         };
     }
 }

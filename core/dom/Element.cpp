@@ -25,75 +25,72 @@ namespace AeonGUI
     Element::Element ( const std::string& aTagName, const AttributeMap& aAttributes ) : mTagName{aTagName}, mAttributeMap{aAttributes}
     {
         auto style = mAttributeMap.find ( "style" );
-        if ( style != mAttributeMap.end() )
+        css_error code{};
+        css_stylesheet_params params{};
+        params.params_version = CSS_STYLESHEET_PARAMS_VERSION_1;
+        params.level = CSS_LEVEL_3;
+        params.charset = "UTF-8";
+        params.url = "";
+        params.title = "Inline Style Sheet";
+        params.allow_quirks = true;
+        params.inline_style = true;
+        params.resolve =
+            [] ( void *pw,
+                 const char *base, lwc_string * rel, lwc_string **abs ) -> css_error
         {
-            css_error code{};
-            css_stylesheet_params params{};
-            params.params_version = CSS_STYLESHEET_PARAMS_VERSION_1;
-            params.level = CSS_LEVEL_3;
-            params.charset = "UTF-8";
-            params.url = "";
-            params.title = "Inline Style Sheet";
-            params.allow_quirks = true;
-            params.inline_style = true;
-            params.resolve =
-                [] ( void *pw,
-                     const char *base, lwc_string * rel, lwc_string **abs ) -> css_error
-            {
-                ( void ) pw;
-                ( void ) base;
-                /* About as useless as possible */
-                *abs = lwc_string_ref ( rel );
-                return CSS_OK;
-            };
-            params.resolve_pw = nullptr;
-            params.import = nullptr;
-            params.import_pw = nullptr;
-            params.color = nullptr;
-            params.color_pw = nullptr;
-            params.font = nullptr;
-            params.font_pw = nullptr;
-            {
-                css_stylesheet* stylesheet{};
-                code = css_stylesheet_create ( &params, &stylesheet );
-                if ( code != CSS_OK )
-                {
-                    throw std::runtime_error ( css_error_to_string ( code ) );
-                }
-                mInlineStyleSheet.reset ( stylesheet );
-            }
-
-            // Parse inline style
-            const std::string& css{ style->second };
-            std::cerr << tagName() << std::endl;
-            std::cerr << "css: " << css << std::endl << std::endl;
-            code = css_stylesheet_append_data ( mInlineStyleSheet.get(), reinterpret_cast<const uint8_t*> ( css.data() ), css.size() );
-            if ( code != CSS_OK  && code != CSS_NEEDDATA )
-            {
-                throw std::runtime_error ( css_error_to_string ( code ) );
-            }
-            code = css_stylesheet_data_done ( mInlineStyleSheet.get() );
+            ( void ) pw;
+            ( void ) base;
+            /* About as useless as possible */
+            *abs = lwc_string_ref ( rel );
+            return CSS_OK;
+        };
+        params.resolve_pw = nullptr;
+        params.import = nullptr;
+        params.import_pw = nullptr;
+        params.color = nullptr;
+        params.color_pw = nullptr;
+        params.font = nullptr;
+        params.font_pw = nullptr;
+        {
+            css_stylesheet* stylesheet{};
+            code = css_stylesheet_create ( &params, &stylesheet );
             if ( code != CSS_OK )
             {
                 throw std::runtime_error ( css_error_to_string ( code ) );
             }
-
-            css_select_ctx* css_select_ctx{};
-            css_error err{css_select_ctx_create ( &css_select_ctx ) };
-            if ( err != CSS_OK )
-            {
-                throw std::runtime_error ( css_error_to_string ( code ) );
-            }
-
-            css_select_results* results {};
-            err = css_select_style ( css_select_ctx, this, GetUnitLenCtx(), nullptr, mInlineStyleSheet.get(), GetSelectHandler(), nullptr, &results );
-            if ( err != CSS_OK )
-            {
-                throw std::runtime_error ( css_error_to_string ( code ) );
-            }
-            mComputedStyles.reset ( results );
-            css_select_ctx_destroy ( css_select_ctx );
+            mInlineStyleSheet.reset ( stylesheet );
         }
+
+        // Parse inline style
+        const std::string& css{ style != mAttributeMap.end() ? style->second : "" };
+        std::cerr << tagName() << std::endl;
+        std::cerr << "css: " << css << std::endl << std::endl;
+        code = css_stylesheet_append_data ( mInlineStyleSheet.get(), reinterpret_cast<const uint8_t*> ( css.data() ), css.size() );
+        if ( code != CSS_OK  && code != CSS_NEEDDATA )
+        {
+            throw std::runtime_error ( css_error_to_string ( code ) );
+        }
+        code = css_stylesheet_data_done ( mInlineStyleSheet.get() );
+        if ( code != CSS_OK )
+        {
+            throw std::runtime_error ( css_error_to_string ( code ) );
+        }
+
+        css_select_ctx* css_select_ctx{};
+        css_error err{css_select_ctx_create ( &css_select_ctx ) };
+        if ( err != CSS_OK )
+        {
+            throw std::runtime_error ( css_error_to_string ( code ) );
+        }
+
+        css_select_results* results {};
+        err = css_select_style ( css_select_ctx, this, GetUnitLenCtx(), nullptr, mInlineStyleSheet.get(), GetSelectHandler(), nullptr, &results );
+        if ( err != CSS_OK )
+        {
+            throw std::runtime_error ( css_error_to_string ( code ) );
+        }
+        mComputedStyles.reset ( results );
+        css_select_ctx_destroy ( css_select_ctx );
     }
 
     Element::~Element() = default;
@@ -124,7 +121,6 @@ namespace AeonGUI
 
     void Element::OnAncestorChanged()
     {
-#if 0
         if ( !mComputedStyles )
         {
             return;
@@ -144,7 +140,6 @@ namespace AeonGUI
             css_computed_style_destroy ( mComputedStyles->styles[CSS_PSEUDO_ELEMENT_NONE] );
             mComputedStyles->styles[CSS_PSEUDO_ELEMENT_NONE] = computed_style;
         }
-#endif
     }
 #if 0
     AttributeType Element::GetAttribute ( const char* attrName, const AttributeType& aDefault ) const
