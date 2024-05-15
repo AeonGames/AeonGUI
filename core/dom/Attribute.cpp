@@ -15,11 +15,44 @@ limitations under the License.
 */
 
 #include "aeongui/Attribute.hpp"
-
+#include <regex>
+#include <unordered_map>
 namespace AeonGUI
 {
     template<> double FromString<double> ( const std::string_view aString )
     {
         return std::stod ( aString.data() );
+    }
+
+    const std::regex PreserveAspectRatioRegex{"\\s*(none|xMinYMin|xMidYMin|xMaxYMin|xMinYMid|xMidYMid|xMaxYMid|xMinYMax|xMidYMax|xMaxYMax)\\s*(meet|slice)?\\s*"};
+    static const std::unordered_map<std::string_view, PreserveAspectRatio::Align> PreserveAspectRatioMap
+    {
+        {"none", PreserveAspectRatio::Align::None},
+        {"xMinYMin", PreserveAspectRatio::Align::XMinYMin},
+        {"xMidYMin", PreserveAspectRatio::Align::XMidYMin},
+        {"xMaxYMin", PreserveAspectRatio::Align::XMaxYMin},
+        {"xMinYMid", PreserveAspectRatio::Align::XMinYMid},
+        {"xMidYMid", PreserveAspectRatio::Align::XMidYMid},
+        {"xMaxYMid", PreserveAspectRatio::Align::XMaxYMid},
+        {"xMinYMax", PreserveAspectRatio::Align::XMinYMax},
+        {"xMidYMax", PreserveAspectRatio::Align::XMidYMax},
+        {"xMaxYMax", PreserveAspectRatio::Align::XMaxYMax},
+    };
+
+    PreserveAspectRatio::PreserveAspectRatio ( std::string_view aString ) : mAlign{Align::XMidYMid}, mMeetOrSlice{MeetOrSlice::Meet}
+    {
+        std::cmatch m;
+        if ( std::regex_match ( aString.data(), m, PreserveAspectRatioRegex ) )
+        {
+            mAlign = PreserveAspectRatioMap.at ( m[1].str() );
+            if ( m[2] == "meet" )
+            {
+                mMeetOrSlice = MeetOrSlice::Meet;
+            }
+            else if ( m[2] == "slice" )
+            {
+                mMeetOrSlice = MeetOrSlice::Slice;
+            }
+        }
     }
 }

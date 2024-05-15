@@ -34,6 +34,7 @@ namespace AeonGUI
             double mWidth{};
             double mHeight{};
             ViewBox mViewBox{};
+            PreserveAspectRatio mPreserveAspectRatio{};
         };
     }
 }

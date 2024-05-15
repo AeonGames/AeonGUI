@@ -20,7 +20,8 @@ namespace AeonGUI
 {
     namespace DOM
     {
-        SVGSVGElement::SVGSVGElement ( const std::string& aTagName, const AttributeMap& aAttributes ) : SVGGraphicsElement { aTagName, aAttributes }
+        SVGSVGElement::SVGSVGElement ( const std::string& aTagName, const AttributeMap& aAttributes ) :
+            SVGGraphicsElement { aTagName, aAttributes }
         {
             std::cout << "This is a specialized implementation for the svg element." << std::endl;
             if ( aAttributes.find ( "viewBox" ) != aAttributes.end() )
@@ -44,6 +45,10 @@ namespace AeonGUI
             if ( aAttributes.find ( "height" ) != aAttributes.end() )
             {
                 mHeight = std::stod ( aAttributes.at ( "height" ) );
+            }
+            if ( aAttributes.find ( "preserveAspectRatio" ) != aAttributes.end() )
+            {
+                mPreserveAspectRatio = PreserveAspectRatio{aAttributes.at ( "preserveAspectRatio" ) };
             }
         }
 

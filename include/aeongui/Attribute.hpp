@@ -29,6 +29,34 @@ namespace AeonGUI
         double height{};
     };
 
+    class PreserveAspectRatio
+    {
+    public:
+        PreserveAspectRatio() = default;
+        PreserveAspectRatio ( std::string_view aString );
+        enum class Align
+        {
+            None,
+            XMinYMin,
+            XMidYMin,
+            XMaxYMin,
+            XMinYMid,
+            XMidYMid,
+            XMaxYMid,
+            XMinYMax,
+            XMidYMax,
+            XMaxYMax
+        };
+        enum class MeetOrSlice
+        {
+            Meet,
+            Slice
+        };
+    private:
+        Align mAlign{Align::XMidYMid};
+        MeetOrSlice mMeetOrSlice{MeetOrSlice::Meet};
+    };
+
     template<typename T> T FromString ( const std::string_view aString )
     {
         return T{aString};
