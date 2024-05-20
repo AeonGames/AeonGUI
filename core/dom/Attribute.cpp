@@ -55,4 +55,24 @@ namespace AeonGUI
             }
         }
     }
+
+    PreserveAspectRatio::Align PreserveAspectRatio::GetAlign() const
+    {
+        return mAlign;
+    }
+
+    PreserveAspectRatio::MinMidMax PreserveAspectRatio::GetAlignX() const
+    {
+        return static_cast<MinMidMax> ( mAlign & 0x3 );
+    }
+
+    PreserveAspectRatio::MinMidMax PreserveAspectRatio::GetAlignY() const
+    {
+        return static_cast<MinMidMax> ( mAlign >> 4 & 0x3 );
+    }
+
+    PreserveAspectRatio::MeetOrSlice PreserveAspectRatio::GetMeetOrSlice() const
+    {
+        return mMeetOrSlice;
+    }
 }

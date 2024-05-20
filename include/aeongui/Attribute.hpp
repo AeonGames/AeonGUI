@@ -34,24 +34,34 @@ namespace AeonGUI
     public:
         PreserveAspectRatio() = default;
         PreserveAspectRatio ( std::string_view aString );
-        enum class Align
+        enum MinMidMax : uint8_t
         {
-            None,
-            XMinYMin,
-            XMidYMin,
-            XMaxYMin,
-            XMinYMid,
-            XMidYMid,
-            XMaxYMid,
-            XMinYMax,
-            XMidYMax,
-            XMaxYMax
+            Min = 0x1,
+            Mid = 0x2,
+            Max = 0x3
+        };
+        enum Align : uint8_t
+        {
+            None = 0,
+            XMinYMin = Min << 4 | Min,
+            XMinYMid = Min << 4 | Mid,
+            XMinYMax = Min << 4 | Max,
+            XMidYMin = Mid << 4 | Min,
+            XMidYMid = Mid << 4 | Mid,
+            XMidYMax = Mid << 4 | Max,
+            XMaxYMin = Max << 4 | Min,
+            XMaxYMid = Max << 4 | Mid,
+            XMaxYMax = Max << 4 | Max
         };
         enum class MeetOrSlice
         {
             Meet,
             Slice
         };
+        Align GetAlign() const;
+        MinMidMax GetAlignX() const;
+        MinMidMax GetAlignY() const;
+        MeetOrSlice GetMeetOrSlice() const;
     private:
         Align mAlign{Align::XMidYMid};
         MeetOrSlice mMeetOrSlice{MeetOrSlice::Meet};

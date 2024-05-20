@@ -49,7 +49,7 @@ namespace AeonGUI
         virtual void SetOpacity ( double aWidth ) = 0;
         virtual double GetOpacity () const = 0;
         virtual void Draw ( const Path& ) = 0;
-        virtual void SetViewBox ( const ViewBox& aViewBox ) = 0;
+        virtual void SetViewBox ( const ViewBox& aViewBox, const PreserveAspectRatio& aPreserveAspectRatio ) = 0;
         virtual void SetTransform ( const Matrix2x3& aMatrix ) = 0;
         virtual void Transform ( const Matrix2x3& aMatrix ) = 0;
         DLL virtual ~Canvas() = 0;

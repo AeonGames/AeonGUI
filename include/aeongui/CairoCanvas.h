@@ -49,7 +49,7 @@ namespace AeonGUI
         double GetFillOpacity () const final;
         void SetOpacity ( double aWidth ) final;
         double GetOpacity () const final;
-        void SetViewBox ( const ViewBox& aViewBox ) final;
+        void SetViewBox ( const ViewBox& aViewBox, const PreserveAspectRatio& aPreserveAspectRatio ) final;
         void SetTransform ( const Matrix2x3& aMatrix ) final;
         void Transform ( const Matrix2x3& aMatrix ) final;
         DLL ~CairoCanvas() final;

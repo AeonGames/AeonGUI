@@ -172,16 +172,54 @@ namespace AeonGUI
         }
         cairo_new_path ( mCairoContext );
     }
-    void CairoCanvas::SetViewBox ( const ViewBox& aViewBox )
+    void CairoCanvas::SetViewBox ( const ViewBox& aViewBox, const PreserveAspectRatio& aPreserveAspectRatio )
     {
+        // Follows https://www.w3.org/TR/SVG2/coords.html#ComputingAViewportsTransform
+        double scale_x = GetWidth() / aViewBox.width;
+        double scale_y = GetHeight() / aViewBox.height;
+        if ( aPreserveAspectRatio.GetAlign() != PreserveAspectRatio::Align::None )
+        {
+            if ( aPreserveAspectRatio.GetMeetOrSlice() == PreserveAspectRatio::MeetOrSlice::Meet )
+            {
+                scale_x = std::min ( scale_x, scale_y );
+                scale_y = scale_x;
+            }
+            else if ( aPreserveAspectRatio.GetMeetOrSlice() == PreserveAspectRatio::MeetOrSlice::Slice )
+            {
+                scale_x = std::max ( scale_x, scale_y );
+                scale_y = scale_x;
+            }
+        }
+
+        double translate_x = -aViewBox.min_x * scale_x;
+        double translate_y = -aViewBox.min_y * scale_y;
+
+        PreserveAspectRatio::MinMidMax x_align{aPreserveAspectRatio.GetAlignX() };
+        PreserveAspectRatio::MinMidMax y_align{aPreserveAspectRatio.GetAlignY() };
+
+        if ( x_align == PreserveAspectRatio::MinMidMax::Mid )
+        {
+            translate_x += ( GetWidth() - aViewBox.width * scale_x ) / 2;
+        }
+        else if ( x_align == PreserveAspectRatio::MinMidMax::Max )
+        {
+            translate_x += ( GetWidth() - aViewBox.width * scale_x );
+        }
+
+        if ( y_align == PreserveAspectRatio::MinMidMax::Mid )
+        {
+            translate_y += ( GetHeight() - aViewBox.height * scale_y ) / 2;
+        }
+        else if ( y_align == PreserveAspectRatio::MinMidMax::Max )
+        {
+            translate_y += ( GetHeight() - aViewBox.height * scale_y );
+        }
+
         cairo_matrix_t transform
         {
-            GetWidth() / aViewBox.width,
-            0,
-            0,
-            GetHeight() / aViewBox.height,
-            -aViewBox.min_x,
-            -aViewBox.min_y
+            scale_x,     0.0,
+            0.0,         scale_y,
+            translate_x, translate_y
         };
         cairo_set_matrix ( mCairoContext, &transform );
     }
