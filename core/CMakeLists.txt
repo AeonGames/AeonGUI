@@ -61,7 +61,6 @@ set(AEONGUI_SOURCES
     dom/SVGPolygonElement.cpp
     dom/SVGCircleElement.cpp
     dom/SVGEllipseElement.cpp
-    dom/Script.cpp
     dom/Text.cpp
     dom/Attribute.cpp
     dom/Node.h
@@ -84,7 +83,6 @@ set(AEONGUI_SOURCES
     dom/SVGPolygonElement.h
     dom/SVGCircleElement.h
     dom/SVGEllipseElement.h
-    dom/Script.h
     dom/Text.h
 )
 

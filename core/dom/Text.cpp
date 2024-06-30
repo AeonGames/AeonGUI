@@ -1,5 +1,5 @@
 /*
-Copyright (C) 2020 Rodrigo Jose Hernandez Cordoba
+Copyright (C) 2020,2024 Rodrigo Jose Hernandez Cordoba
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -17,7 +17,7 @@ limitations under the License.
 
 namespace AeonGUI
 {
-    Text::Text ( const std::string& aText ) : mText{aText} {}
+    Text::Text ( const std::string& aText, Node* aParent ) : Node{aParent}, mText{aText} {}
     Text::~Text() = default;
 
     Node::NodeType Text::nodeType() const

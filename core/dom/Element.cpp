@@ -22,7 +22,11 @@ limitations under the License.
 #include <libcss/libcss.h>
 namespace AeonGUI
 {
-    Element::Element ( const std::string& aTagName, const AttributeMap& aAttributes ) : mTagName{aTagName}, mAttributeMap{aAttributes}
+    Element::Element ( const std::string& aTagName, const AttributeMap& aAttributes, Node* aParent ) :
+        Node { aParent },
+        mTagName{aTagName},
+        mId{aAttributes.find ( "id" ) != aAttributes.end() ? aAttributes.at ( "id" ) : "" },
+        mAttributeMap{aAttributes}
     {
         auto style = mAttributeMap.find ( "style" );
         css_error code{};
@@ -179,5 +183,9 @@ namespace AeonGUI
     const std::string& Element::tagName() const
     {
         return mTagName;
+    }
+    const std::string& Element::id() const
+    {
+        return mId;
     }
 }

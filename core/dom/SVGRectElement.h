@@ -25,7 +25,7 @@ namespace AeonGUI
         class SVGRectElement : public SVGGeometryElement
         {
         public:
-            SVGRectElement ( const std::string& aTagName, const AttributeMap& aAttributes );
+            SVGRectElement ( const std::string& aTagName, const AttributeMap& aAttributes, Node* aParent );
             ~SVGRectElement() final;
         private:
             double mWidth{};

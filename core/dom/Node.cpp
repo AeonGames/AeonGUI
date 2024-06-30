@@ -20,7 +20,7 @@ Copyright (C) 2010-2013,2019,2020,2023,2024 Rodrigo Hernandez Cordoba
 
 namespace AeonGUI
 {
-    Node::Node() = default;
+    Node::Node ( Node* aParent ) : mParent{aParent} {};
     Node::~Node() = default;
 
     const std::vector<Node*>& Node::childNodes() const

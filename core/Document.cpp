@@ -32,23 +32,6 @@ namespace AeonGUI
         AttributeMap attribute_map{};
         for ( xmlNodePtr attribute = reinterpret_cast<xmlNodePtr> ( aXmlElementPtr->attributes ); attribute; attribute = attribute->next )
         {
-#if 0
-            std::cmatch match;
-            const char* value = reinterpret_cast<const char*> ( xmlGetProp ( reinterpret_cast<xmlNodePtr> ( aXmlElementPtr ), attribute->name ) );
-            if ( std::regex_match ( value, match, number ) )
-            {
-                attribute_map[reinterpret_cast<const char*> ( attribute->name )] = std::stod ( match[0].str() );
-            }
-            else if ( std::regex_match ( value, match, Color::ColorRegex ) )
-            {
-                attribute_map[reinterpret_cast<const char*> ( attribute->name )] = ( match[0].str() != "none" ) ? Color{match[0].str() } :
-                    ColorAttr{};
-            }
-            else
-            {
-                attribute_map[reinterpret_cast<const char*> ( attribute->name )] = value;
-            }
-#endif
             attribute_map[reinterpret_cast<const char*> ( attribute->name )] = reinterpret_cast<const char*> ( xmlGetProp ( reinterpret_cast<xmlNodePtr> ( aXmlElementPtr ), attribute->name ) );
         }
         return attribute_map;
@@ -60,11 +43,17 @@ namespace AeonGUI
             if ( node->type == XML_ELEMENT_NODE )
             {
                 xmlElementPtr element = reinterpret_cast<xmlElementPtr> ( node );
-                AddNodes ( aNode->AddNode ( Construct ( reinterpret_cast<const char*> ( element->name ), ExtractElementAttributes ( element ) ) ), node->children );
+                AddNodes (
+                    aNode->AddNode (
+                        Construct (
+                            reinterpret_cast<const char*> ( element->name ),
+                            ExtractElementAttributes ( element ),
+                            aNode )
+                    ), node->children );
             }
             else if ( xmlNodeIsText ( node ) && !xmlIsBlankNode ( node ) )
             {
-                AddNodes ( aNode->AddNode ( new Text { reinterpret_cast<const char*> ( node->content ) } ), node->children );
+                AddNodes ( aNode->AddNode ( new Text { reinterpret_cast<const char*> ( node->content ), aNode } ), node->children );
             }
         }
     }
@@ -100,13 +89,13 @@ namespace AeonGUI
         params.allow_quirks = false;
         params.inline_style = false;
         params.resolve = resolve_url;
-        params.resolve_pw = NULL;
-        params.import = NULL;
-        params.import_pw = NULL;
-        params.color = NULL;
-        params.color_pw = NULL;
-        params.font = NULL;
-        params.font_pw = NULL;
+        params.resolve_pw = nullptr;
+        params.import = nullptr;
+        params.import_pw = nullptr;
+        params.color = nullptr;
+        params.color_pw = nullptr;
+        params.font = nullptr;
+        params.font_pw = nullptr;
 
         {
             css_stylesheet* stylesheet{};
@@ -120,7 +109,7 @@ namespace AeonGUI
 
         ///@todo use document->children instead?
         xmlElementPtr root_element = reinterpret_cast<xmlElementPtr> ( xmlDocGetRootElement ( document ) );
-        mDocumentElement = Construct ( reinterpret_cast<const char*> ( root_element->name ), ExtractElementAttributes ( root_element ) );
+        mDocumentElement = Construct ( reinterpret_cast<const char*> ( root_element->name ), ExtractElementAttributes ( root_element ), nullptr );
         AddNodes ( mDocumentElement, root_element->children );
         xmlFreeDoc ( document );
         /**@todo Emit onload event.*/

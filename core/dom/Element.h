@@ -33,7 +33,7 @@ namespace AeonGUI
     class Element : public Node
     {
     public:
-        DLL Element ( const std::string& aTagName, const AttributeMap& aAttributes );
+        DLL Element ( const std::string& aTagName, const AttributeMap& aAttributes, Node* aParent );
         //DLL AttributeType GetAttribute ( const char* attrName, const AttributeType& aDefault = {} ) const;
         //DLL AttributeType GetInheritedAttribute ( const char* attrName, const AttributeType& aDefault = {} ) const;
         //DLL void SetAttribute ( const char* attrName, const AttributeType& aValue );
@@ -41,9 +41,11 @@ namespace AeonGUI
         /**DOM Properties and Methods @{*/
         NodeType nodeType() const final;
         const std::string& tagName() const;
+        const std::string& id() const;
         /**@}*/
     private:
         const std::string mTagName;
+        const std::string mId;
         AttributeMap mAttributeMap{};
         DLL void OnAncestorChanged() override;
     protected:

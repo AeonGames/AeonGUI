@@ -45,7 +45,7 @@ namespace AeonGUI
             DOCUMENT_FRAGMENT_NODE = 11,
             NOTATION_NODE = 12,
         };
-        DLL Node();
+        DLL Node ( Node* aParent );
         DLL Node* AddNode ( Node* aNode );
         DLL Node* RemoveNode ( const Node* aNode );
         DLL void TraverseDepthFirstPreOrder ( const std::function<void ( Node* ) >& aAction );

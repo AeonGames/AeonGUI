@@ -1,5 +1,5 @@
 /*
-Copyright (C) 2019,2020,2023 Rodrigo Jose Hernandez Cordoba
+Copyright (C) 2019,2020,2023,2024 Rodrigo Jose Hernandez Cordoba
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -37,12 +37,11 @@ limitations under the License.
 #include "dom/SVGPolygonElement.h"
 #include "dom/SVGCircleElement.h"
 #include "dom/SVGEllipseElement.h"
-#include "dom/Script.h"
 
 namespace AeonGUI
 {
     using ConstructorTuple = std::tuple <
-                             std::function < Element* ( const std::string& aTagName, const AttributeMap& aAttributeMap ) >,
+                             std::function < Element* ( const std::string& aTagName, const AttributeMap& aAttributeMap, Node* aParent ) >,
                              std::function < void ( Element* ) >>;
 
     using Constructor = std::tuple<StringLiteral, ConstructorTuple>;
@@ -54,9 +53,9 @@ namespace AeonGUI
         {
             aId,
             ConstructorTuple {
-                [] ( const std::string & aTagName, const AttributeMap & aAttributeMap )
+                [] ( const std::string & aTagName, const AttributeMap & aAttributeMap, Node * aParent )
                 {
-                    return new T{ aTagName, aAttributeMap };
+                    return new T{ aTagName, aAttributeMap, aParent };
                 },
                 [] ( Element * aElement ) -> void
                 {
@@ -77,14 +76,13 @@ namespace AeonGUI
         MakeConstructor<DOM::SVGPolygonElement> ( "polygon" ),
         MakeConstructor<DOM::SVGCircleElement> ( "circle" ),
         MakeConstructor<DOM::SVGEllipseElement> ( "ellipse" ),
-        MakeConstructor<DOM::Script> ( "script" ),
         MakeConstructor<DOM::SVGDefsElement> ( "defs" ),
         MakeConstructor<DOM::SVGUseElement> ( "use" ),
         MakeConstructor<DOM::SVGLinearGradientElement> ( "linearGradient" ),
         MakeConstructor<DOM::SVGStopElement> ( "stop" ),
     };
 
-    Element* Construct ( const char* aIdentifier, const AttributeMap& aAttributeMap )
+    Element* Construct ( const char* aIdentifier, const AttributeMap& aAttributeMap, Node* aParent )
     {
         auto it = std::find_if ( Constructors.begin(), Constructors.end(),
                                  [aIdentifier] ( const Constructor & aConstructor )
@@ -93,9 +91,9 @@ namespace AeonGUI
         } );
         if ( it != Constructors.end() )
         {
-            return std::get<0> ( std::get<1> ( *it ) ) ( aIdentifier, aAttributeMap );
+            return std::get<0> ( std::get<1> ( *it ) ) ( aIdentifier, aAttributeMap, aParent );
         }
-        return new Element { aIdentifier, aAttributeMap };
+        return new Element { aIdentifier, aAttributeMap, aParent };
     }
 
     void Destroy ( const char* aIdentifier, Element* aElement )
@@ -116,7 +114,7 @@ namespace AeonGUI
     }
 
     bool RegisterConstructor ( const StringLiteral& aIdentifier,
-                               const std::function < Element* ( const std::string& aTagName, const AttributeMap& aAttributeMap ) > & aConstructor,
+                               const std::function < Element* ( const std::string& aTagName, const AttributeMap& aAttributeMap, Node* aParent ) > & aConstructor,
                                const std::function < void ( Element* ) > & aDestructor
                              )
     {

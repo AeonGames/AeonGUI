@@ -22,7 +22,7 @@ namespace AeonGUI
     namespace DOM
     {
         int ParsePathData ( std::vector<DrawType>& aPath, const char* s );
-        SVGPathElement::SVGPathElement ( const std::string& aTagName, const AttributeMap& aAttributes ) : SVGGeometryElement { aTagName, aAttributes }
+        SVGPathElement::SVGPathElement ( const std::string& aTagName, const AttributeMap& aAttributes, Node* aParent ) : SVGGeometryElement { aTagName, aAttributes, aParent }
         {
             if ( aAttributes.find ( "d" ) != aAttributes.end() )
             {

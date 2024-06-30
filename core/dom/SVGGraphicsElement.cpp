@@ -21,7 +21,7 @@ namespace AeonGUI
 {
     namespace DOM
     {
-        SVGGraphicsElement::SVGGraphicsElement ( const std::string& aTagName, const AttributeMap& aAttributes ) : SVGElement { aTagName, aAttributes }
+        SVGGraphicsElement::SVGGraphicsElement ( const std::string& aTagName, const AttributeMap& aAttributes, Node* aParent ) : SVGElement { aTagName, aAttributes, aParent }
         {
             css_select_results* results{ GetComputedStyles() };
             css_matrix transform{};
