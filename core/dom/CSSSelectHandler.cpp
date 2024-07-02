@@ -375,19 +375,19 @@ namespace AeonGUI
         return CSS_OK;
     }
 
-    css_error node_is_first_child ( void *pw, void *n, bool *match )
+    css_error node_is_first_child ( void *pw, void *node, bool *match )
     {
         ( void ) ( pw );
-        ( void ) ( n );
-        *match = false;
+        Element *element {reinterpret_cast<Element*> ( node ) };
+        *match = element->parentElement() && element->parentElement()->childNodes() [0] == element;
         return CSS_OK;
     }
 
-    css_error node_is_root ( void *pw, void *n, bool *match )
+    css_error node_is_root ( void *pw, void *node, bool *match )
     {
         ( void ) ( pw );
-        ( void ) ( n );
-        *match = false;
+        Element *element {reinterpret_cast<Element*> ( node ) };
+        *match = element->parentNode() == nullptr;
         return CSS_OK;
     }
 
