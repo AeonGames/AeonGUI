@@ -172,13 +172,13 @@ namespace AeonGUI
         return CSS_OK;
     }
 
-    css_error node_classes ( void *pw, void *n,
+    css_error node_classes ( void *pw, void *node,
                              lwc_string ***classes, uint32_t *n_classes )
     {
+        Element *element {reinterpret_cast<Element*> ( node ) };
         ( void ) ( pw );
-        ( void ) ( n );
-        *classes = nullptr;
-        *n_classes = 0;
+        *classes = element->classes().data();
+        *n_classes = static_cast<uint32_t> ( element->classes().size() );
         return CSS_OK;
     }
 

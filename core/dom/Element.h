@@ -20,6 +20,7 @@ limitations under the License.
 #include <memory>
 #include <string>
 #include <variant>
+#include <libwapcaplet/libwapcaplet.h>
 #include "aeongui/Platform.h"
 #include "aeongui/AttributeMap.h"
 #include "aeongui/StyleSheet.h"
@@ -42,10 +43,12 @@ namespace AeonGUI
         NodeType nodeType() const final;
         const std::string& tagName() const;
         const std::string& id() const;
+        std::vector<lwc_string*>& classes();
         /**@}*/
     private:
         const std::string mTagName;
         const std::string mId;
+        std::vector<lwc_string*> mClasses{};
         AttributeMap mAttributeMap{};
         DLL void OnAncestorChanged() override;
     protected:

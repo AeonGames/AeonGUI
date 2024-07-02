@@ -25,9 +25,22 @@ namespace AeonGUI
     Element::Element ( const std::string& aTagName, const AttributeMap& aAttributes, Node* aParent ) :
         Node { aParent },
         mTagName{aTagName},
-        mId{aAttributes.find ( "id" ) != aAttributes.end() ? aAttributes.at ( "id" ) : "" },
+        mId{aAttributes.find ( "id" ) != aAttributes.end() ? aAttributes.at ( "id" ) : std::string{} },
         mAttributeMap{aAttributes}
     {
+        std::string class_attribute {mAttributeMap.find ( "class" ) != aAttributes.end() ? aAttributes.at ( "class" ) : std::string{}};
+        if ( !class_attribute.empty() )
+        {
+            std::regex class_regex {R"(\s+)"};
+            std::sregex_token_iterator class_begin {class_attribute.begin(), class_attribute.end(), class_regex, -1};
+            std::sregex_token_iterator class_end {};
+            mClasses.reserve ( std::distance ( class_begin, class_end ) );
+            for ( auto& m = class_begin; m != class_end; ++m )
+            {
+                mClasses.push_back ( nullptr );
+                lwc_intern_string ( m->str().c_str(), m->str().size(), &mClasses.back() );
+            }
+        }
         auto style = mAttributeMap.find ( "style" );
         css_error code{};
         css_stylesheet_params params{};
@@ -97,7 +110,13 @@ namespace AeonGUI
         css_select_ctx_destroy ( css_select_ctx );
     }
 
-    Element::~Element() = default;
+    Element::~Element()
+    {
+        for ( auto& c : mClasses )
+        {
+            lwc_string_unref ( c );
+        }
+    }
 
     css_select_results* Element::GetParentComputedStyles() const
     {
@@ -187,5 +206,9 @@ namespace AeonGUI
     const std::string& Element::id() const
     {
         return mId;
+    }
+    std::vector<lwc_string*>& Element::classes()
+    {
+        return mClasses;
     }
 }
