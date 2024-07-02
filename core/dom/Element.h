@@ -41,13 +41,13 @@ namespace AeonGUI
         DLL virtual ~Element();
         /**DOM Properties and Methods @{*/
         NodeType nodeType() const final;
-        const std::string& tagName() const;
-        const std::string& id() const;
+        lwc_string* tagName();
+        lwc_string* id();
         std::vector<lwc_string*>& classes();
         /**@}*/
     private:
-        const std::string mTagName;
-        const std::string mId;
+        lwc_string* mTagName{};
+        lwc_string* mId{};
         std::vector<lwc_string*> mClasses{};
         AttributeMap mAttributeMap{};
         DLL void OnAncestorChanged() override;

@@ -24,10 +24,17 @@ namespace AeonGUI
 {
     Element::Element ( const std::string& aTagName, const AttributeMap& aAttributes, Node* aParent ) :
         Node { aParent },
-        mTagName{aTagName},
-        mId{aAttributes.find ( "id" ) != aAttributes.end() ? aAttributes.at ( "id" ) : std::string{} },
+        mTagName{},
+        mId{},
         mAttributeMap{aAttributes}
     {
+        lwc_intern_string ( aTagName.c_str(), aTagName.size(), &mTagName );
+        if ( aAttributes.find ( "id" ) != aAttributes.end() )
+        {
+            auto& id = aAttributes.at ( "id" );
+            lwc_intern_string ( id.c_str(), id.size(), &mId );
+        }
+
         std::string class_attribute {mAttributeMap.find ( "class" ) != aAttributes.end() ? aAttributes.at ( "class" ) : std::string{}};
         if ( !class_attribute.empty() )
         {
@@ -112,6 +119,14 @@ namespace AeonGUI
 
     Element::~Element()
     {
+        if ( mTagName )
+        {
+            lwc_string_unref ( mTagName );
+        }
+        if ( mId )
+        {
+            lwc_string_unref ( mId );
+        }
         for ( auto& c : mClasses )
         {
             lwc_string_unref ( c );
@@ -199,11 +214,11 @@ namespace AeonGUI
     {
         return ELEMENT_NODE;
     }
-    const std::string& Element::tagName() const
+    lwc_string* Element::tagName()
     {
         return mTagName;
     }
-    const std::string& Element::id() const
+    lwc_string* Element::id()
     {
         return mId;
     }

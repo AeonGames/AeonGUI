@@ -165,10 +165,7 @@ namespace AeonGUI
     {
         Element *element {reinterpret_cast<Element*> ( node ) };
         ( void ) ( pw );
-        lwc_string *element_name{};
-        lwc_intern_string ( element->tagName().c_str(), element->tagName().length(), &element_name );
-        qname->name = lwc_string_ref ( element_name );
-        lwc_string_unref ( element_name );
+        qname->name = lwc_string_ref ( element->tagName() );
         return CSS_OK;
     }
 
@@ -190,7 +187,7 @@ namespace AeonGUI
         }
         Element *element {reinterpret_cast<Element*> ( node ) };
         ( void ) ( pw );
-        lwc_intern_string ( element->id().c_str(), element->id().length(), id );
+        *id = element->id() ? lwc_string_ref ( element->id() ) : nullptr;
         return CSS_OK;
     }
 
@@ -264,10 +261,7 @@ namespace AeonGUI
     {
         ( void ) ( pw );
         Element *element {reinterpret_cast<Element*> ( node ) };
-        lwc_string *element_name{};
-        lwc_intern_string ( element->tagName().c_str(), element->tagName().length(), &element_name );
-        lwc_string_caseless_isequal ( element_name, qname->name, match );
-        lwc_string_unref ( element_name );
+        lwc_string_caseless_isequal ( element->tagName(), qname->name, match );
         return CSS_OK;
     }
 
@@ -288,10 +282,7 @@ namespace AeonGUI
     {
         ( void ) ( pw );
         Element *element {reinterpret_cast<Element*> ( node ) };
-        lwc_string *element_id{};
-        lwc_intern_string ( element->id().c_str(), element->id().length(), &element_id );
-        lwc_string_caseless_isequal ( element_id, id, match );
-        lwc_string_unref ( id );
+        lwc_string_caseless_isequal ( element->id(), id, match );
         return CSS_OK;
     }
 
