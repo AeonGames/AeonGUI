@@ -1,4 +1,4 @@
-# Copyright (C) 2023 Rodrigo Jose Hernandez Cordoba
+# Copyright (C) 2023,2024 Rodrigo Jose Hernandez Cordoba
 #
 # Licensed under the Apache License, Version 2.0 (the "License"); you may not
 # use this file except in compliance with the License. You may obtain a copy of
@@ -16,11 +16,7 @@ include(functions)
 
 gitclone(REPO "git://git.netsurf-browser.org/libparserutils.git" PATH "${CMAKE_CURRENT_SOURCE_DIR}/libparserutils" TAG 447c86722d4043ca10921a1746c72fea05838c11)
 gitclone(REPO "git://git.netsurf-browser.org/libwapcaplet.git" PATH "${CMAKE_CURRENT_SOURCE_DIR}/libwapcaplet" TAG 857ac3ff3f26dfe5a662b072d4d808f847bbac78)
-gitclone(REPO "git://git.netsurf-browser.org/libcss.git" PATH "${CMAKE_CURRENT_SOURCE_DIR}/libcss" TAG 703f1247b2fabd5dc685ba80bc26ccfa263c79ae
-    PATCHES
-    "${CMAKE_CURRENT_SOURCE_DIR}/0000-libcss-fill-and-stroke.patch"
-    "${CMAKE_CURRENT_SOURCE_DIR}/0001-libcss-transform.patch"
-)
+gitclone(REPO "https://github.com/AeonGames/libcss.git" PATH "${CMAKE_CURRENT_SOURCE_DIR}/libcss" TAG a514b29a14bb051f129ec851c17dd7222d7126cf)
 
 find_package(Python COMPONENTS Interpreter)
 
@@ -120,6 +116,7 @@ set(LIBCSS_SOURCES
 	libcss/src/parse/properties/utils.c
 	libcss/src/parse/properties/voice_family.c
     libcss/src/select/arena.c
+    libcss/src/select/calc.c
     libcss/src/select/computed.c
     libcss/src/select/dispatch.c
     libcss/src/select/hash.c
