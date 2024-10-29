@@ -365,7 +365,7 @@ index 40005c1..fb94635 100644
   * 
   * 4  wwwwwwwtttttttrrrrrrrmmmmmmmeeee
   * width; top; right; min_width; text_align
-@@ -172,37 +175,37 @@ struct css_computed_style_i {
+@@ -172,36 +175,36 @@ struct css_computed_style_i {
   * 7  llllllleeeeeeehhhhhhhfffffffcccc
   * letter_spacing; left; height; flex_basis; column_rule_style
   * 
@@ -425,7 +425,6 @@ index 40005c1..fb94635 100644
 + * color; background_image
   */
  	uint32_t bits[15];
- 	
 @@ -231,6 +234,7 @@ struct css_computed_style_i {
  	css_color column_rule_color;
  	css_fixed column_rule_width;
@@ -872,7 +871,7 @@ index d1f7ffb..2ea325d 100644
 +	uint32_t bits = style->i.bits[FILL_INDEX];
 +	bits &= FILL_MASK;
 +	bits >>= FILL_SHIFT;
-+	
++
 +	/* 3bits: ttt : type */
 +	return (bits & 0x7);
 +}
@@ -882,10 +881,10 @@ index d1f7ffb..2ea325d 100644
 +	uint32_t bits = style->i.bits[FILL_INDEX];
 +	bits &= FILL_MASK;
 +	bits >>= FILL_SHIFT;
-+	
++
 +	/* 3bits: ttt : type */
 +	*color = style->i.fill;
-+	
++
 +	return (bits & 0x7);
 +}
 +#undef FILL_INDEX
@@ -1239,7 +1238,7 @@ index d1f7ffb..2ea325d 100644
 +	uint32_t bits = style->i.bits[STROKE_INDEX];
 +	bits &= STROKE_MASK;
 +	bits >>= STROKE_SHIFT;
-+	
++
 +	/* 3bits: ttt : type */
 +	return (bits & 0x7);
 +}
@@ -1249,10 +1248,10 @@ index d1f7ffb..2ea325d 100644
 +	uint32_t bits = style->i.bits[STROKE_INDEX];
 +	bits &= STROKE_MASK;
 +	bits >>= STROKE_SHIFT;
-+	
++
 +	/* 3bits: ttt : type */
 +	*color = style->i.stroke;
-+	
++
 +	return (bits & 0x7);
 +}
 +#undef STROKE_INDEX
@@ -1277,7 +1276,7 @@ index d1f7ffb..2ea325d 100644
 +	uint32_t bits = style->i.bits[STROKE_WIDTH_INDEX];
 +	bits &= STROKE_WIDTH_MASK;
 +	bits >>= STROKE_WIDTH_SHIFT;
-+	
++
 +	/* 6bits: uuuuut : unit | type */
 +	return (bits & 0x1);
 +}
@@ -1287,13 +1286,13 @@ index d1f7ffb..2ea325d 100644
 +	uint32_t bits = style->i.bits[STROKE_WIDTH_INDEX];
 +	bits &= STROKE_WIDTH_MASK;
 +	bits >>= STROKE_WIDTH_SHIFT;
-+	
++
 +	/* 6bits: uuuuut : unit | type */
 +	if ((bits & 0x1) == CSS_STROKE_WIDTH_SET) {
 +		*length = style->i.stroke_width;
 +		*unit = bits >> 1;
 +	}
-+	
++
 +	return (bits & 0x1);
 +}
 +#undef STROKE_WIDTH_INDEX
@@ -1808,12 +1807,12 @@ index 198bc1e..345292d 100644
 +		css_color color)
 +{
 +	uint32_t *bits = &style->i.bits[FILL_INDEX];
-+	
++
 +	/* 3bits: ttt : type */
 +	*bits = (*bits & ~FILL_MASK) | (((uint32_t)type & 0x7) << FILL_SHIFT);
-+	
++
 +	style->i.fill = color;
-+	
++
 +	return CSS_OK;
 +}
 +#undef FILL_INDEX
@@ -2167,13 +2166,13 @@ index 198bc1e..345292d 100644
 +		css_color color)
 +{
 +	uint32_t *bits = &style->i.bits[STROKE_INDEX];
-+	
++
 +	/* 3bits: ttt : type */
 +	*bits = (*bits & ~STROKE_MASK) | (((uint32_t)type & 0x7) <<
 +			STROKE_SHIFT);
-+	
++
 +	style->i.stroke = color;
-+	
++
 +	return CSS_OK;
 +}
 +#undef STROKE_INDEX
@@ -2198,13 +2197,13 @@ index 198bc1e..345292d 100644
 +		type, css_fixed length, css_unit unit)
 +{
 +	uint32_t *bits = &style->i.bits[STROKE_WIDTH_INDEX];
-+	
++
 +	/* 6bits: uuuuut : unit | type */
 +	*bits = (*bits & ~STROKE_WIDTH_MASK) | ((((uint32_t)type & 0x1) | (unit
 +			<< 1)) << STROKE_WIDTH_SHIFT);
-+	
++
 +	style->i.stroke_width = length;
-+	
++
 +	return CSS_OK;
 +}
 +#undef STROKE_WIDTH_INDEX
@@ -2370,7 +2369,7 @@ new file mode 100644
 index 0000000..76a64a0
 --- /dev/null
 +++ b/src/select/properties/fill.c
-@@ -0,0 +1,60 @@
+@@ -0,0 +1,59 @@
 +/*
 + * This file is part of LibCSS
 + * Licensed under the MIT License,
@@ -2430,7 +2429,6 @@ index 0000000..76a64a0
 +			type == CSS_PAINT_INHERIT ? parent : child,
 +			result);
 +}
-+
 diff --git a/src/select/properties/helpers.c b/src/select/properties/helpers.c
 index 10ff228..8ae44f5 100644
 --- a/src/select/properties/helpers.c
@@ -2517,7 +2515,7 @@ new file mode 100644
 index 0000000..c2624c3
 --- /dev/null
 +++ b/src/select/properties/stroke.c
-@@ -0,0 +1,60 @@
+@@ -0,0 +1,59 @@
 +/*
 + * This file is part of LibCSS
 + * Licensed under the MIT License,
@@ -2577,13 +2575,12 @@ index 0000000..c2624c3
 +			type == CSS_PAINT_INHERIT ? parent : child,
 +			result);
 +}
-+
 diff --git a/src/select/properties/stroke_width.c b/src/select/properties/stroke_width.c
 new file mode 100644
 index 0000000..ffba0ea
 --- /dev/null
 +++ b/src/select/properties/stroke_width.c
-@@ -0,0 +1,62 @@
+@@ -0,0 +1,61 @@
 +/*
 + * This file is part of LibCSS
 + * Licensed under the MIT License,
@@ -2645,7 +2642,6 @@ index 0000000..ffba0ea
 +			type == CSS_STROKE_WIDTH_INHERIT ? parent : child,
 +			result);
 +}
-+
 diff --git a/src/select/select_config.py b/src/select/select_config.py
 index 1cfe05c..e741dc3 100644
 --- a/src/select/select_config.py

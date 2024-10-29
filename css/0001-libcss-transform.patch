@@ -285,13 +285,13 @@ index e6ab872..fca5c66 100644
 +	/* FUNCTION(matrix) [ NUMBER ',' ] {6} ')' */
 +	token = parserutils_vector_iterate(vector, ctx);
 +
-+	if (token->type == CSS_TOKEN_FUNCTION) 
++	if (token->type == CSS_TOKEN_FUNCTION)
 +	{
 +		if ((lwc_string_caseless_isequal(
 +				token->idata, c->strings[MATRIX],
-+				&match) == lwc_error_ok && match)) 
++				&match) == lwc_error_ok && match))
 +			{
-+				for (size_t i = 0; i < 6; ++i) 
++				for (size_t i = 0; i < 6; ++i)
 +				{
 +					size_t consumed = 0;
 +					consumeWhitespace(vector, ctx);
@@ -860,7 +860,7 @@ index 2ea325d..0868cbd 100644
 +	uint32_t bits = style->i.bits[TRANSFORM_INDEX];
 +	bits &= TRANSFORM_MASK;
 +	bits >>= TRANSFORM_SHIFT;
-+	
++
 +	/* 2bits: tt : type */
 +	return (bits & 0x3);
 +}
@@ -870,10 +870,10 @@ index 2ea325d..0868cbd 100644
 +	uint32_t bits = style->i.bits[TRANSFORM_INDEX];
 +	bits &= TRANSFORM_MASK;
 +	bits >>= TRANSFORM_SHIFT;
-+	
++
 +	/* 2bits: tt : type */
 +	*matrix = style->i.transform;
-+	
++
 +	return (bits & 0x3);
 +}
 +#undef TRANSFORM_INDEX
@@ -1296,13 +1296,13 @@ index 345292d..3531960 100644
 +		const css_matrix* matrix)
 +{
 +	uint32_t *bits = &style->i.bits[TRANSFORM_INDEX];
-+	
++
 +	/* 2bits: tt : type */
 +	*bits = (*bits & ~TRANSFORM_MASK) | (((uint32_t)type & 0x3) <<
 +			TRANSFORM_SHIFT);
-+	
++
 +	style->i.transform = *matrix;
-+	
++
 +	return CSS_OK;
 +}
 +#undef TRANSFORM_INDEX
@@ -1356,13 +1356,13 @@ index 869d6ec..ab0f924 100644
 +		const css_matrix* matrix)
 +{
 +	uint32_t *bits = &style->i.bits[TRANSFORM_INDEX];
-+	
++
 +	/* 2bits: tt : type */
 +	*bits = (*bits & ~TRANSFORM_MASK) | (((uint32_t)type & 0x3) <<
 +			TRANSFORM_SHIFT);
-+	
++
 +	style->i.transform = *matrix;
-+	
++
 +	return CSS_OK;
 +}'''
 diff --git a/src/select/properties/Makefile b/src/select/properties/Makefile
@@ -1394,7 +1394,7 @@ new file mode 100644
 index 0000000..83c2fa0
 --- /dev/null
 +++ b/src/select/properties/transform.c
-@@ -0,0 +1,82 @@
+@@ -0,0 +1,81 @@
 +/*
 + * This file is part of LibCSS
 + * Licensed under the MIT License,
@@ -1476,7 +1476,6 @@ index 0000000..83c2fa0
 +			type == CSS_TRANSFORM_INHERIT ? parent : child,
 +			result);
 +}
-+
 diff --git a/src/select/select_config.py b/src/select/select_config.py
 index e741dc3..75e3c4d 100644
 --- a/src/select/select_config.py
@@ -1495,7 +1494,7 @@ index e741dc3..75e3c4d 100644
      ('border_left_color', 2, 'color'),
      ('fill', 3, 'color'),
      ('stroke', 3, 'color'),
-+    ('transform', 2, 'matrix'),    
++    ('transform', 2, 'matrix'),
      ('stroke_width', 1, 'length', 'CSS_STROKE_WIDTH_SET'),
      ('border_top_width', 3, 'length', 'CSS_BORDER_WIDTH_WIDTH'),
      ('border_right_width', 3, 'length', 'CSS_BORDER_WIDTH_WIDTH'),
