@@ -1,7 +1,7 @@
 AeonGUI
 =======
 
-[![MinGW64 Build status](https://ci.appveyor.com/api/projects/status/g1hx08cchdmkbw3m?svg=true)](https://ci.appveyor.com/project/Kwizatz/aeongui) [![MinGW32 Build status](https://ci.appveyor.com/api/projects/status/yogupd65ow1dr8pq?svg=true)](https://ci.appveyor.com/project/Kwizatz/aeongui-altq2)
+[![Build status](https://github.com/AeonGames/AeonGUI/actions/workflows/build.yml/badge.svg)](https://github.com/AeonGames/AeonGUI/actions/workflows/build.yml)
 
 Last Updated: 11-23-2020
 
