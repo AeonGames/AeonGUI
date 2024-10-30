@@ -1,0 +1,21 @@
+name: Build on Windows
+
+on: [push, pull_request]
+
+jobs:
+  build:
+    runs-on: windows-latest
+
+    strategy:
+      matrix:
+        compiler: [msvc]
+
+    steps:
+    - uses: actions/checkout@v2
+
+    - name: Configure CMake (Windows Visual Studio)
+      run: cmake -DCMAKE_TOOLCHAIN_FILE="C:/vcpkg/scripts/buildsystems/vcpkg.cmake" -B ${{github.workspace}}/build
+      if: matrix.compiler == 'msvc'
+
+    - name: Build
+      run: cmake --build ${{github.workspace}}/build

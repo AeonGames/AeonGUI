@@ -1,7 +1,7 @@
 AeonGUI
 =======
 
-[![Build status](https://github.com/AeonGames/AeonGUI/actions/workflows/build.yml/badge.svg)](https://github.com/AeonGames/AeonGUI/actions/workflows/build.yml)
+[![Windows Build status](https://github.com/AeonGames/AeonGUI/actions/workflows/build-windows.yml/badge.svg)](https://github.com/AeonGames/AeonGUI/actions/workflows/build-windows.yml) [![Ubuntu Build status](https://github.com/AeonGames/AeonGUI/actions/workflows/build-ubuntu.yml/badge.svg)](https://github.com/AeonGames/AeonGUI/actions/workflows/build-ubuntu.yml)
 
 Last Updated: 11-23-2020
 
