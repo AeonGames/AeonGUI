@@ -35,7 +35,7 @@ namespace AeonGUI
             lwc_intern_string ( id.c_str(), id.size(), &mId );
         }
 
-        std::string class_attribute {mAttributeMap.find ( "class" ) != aAttributes.end() ? aAttributes.at ( "class" ) : std::string{}};
+        std::string class_attribute {mAttributeMap.find ( "class" ) != mAttributeMap.end() ? mAttributeMap.at ( "class" ) : std::string{}};
         if ( !class_attribute.empty() )
         {
             std::regex class_regex {R"(\s+)"};
