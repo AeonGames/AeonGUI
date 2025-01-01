@@ -46,3 +46,4 @@ include/GL
 build
 gcc64
 vcpkg_installed
+node_modules
