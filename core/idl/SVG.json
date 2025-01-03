@@ -72,7 +72,7 @@
   },
   "idlNames": {
     "SVGElement": {
-      "fragment": "[Exposed=Window]\r\ninterface SVGElement : Element {\r\n\r\n  [SameObject] readonly attribute SVGAnimatedString className;\r\n\r\n  readonly attribute SVGSVGElement? ownerSVGElement;\r\n  readonly attribute SVGElement? viewportElement;\r\n};",
+      "fragment": "// GENERATED CONTENT - DO NOT EDIT\n// Content was automatically extracted by Reffy into webref\n// (https://github.com/w3c/webref)\n// Source: Scalable Vector Graphics (SVG) 2 (https://svgwg.org/svg2-draft/)\n\n[Exposed=Window]\ninterface SVGElement : Element {\n\n  [SameObject] readonly attribute SVGAnimatedString className;\n\n  readonly attribute SVGSVGElement? ownerSVGElement;\n  readonly attribute SVGElement? viewportElement;\n};",
       "type": "interface",
       "name": "SVGElement",
       "inheritance": "Element",
@@ -144,7 +144,7 @@
       "partial": false
     },
     "SVGBoundingBoxOptions": {
-      "fragment": "dictionary SVGBoundingBoxOptions {\r\n  boolean fill = true;\r\n  boolean stroke = false;\r\n  boolean markers = false;\r\n  boolean clipped = false;\r\n};",
+      "fragment": "dictionary SVGBoundingBoxOptions {\n  boolean fill = true;\n  boolean stroke = false;\n  boolean markers = false;\n  boolean clipped = false;\n};",
       "type": "dictionary",
       "name": "SVGBoundingBoxOptions",
       "inheritance": null,
@@ -226,7 +226,7 @@
       "partial": false
     },
     "SVGGraphicsElement": {
-      "fragment": "[Exposed=Window]\r\ninterface SVGGraphicsElement : SVGElement {\r\n  [SameObject] readonly attribute SVGAnimatedTransformList transform;\r\n\r\n  DOMRect getBBox(optional SVGBoundingBoxOptions options = {});\r\n  DOMMatrix? getCTM();\r\n  DOMMatrix? getScreenCTM();\r\n};",
+      "fragment": "[Exposed=Window]\ninterface SVGGraphicsElement : SVGElement {\n  [SameObject] readonly attribute SVGAnimatedTransformList transform;\n\n  DOMRect getBBox(optional SVGBoundingBoxOptions options = {});\n  DOMMatrix? getCTM();\n  DOMMatrix? getScreenCTM();\n};",
       "type": "interface",
       "name": "SVGGraphicsElement",
       "inheritance": "SVGElement",
@@ -332,7 +332,7 @@
       "partial": false
     },
     "SVGGeometryElement": {
-      "fragment": "[Exposed=Window]\r\ninterface SVGGeometryElement : SVGGraphicsElement {\r\n  [SameObject] readonly attribute SVGAnimatedNumber pathLength;\r\n\r\n  boolean isPointInFill(optional DOMPointInit point = {});\r\n  boolean isPointInStroke(optional DOMPointInit point = {});\r\n  float getTotalLength();\r\n  DOMPoint getPointAtLength(float distance);\r\n};",
+      "fragment": "[Exposed=Window]\ninterface SVGGeometryElement : SVGGraphicsElement {\n  [SameObject] readonly attribute SVGAnimatedNumber pathLength;\n\n  boolean isPointInFill(optional DOMPointInit point = {});\n  boolean isPointInStroke(optional DOMPointInit point = {});\n  float getTotalLength();\n  DOMPoint getPointAtLength(float distance);\n};",
       "type": "interface",
       "name": "SVGGeometryElement",
       "inheritance": "SVGGraphicsElement",
@@ -489,7 +489,7 @@
       "partial": false
     },
     "SVGNumber": {
-      "fragment": "[Exposed=Window]\r\ninterface SVGNumber {\r\n  attribute float value;\r\n};",
+      "fragment": "[Exposed=Window]\ninterface SVGNumber {\n  attribute float value;\n};",
       "type": "interface",
       "name": "SVGNumber",
       "inheritance": null,
@@ -524,7 +524,7 @@
       "partial": false
     },
     "SVGLength": {
-      "fragment": "[Exposed=Window]\r\ninterface SVGLength {\r\n\r\n  // Length Unit Types\r\n  const unsigned short SVG_LENGTHTYPE_UNKNOWN = 0;\r\n  const unsigned short SVG_LENGTHTYPE_NUMBER = 1;\r\n  const unsigned short SVG_LENGTHTYPE_PERCENTAGE = 2;\r\n  const unsigned short SVG_LENGTHTYPE_EMS = 3;\r\n  const unsigned short SVG_LENGTHTYPE_EXS = 4;\r\n  const unsigned short SVG_LENGTHTYPE_PX = 5;\r\n  const unsigned short SVG_LENGTHTYPE_CM = 6;\r\n  const unsigned short SVG_LENGTHTYPE_MM = 7;\r\n  const unsigned short SVG_LENGTHTYPE_IN = 8;\r\n  const unsigned short SVG_LENGTHTYPE_PT = 9;\r\n  const unsigned short SVG_LENGTHTYPE_PC = 10;\r\n\r\n  readonly attribute unsigned short unitType;\r\n           attribute float value;\r\n           attribute float valueInSpecifiedUnits;\r\n           attribute DOMString valueAsString;\r\n\r\n  undefined newValueSpecifiedUnits(unsigned short unitType, float valueInSpecifiedUnits);\r\n  undefined convertToSpecifiedUnits(unsigned short unitType);\r\n};",
+      "fragment": "[Exposed=Window]\ninterface SVGLength {\n\n  // Length Unit Types\n  const unsigned short SVG_LENGTHTYPE_UNKNOWN = 0;\n  const unsigned short SVG_LENGTHTYPE_NUMBER = 1;\n  const unsigned short SVG_LENGTHTYPE_PERCENTAGE = 2;\n  const unsigned short SVG_LENGTHTYPE_EMS = 3;\n  const unsigned short SVG_LENGTHTYPE_EXS = 4;\n  const unsigned short SVG_LENGTHTYPE_PX = 5;\n  const unsigned short SVG_LENGTHTYPE_CM = 6;\n  const unsigned short SVG_LENGTHTYPE_MM = 7;\n  const unsigned short SVG_LENGTHTYPE_IN = 8;\n  const unsigned short SVG_LENGTHTYPE_PT = 9;\n  const unsigned short SVG_LENGTHTYPE_PC = 10;\n\n  readonly attribute unsigned short unitType;\n           attribute float value;\n           attribute float valueInSpecifiedUnits;\n           attribute DOMString valueAsString;\n\n  undefined newValueSpecifiedUnits(unsigned short unitType, float valueInSpecifiedUnits);\n  undefined convertToSpecifiedUnits(unsigned short unitType);\n};",
       "type": "interface",
       "name": "SVGLength",
       "inheritance": null,
@@ -871,7 +871,7 @@
       "partial": false
     },
     "SVGAngle": {
-      "fragment": "[Exposed=Window]\r\ninterface SVGAngle {\r\n\r\n  // Angle Unit Types\r\n  const unsigned short SVG_ANGLETYPE_UNKNOWN = 0;\r\n  const unsigned short SVG_ANGLETYPE_UNSPECIFIED = 1;\r\n  const unsigned short SVG_ANGLETYPE_DEG = 2;\r\n  const unsigned short SVG_ANGLETYPE_RAD = 3;\r\n  const unsigned short SVG_ANGLETYPE_GRAD = 4;\r\n\r\n  readonly attribute unsigned short unitType;\r\n           attribute float value;\r\n           attribute float valueInSpecifiedUnits;\r\n           attribute DOMString valueAsString;\r\n\r\n  undefined newValueSpecifiedUnits(unsigned short unitType, float valueInSpecifiedUnits);\r\n  undefined convertToSpecifiedUnits(unsigned short unitType);\r\n};",
+      "fragment": "[Exposed=Window]\ninterface SVGAngle {\n\n  // Angle Unit Types\n  const unsigned short SVG_ANGLETYPE_UNKNOWN = 0;\n  const unsigned short SVG_ANGLETYPE_UNSPECIFIED = 1;\n  const unsigned short SVG_ANGLETYPE_DEG = 2;\n  const unsigned short SVG_ANGLETYPE_RAD = 3;\n  const unsigned short SVG_ANGLETYPE_GRAD = 4;\n\n  readonly attribute unsigned short unitType;\n           attribute float value;\n           attribute float valueInSpecifiedUnits;\n           attribute DOMString valueAsString;\n\n  undefined newValueSpecifiedUnits(unsigned short unitType, float valueInSpecifiedUnits);\n  undefined convertToSpecifiedUnits(unsigned short unitType);\n};",
       "type": "interface",
       "name": "SVGAngle",
       "inheritance": null,
@@ -1116,7 +1116,7 @@
       "partial": false
     },
     "SVGNumberList": {
-      "fragment": "[Exposed=Window]\r\ninterface SVGNumberList {\r\n\r\n  readonly attribute unsigned long length;\r\n  readonly attribute unsigned long numberOfItems;\r\n\r\n  undefined clear();\r\n  SVGNumber initialize(SVGNumber newItem);\r\n  getter SVGNumber getItem(unsigned long index);\r\n  SVGNumber insertItemBefore(SVGNumber newItem, unsigned long index);\r\n  SVGNumber replaceItem(SVGNumber newItem, unsigned long index);\r\n  SVGNumber removeItem(unsigned long index);\r\n  SVGNumber appendItem(SVGNumber newItem);\r\n  setter undefined (unsigned long index, SVGNumber newItem);\r\n};",
+      "fragment": "[Exposed=Window]\ninterface SVGNumberList {\n\n  readonly attribute unsigned long length;\n  readonly attribute unsigned long numberOfItems;\n\n  undefined clear();\n  SVGNumber initialize(SVGNumber newItem);\n  getter SVGNumber getItem(unsigned long index);\n  SVGNumber insertItemBefore(SVGNumber newItem, unsigned long index);\n  SVGNumber replaceItem(SVGNumber newItem, unsigned long index);\n  SVGNumber removeItem(unsigned long index);\n  SVGNumber appendItem(SVGNumber newItem);\n  setter undefined (unsigned long index, SVGNumber newItem);\n};",
       "type": "interface",
       "name": "SVGNumberList",
       "inheritance": null,
@@ -1453,7 +1453,7 @@
       "partial": false
     },
     "SVGLengthList": {
-      "fragment": "[Exposed=Window]\r\ninterface SVGLengthList {\r\n\r\n  readonly attribute unsigned long length;\r\n  readonly attribute unsigned long numberOfItems;\r\n\r\n  undefined clear();\r\n  SVGLength initialize(SVGLength newItem);\r\n  getter SVGLength getItem(unsigned long index);\r\n  SVGLength insertItemBefore(SVGLength newItem, unsigned long index);\r\n  SVGLength replaceItem(SVGLength newItem, unsigned long index);\r\n  SVGLength removeItem(unsigned long index);\r\n  SVGLength appendItem(SVGLength newItem);\r\n  setter undefined (unsigned long index, SVGLength newItem);\r\n};",
+      "fragment": "[Exposed=Window]\ninterface SVGLengthList {\n\n  readonly attribute unsigned long length;\n  readonly attribute unsigned long numberOfItems;\n\n  undefined clear();\n  SVGLength initialize(SVGLength newItem);\n  getter SVGLength getItem(unsigned long index);\n  SVGLength insertItemBefore(SVGLength newItem, unsigned long index);\n  SVGLength replaceItem(SVGLength newItem, unsigned long index);\n  SVGLength removeItem(unsigned long index);\n  SVGLength appendItem(SVGLength newItem);\n  setter undefined (unsigned long index, SVGLength newItem);\n};",
       "type": "interface",
       "name": "SVGLengthList",
       "inheritance": null,
@@ -1790,7 +1790,7 @@
       "partial": false
     },
     "SVGStringList": {
-      "fragment": "[Exposed=Window]\r\ninterface SVGStringList {\r\n\r\n  readonly attribute unsigned long length;\r\n  readonly attribute unsigned long numberOfItems;\r\n\r\n  undefined clear();\r\n  DOMString initialize(DOMString newItem);\r\n  getter DOMString getItem(unsigned long index);\r\n  DOMString insertItemBefore(DOMString newItem, unsigned long index);\r\n  DOMString replaceItem(DOMString newItem, unsigned long index);\r\n  DOMString removeItem(unsigned long index);\r\n  DOMString appendItem(DOMString newItem);\r\n  setter undefined (unsigned long index, DOMString newItem);\r\n};",
+      "fragment": "[Exposed=Window]\ninterface SVGStringList {\n\n  readonly attribute unsigned long length;\n  readonly attribute unsigned long numberOfItems;\n\n  undefined clear();\n  DOMString initialize(DOMString newItem);\n  getter DOMString getItem(unsigned long index);\n  DOMString insertItemBefore(DOMString newItem, unsigned long index);\n  DOMString replaceItem(DOMString newItem, unsigned long index);\n  DOMString removeItem(unsigned long index);\n  DOMString appendItem(DOMString newItem);\n  setter undefined (unsigned long index, DOMString newItem);\n};",
       "type": "interface",
       "name": "SVGStringList",
       "inheritance": null,
@@ -2127,7 +2127,7 @@
       "partial": false
     },
     "SVGAnimatedBoolean": {
-      "fragment": "[Exposed=Window]\r\ninterface SVGAnimatedBoolean {\r\n           attribute boolean baseVal;\r\n  readonly attribute boolean animVal;\r\n};",
+      "fragment": "[Exposed=Window]\ninterface SVGAnimatedBoolean {\n           attribute boolean baseVal;\n  readonly attribute boolean animVal;\n};",
       "type": "interface",
       "name": "SVGAnimatedBoolean",
       "inheritance": null,
@@ -2177,7 +2177,7 @@
       "partial": false
     },
     "SVGAnimatedEnumeration": {
-      "fragment": "[Exposed=Window]\r\ninterface SVGAnimatedEnumeration {\r\n           attribute unsigned short baseVal;\r\n  readonly attribute unsigned short animVal;\r\n};",
+      "fragment": "[Exposed=Window]\ninterface SVGAnimatedEnumeration {\n           attribute unsigned short baseVal;\n  readonly attribute unsigned short animVal;\n};",
       "type": "interface",
       "name": "SVGAnimatedEnumeration",
       "inheritance": null,
@@ -2227,7 +2227,7 @@
       "partial": false
     },
     "SVGAnimatedInteger": {
-      "fragment": "[Exposed=Window]\r\ninterface SVGAnimatedInteger {\r\n           attribute long baseVal;\r\n  readonly attribute long animVal;\r\n};",
+      "fragment": "[Exposed=Window]\ninterface SVGAnimatedInteger {\n           attribute long baseVal;\n  readonly attribute long animVal;\n};",
       "type": "interface",
       "name": "SVGAnimatedInteger",
       "inheritance": null,
@@ -2277,7 +2277,7 @@
       "partial": false
     },
     "SVGAnimatedNumber": {
-      "fragment": "[Exposed=Window]\r\ninterface SVGAnimatedNumber {\r\n           attribute float baseVal;\r\n  readonly attribute float animVal;\r\n};",
+      "fragment": "[Exposed=Window]\ninterface SVGAnimatedNumber {\n           attribute float baseVal;\n  readonly attribute float animVal;\n};",
       "type": "interface",
       "name": "SVGAnimatedNumber",
       "inheritance": null,
@@ -2327,7 +2327,7 @@
       "partial": false
     },
     "SVGAnimatedLength": {
-      "fragment": "[Exposed=Window]\r\ninterface SVGAnimatedLength {\r\n  [SameObject] readonly attribute SVGLength baseVal;\r\n  [SameObject] readonly attribute SVGLength animVal;\r\n};",
+      "fragment": "[Exposed=Window]\ninterface SVGAnimatedLength {\n  [SameObject] readonly attribute SVGLength baseVal;\n  [SameObject] readonly attribute SVGLength animVal;\n};",
       "type": "interface",
       "name": "SVGAnimatedLength",
       "inheritance": null,
@@ -2391,7 +2391,7 @@
       "partial": false
     },
     "SVGAnimatedAngle": {
-      "fragment": "[Exposed=Window]\r\ninterface SVGAnimatedAngle {\r\n  [SameObject] readonly attribute SVGAngle baseVal;\r\n  [SameObject] readonly attribute SVGAngle animVal;\r\n};",
+      "fragment": "[Exposed=Window]\ninterface SVGAnimatedAngle {\n  [SameObject] readonly attribute SVGAngle baseVal;\n  [SameObject] readonly attribute SVGAngle animVal;\n};",
       "type": "interface",
       "name": "SVGAnimatedAngle",
       "inheritance": null,
@@ -2455,7 +2455,7 @@
       "partial": false
     },
     "SVGAnimatedString": {
-      "fragment": "[Exposed=Window]\r\ninterface SVGAnimatedString {\r\n           attribute DOMString baseVal;\r\n  readonly attribute DOMString animVal;\r\n};",
+      "fragment": "[Exposed=Window]\ninterface SVGAnimatedString {\n           attribute DOMString baseVal;\n  readonly attribute DOMString animVal;\n};",
       "type": "interface",
       "name": "SVGAnimatedString",
       "inheritance": null,
@@ -2505,7 +2505,7 @@
       "partial": false
     },
     "SVGAnimatedRect": {
-      "fragment": "[Exposed=Window]\r\ninterface SVGAnimatedRect {\r\n  [SameObject] readonly attribute DOMRect baseVal;\r\n  [SameObject] readonly attribute DOMRectReadOnly animVal;\r\n};",
+      "fragment": "[Exposed=Window]\ninterface SVGAnimatedRect {\n  [SameObject] readonly attribute DOMRect baseVal;\n  [SameObject] readonly attribute DOMRectReadOnly animVal;\n};",
       "type": "interface",
       "name": "SVGAnimatedRect",
       "inheritance": null,
@@ -2569,7 +2569,7 @@
       "partial": false
     },
     "SVGAnimatedNumberList": {
-      "fragment": "[Exposed=Window]\r\ninterface SVGAnimatedNumberList {\r\n  [SameObject] readonly attribute SVGNumberList baseVal;\r\n  [SameObject] readonly attribute SVGNumberList animVal;\r\n};",
+      "fragment": "[Exposed=Window]\ninterface SVGAnimatedNumberList {\n  [SameObject] readonly attribute SVGNumberList baseVal;\n  [SameObject] readonly attribute SVGNumberList animVal;\n};",
       "type": "interface",
       "name": "SVGAnimatedNumberList",
       "inheritance": null,
@@ -2633,7 +2633,7 @@
       "partial": false
     },
     "SVGAnimatedLengthList": {
-      "fragment": "[Exposed=Window]\r\ninterface SVGAnimatedLengthList {\r\n  [SameObject] readonly attribute SVGLengthList baseVal;\r\n  [SameObject] readonly attribute SVGLengthList animVal;\r\n};",
+      "fragment": "[Exposed=Window]\ninterface SVGAnimatedLengthList {\n  [SameObject] readonly attribute SVGLengthList baseVal;\n  [SameObject] readonly attribute SVGLengthList animVal;\n};",
       "type": "interface",
       "name": "SVGAnimatedLengthList",
       "inheritance": null,
@@ -2697,7 +2697,7 @@
       "partial": false
     },
     "SVGUnitTypes": {
-      "fragment": "[Exposed=Window]\r\ninterface SVGUnitTypes {\r\n  // Unit Types\r\n  const unsigned short SVG_UNIT_TYPE_UNKNOWN = 0;\r\n  const unsigned short SVG_UNIT_TYPE_USERSPACEONUSE = 1;\r\n  const unsigned short SVG_UNIT_TYPE_OBJECTBOUNDINGBOX = 2;\r\n};",
+      "fragment": "[Exposed=Window]\ninterface SVGUnitTypes {\n  // Unit Types\n  const unsigned short SVG_UNIT_TYPE_UNKNOWN = 0;\n  const unsigned short SVG_UNIT_TYPE_USERSPACEONUSE = 1;\n  const unsigned short SVG_UNIT_TYPE_OBJECTBOUNDINGBOX = 2;\n};",
       "type": "interface",
       "name": "SVGUnitTypes",
       "inheritance": null,
@@ -2768,7 +2768,7 @@
       "partial": false
     },
     "SVGTests": {
-      "fragment": "interface mixin SVGTests {\r\n  [SameObject] readonly attribute SVGStringList requiredExtensions;\r\n  [SameObject] readonly attribute SVGStringList systemLanguage;\r\n};",
+      "fragment": "interface mixin SVGTests {\n  [SameObject] readonly attribute SVGStringList requiredExtensions;\n  [SameObject] readonly attribute SVGStringList systemLanguage;\n};",
       "type": "interface mixin",
       "name": "SVGTests",
       "inheritance": null,
@@ -2822,7 +2822,7 @@
       "partial": false
     },
     "SVGFitToViewBox": {
-      "fragment": "interface mixin SVGFitToViewBox {\r\n  [SameObject] readonly attribute SVGAnimatedRect viewBox;\r\n  [SameObject] readonly attribute SVGAnimatedPreserveAspectRatio preserveAspectRatio;\r\n};",
+      "fragment": "interface mixin SVGFitToViewBox {\n  [SameObject] readonly attribute SVGAnimatedRect viewBox;\n  [SameObject] readonly attribute SVGAnimatedPreserveAspectRatio preserveAspectRatio;\n};",
       "type": "interface mixin",
       "name": "SVGFitToViewBox",
       "inheritance": null,
@@ -2876,7 +2876,7 @@
       "partial": false
     },
     "SVGURIReference": {
-      "fragment": "interface mixin SVGURIReference {\r\n  [SameObject] readonly attribute SVGAnimatedString href;\r\n};",
+      "fragment": "interface mixin SVGURIReference {\n  [SameObject] readonly attribute SVGAnimatedString href;\n};",
       "type": "interface mixin",
       "name": "SVGURIReference",
       "inheritance": null,
@@ -2908,7 +2908,7 @@
       "partial": false
     },
     "SVGSVGElement": {
-      "fragment": "[Exposed=Window]\r\ninterface SVGSVGElement : SVGGraphicsElement {\r\n\r\n  [SameObject] readonly attribute SVGAnimatedLength x;\r\n  [SameObject] readonly attribute SVGAnimatedLength y;\r\n  [SameObject] readonly attribute SVGAnimatedLength width;\r\n  [SameObject] readonly attribute SVGAnimatedLength height;\r\n\r\n  attribute float currentScale;\r\n  [SameObject] readonly attribute DOMPointReadOnly currentTranslate;\r\n\r\n  NodeList getIntersectionList(DOMRectReadOnly rect, SVGElement? referenceElement);\r\n  NodeList getEnclosureList(DOMRectReadOnly rect, SVGElement? referenceElement);\r\n  boolean checkIntersection(SVGElement element, DOMRectReadOnly rect);\r\n  boolean checkEnclosure(SVGElement element, DOMRectReadOnly rect);\r\n\r\n  undefined deselectAll();\r\n\r\n  SVGNumber createSVGNumber();\r\n  SVGLength createSVGLength();\r\n  SVGAngle createSVGAngle();\r\n  DOMPoint createSVGPoint();\r\n  DOMMatrix createSVGMatrix();\r\n  DOMRect createSVGRect();\r\n  SVGTransform createSVGTransform();\r\n  SVGTransform createSVGTransformFromMatrix(optional DOMMatrix2DInit matrix = {});\r\n\r\n  Element getElementById(DOMString elementId);\r\n\r\n  // Deprecated methods that have no effect when called,\r\n  // but which are kept for compatibility reasons.\r\n  unsigned long suspendRedraw(unsigned long maxWaitMilliseconds);\r\n  undefined unsuspendRedraw(unsigned long suspendHandleID);\r\n  undefined unsuspendRedrawAll();\r\n  undefined forceRedraw();\r\n};",
+      "fragment": "[Exposed=Window]\ninterface SVGSVGElement : SVGGraphicsElement {\n\n  [SameObject] readonly attribute SVGAnimatedLength x;\n  [SameObject] readonly attribute SVGAnimatedLength y;\n  [SameObject] readonly attribute SVGAnimatedLength width;\n  [SameObject] readonly attribute SVGAnimatedLength height;\n\n  attribute float currentScale;\n  [SameObject] readonly attribute DOMPointReadOnly currentTranslate;\n\n  NodeList getIntersectionList(DOMRectReadOnly rect, SVGElement? referenceElement);\n  NodeList getEnclosureList(DOMRectReadOnly rect, SVGElement? referenceElement);\n  boolean checkIntersection(SVGElement element, DOMRectReadOnly rect);\n  boolean checkEnclosure(SVGElement element, DOMRectReadOnly rect);\n\n  undefined deselectAll();\n\n  SVGNumber createSVGNumber();\n  SVGLength createSVGLength();\n  SVGAngle createSVGAngle();\n  DOMPoint createSVGPoint();\n  DOMMatrix createSVGMatrix();\n  DOMRect createSVGRect();\n  SVGTransform createSVGTransform();\n  SVGTransform createSVGTransformFromMatrix(optional DOMMatrix2DInit matrix = {});\n\n  Element getElementById(DOMString elementId);\n\n  // Deprecated methods that have no effect when called,\n  // but which are kept for compatibility reasons.\n  unsigned long suspendRedraw(unsigned long maxWaitMilliseconds);\n  undefined unsuspendRedraw(unsigned long suspendHandleID);\n  undefined unsuspendRedrawAll();\n  undefined forceRedraw();\n};",
       "type": "interface",
       "name": "SVGSVGElement",
       "inheritance": "SVGGraphicsElement",
@@ -3525,7 +3525,7 @@
       "partial": false
     },
     "SVGGElement": {
-      "fragment": "[Exposed=Window]\r\ninterface SVGGElement : SVGGraphicsElement {\r\n};",
+      "fragment": "[Exposed=Window]\ninterface SVGGElement : SVGGraphicsElement {\n};",
       "type": "interface",
       "name": "SVGGElement",
       "inheritance": "SVGGraphicsElement",
@@ -3544,7 +3544,7 @@
       "partial": false
     },
     "SVGDefsElement": {
-      "fragment": "[Exposed=Window]\r\ninterface SVGDefsElement : SVGGraphicsElement {\r\n};",
+      "fragment": "[Exposed=Window]\ninterface SVGDefsElement : SVGGraphicsElement {\n};",
       "type": "interface",
       "name": "SVGDefsElement",
       "inheritance": "SVGGraphicsElement",
@@ -3563,7 +3563,7 @@
       "partial": false
     },
     "SVGDescElement": {
-      "fragment": "[Exposed=Window]\r\ninterface SVGDescElement : SVGElement {\r\n};",
+      "fragment": "[Exposed=Window]\ninterface SVGDescElement : SVGElement {\n};",
       "type": "interface",
       "name": "SVGDescElement",
       "inheritance": "SVGElement",
@@ -3582,7 +3582,7 @@
       "partial": false
     },
     "SVGMetadataElement": {
-      "fragment": "[Exposed=Window]\r\ninterface SVGMetadataElement : SVGElement {\r\n};",
+      "fragment": "[Exposed=Window]\ninterface SVGMetadataElement : SVGElement {\n};",
       "type": "interface",
       "name": "SVGMetadataElement",
       "inheritance": "SVGElement",
@@ -3601,7 +3601,7 @@
       "partial": false
     },
     "SVGTitleElement": {
-      "fragment": "[Exposed=Window]\r\ninterface SVGTitleElement : SVGElement {\r\n};",
+      "fragment": "[Exposed=Window]\ninterface SVGTitleElement : SVGElement {\n};",
       "type": "interface",
       "name": "SVGTitleElement",
       "inheritance": "SVGElement",
@@ -3620,7 +3620,7 @@
       "partial": false
     },
     "SVGSymbolElement": {
-      "fragment": "[Exposed=Window]\r\ninterface SVGSymbolElement : SVGGraphicsElement {\r\n};",
+      "fragment": "[Exposed=Window]\ninterface SVGSymbolElement : SVGGraphicsElement {\n};",
       "type": "interface",
       "name": "SVGSymbolElement",
       "inheritance": "SVGGraphicsElement",
@@ -3639,7 +3639,7 @@
       "partial": false
     },
     "SVGUseElement": {
-      "fragment": "[Exposed=Window]\r\ninterface SVGUseElement : SVGGraphicsElement {\r\n  [SameObject] readonly attribute SVGAnimatedLength x;\r\n  [SameObject] readonly attribute SVGAnimatedLength y;\r\n  [SameObject] readonly attribute SVGAnimatedLength width;\r\n  [SameObject] readonly attribute SVGAnimatedLength height;\r\n  [SameObject] readonly attribute SVGElement? instanceRoot;\r\n  [SameObject] readonly attribute SVGElement? animatedInstanceRoot;\r\n};",
+      "fragment": "[Exposed=Window]\ninterface SVGUseElement : SVGGraphicsElement {\n  [SameObject] readonly attribute SVGAnimatedLength x;\n  [SameObject] readonly attribute SVGAnimatedLength y;\n  [SameObject] readonly attribute SVGAnimatedLength width;\n  [SameObject] readonly attribute SVGAnimatedLength height;\n  [SameObject] readonly attribute SVGElement? instanceRoot;\n  [SameObject] readonly attribute SVGElement? animatedInstanceRoot;\n};",
       "type": "interface",
       "name": "SVGUseElement",
       "inheritance": "SVGGraphicsElement",
@@ -3791,7 +3791,7 @@
       "partial": false
     },
     "SVGUseElementShadowRoot": {
-      "fragment": "[Exposed=Window]\r\ninterface SVGUseElementShadowRoot : ShadowRoot {\r\n};",
+      "fragment": "[Exposed=Window]\ninterface SVGUseElementShadowRoot : ShadowRoot {\n};",
       "type": "interface",
       "name": "SVGUseElementShadowRoot",
       "inheritance": "ShadowRoot",
@@ -3810,7 +3810,7 @@
       "partial": false
     },
     "SVGElementInstance": {
-      "fragment": "interface mixin SVGElementInstance {\r\n  [SameObject] readonly attribute SVGElement? correspondingElement;\r\n  [SameObject] readonly attribute SVGUseElement? correspondingUseElement;\r\n};",
+      "fragment": "interface mixin SVGElementInstance {\n  [SameObject] readonly attribute SVGElement? correspondingElement;\n  [SameObject] readonly attribute SVGUseElement? correspondingUseElement;\n};",
       "type": "interface mixin",
       "name": "SVGElementInstance",
       "inheritance": null,
@@ -3864,7 +3864,7 @@
       "partial": false
     },
     "ShadowAnimation": {
-      "fragment": "[Exposed=Window]\r\ninterface ShadowAnimation : Animation {\r\n  constructor(Animation source, (Element or CSSPseudoElement) newTarget);\r\n  [SameObject] readonly attribute Animation sourceAnimation;\r\n};",
+      "fragment": "[Exposed=Window]\ninterface ShadowAnimation : Animation {\n  constructor(Animation source, (Element or CSSPseudoElement) newTarget);\n  [SameObject] readonly attribute Animation sourceAnimation;\n};",
       "type": "interface",
       "name": "ShadowAnimation",
       "inheritance": "Animation",
@@ -3961,7 +3961,7 @@
       "partial": false
     },
     "SVGSwitchElement": {
-      "fragment": "[Exposed=Window]\r\ninterface SVGSwitchElement : SVGGraphicsElement {\r\n};",
+      "fragment": "[Exposed=Window]\ninterface SVGSwitchElement : SVGGraphicsElement {\n};",
       "type": "interface",
       "name": "SVGSwitchElement",
       "inheritance": "SVGGraphicsElement",
@@ -3980,7 +3980,7 @@
       "partial": false
     },
     "GetSVGDocument": {
-      "fragment": "interface mixin GetSVGDocument {\r\n  Document getSVGDocument();\r\n};",
+      "fragment": "interface mixin GetSVGDocument {\n  Document getSVGDocument();\n};",
       "type": "interface mixin",
       "name": "GetSVGDocument",
       "inheritance": null,
@@ -4005,7 +4005,7 @@
       "partial": false
     },
     "SVGStyleElement": {
-      "fragment": "[Exposed=Window]\r\ninterface SVGStyleElement : SVGElement {\r\n  attribute DOMString type;\r\n  attribute DOMString media;\r\n  attribute DOMString title;\r\n};",
+      "fragment": "[Exposed=Window]\ninterface SVGStyleElement : SVGElement {\n  attribute DOMString type;\n  attribute DOMString media;\n  attribute DOMString title;\n};",
       "type": "interface",
       "name": "SVGStyleElement",
       "inheritance": "SVGElement",
@@ -4070,7 +4070,7 @@
       "partial": false
     },
     "SVGTransform": {
-      "fragment": "[Exposed=Window]\r\ninterface SVGTransform {\r\n\r\n  // Transform Types\r\n  const unsigned short SVG_TRANSFORM_UNKNOWN = 0;\r\n  const unsigned short SVG_TRANSFORM_MATRIX = 1;\r\n  const unsigned short SVG_TRANSFORM_TRANSLATE = 2;\r\n  const unsigned short SVG_TRANSFORM_SCALE = 3;\r\n  const unsigned short SVG_TRANSFORM_ROTATE = 4;\r\n  const unsigned short SVG_TRANSFORM_SKEWX = 5;\r\n  const unsigned short SVG_TRANSFORM_SKEWY = 6;\r\n\r\n  readonly attribute unsigned short type;\r\n  [SameObject] readonly attribute DOMMatrix matrix;\r\n  readonly attribute float angle;\r\n\r\n  undefined setMatrix(optional DOMMatrix2DInit matrix = {});\r\n  undefined setTranslate(float tx, float ty);\r\n  undefined setScale(float sx, float sy);\r\n  undefined setRotate(float angle, float cx, float cy);\r\n  undefined setSkewX(float angle);\r\n  undefined setSkewY(float angle);\r\n};",
+      "fragment": "[Exposed=Window]\ninterface SVGTransform {\n\n  // Transform Types\n  const unsigned short SVG_TRANSFORM_UNKNOWN = 0;\n  const unsigned short SVG_TRANSFORM_MATRIX = 1;\n  const unsigned short SVG_TRANSFORM_TRANSLATE = 2;\n  const unsigned short SVG_TRANSFORM_SCALE = 3;\n  const unsigned short SVG_TRANSFORM_ROTATE = 4;\n  const unsigned short SVG_TRANSFORM_SKEWX = 5;\n  const unsigned short SVG_TRANSFORM_SKEWY = 6;\n\n  readonly attribute unsigned short type;\n  [SameObject] readonly attribute DOMMatrix matrix;\n  readonly attribute float angle;\n\n  undefined setMatrix(optional DOMMatrix2DInit matrix = {});\n  undefined setTranslate(float tx, float ty);\n  undefined setScale(float sx, float sy);\n  undefined setRotate(float angle, float cx, float cy);\n  undefined setSkewX(float angle);\n  undefined setSkewY(float angle);\n};",
       "type": "interface",
       "name": "SVGTransform",
       "inheritance": null,
@@ -4519,7 +4519,7 @@
       "partial": false
     },
     "SVGTransformList": {
-      "fragment": "[Exposed=Window]\r\ninterface SVGTransformList {\r\n\r\n  readonly attribute unsigned long length;\r\n  readonly attribute unsigned long numberOfItems;\r\n\r\n  undefined clear();\r\n  SVGTransform initialize(SVGTransform newItem);\r\n  getter SVGTransform getItem(unsigned long index);\r\n  SVGTransform insertItemBefore(SVGTransform newItem, unsigned long index);\r\n  SVGTransform replaceItem(SVGTransform newItem, unsigned long index);\r\n  SVGTransform removeItem(unsigned long index);\r\n  SVGTransform appendItem(SVGTransform newItem);\r\n  setter undefined (unsigned long index, SVGTransform newItem);\r\n\r\n  // Additional methods not common to other list interfaces.\r\n  SVGTransform createSVGTransformFromMatrix(optional DOMMatrix2DInit matrix = {});\r\n  SVGTransform? consolidate();\r\n};",
+      "fragment": "[Exposed=Window]\ninterface SVGTransformList {\n\n  readonly attribute unsigned long length;\n  readonly attribute unsigned long numberOfItems;\n\n  undefined clear();\n  SVGTransform initialize(SVGTransform newItem);\n  getter SVGTransform getItem(unsigned long index);\n  SVGTransform insertItemBefore(SVGTransform newItem, unsigned long index);\n  SVGTransform replaceItem(SVGTransform newItem, unsigned long index);\n  SVGTransform removeItem(unsigned long index);\n  SVGTransform appendItem(SVGTransform newItem);\n  setter undefined (unsigned long index, SVGTransform newItem);\n\n  // Additional methods not common to other list interfaces.\n  SVGTransform createSVGTransformFromMatrix(optional DOMMatrix2DInit matrix = {});\n  SVGTransform? consolidate();\n};",
       "type": "interface",
       "name": "SVGTransformList",
       "inheritance": null,
@@ -4905,7 +4905,7 @@
       "partial": false
     },
     "SVGAnimatedTransformList": {
-      "fragment": "[Exposed=Window]\r\ninterface SVGAnimatedTransformList {\r\n  [SameObject] readonly attribute SVGTransformList baseVal;\r\n  [SameObject] readonly attribute SVGTransformList animVal;\r\n};",
+      "fragment": "[Exposed=Window]\ninterface SVGAnimatedTransformList {\n  [SameObject] readonly attribute SVGTransformList baseVal;\n  [SameObject] readonly attribute SVGTransformList animVal;\n};",
       "type": "interface",
       "name": "SVGAnimatedTransformList",
       "inheritance": null,
@@ -4969,7 +4969,7 @@
       "partial": false
     },
     "SVGPreserveAspectRatio": {
-      "fragment": "[Exposed=Window]\r\ninterface SVGPreserveAspectRatio {\r\n\r\n  // Alignment Types\r\n  const unsigned short SVG_PRESERVEASPECTRATIO_UNKNOWN = 0;\r\n  const unsigned short SVG_PRESERVEASPECTRATIO_NONE = 1;\r\n  const unsigned short SVG_PRESERVEASPECTRATIO_XMINYMIN = 2;\r\n  const unsigned short SVG_PRESERVEASPECTRATIO_XMIDYMIN = 3;\r\n  const unsigned short SVG_PRESERVEASPECTRATIO_XMAXYMIN = 4;\r\n  const unsigned short SVG_PRESERVEASPECTRATIO_XMINYMID = 5;\r\n  const unsigned short SVG_PRESERVEASPECTRATIO_XMIDYMID = 6;\r\n  const unsigned short SVG_PRESERVEASPECTRATIO_XMAXYMID = 7;\r\n  const unsigned short SVG_PRESERVEASPECTRATIO_XMINYMAX = 8;\r\n  const unsigned short SVG_PRESERVEASPECTRATIO_XMIDYMAX = 9;\r\n  const unsigned short SVG_PRESERVEASPECTRATIO_XMAXYMAX = 10;\r\n\r\n  // Meet-or-slice Types\r\n  const unsigned short SVG_MEETORSLICE_UNKNOWN = 0;\r\n  const unsigned short SVG_MEETORSLICE_MEET = 1;\r\n  const unsigned short SVG_MEETORSLICE_SLICE = 2;\r\n\r\n  attribute unsigned short align;\r\n  attribute unsigned short meetOrSlice;\r\n};",
+      "fragment": "[Exposed=Window]\ninterface SVGPreserveAspectRatio {\n\n  // Alignment Types\n  const unsigned short SVG_PRESERVEASPECTRATIO_UNKNOWN = 0;\n  const unsigned short SVG_PRESERVEASPECTRATIO_NONE = 1;\n  const unsigned short SVG_PRESERVEASPECTRATIO_XMINYMIN = 2;\n  const unsigned short SVG_PRESERVEASPECTRATIO_XMIDYMIN = 3;\n  const unsigned short SVG_PRESERVEASPECTRATIO_XMAXYMIN = 4;\n  const unsigned short SVG_PRESERVEASPECTRATIO_XMINYMID = 5;\n  const unsigned short SVG_PRESERVEASPECTRATIO_XMIDYMID = 6;\n  const unsigned short SVG_PRESERVEASPECTRATIO_XMAXYMID = 7;\n  const unsigned short SVG_PRESERVEASPECTRATIO_XMINYMAX = 8;\n  const unsigned short SVG_PRESERVEASPECTRATIO_XMIDYMAX = 9;\n  const unsigned short SVG_PRESERVEASPECTRATIO_XMAXYMAX = 10;\n\n  // Meet-or-slice Types\n  const unsigned short SVG_MEETORSLICE_UNKNOWN = 0;\n  const unsigned short SVG_MEETORSLICE_MEET = 1;\n  const unsigned short SVG_MEETORSLICE_SLICE = 2;\n\n  attribute unsigned short align;\n  attribute unsigned short meetOrSlice;\n};",
       "type": "interface",
       "name": "SVGPreserveAspectRatio",
       "inheritance": null,
@@ -5257,7 +5257,7 @@
       "partial": false
     },
     "SVGAnimatedPreserveAspectRatio": {
-      "fragment": "[Exposed=Window]\r\ninterface SVGAnimatedPreserveAspectRatio {\r\n  [SameObject] readonly attribute SVGPreserveAspectRatio baseVal;\r\n  [SameObject] readonly attribute SVGPreserveAspectRatio animVal;\r\n};",
+      "fragment": "[Exposed=Window]\ninterface SVGAnimatedPreserveAspectRatio {\n  [SameObject] readonly attribute SVGPreserveAspectRatio baseVal;\n  [SameObject] readonly attribute SVGPreserveAspectRatio animVal;\n};",
       "type": "interface",
       "name": "SVGAnimatedPreserveAspectRatio",
       "inheritance": null,
@@ -5321,7 +5321,7 @@
       "partial": false
     },
     "SVGPathElement": {
-      "fragment": "[Exposed=Window]\r\ninterface SVGPathElement : SVGGeometryElement {\r\n};",
+      "fragment": "[Exposed=Window]\ninterface SVGPathElement : SVGGeometryElement {\n};",
       "type": "interface",
       "name": "SVGPathElement",
       "inheritance": "SVGGeometryElement",
@@ -5340,7 +5340,7 @@
       "partial": false
     },
     "SVGRectElement": {
-      "fragment": "[Exposed=Window]\r\ninterface SVGRectElement : SVGGeometryElement {\r\n  [SameObject] readonly attribute SVGAnimatedLength x;\r\n  [SameObject] readonly attribute SVGAnimatedLength y;\r\n  [SameObject] readonly attribute SVGAnimatedLength width;\r\n  [SameObject] readonly attribute SVGAnimatedLength height;\r\n  [SameObject] readonly attribute SVGAnimatedLength rx;\r\n  [SameObject] readonly attribute SVGAnimatedLength ry;\r\n};",
+      "fragment": "[Exposed=Window]\ninterface SVGRectElement : SVGGeometryElement {\n  [SameObject] readonly attribute SVGAnimatedLength x;\n  [SameObject] readonly attribute SVGAnimatedLength y;\n  [SameObject] readonly attribute SVGAnimatedLength width;\n  [SameObject] readonly attribute SVGAnimatedLength height;\n  [SameObject] readonly attribute SVGAnimatedLength rx;\n  [SameObject] readonly attribute SVGAnimatedLength ry;\n};",
       "type": "interface",
       "name": "SVGRectElement",
       "inheritance": "SVGGeometryElement",
@@ -5492,7 +5492,7 @@
       "partial": false
     },
     "SVGCircleElement": {
-      "fragment": "[Exposed=Window]\r\ninterface SVGCircleElement : SVGGeometryElement {\r\n  [SameObject] readonly attribute SVGAnimatedLength cx;\r\n  [SameObject] readonly attribute SVGAnimatedLength cy;\r\n  [SameObject] readonly attribute SVGAnimatedLength r;\r\n};",
+      "fragment": "[Exposed=Window]\ninterface SVGCircleElement : SVGGeometryElement {\n  [SameObject] readonly attribute SVGAnimatedLength cx;\n  [SameObject] readonly attribute SVGAnimatedLength cy;\n  [SameObject] readonly attribute SVGAnimatedLength r;\n};",
       "type": "interface",
       "name": "SVGCircleElement",
       "inheritance": "SVGGeometryElement",
@@ -5578,7 +5578,7 @@
       "partial": false
     },
     "SVGEllipseElement": {
-      "fragment": "[Exposed=Window]\r\ninterface SVGEllipseElement : SVGGeometryElement {\r\n  [SameObject] readonly attribute SVGAnimatedLength cx;\r\n  [SameObject] readonly attribute SVGAnimatedLength cy;\r\n  [SameObject] readonly attribute SVGAnimatedLength rx;\r\n  [SameObject] readonly attribute SVGAnimatedLength ry;\r\n};",
+      "fragment": "[Exposed=Window]\ninterface SVGEllipseElement : SVGGeometryElement {\n  [SameObject] readonly attribute SVGAnimatedLength cx;\n  [SameObject] readonly attribute SVGAnimatedLength cy;\n  [SameObject] readonly attribute SVGAnimatedLength rx;\n  [SameObject] readonly attribute SVGAnimatedLength ry;\n};",
       "type": "interface",
       "name": "SVGEllipseElement",
       "inheritance": "SVGGeometryElement",
@@ -5686,7 +5686,7 @@
       "partial": false
     },
     "SVGLineElement": {
-      "fragment": "[Exposed=Window]\r\ninterface SVGLineElement : SVGGeometryElement {\r\n  [SameObject] readonly attribute SVGAnimatedLength x1;\r\n  [SameObject] readonly attribute SVGAnimatedLength y1;\r\n  [SameObject] readonly attribute SVGAnimatedLength x2;\r\n  [SameObject] readonly attribute SVGAnimatedLength y2;\r\n};",
+      "fragment": "[Exposed=Window]\ninterface SVGLineElement : SVGGeometryElement {\n  [SameObject] readonly attribute SVGAnimatedLength x1;\n  [SameObject] readonly attribute SVGAnimatedLength y1;\n  [SameObject] readonly attribute SVGAnimatedLength x2;\n  [SameObject] readonly attribute SVGAnimatedLength y2;\n};",
       "type": "interface",
       "name": "SVGLineElement",
       "inheritance": "SVGGeometryElement",
@@ -5794,7 +5794,7 @@
       "partial": false
     },
     "SVGAnimatedPoints": {
-      "fragment": "interface mixin SVGAnimatedPoints {\r\n  [SameObject] readonly attribute SVGPointList points;\r\n  [SameObject] readonly attribute SVGPointList animatedPoints;\r\n};",
+      "fragment": "interface mixin SVGAnimatedPoints {\n  [SameObject] readonly attribute SVGPointList points;\n  [SameObject] readonly attribute SVGPointList animatedPoints;\n};",
       "type": "interface mixin",
       "name": "SVGAnimatedPoints",
       "inheritance": null,
@@ -5848,7 +5848,7 @@
       "partial": false
     },
     "SVGPointList": {
-      "fragment": "[Exposed=Window]\r\ninterface SVGPointList {\r\n\r\n  readonly attribute unsigned long length;\r\n  readonly attribute unsigned long numberOfItems;\r\n\r\n  undefined clear();\r\n  DOMPoint initialize(DOMPoint newItem);\r\n  getter DOMPoint getItem(unsigned long index);\r\n  DOMPoint insertItemBefore(DOMPoint newItem, unsigned long index);\r\n  DOMPoint replaceItem(DOMPoint newItem, unsigned long index);\r\n  DOMPoint removeItem(unsigned long index);\r\n  DOMPoint appendItem(DOMPoint newItem);\r\n  setter undefined (unsigned long index, DOMPoint newItem);\r\n};",
+      "fragment": "[Exposed=Window]\ninterface SVGPointList {\n\n  readonly attribute unsigned long length;\n  readonly attribute unsigned long numberOfItems;\n\n  undefined clear();\n  DOMPoint initialize(DOMPoint newItem);\n  getter DOMPoint getItem(unsigned long index);\n  DOMPoint insertItemBefore(DOMPoint newItem, unsigned long index);\n  DOMPoint replaceItem(DOMPoint newItem, unsigned long index);\n  DOMPoint removeItem(unsigned long index);\n  DOMPoint appendItem(DOMPoint newItem);\n  setter undefined (unsigned long index, DOMPoint newItem);\n};",
       "type": "interface",
       "name": "SVGPointList",
       "inheritance": null,
@@ -6185,7 +6185,7 @@
       "partial": false
     },
     "SVGPolylineElement": {
-      "fragment": "[Exposed=Window]\r\ninterface SVGPolylineElement : SVGGeometryElement {\r\n};",
+      "fragment": "[Exposed=Window]\ninterface SVGPolylineElement : SVGGeometryElement {\n};",
       "type": "interface",
       "name": "SVGPolylineElement",
       "inheritance": "SVGGeometryElement",
@@ -6204,7 +6204,7 @@
       "partial": false
     },
     "SVGPolygonElement": {
-      "fragment": "[Exposed=Window]\r\ninterface SVGPolygonElement : SVGGeometryElement {\r\n};",
+      "fragment": "[Exposed=Window]\ninterface SVGPolygonElement : SVGGeometryElement {\n};",
       "type": "interface",
       "name": "SVGPolygonElement",
       "inheritance": "SVGGeometryElement",
@@ -6223,7 +6223,7 @@
       "partial": false
     },
     "SVGTextContentElement": {
-      "fragment": "[Exposed=Window]\r\ninterface SVGTextContentElement : SVGGraphicsElement {\r\n\r\n  // lengthAdjust Types\r\n  const unsigned short LENGTHADJUST_UNKNOWN = 0;\r\n  const unsigned short LENGTHADJUST_SPACING = 1;\r\n  const unsigned short LENGTHADJUST_SPACINGANDGLYPHS = 2;\r\n\r\n  [SameObject] readonly attribute SVGAnimatedLength textLength;\r\n  [SameObject] readonly attribute SVGAnimatedEnumeration lengthAdjust;\r\n\r\n  long getNumberOfChars();\r\n  float getComputedTextLength();\r\n  float getSubStringLength(unsigned long charnum, unsigned long nchars);\r\n  DOMPoint getStartPositionOfChar(unsigned long charnum);\r\n  DOMPoint getEndPositionOfChar(unsigned long charnum);\r\n  DOMRect getExtentOfChar(unsigned long charnum);\r\n  float getRotationOfChar(unsigned long charnum);\r\n  long getCharNumAtPosition(optional DOMPointInit point = {});\r\n  undefined selectSubString(unsigned long charnum, unsigned long nchars);\r\n};",
+      "fragment": "[Exposed=Window]\ninterface SVGTextContentElement : SVGGraphicsElement {\n\n  // lengthAdjust Types\n  const unsigned short LENGTHADJUST_UNKNOWN = 0;\n  const unsigned short LENGTHADJUST_SPACING = 1;\n  const unsigned short LENGTHADJUST_SPACINGANDGLYPHS = 2;\n\n  [SameObject] readonly attribute SVGAnimatedLength textLength;\n  [SameObject] readonly attribute SVGAnimatedEnumeration lengthAdjust;\n\n  long getNumberOfChars();\n  float getComputedTextLength();\n  float getSubStringLength(unsigned long charnum, unsigned long nchars);\n  DOMPoint getStartPositionOfChar(unsigned long charnum);\n  DOMPoint getEndPositionOfChar(unsigned long charnum);\n  DOMRect getExtentOfChar(unsigned long charnum);\n  float getRotationOfChar(unsigned long charnum);\n  long getCharNumAtPosition(optional DOMPointInit point = {});\n  undefined selectSubString(unsigned long charnum, unsigned long nchars);\n};",
       "type": "interface",
       "name": "SVGTextContentElement",
       "inheritance": "SVGGraphicsElement",
@@ -6626,7 +6626,7 @@
       "partial": false
     },
     "SVGTextPositioningElement": {
-      "fragment": "[Exposed=Window]\r\ninterface SVGTextPositioningElement : SVGTextContentElement {\r\n  [SameObject] readonly attribute SVGAnimatedLengthList x;\r\n  [SameObject] readonly attribute SVGAnimatedLengthList y;\r\n  [SameObject] readonly attribute SVGAnimatedLengthList dx;\r\n  [SameObject] readonly attribute SVGAnimatedLengthList dy;\r\n  [SameObject] readonly attribute SVGAnimatedNumberList rotate;\r\n};",
+      "fragment": "[Exposed=Window]\ninterface SVGTextPositioningElement : SVGTextContentElement {\n  [SameObject] readonly attribute SVGAnimatedLengthList x;\n  [SameObject] readonly attribute SVGAnimatedLengthList y;\n  [SameObject] readonly attribute SVGAnimatedLengthList dx;\n  [SameObject] readonly attribute SVGAnimatedLengthList dy;\n  [SameObject] readonly attribute SVGAnimatedNumberList rotate;\n};",
       "type": "interface",
       "name": "SVGTextPositioningElement",
       "inheritance": "SVGTextContentElement",
@@ -6756,7 +6756,7 @@
       "partial": false
     },
     "SVGTextElement": {
-      "fragment": "[Exposed=Window]\r\ninterface SVGTextElement : SVGTextPositioningElement {\r\n};",
+      "fragment": "[Exposed=Window]\ninterface SVGTextElement : SVGTextPositioningElement {\n};",
       "type": "interface",
       "name": "SVGTextElement",
       "inheritance": "SVGTextPositioningElement",
@@ -6775,7 +6775,7 @@
       "partial": false
     },
     "SVGTSpanElement": {
-      "fragment": "[Exposed=Window]\r\ninterface SVGTSpanElement : SVGTextPositioningElement {\r\n};",
+      "fragment": "[Exposed=Window]\ninterface SVGTSpanElement : SVGTextPositioningElement {\n};",
       "type": "interface",
       "name": "SVGTSpanElement",
       "inheritance": "SVGTextPositioningElement",
@@ -6794,7 +6794,7 @@
       "partial": false
     },
     "SVGTextPathElement": {
-      "fragment": "[Exposed=Window]\r\ninterface SVGTextPathElement : SVGTextContentElement {\r\n\r\n  // textPath Method Types\r\n  const unsigned short TEXTPATH_METHODTYPE_UNKNOWN = 0;\r\n  const unsigned short TEXTPATH_METHODTYPE_ALIGN = 1;\r\n  const unsigned short TEXTPATH_METHODTYPE_STRETCH = 2;\r\n\r\n  // textPath Spacing Types\r\n  const unsigned short TEXTPATH_SPACINGTYPE_UNKNOWN = 0;\r\n  const unsigned short TEXTPATH_SPACINGTYPE_AUTO = 1;\r\n  const unsigned short TEXTPATH_SPACINGTYPE_EXACT = 2;\r\n\r\n  [SameObject] readonly attribute SVGAnimatedLength startOffset;\r\n  [SameObject] readonly attribute SVGAnimatedEnumeration method;\r\n  [SameObject] readonly attribute SVGAnimatedEnumeration spacing;\r\n};",
+      "fragment": "[Exposed=Window]\ninterface SVGTextPathElement : SVGTextContentElement {\n\n  // textPath Method Types\n  const unsigned short TEXTPATH_METHODTYPE_UNKNOWN = 0;\n  const unsigned short TEXTPATH_METHODTYPE_ALIGN = 1;\n  const unsigned short TEXTPATH_METHODTYPE_STRETCH = 2;\n\n  // textPath Spacing Types\n  const unsigned short TEXTPATH_SPACINGTYPE_UNKNOWN = 0;\n  const unsigned short TEXTPATH_SPACINGTYPE_AUTO = 1;\n  const unsigned short TEXTPATH_SPACINGTYPE_EXACT = 2;\n\n  [SameObject] readonly attribute SVGAnimatedLength startOffset;\n  [SameObject] readonly attribute SVGAnimatedEnumeration method;\n  [SameObject] readonly attribute SVGAnimatedEnumeration spacing;\n};",
       "type": "interface",
       "name": "SVGTextPathElement",
       "inheritance": "SVGTextContentElement",
@@ -6982,7 +6982,7 @@
       "partial": false
     },
     "SVGImageElement": {
-      "fragment": "[Exposed=Window]\r\ninterface SVGImageElement : SVGGraphicsElement {\r\n  [SameObject] readonly attribute SVGAnimatedLength x;\r\n  [SameObject] readonly attribute SVGAnimatedLength y;\r\n  [SameObject] readonly attribute SVGAnimatedLength width;\r\n  [SameObject] readonly attribute SVGAnimatedLength height;\r\n  [SameObject] readonly attribute SVGAnimatedPreserveAspectRatio preserveAspectRatio;\r\n  attribute DOMString? crossOrigin;\r\n};",
+      "fragment": "[Exposed=Window]\ninterface SVGImageElement : SVGGraphicsElement {\n  [SameObject] readonly attribute SVGAnimatedLength x;\n  [SameObject] readonly attribute SVGAnimatedLength y;\n  [SameObject] readonly attribute SVGAnimatedLength width;\n  [SameObject] readonly attribute SVGAnimatedLength height;\n  [SameObject] readonly attribute SVGAnimatedPreserveAspectRatio preserveAspectRatio;\n  attribute DOMString? crossOrigin;\n};",
       "type": "interface",
       "name": "SVGImageElement",
       "inheritance": "SVGGraphicsElement",
@@ -7127,7 +7127,7 @@
       "partial": false
     },
     "SVGForeignObjectElement": {
-      "fragment": "[Exposed=Window]\r\ninterface SVGForeignObjectElement : SVGGraphicsElement {\r\n  [SameObject] readonly attribute SVGAnimatedLength x;\r\n  [SameObject] readonly attribute SVGAnimatedLength y;\r\n  [SameObject] readonly attribute SVGAnimatedLength width;\r\n  [SameObject] readonly attribute SVGAnimatedLength height;\r\n};",
+      "fragment": "[Exposed=Window]\ninterface SVGForeignObjectElement : SVGGraphicsElement {\n  [SameObject] readonly attribute SVGAnimatedLength x;\n  [SameObject] readonly attribute SVGAnimatedLength y;\n  [SameObject] readonly attribute SVGAnimatedLength width;\n  [SameObject] readonly attribute SVGAnimatedLength height;\n};",
       "type": "interface",
       "name": "SVGForeignObjectElement",
       "inheritance": "SVGGraphicsElement",
@@ -7235,7 +7235,7 @@
       "partial": false
     },
     "SVGMarkerElement": {
-      "fragment": "[Exposed=Window]\r\ninterface SVGMarkerElement : SVGElement {\r\n\r\n  // Marker Unit Types\r\n  const unsigned short SVG_MARKERUNITS_UNKNOWN = 0;\r\n  const unsigned short SVG_MARKERUNITS_USERSPACEONUSE = 1;\r\n  const unsigned short SVG_MARKERUNITS_STROKEWIDTH = 2;\r\n\r\n  // Marker Orientation Types\r\n  const unsigned short SVG_MARKER_ORIENT_UNKNOWN = 0;\r\n  const unsigned short SVG_MARKER_ORIENT_AUTO = 1;\r\n  const unsigned short SVG_MARKER_ORIENT_ANGLE = 2;\r\n\r\n  [SameObject] readonly attribute SVGAnimatedLength refX;\r\n  [SameObject] readonly attribute SVGAnimatedLength refY;\r\n  [SameObject] readonly attribute SVGAnimatedEnumeration markerUnits;\r\n  [SameObject] readonly attribute SVGAnimatedLength markerWidth;\r\n  [SameObject] readonly attribute SVGAnimatedLength markerHeight;\r\n  [SameObject] readonly attribute SVGAnimatedEnumeration orientType;\r\n  [SameObject] readonly attribute SVGAnimatedAngle orientAngle;\r\n  attribute DOMString orient;\r\n\r\n  undefined setOrientToAuto();\r\n  undefined setOrientToAngle(SVGAngle angle);\r\n};",
+      "fragment": "[Exposed=Window]\ninterface SVGMarkerElement : SVGElement {\n\n  // Marker Unit Types\n  const unsigned short SVG_MARKERUNITS_UNKNOWN = 0;\n  const unsigned short SVG_MARKERUNITS_USERSPACEONUSE = 1;\n  const unsigned short SVG_MARKERUNITS_STROKEWIDTH = 2;\n\n  // Marker Orientation Types\n  const unsigned short SVG_MARKER_ORIENT_UNKNOWN = 0;\n  const unsigned short SVG_MARKER_ORIENT_AUTO = 1;\n  const unsigned short SVG_MARKER_ORIENT_ANGLE = 2;\n\n  [SameObject] readonly attribute SVGAnimatedLength refX;\n  [SameObject] readonly attribute SVGAnimatedLength refY;\n  [SameObject] readonly attribute SVGAnimatedEnumeration markerUnits;\n  [SameObject] readonly attribute SVGAnimatedLength markerWidth;\n  [SameObject] readonly attribute SVGAnimatedLength markerHeight;\n  [SameObject] readonly attribute SVGAnimatedEnumeration orientType;\n  [SameObject] readonly attribute SVGAnimatedAngle orientAngle;\n  attribute DOMString orient;\n\n  undefined setOrientToAuto();\n  undefined setOrientToAngle(SVGAngle angle);\n};",
       "type": "interface",
       "name": "SVGMarkerElement",
       "inheritance": "SVGElement",
@@ -7573,7 +7573,7 @@
       "partial": false
     },
     "SVGGradientElement": {
-      "fragment": "[Exposed=Window]\r\ninterface SVGGradientElement : SVGElement {\r\n\r\n  // Spread Method Types\r\n  const unsigned short SVG_SPREADMETHOD_UNKNOWN = 0;\r\n  const unsigned short SVG_SPREADMETHOD_PAD = 1;\r\n  const unsigned short SVG_SPREADMETHOD_REFLECT = 2;\r\n  const unsigned short SVG_SPREADMETHOD_REPEAT = 3;\r\n\r\n  [SameObject] readonly attribute SVGAnimatedEnumeration gradientUnits;\r\n  [SameObject] readonly attribute SVGAnimatedTransformList gradientTransform;\r\n  [SameObject] readonly attribute SVGAnimatedEnumeration spreadMethod;\r\n};",
+      "fragment": "[Exposed=Window]\ninterface SVGGradientElement : SVGElement {\n\n  // Spread Method Types\n  const unsigned short SVG_SPREADMETHOD_UNKNOWN = 0;\n  const unsigned short SVG_SPREADMETHOD_PAD = 1;\n  const unsigned short SVG_SPREADMETHOD_REFLECT = 2;\n  const unsigned short SVG_SPREADMETHOD_REPEAT = 3;\n\n  [SameObject] readonly attribute SVGAnimatedEnumeration gradientUnits;\n  [SameObject] readonly attribute SVGAnimatedTransformList gradientTransform;\n  [SameObject] readonly attribute SVGAnimatedEnumeration spreadMethod;\n};",
       "type": "interface",
       "name": "SVGGradientElement",
       "inheritance": "SVGElement",
@@ -7727,7 +7727,7 @@
       "partial": false
     },
     "SVGLinearGradientElement": {
-      "fragment": "[Exposed=Window]\r\ninterface SVGLinearGradientElement : SVGGradientElement {\r\n  [SameObject] readonly attribute SVGAnimatedLength x1;\r\n  [SameObject] readonly attribute SVGAnimatedLength y1;\r\n  [SameObject] readonly attribute SVGAnimatedLength x2;\r\n  [SameObject] readonly attribute SVGAnimatedLength y2;\r\n};",
+      "fragment": "[Exposed=Window]\ninterface SVGLinearGradientElement : SVGGradientElement {\n  [SameObject] readonly attribute SVGAnimatedLength x1;\n  [SameObject] readonly attribute SVGAnimatedLength y1;\n  [SameObject] readonly attribute SVGAnimatedLength x2;\n  [SameObject] readonly attribute SVGAnimatedLength y2;\n};",
       "type": "interface",
       "name": "SVGLinearGradientElement",
       "inheritance": "SVGGradientElement",
@@ -7835,7 +7835,7 @@
       "partial": false
     },
     "SVGRadialGradientElement": {
-      "fragment": "[Exposed=Window]\r\ninterface SVGRadialGradientElement : SVGGradientElement {\r\n  [SameObject] readonly attribute SVGAnimatedLength cx;\r\n  [SameObject] readonly attribute SVGAnimatedLength cy;\r\n  [SameObject] readonly attribute SVGAnimatedLength r;\r\n  [SameObject] readonly attribute SVGAnimatedLength fx;\r\n  [SameObject] readonly attribute SVGAnimatedLength fy;\r\n  [SameObject] readonly attribute SVGAnimatedLength fr;\r\n};",
+      "fragment": "[Exposed=Window]\ninterface SVGRadialGradientElement : SVGGradientElement {\n  [SameObject] readonly attribute SVGAnimatedLength cx;\n  [SameObject] readonly attribute SVGAnimatedLength cy;\n  [SameObject] readonly attribute SVGAnimatedLength r;\n  [SameObject] readonly attribute SVGAnimatedLength fx;\n  [SameObject] readonly attribute SVGAnimatedLength fy;\n  [SameObject] readonly attribute SVGAnimatedLength fr;\n};",
       "type": "interface",
       "name": "SVGRadialGradientElement",
       "inheritance": "SVGGradientElement",
@@ -7987,7 +7987,7 @@
       "partial": false
     },
     "SVGStopElement": {
-      "fragment": "[Exposed=Window]\r\ninterface SVGStopElement : SVGElement {\r\n  [SameObject] readonly attribute SVGAnimatedNumber offset;\r\n};",
+      "fragment": "[Exposed=Window]\ninterface SVGStopElement : SVGElement {\n  [SameObject] readonly attribute SVGAnimatedNumber offset;\n};",
       "type": "interface",
       "name": "SVGStopElement",
       "inheritance": "SVGElement",
@@ -8029,7 +8029,7 @@
       "partial": false
     },
     "SVGPatternElement": {
-      "fragment": "[Exposed=Window]\r\ninterface SVGPatternElement : SVGElement {\r\n  [SameObject] readonly attribute SVGAnimatedEnumeration patternUnits;\r\n  [SameObject] readonly attribute SVGAnimatedEnumeration patternContentUnits;\r\n  [SameObject] readonly attribute SVGAnimatedTransformList patternTransform;\r\n  [SameObject] readonly attribute SVGAnimatedLength x;\r\n  [SameObject] readonly attribute SVGAnimatedLength y;\r\n  [SameObject] readonly attribute SVGAnimatedLength width;\r\n  [SameObject] readonly attribute SVGAnimatedLength height;\r\n};",
+      "fragment": "[Exposed=Window]\ninterface SVGPatternElement : SVGElement {\n  [SameObject] readonly attribute SVGAnimatedEnumeration patternUnits;\n  [SameObject] readonly attribute SVGAnimatedEnumeration patternContentUnits;\n  [SameObject] readonly attribute SVGAnimatedTransformList patternTransform;\n  [SameObject] readonly attribute SVGAnimatedLength x;\n  [SameObject] readonly attribute SVGAnimatedLength y;\n  [SameObject] readonly attribute SVGAnimatedLength width;\n  [SameObject] readonly attribute SVGAnimatedLength height;\n};",
       "type": "interface",
       "name": "SVGPatternElement",
       "inheritance": "SVGElement",
@@ -8203,7 +8203,7 @@
       "partial": false
     },
     "SVGScriptElement": {
-      "fragment": "[Exposed=Window]\r\ninterface SVGScriptElement : SVGElement {\r\n  attribute DOMString type;\r\n  attribute DOMString? crossOrigin;\r\n};",
+      "fragment": "[Exposed=Window]\ninterface SVGScriptElement : SVGElement {\n  attribute DOMString type;\n  attribute DOMString? crossOrigin;\n};",
       "type": "interface",
       "name": "SVGScriptElement",
       "inheritance": "SVGElement",
@@ -8253,7 +8253,7 @@
       "partial": false
     },
     "SVGAElement": {
-      "fragment": "[Exposed=Window]\r\ninterface SVGAElement : SVGGraphicsElement {\r\n  [SameObject] readonly attribute SVGAnimatedString target;\r\n  attribute DOMString download;\r\n  attribute USVString ping;\r\n  attribute DOMString rel;\r\n  [SameObject, PutForwards=value] readonly attribute DOMTokenList relList;\r\n  attribute DOMString hreflang;\r\n  attribute DOMString type;\r\n\r\n  attribute DOMString text;\r\n\r\n  attribute DOMString referrerPolicy;\r\n};",
+      "fragment": "[Exposed=Window]\ninterface SVGAElement : SVGGraphicsElement {\n  [SameObject] readonly attribute SVGAnimatedString target;\n  attribute DOMString download;\n  attribute USVString ping;\n  attribute DOMString rel;\n  [SameObject, PutForwards=value] readonly attribute DOMTokenList relList;\n  attribute DOMString hreflang;\n  attribute DOMString type;\n\n  attribute DOMString text;\n\n  attribute DOMString referrerPolicy;\n};",
       "type": "interface",
       "name": "SVGAElement",
       "inheritance": "SVGGraphicsElement",
@@ -8431,7 +8431,7 @@
       "partial": false
     },
     "SVGViewElement": {
-      "fragment": "[Exposed=Window]\r\ninterface SVGViewElement : SVGElement {};",
+      "fragment": "[Exposed=Window]\ninterface SVGViewElement : SVGElement {};",
       "type": "interface",
       "name": "SVGViewElement",
       "inheritance": "SVGElement",
@@ -8492,7 +8492,7 @@
     ],
     "Document": [
       {
-        "fragment": "partial interface Document {\r\n  readonly attribute SVGSVGElement? rootElement;\r\n};",
+        "fragment": "partial interface Document {\n  readonly attribute SVGSVGElement? rootElement;\n};",
         "type": "interface",
         "name": "Document",
         "inheritance": null,

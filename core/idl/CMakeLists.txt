@@ -1,26 +1,52 @@
-find_program(REFFY_EXECUTABLE reffy HINTS ENV PATH_SUFFIXES /usr/bin /usr/local/bin ${CMAKE_SOURCE_DIR}/node_modules/.bin)
 find_program(NPM_EXECUTABLE npm)
 find_package (Python3 COMPONENTS Interpreter)
 
-if(NOT REFFY_EXECUTABLE AND NPM_EXECUTABLE)
-    message(STATUS "reffy not found, trying to install it")
+if(NOT EXISTS ${CMAKE_SOURCE_DIR}/node_modules/.bin/reffy AND NPM_EXECUTABLE)
     execute_process(COMMAND ${NPM_EXECUTABLE} install reffy)
-    find_program(REFFY_EXECUTABLE reffy HINTS ENV PATH_SUFFIXES /usr/bin /usr/local/bin ${CMAKE_SOURCE_DIR}/node_modules/.bin)
-elseif(NOT REFFY_EXECUTABLE AND NOT NPM_EXECUTABLE)
-    message(WARNING "NodeJS not found, will use pre-generated idl files")
-    message(WARNING "See ${CMAKE_CURRENT_SOURCE_DIR}/README.md for more information")
+endif()
+
+if(EXISTS ${CMAKE_SOURCE_DIR}/node_modules/.bin/reffy AND NPM_EXECUTABLE)
+    if(MSYS)
+        set(REFFY_EXECUTABLE bash ${CMAKE_SOURCE_DIR}/node_modules/.bin/reffy)
+    else()
+        set(REFFY_EXECUTABLE ${CMAKE_SOURCE_DIR}/node_modules/.bin/reffy)
+    endif()
+endif()
+
+if(EXISTS ${CMAKE_SOURCE_DIR}/node_modules/reffy/src/cli/parse-webidl.js AND NPM_EXECUTABLE)
+    set(REFFY_PARSE_WEBIDL ${CMAKE_SOURCE_DIR}/node_modules/reffy/src/cli/parse-webidl.js)
 endif()
 
 if(REFFY_EXECUTABLE)
-    message(STATUS "Generating idl files, please wait...")
-    execute_process(COMMAND bash ${REFFY_EXECUTABLE} --spec https://www.w3.org/TR/SVG2/ --module idl
-        OUTPUT_FILE ${CMAKE_CURRENT_BINARY_DIR}/SVG2.idl)
-    string(REPLACE ".bin/reffy" "reffy/src/cli/parse-webidl.js" REFFY_PARSE_WEBIDL ${REFFY_EXECUTABLE})
-    execute_process(COMMAND node ${REFFY_PARSE_WEBIDL} SVG2.idl
-        OUTPUT_FILE ${CMAKE_CURRENT_SOURCE_DIR}/SVG2.json
-        WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR})
+    add_custom_target(generate_idl_files
+        COMMAND ${REFFY_EXECUTABLE} --spec https://www.w3.org/TR/SVG2/ --spec https://dom.spec.whatwg.org/ --module idl --output ..
+        COMMAND ${CMAKE_COMMAND} -E copy SVG.idl ${CMAKE_CURRENT_SOURCE_DIR}/SVG.idl
+        COMMAND ${CMAKE_COMMAND} -E copy dom.idl ${CMAKE_CURRENT_SOURCE_DIR}/dom.idl
+        WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
+        COMMENT "Generating idl files, please wait...")
+    message(STATUS "The target generate_idl_files is now available")
+endif()
+
+if(REFFY_PARSE_WEBIDL)
+    add_custom_command(OUTPUT SVG.json
+        COMMAND node ${REFFY_PARSE_WEBIDL} SVG.idl > SVG.json
+        DEPENDS SVG.idl
+        WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
+        COMMENT "Parsing SVG.idl")
+    add_custom_command(OUTPUT dom.json
+        COMMAND node ${REFFY_PARSE_WEBIDL} dom.idl > dom.json
+        DEPENDS dom.idl
+        WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
+        COMMENT "Parsing dom.idl")
 endif()
 
 if(Python3_Interpreter_FOUND)
-    message(STATUS "Found Python3, changes in idl files will be reflected in generated code")
+    add_custom_target(generate_cxx_dom_api
+        COMMAND ${PYTHON_EXECUTABLE} generate_cxx_api.py SVG.json
+        COMMAND ${PYTHON_EXECUTABLE} generate_cxx_api.py dom.json
+        DEPENDS SVG.json dom.json
+        SOURCES SVG.json dom.json
+        WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
+        COMMENT "Generating C++ API from idl")
+        message(STATUS "The target generate_cxx_dom_api is now available")
 endif()
