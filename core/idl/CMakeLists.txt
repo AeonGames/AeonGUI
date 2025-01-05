@@ -42,8 +42,8 @@ endif()
 
 if(Python3_Interpreter_FOUND)
     add_custom_target(generate_cxx_dom_api
-        COMMAND ${PYTHON_EXECUTABLE} generate_cxx_api.py SVG.json
-        COMMAND ${PYTHON_EXECUTABLE} generate_cxx_api.py dom.json
+        COMMAND ${PYTHON_EXECUTABLE} generate_cxx_api.py SVG.json "${CMAKE_SOURCE_DIR}/include/aeongui/dom"
+        COMMAND ${PYTHON_EXECUTABLE} generate_cxx_api.py dom.json "${CMAKE_SOURCE_DIR}/include/aeongui/dom"
         DEPENDS SVG.json dom.json
         SOURCES SVG.json dom.json
         WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}

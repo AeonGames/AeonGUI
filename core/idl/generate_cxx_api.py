@@ -34,13 +34,13 @@ limitations under the License.
 """
 
 def main():
-    if len(sys.argv) != 2:
-        print("Usage: {} <parsed idl>.json".format(sys.argv[0]))
+    if len(sys.argv) != 3:
+        print("Usage: {} <parsed idl>.json <output directory>".format(sys.argv[0]))
         sys.exit(1)
     idl = json.load(open(sys.argv[1], 'rt'))
     for i in idl['idlNames']:
         if idl['idlNames'][i]['type'] == 'interface':
-            header = open("{0}.h".format(i), 'wt')
+            header = open("{0}/{1}.h".format(sys.argv[2],i), 'wt')
             header.write(license)
             header.write("#ifndef AEONGUI_{0}_H\n".format(i.upper()))
             header.write("#define AEONGUI_{0}_H\n".format(i.upper()))
