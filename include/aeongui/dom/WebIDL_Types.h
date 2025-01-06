@@ -21,6 +21,7 @@ namespace AeonGUI
     namespace DOM
     {
         using DOMString = std::wstring;
+        using boolean = bool;
     }
 }
 #endif // AEONGUI_WEBIDL_TYPES_H
