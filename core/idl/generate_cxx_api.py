@@ -68,8 +68,7 @@ def main():
                     else:
                         if member['idlType']['idlType'] not in includes:
                             includes.append("{0}.h".format(member['idlType']['idlType']))
-                    print(member['default'])
-                    members.append("{0} {1}{2};".format(member['idlType']['idlType'], member['name'], "" if member['default'] == None or 'value' not in member['default'] else "{{{}}}".format(member['default']['value'])))
+                    members.append("{0} {1}{2};".format(member['idlType']['idlType'], member['name'], "" if member['default'] == None or 'value' not in member['default'] else "{{{}}}".format(str(member['default']['value']).lower() if 'type' in member['default'] and member['default']['type'] == 'boolean' else member['default']['value'])))
             write_header("{0}/{1}.h".format(sys.argv[2],i),idl['idlNames'][i],includes,members)
         elif idl['idlNames'][i]['type'] == 'interface':
             includes = []
