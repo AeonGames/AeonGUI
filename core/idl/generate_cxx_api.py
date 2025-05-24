@@ -15,6 +15,7 @@
 
 import sys
 import json
+import argparse
 
 license = """/*
 Copyright (C) 2025 Rodrigo Jose Hernandez Cordoba
@@ -52,15 +53,28 @@ def write_header(filename, idl, includes, members):
             header.close()
 
 def main():
-    if len(sys.argv) != 3:
-        print("Usage: {} <parsed idl>.json <output directory>".format(sys.argv[0]))
-        sys.exit(1)
-    idl = json.load(open(sys.argv[1], 'rt'))
-    for i in idl['idlNames']:
-        if idl['idlNames'][i]['type'] == 'dictionary':
+    parser = argparse.ArgumentParser(description='Generate C++ API from parsed IDL JSON')
+    parser.add_argument('idl_file', help='Parsed IDL JSON file')
+    parser.add_argument('output_dir', help='Output directory for generated headers')
+    parser.add_argument('--interface', metavar='NAME', help='Generate only the specified interface')
+    
+    args = parser.parse_args()
+    
+    idl = json.load(open(args.idl_file, 'rt'))
+    
+    # Filter IDL names if specific interface is requested
+    idl_names_to_process = idl['idlNames']
+    if args.interface:
+        if args.interface not in idl['idlNames']:
+            print("Error: Interface '{}' not found in IDL".format(args.interface))
+            sys.exit(1)
+        idl_names_to_process = {args.interface: idl['idlNames'][args.interface]}
+    
+    for i in idl_names_to_process:
+        if idl_names_to_process[i]['type'] == 'dictionary':
             includes = []
             members = []
-            for member in idl['idlNames'][i]['members']:
+            for member in idl_names_to_process[i]['members']:
                 if member['type'] == 'field':
                     if member['idlType']['idlType'] in IDL_TYPES:
                         if 'WebIDL_Types.h' not in includes:
@@ -69,13 +83,13 @@ def main():
                         if member['idlType']['idlType'] not in includes:
                             includes.append("{0}.h".format(member['idlType']['idlType']))
                     members.append("{0} {1}{2};".format(member['idlType']['idlType'], member['name'], "" if member['default'] == None or 'value' not in member['default'] else "{{{}}}".format(str(member['default']['value']).lower() if 'type' in member['default'] and member['default']['type'] == 'boolean' else member['default']['value'])))
-            write_header("{0}/{1}.h".format(sys.argv[2],i),idl['idlNames'][i],includes,members)
-        elif idl['idlNames'][i]['type'] == 'interface':
+            write_header("{0}/{1}.h".format(args.output_dir,i),idl_names_to_process[i],includes,members)
+        elif idl_names_to_process[i]['type'] == 'interface':
             includes = []
             members = []
-            if idl['idlNames'][i]['inheritance'] != None:
-                includes.append('{0}.h'.format(idl['idlNames'][i]['inheritance']))
-            for member in idl['idlNames'][i]['members']:
+            if idl_names_to_process[i]['inheritance'] != None:
+                includes.append('{0}.h'.format(idl_names_to_process[i]['inheritance']))
+            for member in idl_names_to_process[i]['members']:
                 if member['type'] == 'constructor':
                     arguments = []
                     for argument in member['arguments']:
@@ -87,6 +101,6 @@ def main():
                                 includes.append("{0}.h".format(argument['idlType']['idlType']))
                         arguments.append("{0} {1}{2}".format(argument['idlType']['idlType'], argument['name'], " = {}" if argument['optional'] else "" ))
                     members.append("{0}({1})".format(i,", ".join(arguments)))
-            write_header("{0}/{1}.h".format(sys.argv[2],i),idl['idlNames'][i],includes,members)
+            write_header("{0}/{1}.h".format(args.output_dir,i),idl_names_to_process[i],includes,members)
 if __name__ == "__main__":
     main()

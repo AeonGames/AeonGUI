@@ -41,9 +41,21 @@ if(REFFY_PARSE_WEBIDL)
 endif()
 
 if(Python3_Interpreter_FOUND)
+
+#function(generate_header interface)
+#add_custom_command(OUTPUT ${CMAKE_SOURCE_DIR}/include/aeongui/dom/Node.h
+#                   COMMAND ${Python3_EXECUTABLE} generate_cxx_api.py dom.json "${CMAKE_SOURCE_DIR}/include/aeongui/dom" --interface ${interface}
+#                    DEPENDS dom.json
+#                    WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
+#                    COMMENT "Generating ${interface}.h")
+#endfunction()
+#generate_source(Node)
+
+
+
     add_custom_target(generate_cxx_dom_api
-        COMMAND ${Python3_EXECUTABLE} generate_cxx_api.py SVG.json "${CMAKE_SOURCE_DIR}/include/aeongui/dom"
-        COMMAND ${Python3_EXECUTABLE} generate_cxx_api.py dom.json "${CMAKE_SOURCE_DIR}/include/aeongui/dom"
+        COMMAND ${Python3_EXECUTABLE} generate_cxx_api.py SVG.json "${CMAKE_SOURCE_DIR}/include/aeongui/dom" --interface SVGElement
+        COMMAND ${Python3_EXECUTABLE} generate_cxx_api.py dom.json "${CMAKE_SOURCE_DIR}/include/aeongui/dom" --interface Node
         DEPENDS SVG.json dom.json
         SOURCES SVG.json dom.json
         WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
