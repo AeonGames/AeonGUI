@@ -28,8 +28,6 @@ set(AEONGUI_HEADERS
 set(AEONGUI_SOURCES
     AeonGUI.cpp
     ElementFactory.cpp
-    Window.cpp
-    Document.cpp
     Rect.cpp
     Transform.cpp
     Vector2.cpp
@@ -42,6 +40,15 @@ set(AEONGUI_SOURCES
     Color.cpp
     CSS3Tokenizer.cpp
     StyleSheet.cpp
+    dom/Window.cpp
+    dom/Document.cpp
+    dom/DOMString.h
+    dom/AnyType.h
+    dom/Event.h
+    dom/Event.cpp
+    dom/EventTarget.h
+    dom/EventTarget.cpp
+    dom/EventListener.h
     dom/Node.cpp
     dom/CSSSelectHandler.cpp
     dom/Element.cpp
