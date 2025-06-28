@@ -36,6 +36,9 @@ limitations under the License.
 
 IDL_TYPES = ['DOMString','boolean']
 
+def capfirst(s):
+    return s[:1].upper() + s[1:]
+
 def write_header(filename, idl, includes, public, private):
             header = open(filename, 'wt')
             header.write(license)
@@ -104,7 +107,13 @@ def main():
                         arguments.append("{0} {1}{2}".format(argument['idlType']['idlType'], argument['name'], " = {}" if argument['optional'] else "" ))
                     constructor = "{0}({1})".format(idl_names_to_process[i]['name'],", ".join(arguments))
                 elif member['type'] == 'attribute':
-                    public.append("{0} {1};".format(member['idlType']['idlType'], member['name']))
+                    ref_or_pointer = '*' if member['idlType']['nullable'] else '&'
+                    public.append("const {0}{2} {1}() const;".format(member['idlType']['idlType'], member['name'], ref_or_pointer))
+                    if member['readonly'] == False:
+                        print(capfirst(member['idlType']['idlType']))
+                        public.append("void set{1}(const {0}{2} a{1});".format(member['idlType']['idlType'], capfirst(member['name']), ref_or_pointer))
+                    if ref_or_pointer == '&':
+                        private.append("{0} m{1};".format(member['idlType']['idlType'], capfirst(member['name'])))
             public.append(constructor)
             public.append(destructor)
         write_header("{0}/{1}.h".format(args.output_dir,i),idl_names_to_process[i],includes,public,private)
