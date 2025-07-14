@@ -15,8 +15,26 @@
                 "CHERE_INVOKING":"1"
             }
         },
+        "MinGW GCC Zsh": {
+            "path": "${ZSH_EXECUTABLE}",
+            "args": ["--login", "-i"],
+            "env":
+            {
+                "MSYSTEM": "MINGW64",
+                "CHERE_INVOKING":"1"
+            }
+        },        
         "MinGW Clang Bash": {
-            "path": "${BASH_EXECUTABLE}",
+            "path": "${ZSH_EXECUTABLE}",
+            "args": ["--login", "-i"],
+            "env":
+            {
+                "MSYSTEM": "CLANG64",
+                "CHERE_INVOKING":"1"
+            }
+        },
+        "MinGW Clang Zsh": {
+            "path": "${ZSH_EXECUTABLE}",
             "args": ["--login", "-i"],
             "env":
             {
@@ -26,6 +44,15 @@
         },
         "MinGW UCRT64 Bash": {
             "path": "${BASH_EXECUTABLE}",
+            "args": ["--login", "-i"],
+            "env":
+            {
+                "MSYSTEM": "UCRT64",
+                "CHERE_INVOKING":"1"
+            }
+        },
+        "MinGW UCRT64 Zsh": {
+            "path": "${ZSH_EXECUTABLE}",
             "args": ["--login", "-i"],
             "env":
             {

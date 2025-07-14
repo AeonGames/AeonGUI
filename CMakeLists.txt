@@ -22,6 +22,7 @@ find_package(OpenGL)
 find_package(Git)
 
 find_program(BASH_EXECUTABLE bash HINTS ENV MINGW_PREFIX MSYS2_PATH)
+find_program(ZSH_EXECUTABLE zsh HINTS ENV MINGW_PREFIX MSYS2_PATH)
 find_program(SED_EXECUTABLE sed
              HINTS ENV
                    MINGW_PREFIX
