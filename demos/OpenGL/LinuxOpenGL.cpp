@@ -29,8 +29,8 @@ limitations under the License.
 #include <GL/gl.h>
 #include <GL/glx.h>
 #include "aeongui/AeonGUI.h"
-#include "aeongui/dom/Window.h"
-#include "aeongui/dom/Document.h"
+#include "aeongui/dom/Window.hpp"
+#include "aeongui/dom/Document.hpp"
 #include "Common.h"
 
 class GLWindow
@@ -49,8 +49,8 @@ private:
     uint32_t mHeight;
     GLuint mScreenQuad{};
     GLuint mScreenTexture{};
-    AeonGUI::Document mDocument;
-    AeonGUI::Window mWindow;
+    AeonGUI::DOM::Document mDocument;
+    AeonGUI::DOM::Window mWindow;
 };
 
 GLWindow::GLWindow ( char* aFilename ) :
