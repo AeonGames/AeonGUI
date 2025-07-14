@@ -60,6 +60,29 @@ TO-DO List
 
 * Have the code that reads a document create element nodes wrapped into JavaScript classes.
 
+MISCELLANEOUS
+-------------
+
+## Installing Zsh on MSYS2
+
+If you want to use Zsh on MSYS2, with powerlevel10k theme you can install it with the following commands:
+
+```bash
+pacman -S zsh
+sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)"
+```
+
+After installing oh-my-zsh, you will be inside a zsh shell. You can install the powerlevel10k theme with:
+
+```bash
+git clone --depth=1 https://github.com/romkatv/powerlevel10k.git ${ZSH_CUSTOM:-$HOME/.oh-my-zsh/custom}/themes/powerlevel10k
+sed -i "s/^ZSH_THEME=.*/ZSH_THEME=\"powerlevel10k\/powerlevel10k\"/" ~/.zshrc
+```
+
+Then you can restart the shell to configure powerlevel10k.
+
+To have the multiple Msys2 terminals use zsh instead of bash, you can edit the corresponding .ini files under C:\msys64 to add a `SHELL=/usr/bin/zsh` line.
+
 AUTHORS
 -------
 
