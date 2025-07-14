@@ -19,7 +19,7 @@ limitations under the License.
 #include <string>
 #include "aeongui/Platform.h"
 #include "aeongui/CairoCanvas.h"
-#include "aeongui/dom/EventTarget.h"
+#include "aeongui/dom/EventTarget.hpp"
 
 namespace AeonGUI
 {

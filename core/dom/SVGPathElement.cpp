@@ -14,7 +14,7 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 #include <iostream>
-#include "aeongui/dom/SVGPathElement.h"
+#include "aeongui/dom/SVGPathElement.hpp"
 #include "aeongui/Canvas.h"
 
 namespace AeonGUI

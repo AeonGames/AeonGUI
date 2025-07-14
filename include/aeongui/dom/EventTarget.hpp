@@ -22,9 +22,9 @@ limitations under the License.
 #include <functional>
 #include <unordered_map>
 #include "aeongui/Platform.h"
-#include "AnyType.h"
-#include "DOMString.h"
-#include "EventListener.h"
+#include "AnyType.hpp"
+#include "DOMString.hpp"
+#include "EventListener.hpp"
 
 namespace AeonGUI
 {

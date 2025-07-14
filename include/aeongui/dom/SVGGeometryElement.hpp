@@ -13,21 +13,26 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 */
-#ifndef AEONGUI_SVGDEFSELEMENT_H
-#define AEONGUI_SVGDEFSELEMENT_H
+#ifndef AEONGUI_SVGGEOMETRYELEMENT_H
+#define AEONGUI_SVGGEOMETRYELEMENT_H
 
-#include "SVGGraphicsElement.h"
+#include <vector>
+#include "SVGGraphicsElement.hpp"
+// Path type should be selectable and should match Canvas type
+#include "aeongui/CairoPath.h"
 
 namespace AeonGUI
 {
     namespace DOM
     {
-        class SVGDefsElement : public SVGGraphicsElement
+        class SVGGeometryElement : public SVGGraphicsElement
         {
         public:
-            SVGDefsElement ( const std::string& aTagName, const AttributeMap& aAttributes, Node* aParent );
-            ~SVGDefsElement() final;
-            bool IsDrawEnabled() const final;
+            SVGGeometryElement ( const std::string& aTagName, const AttributeMap& aAttributes, Node* aParent );
+            ~SVGGeometryElement() override;
+            void DrawStart ( Canvas& aCanvas ) const final;
+        protected:
+            CairoPath mPath;
         };
     }
 }

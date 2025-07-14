@@ -14,7 +14,7 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 #include <iostream>
-#include "aeongui/dom/SVGGElement.h"
+#include "aeongui/dom/SVGGElement.hpp"
 #include "aeongui/Canvas.h"
 #include "aeongui/AttributeMap.h"
 

@@ -24,7 +24,7 @@ limitations under the License.
 #include "aeongui/Platform.h"
 #include "aeongui/AttributeMap.h"
 #include "aeongui/StyleSheet.h"
-#include "Node.h"
+#include "Node.hpp"
 
 namespace AeonGUI
 {

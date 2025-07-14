@@ -15,7 +15,7 @@ limitations under the License.
 */
 #include <iostream>
 #include <array>
-#include "aeongui/dom/SVGRectElement.h"
+#include "aeongui/dom/SVGRectElement.hpp"
 
 namespace AeonGUI
 {

@@ -13,21 +13,22 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 */
-#ifndef AEONGUI_SVGSTOPELEMENT_H
-#define AEONGUI_SVGSTOPELEMENT_H
+#ifndef AEONGUI_SVGLINEARGRADIENTELEMENT_H
+#define AEONGUI_SVGLINEARGRADIENTELEMENT_H
 
-#include "SVGElement.h"
+#include "SVGGradientElement.hpp"
+#include "aeongui/AttributeMap.h"
 
 namespace AeonGUI
 {
     namespace DOM
     {
 
-        class SVGStopElement : public SVGElement
+        class SVGLinearGradientElement : public SVGGradientElement
         {
         public:
-            SVGStopElement ( const std::string& aTagName, const AttributeMap& aAttributes, Node* aParent );
-            ~SVGStopElement() final;
+            SVGLinearGradientElement ( const std::string& aTagName, const AttributeMap& aAttributes, Node* aParent );
+            ~SVGLinearGradientElement() final;
         };
     }
 }

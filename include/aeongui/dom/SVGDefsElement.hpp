@@ -13,25 +13,22 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 */
-#ifndef AEONGUI_TEXT_H
-#define AEONGUI_TEXT_H
-#include <string>
-#include "aeongui/Platform.h"
-#include "Node.h"
+#ifndef AEONGUI_SVGDEFSELEMENT_H
+#define AEONGUI_SVGDEFSELEMENT_H
+
+#include "SVGGraphicsElement.hpp"
 
 namespace AeonGUI
 {
-    class Text : public Node
+    namespace DOM
     {
-    public:
-        DLL Text ( const std::string& aText, Node* aParent );
-        DLL ~Text() final;
-        /**DOM Properties and Methods @{*/
-        NodeType nodeType() const final;
-        std::string wholeText() const;
-        /**@}*/
-    private:
-        std::string mText{};
-    };
+        class SVGDefsElement : public SVGGraphicsElement
+        {
+        public:
+            SVGDefsElement ( const std::string& aTagName, const AttributeMap& aAttributes, Node* aParent );
+            ~SVGDefsElement() final;
+            bool IsDrawEnabled() const final;
+        };
+    }
 }
 #endif

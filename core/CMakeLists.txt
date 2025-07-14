@@ -23,34 +23,34 @@ set(AEONGUI_HEADERS
     ../include/aeongui/StyleSheet.h
 )
 set(AEONGUI_DOM_HEADERS
-    ../include/aeongui/dom/Window.h
-    ../include/aeongui/dom/Document.h
-    ../include/aeongui/dom/DOMString.h
-    ../include/aeongui/dom/AnyType.h
-    ../include/aeongui/dom/Event.h
-    ../include/aeongui/dom/EventTarget.h
-    ../include/aeongui/dom/EventListener.h
-    ../include/aeongui/dom/Node.h
-    ../include/aeongui/dom/CSSSelectHandler.h
-    ../include/aeongui/dom/Element.h
-    ../include/aeongui/dom/SVGGElement.h
-    ../include/aeongui/dom/SVGSVGElement.h
-    ../include/aeongui/dom/SVGElement.h
-    ../include/aeongui/dom/SVGGradientElement.h
-    ../include/aeongui/dom/SVGLinearGradientElement.h
-    ../include/aeongui/dom/SVGUseElement.h
-    ../include/aeongui/dom/SVGStopElement.h
-    ../include/aeongui/dom/SVGDefsElement.h
-    ../include/aeongui/dom/SVGPathElement.h
-    ../include/aeongui/dom/SVGGraphicsElement.h
-    ../include/aeongui/dom/SVGGeometryElement.h
-    ../include/aeongui/dom/SVGRectElement.h
-    ../include/aeongui/dom/SVGLineElement.h
-    ../include/aeongui/dom/SVGPolylineElement.h
-    ../include/aeongui/dom/SVGPolygonElement.h
-    ../include/aeongui/dom/SVGCircleElement.h
-    ../include/aeongui/dom/SVGEllipseElement.h
-    ../include/aeongui/dom/Text.h
+    ../include/aeongui/dom/Window.hpp
+    ../include/aeongui/dom/Document.hpp
+    ../include/aeongui/dom/DOMString.hpp
+    ../include/aeongui/dom/AnyType.hpp
+    ../include/aeongui/dom/Event.hpp
+    ../include/aeongui/dom/EventTarget.hpp
+    ../include/aeongui/dom/EventListener.hpp
+    ../include/aeongui/dom/Node.hpp
+    ../include/aeongui/dom/CSSSelectHandler.hpp
+    ../include/aeongui/dom/Element.hpp
+    ../include/aeongui/dom/SVGGElement.hpp
+    ../include/aeongui/dom/SVGSVGElement.hpp
+    ../include/aeongui/dom/SVGElement.hpp
+    ../include/aeongui/dom/SVGGradientElement.hpp
+    ../include/aeongui/dom/SVGLinearGradientElement.hpp
+    ../include/aeongui/dom/SVGUseElement.hpp
+    ../include/aeongui/dom/SVGStopElement.hpp
+    ../include/aeongui/dom/SVGDefsElement.hpp
+    ../include/aeongui/dom/SVGPathElement.hpp
+    ../include/aeongui/dom/SVGGraphicsElement.hpp
+    ../include/aeongui/dom/SVGGeometryElement.hpp
+    ../include/aeongui/dom/SVGRectElement.hpp
+    ../include/aeongui/dom/SVGLineElement.hpp
+    ../include/aeongui/dom/SVGPolylineElement.hpp
+    ../include/aeongui/dom/SVGPolygonElement.hpp
+    ../include/aeongui/dom/SVGCircleElement.hpp
+    ../include/aeongui/dom/SVGEllipseElement.hpp
+    ../include/aeongui/dom/Text.hpp
 )
 
 set(AEONGUI_SOURCES

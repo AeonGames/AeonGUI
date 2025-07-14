@@ -1,5 +1,5 @@
 /*
-Copyright (C) 2020,2024,2025 Rodrigo Jose Hernandez Cordoba
+Copyright (C) 2019,2020,2024,2025 Rodrigo Jose Hernandez Cordoba
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -13,23 +13,22 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 */
-#ifndef AEONGUI_SVGGRAPHICSELEMENT_H
-#define AEONGUI_SVGGRAPHICSELEMENT_H
+#ifndef AEONGUI_SVGPATHELEMENT_H
+#define AEONGUI_SVGPATHELEMENT_H
 
-#include "SVGElement.h"
-#include "aeongui/Matrix2x3.h"
+#include <vector>
+#include "aeongui/DrawType.h"
+#include "SVGGeometryElement.hpp"
+
 namespace AeonGUI
 {
     namespace DOM
     {
-        class SVGGraphicsElement : public SVGElement
+        class SVGPathElement : public SVGGeometryElement
         {
         public:
-            SVGGraphicsElement ( const std::string& aTagName, const AttributeMap& aAttributes, Node* aParent );
-            ~SVGGraphicsElement() override;
-            void DrawStart ( Canvas& aCanvas ) const override;
-        private:
-            Matrix2x3 mTransform{};
+            SVGPathElement ( const std::string& aTagName, const AttributeMap& aAttributes, Node* aParent );
+            ~SVGPathElement() final;
         };
     }
 }

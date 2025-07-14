@@ -13,20 +13,20 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 */
-#ifndef AEONGUI_SVGPOLYGONELEMENT_H
-#define AEONGUI_SVGPOLYGONELEMENT_H
+#ifndef AEONGUI_SVGELLIPSEELEMENT_H
+#define AEONGUI_SVGELLIPSEELEMENT_H
 
-#include "SVGGeometryElement.h"
+#include "SVGGeometryElement.hpp"
 
 namespace AeonGUI
 {
     namespace DOM
     {
-        class SVGPolygonElement : public SVGGeometryElement
+        class SVGEllipseElement : public SVGGeometryElement
         {
         public:
-            SVGPolygonElement ( const std::string& aTagName, const AttributeMap& aAttributes, Node* aParent );
-            ~SVGPolygonElement() final;
+            SVGEllipseElement ( const std::string& aTagName, const AttributeMap& aAttributes, Node* aParent );
+            ~SVGEllipseElement() final;
         };
     }
 }

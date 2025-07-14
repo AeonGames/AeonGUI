@@ -15,7 +15,7 @@ Copyright (C) 2010-2013,2019,2020,2023-2025 Rodrigo Hernandez Cordoba
 ******************************************************************************/
 #include <iostream>
 #include <string>
-#include "aeongui/dom/Node.h"
+#include "aeongui/dom/Node.hpp"
 #include "aeongui/Color.h"
 
 namespace AeonGUI

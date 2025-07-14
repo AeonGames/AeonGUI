@@ -20,8 +20,8 @@ limitations under the License.
 #include <vector>
 #include <chrono>
 #include "aeongui/Platform.h"
-#include "DOMString.h"
-#include "EventTarget.h"
+#include "DOMString.hpp"
+#include "EventTarget.hpp"
 
 namespace AeonGUI
 {

@@ -13,8 +13,8 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 */
-#include "aeongui/dom/SVGGraphicsElement.h"
-#include "aeongui/dom/CSSSelectHandler.h"
+#include "aeongui/dom/SVGGraphicsElement.hpp"
+#include "aeongui/dom/CSSSelectHandler.hpp"
 #include <libcss/libcss.h>
 
 namespace AeonGUI

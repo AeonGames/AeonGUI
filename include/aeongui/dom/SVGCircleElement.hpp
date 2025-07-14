@@ -13,22 +13,20 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 */
-#ifndef AEONGUI_SVGPATHELEMENT_H
-#define AEONGUI_SVGPATHELEMENT_H
+#ifndef AEONGUI_SVGCIRCLEELEMENT_H
+#define AEONGUI_SVGCIRCLEELEMENT_H
 
-#include <vector>
-#include "aeongui/DrawType.h"
-#include "SVGGeometryElement.h"
+#include "SVGGeometryElement.hpp"
 
 namespace AeonGUI
 {
     namespace DOM
     {
-        class SVGPathElement : public SVGGeometryElement
+        class SVGCircleElement : public SVGGeometryElement
         {
         public:
-            SVGPathElement ( const std::string& aTagName, const AttributeMap& aAttributes, Node* aParent );
-            ~SVGPathElement() final;
+            SVGCircleElement ( const std::string& aTagName, const AttributeMap& aAttributes, Node* aParent );
+            ~SVGCircleElement() final;
         };
     }
 }

@@ -27,8 +27,8 @@ limitations under the License.
 #include <cstdint>
 #include <crtdbg.h>
 #include "aeongui/AeonGUI.h"
-#include "aeongui/dom/Window.h"
-#include "aeongui/dom/Document.h"
+#include "aeongui/dom/Window.hpp"
+#include "aeongui/dom/Document.hpp"
 
 #define GLGETPROCADDRESS(glFunctionType,glFunction) \
     if(glFunction==nullptr) { \

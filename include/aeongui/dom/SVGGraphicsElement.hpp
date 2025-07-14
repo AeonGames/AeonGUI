@@ -13,20 +13,23 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 */
-#ifndef AEONGUI_SVGGRADIENTELEMENT_H
-#define AEONGUI_SVGGRADIENTELEMENT_H
+#ifndef AEONGUI_SVGGRAPHICSELEMENT_H
+#define AEONGUI_SVGGRAPHICSELEMENT_H
 
-#include "SVGElement.h"
-
+#include "SVGElement.hpp"
+#include "aeongui/Matrix2x3.h"
 namespace AeonGUI
 {
     namespace DOM
     {
-        class SVGGradientElement : public SVGElement
+        class SVGGraphicsElement : public SVGElement
         {
         public:
-            SVGGradientElement ( const std::string& aTagName, const AttributeMap& aAttributes, Node* aParent );
-            ~SVGGradientElement() override;
+            SVGGraphicsElement ( const std::string& aTagName, const AttributeMap& aAttributes, Node* aParent );
+            ~SVGGraphicsElement() override;
+            void DrawStart ( Canvas& aCanvas ) const override;
+        private:
+            Matrix2x3 mTransform{};
         };
     }
 }

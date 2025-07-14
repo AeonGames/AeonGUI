@@ -1,5 +1,5 @@
 /*
-Copyright (C) 2020,2024,2025 Rodrigo Jose Hernandez Cordoba
+Copyright (C) 2020,2023,2024,2025 Rodrigo Jose Hernandez Cordoba
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -13,22 +13,19 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 */
-#ifndef AEONGUI_SVGLINEARGRADIENTELEMENT_H
-#define AEONGUI_SVGLINEARGRADIENTELEMENT_H
+#ifndef AEONGUI_SVGELEMENT_H
+#define AEONGUI_SVGELEMENT_H
 
-#include "SVGGradientElement.h"
-#include "aeongui/AttributeMap.h"
-
+#include "Element.hpp"
 namespace AeonGUI
 {
     namespace DOM
     {
-
-        class SVGLinearGradientElement : public SVGGradientElement
+        class SVGElement : public Element
         {
         public:
-            SVGLinearGradientElement ( const std::string& aTagName, const AttributeMap& aAttributes, Node* aParent );
-            ~SVGLinearGradientElement() final;
+            SVGElement ( const std::string& aTagName, const AttributeMap& aAttributes, Node* aParent );
+            ~SVGElement() override;
         };
     }
 }

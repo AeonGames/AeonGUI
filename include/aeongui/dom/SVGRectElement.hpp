@@ -1,5 +1,5 @@
 /*
-Copyright (C) 2019,2020,2023-2025 Rodrigo Jose Hernandez Cordoba
+Copyright (C) 2019,2020,2024,2025 Rodrigo Jose Hernandez Cordoba
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -13,28 +13,27 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 */
-#ifndef AEONGUI_SVGSVGELEMENT_H
-#define AEONGUI_SVGSVGELEMENT_H
+#ifndef AEONGUI_SVGRECTELEMENT_H
+#define AEONGUI_SVGRECTELEMENT_H
 
-#include "SVGGraphicsElement.h"
-#include "aeongui/Attribute.hpp"
+#include "SVGGeometryElement.hpp"
 
 namespace AeonGUI
 {
     namespace DOM
     {
-        class SVGSVGElement : public SVGGraphicsElement
+        class SVGRectElement : public SVGGeometryElement
         {
         public:
-            SVGSVGElement ( const std::string& aTagName, const AttributeMap& aAttributes, Node* aParent );
-            ~SVGSVGElement() final;
-            void DrawStart ( Canvas& aCanvas ) const final;
+            SVGRectElement ( const std::string& aTagName, const AttributeMap& aAttributes, Node* aParent );
+            ~SVGRectElement() final;
         private:
-            // Attributes
             double mWidth{};
             double mHeight{};
-            ViewBox mViewBox{};
-            PreserveAspectRatio mPreserveAspectRatio{};
+            double mX{};
+            double mY{};
+            double mRx{};
+            double mRy{};
         };
     }
 }

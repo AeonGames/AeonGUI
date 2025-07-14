@@ -19,10 +19,10 @@ limitations under the License.
 #include <libxml/tree.h>
 #include <libxml/parser.h>
 #include <libcss/libcss.h>
-#include "aeongui/dom/Document.h"
 #include "aeongui/ElementFactory.h"
-#include "aeongui/dom/Text.h"
-#include "aeongui/dom/Element.h"
+#include "aeongui/dom/Document.hpp"
+#include "aeongui/dom/Text.hpp"
+#include "aeongui/dom/Element.hpp"
 
 namespace AeonGUI
 {
