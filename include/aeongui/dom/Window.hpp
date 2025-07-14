@@ -23,23 +23,26 @@ limitations under the License.
 
 namespace AeonGUI
 {
-    class Document;
-    class Window
+    namespace DOM
     {
-    public:
-        DLL Window ();
-        DLL Window ( uint32_t aWidth, uint32_t aHeight );
-        DLL Window ( const Document* aDocument, uint32_t aWidth, uint32_t aHeight );
-        DLL ~Window ();
-        DLL void ResizeViewport ( uint32_t aWidth, uint32_t aHeight );
-        DLL const uint8_t* GetPixels() const;
-        DLL size_t GetWidth() const;
-        DLL size_t GetHeight() const;
-        DLL size_t GetStride() const;
-        DLL void Draw();
-    private:
-        const Document* mDocument{};
-        CairoCanvas mCanvas{};
-    };
+        class Document;
+        class Window : public EventTarget
+        {
+        public:
+            DLL Window ();
+            DLL Window ( uint32_t aWidth, uint32_t aHeight );
+            DLL Window ( const Document* aDocument, uint32_t aWidth, uint32_t aHeight );
+            DLL ~Window () override final;
+            DLL void ResizeViewport ( uint32_t aWidth, uint32_t aHeight );
+            DLL const uint8_t* GetPixels() const;
+            DLL size_t GetWidth() const;
+            DLL size_t GetHeight() const;
+            DLL size_t GetStride() const;
+            DLL void Draw();
+        private:
+            const Document* mDocument{};
+            CairoCanvas mCanvas{};
+        };
+    }
 }
 #endif

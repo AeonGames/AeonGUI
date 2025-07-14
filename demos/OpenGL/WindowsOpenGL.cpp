@@ -95,8 +95,8 @@ private:
     GLuint mVAO{};
     GLuint mScreenQuad{};
     GLuint mScreenTexture{};
-    AeonGUI::Document mDocument{};
-    AeonGUI::Window mWindow{};
+    AeonGUI::DOM::Document mDocument{};
+    AeonGUI::DOM::Window mWindow{};
 };
 
 ATOM Window::atom = 0;

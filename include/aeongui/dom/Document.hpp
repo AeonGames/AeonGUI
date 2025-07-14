@@ -24,21 +24,24 @@ limitations under the License.
 #include "aeongui/StyleSheet.h"
 namespace AeonGUI
 {
-    class Document
+    namespace DOM
     {
-    public:
-        DLL Document();
-        DLL Document ( const std::string& aFilename );
-        DLL ~Document();
-        DLL void Draw ( Canvas& aCanvas ) const;
-        DLL void Load ();
-        DLL void Unload ();
-        /**DOM Properties and Methods @{*/
-        //DLL Node* documentElement();
-        /**@}*/
-    private:
-        Element* mDocumentElement{};
-        StyleSheetPtr mStyleSheet{};
-    };
+        class Document
+        {
+        public:
+            DLL Document();
+            DLL Document ( const std::string& aFilename );
+            DLL ~Document();
+            DLL void Draw ( Canvas& aCanvas ) const;
+            DLL void Load ();
+            DLL void Unload ();
+            /**DOM Properties and Methods @{*/
+            //DLL Node* documentElement();
+            /**@}*/
+        private:
+            Element* mDocumentElement{};
+            StyleSheetPtr mStyleSheet{};
+        };
+    }
 }
 #endif

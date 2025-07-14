@@ -19,6 +19,7 @@ namespace AeonGUI
 {
     namespace DOM
     {
+        EventTarget::~EventTarget() = default;
         void EventTarget::addEventListener ( const DOMString& type, EventListener* callback, const std::variant<std::monostate, AddEventListenerOptions, bool>& options )
         {
             if ( mEventListeners.find ( type ) == mEventListeners.end() )

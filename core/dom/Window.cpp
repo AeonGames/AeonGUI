@@ -26,49 +26,51 @@ limitations under the License.
 
 namespace AeonGUI
 {
-    Window::Window () = default;
-    Window::Window ( uint32_t aWidth, uint32_t aHeight ) :
-        mCanvas{aWidth, aHeight}
+    namespace DOM
     {
-    }
-
-    Window::Window ( const Document* aDocument, uint32_t aWidth, uint32_t aHeight ) :
-        mDocument{aDocument}, mCanvas{aWidth, aHeight}
-    {
-    }
-
-
-    Window::~Window() = default;
-
-    void Window::ResizeViewport ( uint32_t aWidth, uint32_t aHeight )
-    {
-        mCanvas.ResizeViewport ( aWidth, aHeight );
-    }
-
-    const uint8_t* Window::GetPixels() const
-    {
-        return mCanvas.GetPixels();
-    }
-
-    size_t Window::GetWidth() const
-    {
-        return mCanvas.GetWidth();
-    }
-    size_t Window::GetHeight() const
-    {
-        return mCanvas.GetHeight();
-    }
-    size_t Window::GetStride() const
-    {
-        return mCanvas.GetStride();
-    }
-
-    void Window::Draw()
-    {
-        mCanvas.Clear();
-        if ( mDocument != nullptr )
+        Window::Window () = default;
+        Window::Window ( uint32_t aWidth, uint32_t aHeight ) :
+            mCanvas{aWidth, aHeight}
         {
-            mDocument->Draw ( mCanvas );
+        }
+
+        Window::Window ( const Document* aDocument, uint32_t aWidth, uint32_t aHeight ) :
+            mDocument{aDocument}, mCanvas{aWidth, aHeight}
+        {
+        }
+
+        Window::~Window() = default;
+
+        void Window::ResizeViewport ( uint32_t aWidth, uint32_t aHeight )
+        {
+            mCanvas.ResizeViewport ( aWidth, aHeight );
+        }
+
+        const uint8_t* Window::GetPixels() const
+        {
+            return mCanvas.GetPixels();
+        }
+
+        size_t Window::GetWidth() const
+        {
+            return mCanvas.GetWidth();
+        }
+        size_t Window::GetHeight() const
+        {
+            return mCanvas.GetHeight();
+        }
+        size_t Window::GetStride() const
+        {
+            return mCanvas.GetStride();
+        }
+
+        void Window::Draw()
+        {
+            mCanvas.Clear();
+            if ( mDocument != nullptr )
+            {
+                mDocument->Draw ( mCanvas );
+            }
         }
     }
 }
