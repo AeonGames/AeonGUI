@@ -1,5 +1,5 @@
 /*
-Copyright (C) 2019,2020,2023,2024 Rodrigo Jose Hernandez Cordoba
+Copyright (C) 2019,2020,2023-2025 Rodrigo Jose Hernandez Cordoba
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -23,20 +23,20 @@ limitations under the License.
 #include <iostream>
 #include "aeongui/StringLiteral.h"
 #include "aeongui/ElementFactory.h"
-#include "dom/Element.h"
-#include "dom/SVGSVGElement.h"
-#include "dom/SVGGElement.h"
-#include "dom/SVGLinearGradientElement.h"
-#include "dom/SVGStopElement.h"
-#include "dom/SVGDefsElement.h"
-#include "dom/SVGUseElement.h"
-#include "dom/SVGPathElement.h"
-#include "dom/SVGRectElement.h"
-#include "dom/SVGLineElement.h"
-#include "dom/SVGPolylineElement.h"
-#include "dom/SVGPolygonElement.h"
-#include "dom/SVGCircleElement.h"
-#include "dom/SVGEllipseElement.h"
+#include "aeongui/dom/Element.h"
+#include "aeongui/dom/SVGSVGElement.h"
+#include "aeongui/dom/SVGGElement.h"
+#include "aeongui/dom/SVGLinearGradientElement.h"
+#include "aeongui/dom/SVGStopElement.h"
+#include "aeongui/dom/SVGDefsElement.h"
+#include "aeongui/dom/SVGUseElement.h"
+#include "aeongui/dom/SVGPathElement.h"
+#include "aeongui/dom/SVGRectElement.h"
+#include "aeongui/dom/SVGLineElement.h"
+#include "aeongui/dom/SVGPolylineElement.h"
+#include "aeongui/dom/SVGPolygonElement.h"
+#include "aeongui/dom/SVGCircleElement.h"
+#include "aeongui/dom/SVGEllipseElement.h"
 
 namespace AeonGUI
 {

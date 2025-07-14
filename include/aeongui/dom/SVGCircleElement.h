@@ -1,5 +1,5 @@
 /*
-Copyright (C) 2024 Rodrigo Jose Hernandez Cordoba
+Copyright (C) 2019,2020,2024,2025 Rodrigo Jose Hernandez Cordoba
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -13,12 +13,21 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 */
-#ifndef AEONGUI_CSSSELECTHANDLER_H
-#define AEONGUI_CSSSELECTHANDLER_H
-#include <libcss/libcss.h>
+#ifndef AEONGUI_SVGCIRCLEELEMENT_H
+#define AEONGUI_SVGCIRCLEELEMENT_H
+
+#include "SVGGeometryElement.h"
+
 namespace AeonGUI
 {
-    css_select_handler* GetSelectHandler();
-    css_unit_ctx* GetUnitLenCtx();
+    namespace DOM
+    {
+        class SVGCircleElement : public SVGGeometryElement
+        {
+        public:
+            SVGCircleElement ( const std::string& aTagName, const AttributeMap& aAttributes, Node* aParent );
+            ~SVGCircleElement() final;
+        };
+    }
 }
 #endif

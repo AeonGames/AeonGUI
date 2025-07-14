@@ -1,5 +1,5 @@
 /*
-Copyright (C) 2019,2020,2024 Rodrigo Jose Hernandez Cordoba
+Copyright (C) 2019,2020,2024,2025 Rodrigo Jose Hernandez Cordoba
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -13,20 +13,22 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 */
-#ifndef AEONGUI_SVGELLIPSEELEMENT_H
-#define AEONGUI_SVGELLIPSEELEMENT_H
+#ifndef AEONGUI_SVGGELEMENT_H
+#define AEONGUI_SVGGELEMENT_H
 
-#include "SVGGeometryElement.h"
+#include "SVGGraphicsElement.h"
+#include "aeongui/AttributeMap.h"
 
 namespace AeonGUI
 {
     namespace DOM
     {
-        class SVGEllipseElement : public SVGGeometryElement
+
+        class SVGGElement : public SVGGraphicsElement
         {
         public:
-            SVGEllipseElement ( const std::string& aTagName, const AttributeMap& aAttributes, Node* aParent );
-            ~SVGEllipseElement() final;
+            SVGGElement ( const std::string& aTagName, const AttributeMap& aAttributes, Node* aParent );
+            ~SVGGElement() final;
         };
     }
 }

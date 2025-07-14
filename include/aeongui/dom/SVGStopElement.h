@@ -1,5 +1,5 @@
 /*
-Copyright (C) 2020,2024 Rodrigo Jose Hernandez Cordoba
+Copyright (C) 2020,2024,2025 Rodrigo Jose Hernandez Cordoba
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -13,21 +13,21 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 */
-#ifndef AEONGUI_SVGDEFSELEMENT_H
-#define AEONGUI_SVGDEFSELEMENT_H
+#ifndef AEONGUI_SVGSTOPELEMENT_H
+#define AEONGUI_SVGSTOPELEMENT_H
 
-#include "SVGGraphicsElement.h"
+#include "SVGElement.h"
 
 namespace AeonGUI
 {
     namespace DOM
     {
-        class SVGDefsElement : public SVGGraphicsElement
+
+        class SVGStopElement : public SVGElement
         {
         public:
-            SVGDefsElement ( const std::string& aTagName, const AttributeMap& aAttributes, Node* aParent );
-            ~SVGDefsElement() final;
-            bool IsDrawEnabled() const final;
+            SVGStopElement ( const std::string& aTagName, const AttributeMap& aAttributes, Node* aParent );
+            ~SVGStopElement() final;
         };
     }
 }

@@ -1,5 +1,5 @@
 /*
-Copyright (C) 2010-2012,2019-2021,2023 Rodrigo Jose Hernandez Cordoba
+Copyright (C) 2010-2012,2019-2021,2023,2025 Rodrigo Jose Hernandez Cordoba
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -27,7 +27,8 @@ limitations under the License.
 #include <cstdint>
 #include <crtdbg.h>
 #include "aeongui/AeonGUI.h"
-#include "aeongui/Window.h"
+#include "aeongui/dom/Window.h"
+#include "aeongui/dom/Document.h"
 
 #define GLGETPROCADDRESS(glFunctionType,glFunction) \
     if(glFunction==nullptr) { \

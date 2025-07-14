@@ -1,5 +1,5 @@
 /*
-Copyright (C) 2019,2020,2023 Rodrigo Jose Hernandez Cordoba
+Copyright (C) 2019,2020,2023,2025 Rodrigo Jose Hernandez Cordoba
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -19,6 +19,7 @@ limitations under the License.
 #include <string>
 #include "aeongui/Platform.h"
 #include "aeongui/CairoCanvas.h"
+#include "aeongui/dom/EventTarget.h"
 
 namespace AeonGUI
 {

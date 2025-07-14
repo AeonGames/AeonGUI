@@ -1,5 +1,5 @@
 /*
-Copyright (C) 2020,2023,2024 Rodrigo Jose Hernandez Cordoba
+Copyright (C) 2019,2020,2024,2025 Rodrigo Jose Hernandez Cordoba
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -13,19 +13,27 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 */
-#ifndef AEONGUI_SVGELEMENT_H
-#define AEONGUI_SVGELEMENT_H
+#ifndef AEONGUI_SVGRECTELEMENT_H
+#define AEONGUI_SVGRECTELEMENT_H
 
-#include "Element.h"
+#include "SVGGeometryElement.h"
+
 namespace AeonGUI
 {
     namespace DOM
     {
-        class SVGElement : public Element
+        class SVGRectElement : public SVGGeometryElement
         {
         public:
-            SVGElement ( const std::string& aTagName, const AttributeMap& aAttributes, Node* aParent );
-            ~SVGElement() override;
+            SVGRectElement ( const std::string& aTagName, const AttributeMap& aAttributes, Node* aParent );
+            ~SVGRectElement() final;
+        private:
+            double mWidth{};
+            double mHeight{};
+            double mX{};
+            double mY{};
+            double mRx{};
+            double mRy{};
         };
     }
 }

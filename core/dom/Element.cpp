@@ -1,5 +1,5 @@
 /*
-Copyright (C) 2010-2013,2019,2020,2023,2024 Rodrigo Jose Hernandez Cordoba
+Copyright (C) 2010-2013,2019,2020,2023-2025 Rodrigo Jose Hernandez Cordoba
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -16,9 +16,9 @@ limitations under the License.
 
 #include <iostream>
 #include <string>
-#include "Element.h"
+#include "aeongui/dom/Element.h"
 #include "aeongui/Color.h"
-#include "CSSSelectHandler.h"
+#include "aeongui/dom/CSSSelectHandler.h"
 #include <libcss/libcss.h>
 namespace AeonGUI
 {

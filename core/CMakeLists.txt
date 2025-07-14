@@ -9,8 +9,6 @@ set(AEONGUI_HEADERS
     ../include/aeongui/Rect.h
     ../include/aeongui/ElementFactory.h
     ../include/aeongui/StringLiteral.h
-    ../include/aeongui/Document.h
-    ../include/aeongui/Window.h
     ../include/aeongui/Canvas.h
     ../include/aeongui/CairoCanvas.h
     ../include/aeongui/CairoPath.h
@@ -23,6 +21,36 @@ set(AEONGUI_HEADERS
     ../include/aeongui/DrawType.h
     ../include/aeongui/Color.h
     ../include/aeongui/StyleSheet.h
+)
+set(AEONGUI_DOM_HEADERS
+    ../include/aeongui/dom/Window.h
+    ../include/aeongui/dom/Document.h
+    ../include/aeongui/dom/DOMString.h
+    ../include/aeongui/dom/AnyType.h
+    ../include/aeongui/dom/Event.h
+    ../include/aeongui/dom/EventTarget.h
+    ../include/aeongui/dom/EventListener.h
+    ../include/aeongui/dom/Node.h
+    ../include/aeongui/dom/CSSSelectHandler.h
+    ../include/aeongui/dom/Element.h
+    ../include/aeongui/dom/SVGGElement.h
+    ../include/aeongui/dom/SVGSVGElement.h
+    ../include/aeongui/dom/SVGElement.h
+    ../include/aeongui/dom/SVGGradientElement.h
+    ../include/aeongui/dom/SVGLinearGradientElement.h
+    ../include/aeongui/dom/SVGUseElement.h
+    ../include/aeongui/dom/SVGStopElement.h
+    ../include/aeongui/dom/SVGDefsElement.h
+    ../include/aeongui/dom/SVGPathElement.h
+    ../include/aeongui/dom/SVGGraphicsElement.h
+    ../include/aeongui/dom/SVGGeometryElement.h
+    ../include/aeongui/dom/SVGRectElement.h
+    ../include/aeongui/dom/SVGLineElement.h
+    ../include/aeongui/dom/SVGPolylineElement.h
+    ../include/aeongui/dom/SVGPolygonElement.h
+    ../include/aeongui/dom/SVGCircleElement.h
+    ../include/aeongui/dom/SVGEllipseElement.h
+    ../include/aeongui/dom/Text.h
 )
 
 set(AEONGUI_SOURCES
@@ -40,15 +68,12 @@ set(AEONGUI_SOURCES
     Color.cpp
     CSS3Tokenizer.cpp
     StyleSheet.cpp
+)
+set(AEONGUI_DOM_SOURCES
     dom/Window.cpp
     dom/Document.cpp
-    dom/DOMString.h
-    dom/AnyType.h
-    dom/Event.h
     dom/Event.cpp
-    dom/EventTarget.h
     dom/EventTarget.cpp
-    dom/EventListener.h
     dom/Node.cpp
     dom/CSSSelectHandler.cpp
     dom/Element.cpp
@@ -71,27 +96,6 @@ set(AEONGUI_SOURCES
     dom/SVGEllipseElement.cpp
     dom/Text.cpp
     dom/Attribute.cpp
-    dom/Node.h
-    dom/CSSSelectHandler.h
-    dom/Element.h
-    dom/SVGGElement.h
-    dom/SVGSVGElement.h
-    dom/SVGElement.h
-    dom/SVGGradientElement.h
-    dom/SVGLinearGradientElement.h
-    dom/SVGUseElement.h
-    dom/SVGStopElement.h
-    dom/SVGDefsElement.h
-    dom/SVGPathElement.h
-    dom/SVGGraphicsElement.h
-    dom/SVGGeometryElement.h
-    dom/SVGRectElement.h
-    dom/SVGLineElement.h
-    dom/SVGPolylineElement.h
-    dom/SVGPolygonElement.h
-    dom/SVGCircleElement.h
-    dom/SVGEllipseElement.h
-    dom/Text.h
 )
 
 if(USE_CUDA)
@@ -110,8 +114,8 @@ endif(USE_CUDA)
 parser_code(path_data ${CMAKE_CURRENT_SOURCE_DIR}/parsers ${CMAKE_CURRENT_SOURCE_DIR}/parsers)
 #parser_code(style ${CMAKE_CURRENT_SOURCE_DIR}/parsers ${CMAKE_CURRENT_SOURCE_DIR}/parsers)
 
-include_directories(${CAIRO_INCLUDE_DIRS} ${FREETYPE_INCLUDE_DIR_freetype2} ${FREETYPE_INCLUDE_DIR_ft2build} ${V8_INCLUDE_DIRS})
-add_library(AeonGUI SHARED ${AEONGUI_HEADERS} ${AEONGUI_SOURCES} ${AEONGUI_RESOURCES} ${BISON_path_data_parser_OUTPUTS} ${FLEX_path_data_lexer_OUTPUTS})
+include_directories(${CAIRO_INCLUDE_DIRS} ${FREETYPE_INCLUDE_DIR_freetype2} ${FREETYPE_INCLUDE_DIR_ft2build} ${LIBXML2_INCLUDE_DIRS})
+add_library(AeonGUI SHARED ${AEONGUI_HEADERS} ${AEONGUI_SOURCES} ${AEONGUI_DOM_HEADERS} ${AEONGUI_DOM_SOURCES} ${AEONGUI_RESOURCES} ${BISON_path_data_parser_OUTPUTS} ${FLEX_path_data_lexer_OUTPUTS})
 set_target_properties(AeonGUI PROPERTIES COMPILE_FLAGS "-DNOMINMAX -D_CRT_SECURE_NO_WARNINGS")
 target_link_libraries(AeonGUI PRIVATE libcss ${pkgcfg_lib_CAIRO_cairo} ${LIBXML2_LIBRARIES} ${FREETYPE_LIBRARIES})
 

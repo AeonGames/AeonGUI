@@ -1,5 +1,5 @@
 /******************************************************************************
-Copyright (C) 2010-2013,2019,2020,2023,2024 Rodrigo Hernandez Cordoba
+Copyright (C) 2010-2013,2019,2020,2023-2025 Rodrigo Hernandez Cordoba
 
    Licensed under the Apache License, Version 2.0 (the "License");
    you may not use this file except in compliance with the License.
@@ -15,7 +15,7 @@ Copyright (C) 2010-2013,2019,2020,2023,2024 Rodrigo Hernandez Cordoba
 ******************************************************************************/
 #include <iostream>
 #include <string>
-#include "Node.h"
+#include "aeongui/dom/Node.h"
 #include "aeongui/Color.h"
 
 namespace AeonGUI

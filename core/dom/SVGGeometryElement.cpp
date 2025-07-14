@@ -1,5 +1,5 @@
 /*
-Copyright (C) 2020,2024 Rodrigo Jose Hernandez Cordoba
+Copyright (C) 2020,2024,2025 Rodrigo Jose Hernandez Cordoba
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -14,8 +14,8 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 #include <iostream>
-#include "SVGGeometryElement.h"
-#include "CSSSelectHandler.h"
+#include "aeongui/dom/SVGGeometryElement.h"
+#include "aeongui/dom/CSSSelectHandler.h"
 #include <libcss/libcss.h>
 
 namespace AeonGUI
