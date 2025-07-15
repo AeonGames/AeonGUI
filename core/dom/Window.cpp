@@ -34,12 +34,18 @@ namespace AeonGUI
         {
         }
 
-        Window::Window ( const Document* aDocument, uint32_t aWidth, uint32_t aHeight ) :
-            mDocument{aDocument}, mCanvas{aWidth, aHeight}
+        Window::~Window() = default;
+
+        const Document* Window::document() const
         {
+            return &mDocument;
         }
 
-        Window::~Window() = default;
+        Window* Window::open ( const USVString& url, const DOMString& target, const DOMString& features )
+        {
+            mDocument.open ( url );
+            return this;
+        }
 
         void Window::ResizeViewport ( uint32_t aWidth, uint32_t aHeight )
         {
@@ -67,10 +73,7 @@ namespace AeonGUI
         void Window::Draw()
         {
             mCanvas.Clear();
-            if ( mDocument != nullptr )
-            {
-                mDocument->Draw ( mCanvas );
-            }
+            mDocument.Draw ( mCanvas );
         }
     }
 }

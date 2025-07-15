@@ -1,4 +1,3 @@
-
 find_package(BISON)
 find_package(FLEX)
 add_subdirectory(idl)
@@ -30,7 +29,6 @@ set(AEONGUI_DOM_HEADERS
     ../include/aeongui/dom/EventTarget.hpp
     ../include/aeongui/dom/EventListener.hpp
     ../include/aeongui/dom/Node.hpp
-    ../include/aeongui/dom/CSSSelectHandler.hpp
     ../include/aeongui/dom/Element.hpp
     ../include/aeongui/dom/SVGGElement.hpp
     ../include/aeongui/dom/SVGSVGElement.hpp
@@ -67,6 +65,8 @@ set(AEONGUI_SOURCES
     CairoPath.cpp
     Color.cpp
     StyleSheet.cpp
+    CSSSelectHandler.cpp
+    CSSSelectHandler.hpp
 )
 set(AEONGUI_DOM_SOURCES
     dom/Window.cpp
@@ -74,7 +74,6 @@ set(AEONGUI_DOM_SOURCES
     dom/Event.cpp
     dom/EventTarget.cpp
     dom/Node.cpp
-    dom/CSSSelectHandler.cpp
     dom/Element.cpp
     dom/SVGElement.cpp
     dom/SVGSVGElement.cpp
@@ -121,6 +120,7 @@ target_link_libraries(AeonGUI PRIVATE libcss ${pkgcfg_lib_CAIRO_cairo} ${LIBXML2
 target_precompile_headers(AeonGUI
   PUBLIC
     ${AEONGUI_HEADERS}
+    ${AEONGUI_DOM_HEADERS}
   PRIVATE
     <cairo.h>
     <string>

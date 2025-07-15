@@ -22,21 +22,23 @@ limitations under the License.
 #include "aeongui/Platform.h"
 #include "aeongui/Canvas.h"
 #include "aeongui/StyleSheet.h"
+#include "aeongui/dom/Node.hpp"
+#include "aeongui/dom/USVString.hpp"
 namespace AeonGUI
 {
     namespace DOM
     {
-        class Document
+        class Document : public Node
         {
         public:
             DLL Document();
-            DLL Document ( const std::string& aFilename );
+            DLL void open ( const USVString& aFilename ); /// @todo replace with the proper DOM method
             DLL ~Document();
             DLL void Draw ( Canvas& aCanvas ) const;
             DLL void Load ();
             DLL void Unload ();
             /**DOM Properties and Methods @{*/
-            //DLL Node* documentElement();
+            DLL NodeType nodeType() const final;
             /**@}*/
         private:
             Element* mDocumentElement{};

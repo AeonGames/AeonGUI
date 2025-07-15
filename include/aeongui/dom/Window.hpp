@@ -20,18 +20,25 @@ limitations under the License.
 #include "aeongui/Platform.h"
 #include "aeongui/CairoCanvas.h"
 #include "aeongui/dom/EventTarget.hpp"
+#include "aeongui/dom/USVString.hpp"
+#include "aeongui/dom/Document.hpp"
 
 namespace AeonGUI
 {
     namespace DOM
     {
         class Document;
+        /**
+         * Window class represents a window in the AeonGUI framework.
+         * It is used to display a Document and manage its rendering.
+         * The IDL for the Window interface is located at https://html.spec.whatwg.org/multipage/nav-history-apis.html#window
+         * This class is a partial implementation of that specification.
+         */
         class Window : public EventTarget
         {
         public:
             DLL Window ();
             DLL Window ( uint32_t aWidth, uint32_t aHeight );
-            DLL Window ( const Document* aDocument, uint32_t aWidth, uint32_t aHeight );
             DLL ~Window () override final;
             DLL void ResizeViewport ( uint32_t aWidth, uint32_t aHeight );
             DLL const uint8_t* GetPixels() const;
@@ -39,8 +46,12 @@ namespace AeonGUI
             DLL size_t GetHeight() const;
             DLL size_t GetStride() const;
             DLL void Draw();
+            /**DOM Properties and Methods @{*/
+            DLL const Document* document() const;
+            /**@}*/
+            DLL Window* open ( const USVString& url = u8"", const DOMString& target = u8"_blank", const DOMString& features = u8"" );
         private:
-            const Document* mDocument{};
+            Document mDocument{};
             CairoCanvas mCanvas{};
         };
     }

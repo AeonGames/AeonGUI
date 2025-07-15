@@ -73,12 +73,17 @@ namespace AeonGUI
             return CSS_OK;
         }
 
-        Document::Document ( const std::string& aFilename )
+        Node::NodeType Document::nodeType() const
         {
-            xmlDocPtr document{xmlReadFile ( aFilename.c_str(), nullptr, 0 ) };
+            return NodeType::DOCUMENT_NODE;
+        }
+
+        void Document::open ( const USVString& aFilename )
+        {
+            xmlDocPtr document{xmlReadFile ( reinterpret_cast<const char*> ( aFilename.c_str() ), nullptr, 0 ) };
             if ( document == nullptr )
             {
-                throw std::runtime_error ( "Could not parse xml file" );
+                throw std::runtime_error ( "Could not open xml file" );
             }
 
             css_error code{};
@@ -86,8 +91,8 @@ namespace AeonGUI
             params.params_version = CSS_STYLESHEET_PARAMS_VERSION_1;
             params.level = CSS_LEVEL_21;
             params.charset = "UTF-8";
-            params.url = aFilename.c_str();
-            params.title = aFilename.c_str();
+            params.url = reinterpret_cast<const char*> ( aFilename.c_str() );
+            params.title = reinterpret_cast<const char*> ( aFilename.c_str() );
             params.allow_quirks = false;
             params.inline_style = false;
             params.resolve = resolve_url;

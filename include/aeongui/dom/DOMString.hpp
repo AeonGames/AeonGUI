@@ -22,6 +22,11 @@ namespace AeonGUI
 {
     namespace DOM
     {
+        /** Represents a string in the Document Object Model (DOM).
+         * The DOM specifies that the DOMString type is a sequence of UTF-16 code units,
+         * but in this implementation, it is represented as a UTF-8 string which is more efficient and easier to work with.
+         * If there is a need to handle UTF-16 specifically, it can be converted as needed.
+         */
         using DOMString = std::u8string;
     }
 }

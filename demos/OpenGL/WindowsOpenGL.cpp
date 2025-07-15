@@ -68,9 +68,9 @@ class Window
 {
 public:
     Window ( HINSTANCE hInstance, LPSTR aFilename, LONG aWidth, LONG aHeight ) :
-        mDocument{aFilename ? aFilename : ""}, mWindow{&mDocument, static_cast<uint32_t> ( aWidth ), static_cast<uint32_t> ( aHeight ) }
+        mWindow{static_cast<uint32_t> ( aWidth ), static_cast<uint32_t> ( aHeight ) }
     {
-        Initialize ( hInstance, aWidth, aHeight );
+        Initialize ( hInstance, aFilename, aWidth, aHeight );
     }
     ~Window()
     {
@@ -86,7 +86,7 @@ public:
     void RenderLoop();
 private:
     static ATOM atom;
-    void Initialize ( HINSTANCE hInstance, LONG aWidth, LONG aHeight );
+    void Initialize ( HINSTANCE hInstance, LPSTR aFilename, LONG aWidth, LONG aHeight );
     void Finalize();
     HWND hWnd{};
     HDC hDC{};
@@ -95,13 +95,12 @@ private:
     GLuint mVAO{};
     GLuint mScreenQuad{};
     GLuint mScreenTexture{};
-    AeonGUI::DOM::Document mDocument{};
     AeonGUI::DOM::Window mWindow{};
 };
 
 ATOM Window::atom = 0;
 
-void Window::Initialize ( HINSTANCE hInstance, LONG aWidth, LONG aHeight )
+void Window::Initialize ( HINSTANCE hInstance, LPSTR aFilename, LONG aWidth, LONG aHeight )
 {
     std::cout << "Width: " << mWindow.GetWidth() << std::endl;
     std::cout << "Height: " << mWindow.GetHeight() << std::endl;
@@ -310,7 +309,7 @@ void Window::Initialize ( HINSTANCE hInstance, LONG aWidth, LONG aHeight )
     OPENGL_CHECK_ERROR;
     glActiveTexture ( GL_TEXTURE0 );
     OPENGL_CHECK_ERROR;
-
+    mWindow.open ( aFilename ? reinterpret_cast<const char8_t*> ( aFilename ) : u8"" );
     ShowWindow ( hWnd, SW_SHOW );
 }
 

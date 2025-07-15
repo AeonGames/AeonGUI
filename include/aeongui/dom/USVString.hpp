@@ -13,15 +13,16 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 */
-#ifndef AEONGUI_WEBIDL_TYPES_H
-#define AEONGUI_WEBIDL_TYPES_H
+#ifndef AEONGUI_DOM_USVSTRING_H
+#define AEONGUI_DOM_USVSTRING_H
 #include <string>
+#include "aeongui/Platform.h"
+
 namespace AeonGUI
 {
     namespace DOM
     {
-        using DOMString = std::wstring;
-        using boolean = bool;
+        using USVString = std::u8string;
     }
 }
-#endif // AEONGUI_WEBIDL_TYPES_H
+#endif
