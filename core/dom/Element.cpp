@@ -18,7 +18,7 @@ limitations under the License.
 #include <string>
 #include "aeongui/Color.h"
 #include "aeongui/dom/Element.hpp"
-#include "aeongui/dom/CSSSelectHandler.hpp"
+#include "CSSSelectHandler.hpp"
 #include <libcss/libcss.h>
 namespace AeonGUI
 {

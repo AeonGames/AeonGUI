@@ -15,7 +15,7 @@ limitations under the License.
 */
 #include <iostream>
 #include "aeongui/dom/SVGGeometryElement.hpp"
-#include "aeongui/dom/CSSSelectHandler.hpp"
+#include "CSSSelectHandler.hpp"
 #include <libcss/libcss.h>
 
 namespace AeonGUI
