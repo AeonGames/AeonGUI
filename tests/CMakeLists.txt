@@ -30,11 +30,10 @@ include_directories(${GTEST_INCLUDE_DIR}
                     ${CMAKE_SOURCE_DIR}/include
                     ${CAIRO_INCLUDE_DIRS})
 set(TESTED_SRCS
-    ${CMAKE_SOURCE_DIR}/include/aeongui/CSS3Tokenizer.h
 )
+
 set(TEST_SRCS
     Main.cpp
-    CSS3TokenizerTest.cpp
 )
 
 source_group("Tested" FILES ${TESTED_SRCS})

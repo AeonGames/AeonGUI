@@ -12,7 +12,6 @@ set(AEONGUI_HEADERS
     ../include/aeongui/Canvas.h
     ../include/aeongui/CairoCanvas.h
     ../include/aeongui/CairoPath.h
-    ../include/aeongui/CSS3Tokenizer.h
     ../include/aeongui/Path.h
     ../include/aeongui/AABB.h
     ../include/aeongui/Matrix2x3.h
@@ -51,6 +50,7 @@ set(AEONGUI_DOM_HEADERS
     ../include/aeongui/dom/SVGCircleElement.hpp
     ../include/aeongui/dom/SVGEllipseElement.hpp
     ../include/aeongui/dom/Text.hpp
+    ../include/aeongui/dom/USVString.hpp
 )
 
 set(AEONGUI_SOURCES
@@ -66,7 +66,6 @@ set(AEONGUI_SOURCES
     Path.cpp
     CairoPath.cpp
     Color.cpp
-    CSS3Tokenizer.cpp
     StyleSheet.cpp
 )
 set(AEONGUI_DOM_SOURCES
