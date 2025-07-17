@@ -20,56 +20,58 @@ Copyright (C) 2010-2013,2019,2020,2023-2025 Rodrigo Hernandez Cordoba
 
 namespace AeonGUI
 {
-    Node::Node ( Node* aParent ) : mParent{aParent} {};
-    Node::~Node() = default;
+    namespace DOM
+    {
+        Node::Node ( Node* aParent ) : mParent{aParent} {};
+        Node::~Node() = default;
 
-    const std::vector<Node*>& Node::childNodes() const
-    {
-        return mChildren;
-    }
+        const std::vector<Node*>& Node::childNodes() const
+        {
+            return mChildren;
+        }
 
-    bool Node::IsDrawEnabled() const
-    {
-        return true;
-    }
+        bool Node::IsDrawEnabled() const
+        {
+            return true;
+        }
 
-    void Node::DrawStart ( Canvas& aCanvas ) const
-    {
-        // Do nothing by default
-        ( void ) aCanvas;
-    }
+        void Node::DrawStart ( Canvas& aCanvas ) const
+        {
+            // Do nothing by default
+            ( void ) aCanvas;
+        }
 
-    void Node::DrawFinish ( Canvas& aCanvas ) const
-    {
-        // Do nothing by default
-        ( void ) aCanvas;
-    }
+        void Node::DrawFinish ( Canvas& aCanvas ) const
+        {
+            // Do nothing by default
+            ( void ) aCanvas;
+        }
 
-    void Node::Load ()
-    {
-        // Do nothing by default
-    }
+        void Node::Load ()
+        {
+            // Do nothing by default
+        }
 
-    void Node::Unload ()
-    {
-        // Do nothing by default
-    }
+        void Node::Unload ()
+        {
+            // Do nothing by default
+        }
 
-    Node* Node::parentNode() const
-    {
-        return mParent;
-    }
-    Node* Node::parentElement() const
-    {
-        if ( mParent && mParent->nodeType() == ELEMENT_NODE )
+        Node* Node::parentNode() const
         {
             return mParent;
         }
-        return nullptr;
-    }
+        Node* Node::parentElement() const
+        {
+            if ( mParent && mParent->nodeType() == ELEMENT_NODE )
+            {
+                return mParent;
+            }
+            return nullptr;
+        }
 
-    /*  This is ugly, but it is only way to use the same code for the const and the non const version
-        without having to add template or friend members to the class declaration. */
+        /*  This is ugly, but it is only way to use the same code for the const and the non const version
+            without having to add template or friend members to the class declaration. */
 #define TraverseDepthFirstPreOrder(...) \
     void Node::TraverseDepthFirstPreOrder ( const std::function<void ( __VA_ARGS__ Node* ) >& aAction ) __VA_ARGS__ \
     {\
@@ -97,8 +99,8 @@ namespace AeonGUI
         }\
     }
 
-    TraverseDepthFirstPreOrder ( const )
-    TraverseDepthFirstPreOrder( )
+        TraverseDepthFirstPreOrder ( const )
+        TraverseDepthFirstPreOrder( )
 #undef TraverseDepthFirstPreOrder
 
 #define TraverseDepthFirstPostOrder(...) \
@@ -127,8 +129,8 @@ namespace AeonGUI
         } \
     }
 
-    TraverseDepthFirstPostOrder ( const )
-    TraverseDepthFirstPostOrder( )
+        TraverseDepthFirstPostOrder ( const )
+        TraverseDepthFirstPostOrder( )
 #undef TraverseDepthFirstPostOrder
 
 
@@ -158,8 +160,8 @@ namespace AeonGUI
         } \
     }
 
-    TraverseDepthFirstPostOrder ( const )
-    TraverseDepthFirstPostOrder( )
+        TraverseDepthFirstPostOrder ( const )
+        TraverseDepthFirstPostOrder( )
 #undef TraverseDepthFirstPostOrder
 
 #define TraverseDepthFirstPostOrder(...) \
@@ -190,45 +192,46 @@ namespace AeonGUI
         } \
     }
 
-    TraverseDepthFirstPostOrder ( const )
-    TraverseDepthFirstPostOrder( )
+        TraverseDepthFirstPostOrder ( const )
+        TraverseDepthFirstPostOrder( )
 #undef TraverseDepthFirstPostOrder
 
-    void Node::OnAncestorChanged()
-    {
-        // Do nothing by default
-    }
-
-    Node* Node::AddNode ( Node* aNode )
-    {
-        aNode->mParent = this;
-        Node* node { mChildren.emplace_back ( aNode ) };
-        node->TraverseDepthFirstPreOrder (  (
-                                                [] ( Node * node )
+        void Node::OnAncestorChanged()
         {
-            node->OnAncestorChanged();
-        } ) );
-        return node;
-    }
-
-    Node* Node::RemoveNode ( const Node* aNode )
-    {
-        Node* node{};
-        auto i = std::find_if ( mChildren.begin(), mChildren.end(), [aNode] ( const Node * node )
-        {
-            return aNode == node;
-        } );
-        if ( i != mChildren.end() )
-        {
-            node = std::move ( *i );
-            mChildren.erase ( std::remove ( i, mChildren.end(), *i ), mChildren.end() );
+            // Do nothing by default
         }
-        node->mParent = nullptr;
-        node->TraverseDepthFirstPreOrder (  (
-                                                [] ( Node * node )
+
+        Node* Node::AddNode ( Node* aNode )
         {
-            node->OnAncestorChanged();
-        } ) );
-        return node;
+            aNode->mParent = this;
+            Node* node { mChildren.emplace_back ( aNode ) };
+            node->TraverseDepthFirstPreOrder (  (
+                                                    [] ( Node * node )
+            {
+                node->OnAncestorChanged();
+            } ) );
+            return node;
+        }
+
+        Node* Node::RemoveNode ( const Node* aNode )
+        {
+            Node* node{};
+            auto i = std::find_if ( mChildren.begin(), mChildren.end(), [aNode] ( const Node * node )
+            {
+                return aNode == node;
+            } );
+            if ( i != mChildren.end() )
+            {
+                node = std::move ( *i );
+                mChildren.erase ( std::remove ( i, mChildren.end(), *i ), mChildren.end() );
+            }
+            node->mParent = nullptr;
+            node->TraverseDepthFirstPreOrder (  (
+                                                    [] ( Node * node )
+            {
+                node->OnAncestorChanged();
+            } ) );
+            return node;
+        }
     }
 }

@@ -27,7 +27,7 @@ namespace AeonGUI
         class SVGPathElement : public SVGGeometryElement
         {
         public:
-            SVGPathElement ( const std::string& aTagName, const AttributeMap& aAttributes, Node* aParent );
+            SVGPathElement ( const DOMString& aTagName, const AttributeMap& aAttributes, Node* aParent );
             ~SVGPathElement() final;
         };
     }

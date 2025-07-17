@@ -28,7 +28,7 @@ namespace AeonGUI
         class SVGGeometryElement : public SVGGraphicsElement
         {
         public:
-            SVGGeometryElement ( const std::string& aTagName, const AttributeMap& aAttributes, Node* aParent );
+            SVGGeometryElement ( const DOMString& aTagName, const AttributeMap& aAttributes, Node* aParent );
             ~SVGGeometryElement() override;
             void DrawStart ( Canvas& aCanvas ) const final;
         protected:

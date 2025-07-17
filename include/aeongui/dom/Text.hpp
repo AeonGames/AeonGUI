@@ -21,17 +21,20 @@ limitations under the License.
 
 namespace AeonGUI
 {
-    class Text : public Node
+    namespace DOM
     {
-    public:
-        DLL Text ( const std::string& aText, Node* aParent );
-        DLL ~Text() final;
-        /**DOM Properties and Methods @{*/
-        NodeType nodeType() const final;
-        std::string wholeText() const;
-        /**@}*/
-    private:
-        std::string mText{};
-    };
+        class Text : public Node
+        {
+        public:
+            DLL Text ( const std::string& aText, Node* aParent );
+            DLL ~Text() final;
+            /**DOM Properties and Methods @{*/
+            NodeType nodeType() const final;
+            std::string wholeText() const;
+            /**@}*/
+        private:
+            std::string mText{};
+        };
+    }
 }
 #endif

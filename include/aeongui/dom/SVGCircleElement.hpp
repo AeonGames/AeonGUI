@@ -25,7 +25,7 @@ namespace AeonGUI
         class SVGCircleElement : public SVGGeometryElement
         {
         public:
-            SVGCircleElement ( const std::string& aTagName, const AttributeMap& aAttributes, Node* aParent );
+            SVGCircleElement ( const DOMString& aTagName, const AttributeMap& aAttributes, Node* aParent );
             ~SVGCircleElement() final;
         };
     }

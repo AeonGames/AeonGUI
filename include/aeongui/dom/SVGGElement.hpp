@@ -27,7 +27,7 @@ namespace AeonGUI
         class SVGGElement : public SVGGraphicsElement
         {
         public:
-            SVGGElement ( const std::string& aTagName, const AttributeMap& aAttributes, Node* aParent );
+            SVGGElement ( const DOMString& aTagName, const AttributeMap& aAttributes, Node* aParent );
             ~SVGGElement() final;
         };
     }

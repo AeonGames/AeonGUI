@@ -25,7 +25,7 @@ namespace AeonGUI
         class SVGGradientElement : public SVGElement
         {
         public:
-            SVGGradientElement ( const std::string& aTagName, const AttributeMap& aAttributes, Node* aParent );
+            SVGGradientElement ( const DOMString& aTagName, const AttributeMap& aAttributes, Node* aParent );
             ~SVGGradientElement() override;
         };
     }

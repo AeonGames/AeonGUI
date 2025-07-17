@@ -22,208 +22,197 @@ limitations under the License.
 #include <libcss/libcss.h>
 namespace AeonGUI
 {
-    Element::Element ( const std::string& aTagName, const AttributeMap& aAttributes, Node* aParent ) :
-        Node { aParent },
-        mTagName{},
-        mId{},
-        mAttributeMap{aAttributes}
+    namespace DOM
     {
-        lwc_intern_string ( aTagName.c_str(), aTagName.size(), &mTagName );
-        if ( aAttributes.find ( "id" ) != aAttributes.end() )
+        Element::Element ( const DOMString& aTagName, const AttributeMap& aAttributes, Node* aParent ) :
+            Node { aParent },
+            mTagName{ aTagName },
+            mId{},
+            mAttributeMap{aAttributes}
         {
-            auto& id = aAttributes.at ( "id" );
-            lwc_intern_string ( id.c_str(), id.size(), &mId );
-        }
-
-        std::string class_attribute {mAttributeMap.find ( "class" ) != mAttributeMap.end() ? mAttributeMap.at ( "class" ) : std::string{}};
-        if ( !class_attribute.empty() )
-        {
-            std::regex class_regex {R"(\s+)"};
-            std::sregex_token_iterator class_begin {class_attribute.begin(), class_attribute.end(), class_regex, -1};
-            std::sregex_token_iterator class_end {};
-            mClasses.reserve ( std::distance ( class_begin, class_end ) );
-            for ( auto& m = class_begin; m != class_end; ++m )
+            if ( aAttributes.find ( "id" ) != aAttributes.end() )
             {
-                mClasses.push_back ( nullptr );
-                lwc_intern_string ( m->str().c_str(), m->str().size(), &mClasses.back() );
+                mId = aAttributes.at ( "id" ).c_str();
             }
-        }
-        auto style = mAttributeMap.find ( "style" );
-        css_error code{};
-        css_stylesheet_params params{};
-        params.params_version = CSS_STYLESHEET_PARAMS_VERSION_1;
-        params.level = CSS_LEVEL_3;
-        params.charset = "UTF-8";
-        params.url = "";
-        params.title = "Inline Style Sheet";
-        params.allow_quirks = true;
-        params.inline_style = true;
-        params.resolve =
-            [] ( void *pw,
-                 const char *base, lwc_string * rel, lwc_string **abs ) -> css_error
-        {
-            ( void ) pw;
-            ( void ) base;
-            /* About as useless as possible */
-            *abs = lwc_string_ref ( rel );
-            return CSS_OK;
-        };
-        params.resolve_pw = nullptr;
-        params.import = nullptr;
-        params.import_pw = nullptr;
-        params.color = nullptr;
-        params.color_pw = nullptr;
-        params.font = nullptr;
-        params.font_pw = nullptr;
-        {
-            css_stylesheet* stylesheet{};
-            code = css_stylesheet_create ( &params, &stylesheet );
+
+            std::string class_attribute {mAttributeMap.find ( "class" ) != mAttributeMap.end() ? mAttributeMap.at ( "class" ) : std::string{}};
+            if ( !class_attribute.empty() )
+            {
+                std::regex class_regex {R"(\s+)"};
+                std::sregex_token_iterator class_begin {class_attribute.begin(), class_attribute.end(), class_regex, -1};
+                std::sregex_token_iterator class_end {};
+                mClasses.reserve ( std::distance ( class_begin, class_end ) );
+                for ( auto& m = class_begin; m != class_end; ++m )
+                {
+                    mClasses.push_back ( nullptr );
+                    lwc_intern_string ( m->str().c_str(), m->str().size(), &mClasses.back() );
+                }
+            }
+            auto style = mAttributeMap.find ( "style" );
+            css_error code{};
+            css_stylesheet_params params{};
+            params.params_version = CSS_STYLESHEET_PARAMS_VERSION_1;
+            params.level = CSS_LEVEL_3;
+            params.charset = "UTF-8";
+            params.url = "";
+            params.title = "Inline Style Sheet";
+            params.allow_quirks = true;
+            params.inline_style = true;
+            params.resolve =
+                [] ( void *pw,
+                     const char *base, lwc_string * rel, lwc_string **abs ) -> css_error
+            {
+                ( void ) pw;
+                ( void ) base;
+                /* About as useless as possible */
+                *abs = lwc_string_ref ( rel );
+                return CSS_OK;
+            };
+            params.resolve_pw = nullptr;
+            params.import = nullptr;
+            params.import_pw = nullptr;
+            params.color = nullptr;
+            params.color_pw = nullptr;
+            params.font = nullptr;
+            params.font_pw = nullptr;
+            {
+                css_stylesheet* stylesheet{};
+                code = css_stylesheet_create ( &params, &stylesheet );
+                if ( code != CSS_OK )
+                {
+                    throw std::runtime_error ( css_error_to_string ( code ) );
+                }
+                mInlineStyleSheet.reset ( stylesheet );
+            }
+
+            // Parse inline style
+            const std::string& css{ style != mAttributeMap.end() ? style->second : "" };
+            std::cerr << tagName() << std::endl;
+            std::cerr << "css: " << css << std::endl << std::endl;
+            code = css_stylesheet_append_data ( mInlineStyleSheet.get(), reinterpret_cast<const uint8_t*> ( css.data() ), css.size() );
+            if ( code != CSS_OK  && code != CSS_NEEDDATA )
+            {
+                throw std::runtime_error ( css_error_to_string ( code ) );
+            }
+            code = css_stylesheet_data_done ( mInlineStyleSheet.get() );
             if ( code != CSS_OK )
             {
                 throw std::runtime_error ( css_error_to_string ( code ) );
             }
-            mInlineStyleSheet.reset ( stylesheet );
-        }
 
-        // Parse inline style
-        const std::string& css{ style != mAttributeMap.end() ? style->second : "" };
-        std::cerr << tagName() << std::endl;
-        std::cerr << "css: " << css << std::endl << std::endl;
-        code = css_stylesheet_append_data ( mInlineStyleSheet.get(), reinterpret_cast<const uint8_t*> ( css.data() ), css.size() );
-        if ( code != CSS_OK  && code != CSS_NEEDDATA )
-        {
-            throw std::runtime_error ( css_error_to_string ( code ) );
-        }
-        code = css_stylesheet_data_done ( mInlineStyleSheet.get() );
-        if ( code != CSS_OK )
-        {
-            throw std::runtime_error ( css_error_to_string ( code ) );
-        }
-
-        css_select_ctx* css_select_ctx{};
-        css_error err{css_select_ctx_create ( &css_select_ctx ) };
-        if ( err != CSS_OK )
-        {
-            throw std::runtime_error ( css_error_to_string ( code ) );
-        }
-
-        css_select_results* results {};
-        err = css_select_style ( css_select_ctx, this, GetUnitLenCtx(), nullptr, mInlineStyleSheet.get(), GetSelectHandler(), nullptr, &results );
-        if ( err != CSS_OK )
-        {
-            throw std::runtime_error ( css_error_to_string ( code ) );
-        }
-        mComputedStyles.reset ( results );
-        css_select_ctx_destroy ( css_select_ctx );
-    }
-
-    Element::~Element()
-    {
-        if ( mTagName )
-        {
-            lwc_string_unref ( mTagName );
-        }
-        if ( mId )
-        {
-            lwc_string_unref ( mId );
-        }
-        for ( auto& c : mClasses )
-        {
-            lwc_string_unref ( c );
-        }
-    }
-
-    css_select_results* Element::GetParentComputedStyles() const
-    {
-        css_select_results* results {};
-        Node* parent{ parentNode() };
-        while ( parent != nullptr && results == nullptr )
-        {
-            if ( parent->nodeType() == ELEMENT_NODE && reinterpret_cast<Element * > ( parent )->mComputedStyles.get() != nullptr )
-            {
-                results = reinterpret_cast<Element*> ( parent )->mComputedStyles.get();
-            }
-            parent = parent->parentNode();
-        }
-        return results;
-    }
-
-    css_select_results* Element::GetComputedStyles() const
-    {
-        if ( mComputedStyles )
-        {
-            return mComputedStyles.get();
-        }
-        return GetParentComputedStyles();
-    }
-
-    void Element::OnAncestorChanged()
-    {
-        if ( !mComputedStyles )
-        {
-            return;
-        }
-        css_select_results* results {GetParentComputedStyles() };
-        if ( results != nullptr )
-        {
-            css_computed_style* computed_style{};
-            css_error err
-            {
-                css_computed_style_compose ( results->styles[CSS_PSEUDO_ELEMENT_NONE], mComputedStyles->styles[CSS_PSEUDO_ELEMENT_NONE], GetUnitLenCtx(), &computed_style )
-            };
+            css_select_ctx* css_select_ctx{};
+            css_error err{css_select_ctx_create ( &css_select_ctx ) };
             if ( err != CSS_OK )
             {
-                throw std::runtime_error ( css_error_to_string ( err ) );
+                throw std::runtime_error ( css_error_to_string ( code ) );
             }
-            css_computed_style_destroy ( mComputedStyles->styles[CSS_PSEUDO_ELEMENT_NONE] );
-            mComputedStyles->styles[CSS_PSEUDO_ELEMENT_NONE] = computed_style;
-        }
-    }
-#if 0
-    AttributeType Element::GetAttribute ( const char* attrName, const AttributeType& aDefault ) const
-    {
-        auto i = mAttributeMap.find ( attrName );
-        if ( i != mAttributeMap.end() )
-        {
-            return i->second;
-        }
-        return aDefault;
-    }
 
-    void Element::SetAttribute ( const char* attrName, const AttributeType& aValue )
-    {
-        mAttributeMap[attrName] = aValue;
-    }
-
-    AttributeType Element::GetInheritedAttribute ( const char* attrName, const AttributeType& aDefault ) const
-    {
-        AttributeType attr = GetAttribute ( attrName );
-        Node* parent = parentNode();
-        while ( std::holds_alternative<std::monostate> ( attr ) && parent != nullptr )
-        {
-            if ( parent->nodeType() == ELEMENT_NODE )
+            css_select_results* results {};
+            err = css_select_style ( css_select_ctx, this, GetUnitLenCtx(), nullptr, mInlineStyleSheet.get(), GetSelectHandler(), nullptr, &results );
+            if ( err != CSS_OK )
             {
-                attr = reinterpret_cast<Element*> ( parent )->GetAttribute ( attrName );
+                throw std::runtime_error ( css_error_to_string ( code ) );
             }
-            parent = parent->parentNode();
+            mComputedStyles.reset ( results );
+            css_select_ctx_destroy ( css_select_ctx );
         }
-        return std::holds_alternative<std::monostate> ( attr ) ? aDefault : attr;
-    }
+
+        Element::~Element()
+        {
+        }
+
+        css_select_results* Element::GetParentComputedStyles() const
+        {
+            css_select_results* results {};
+            Node* parent{ parentNode() };
+            while ( parent != nullptr && results == nullptr )
+            {
+                if ( parent->nodeType() == ELEMENT_NODE && reinterpret_cast<Element * > ( parent )->mComputedStyles.get() != nullptr )
+                {
+                    results = reinterpret_cast<Element*> ( parent )->mComputedStyles.get();
+                }
+                parent = parent->parentNode();
+            }
+            return results;
+        }
+
+        css_select_results* Element::GetComputedStyles() const
+        {
+            if ( mComputedStyles )
+            {
+                return mComputedStyles.get();
+            }
+            return GetParentComputedStyles();
+        }
+
+        void Element::OnAncestorChanged()
+        {
+            if ( !mComputedStyles )
+            {
+                return;
+            }
+            css_select_results* results {GetParentComputedStyles() };
+            if ( results != nullptr )
+            {
+                css_computed_style* computed_style{};
+                css_error err
+                {
+                    css_computed_style_compose ( results->styles[CSS_PSEUDO_ELEMENT_NONE], mComputedStyles->styles[CSS_PSEUDO_ELEMENT_NONE], GetUnitLenCtx(), &computed_style )
+                };
+                if ( err != CSS_OK )
+                {
+                    throw std::runtime_error ( css_error_to_string ( err ) );
+                }
+                css_computed_style_destroy ( mComputedStyles->styles[CSS_PSEUDO_ELEMENT_NONE] );
+                mComputedStyles->styles[CSS_PSEUDO_ELEMENT_NONE] = computed_style;
+            }
+        }
+#if 0
+        AttributeType Element::GetAttribute ( const char* attrName, const AttributeType& aDefault ) const
+        {
+            auto i = mAttributeMap.find ( attrName );
+            if ( i != mAttributeMap.end() )
+            {
+                return i->second;
+            }
+            return aDefault;
+        }
+
+        void Element::SetAttribute ( const char* attrName, const AttributeType& aValue )
+        {
+            mAttributeMap[attrName] = aValue;
+        }
+
+        AttributeType Element::GetInheritedAttribute ( const char* attrName, const AttributeType& aDefault ) const
+        {
+            AttributeType attr = GetAttribute ( attrName );
+            Node* parent = parentNode();
+            while ( std::holds_alternative<std::monostate> ( attr ) && parent != nullptr )
+            {
+                if ( parent->nodeType() == ELEMENT_NODE )
+                {
+                    attr = reinterpret_cast<Element*> ( parent )->GetAttribute ( attrName );
+                }
+                parent = parent->parentNode();
+            }
+            return std::holds_alternative<std::monostate> ( attr ) ? aDefault : attr;
+        }
 #endif
-    Node::NodeType Element::nodeType() const
-    {
-        return ELEMENT_NODE;
-    }
-    lwc_string* Element::tagName()
-    {
-        return mTagName;
-    }
-    lwc_string* Element::id()
-    {
-        return mId;
-    }
-    std::vector<lwc_string*>& Element::classes()
-    {
-        return mClasses;
+        Node::NodeType Element::nodeType() const
+        {
+            return ELEMENT_NODE;
+        }
+        const DOMString& Element::tagName() const
+        {
+            return mTagName;
+        }
+        const DOMString& Element::id() const
+        {
+            return mId;
+        }
+        const std::vector<DOMString>& Element::classes() const
+        {
+            return mClasses;
+        }
     }
 }

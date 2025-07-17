@@ -25,7 +25,7 @@ namespace AeonGUI
         class SVGPolylineElement : public SVGGeometryElement
         {
         public:
-            SVGPolylineElement ( const std::string& aTagName, const AttributeMap& aAttributes, Node* aParent );
+            SVGPolylineElement ( const DOMString& aTagName, const AttributeMap& aAttributes, Node* aParent );
             ~SVGPolylineElement() final;
         };
     }

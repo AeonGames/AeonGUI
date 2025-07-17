@@ -1,5 +1,5 @@
 /*
-Copyright (C) 2019,2020,2023,2024 Rodrigo Jose Hernandez Cordoba
+Copyright (C) 2019,2020,2023-2025 Rodrigo Jose Hernandez Cordoba
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -24,22 +24,25 @@ limitations under the License.
 
 namespace AeonGUI
 {
-    class Node;
-    class Element;
-    DLL Element* Construct ( const char* aIdentifier, const AttributeMap& aAttributeMap, Node* aParent );
-    DLL void Destroy ( const char* aIdentifier, Element* aElement );
+    namespace DOM
+    {
+        class Node;
+        class Element;
+    }
+    DLL DOM::Element* Construct ( const char8_t* aIdentifier, const AttributeMap& aAttributeMap, DOM::Node* aParent );
+    DLL void Destroy ( const char8_t* aIdentifier, DOM::Element* aElement );
     DLL bool RegisterConstructor ( const StringLiteral& aIdentifier,
-                                   const std::function < Element* ( const AttributeMap&, Node* ) > & aConstructor,
-                                   const std::function < void ( Element* ) > & aDestructor );
+                                   const std::function < DOM::Element* ( const AttributeMap&, DOM::Node* ) > & aConstructor,
+                                   const std::function < void ( DOM::Element* ) > & aDestructor );
     DLL bool UnregisterConstructor ( const StringLiteral& aIdentifier );
     DLL void EnumerateConstructors ( const std::function<bool ( const StringLiteral& ) >& aEnumerator );
     DLL void Initialize();
     DLL void Finalize();
     DLL bool AddInitializer (
-        const std::function < void ( Element* ) > & aInitializer,
-        const std::function < void ( Element* ) > & aFinalizer );
+        const std::function < void ( DOM::Element* ) > & aInitializer,
+        const std::function < void ( DOM::Element* ) > & aFinalizer );
     DLL bool RemoveInitializer (
-        const std::function < void ( Element* ) > & aInitializer,
-        const std::function < void ( Element* ) > & aFinalizer );
+        const std::function < void ( DOM::Element* ) > & aInitializer,
+        const std::function < void ( DOM::Element* ) > & aFinalizer );
 }
 #endif

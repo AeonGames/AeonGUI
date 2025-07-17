@@ -163,7 +163,7 @@ namespace AeonGUI
 
     css_error node_name ( void *pw, void *node, css_qname *qname )
     {
-        Element *element {reinterpret_cast<Element*> ( node ) };
+        DOM::Element *element {reinterpret_cast<DOM::Element*> ( node ) };
         ( void ) ( pw );
         qname->name = lwc_string_ref ( element->tagName() );
         return CSS_OK;
@@ -172,7 +172,7 @@ namespace AeonGUI
     css_error node_classes ( void *pw, void *node,
                              lwc_string ***classes, uint32_t *n_classes )
     {
-        Element *element {reinterpret_cast<Element*> ( node ) };
+        DOM::Element *element {reinterpret_cast<DOM::Element*> ( node ) };
         ( void ) ( pw );
         *classes = element->classes().data();
         *n_classes = static_cast<uint32_t> ( element->classes().size() );
@@ -185,7 +185,7 @@ namespace AeonGUI
         {
             return  CSS_BADPARM;
         }
-        Element *element {reinterpret_cast<Element*> ( node ) };
+        DOM::Element *element {reinterpret_cast<DOM::Element*> ( node ) };
         ( void ) ( pw );
         *id = element->id() ? lwc_string_ref ( element->id() ) : nullptr;
         return CSS_OK;
@@ -241,7 +241,7 @@ namespace AeonGUI
         {
             return  CSS_BADPARM;
         }
-        Element *element {reinterpret_cast<Element*> ( node ) };
+        DOM::Element *element {reinterpret_cast<DOM::Element*> ( node ) };
         ( void ) ( pw );
         *parent = element->parentNode();
         return CSS_OK;
@@ -260,7 +260,7 @@ namespace AeonGUI
                               bool *match )
     {
         ( void ) ( pw );
-        Element *element {reinterpret_cast<Element*> ( node ) };
+        DOM::Element *element {reinterpret_cast<DOM::Element*> ( node ) };
         lwc_string_caseless_isequal ( element->tagName(), qname->name, match );
         return CSS_OK;
     }
@@ -281,7 +281,7 @@ namespace AeonGUI
                             bool *match )
     {
         ( void ) ( pw );
-        Element *element {reinterpret_cast<Element*> ( node ) };
+        DOM::Element *element {reinterpret_cast<DOM::Element*> ( node ) };
         lwc_string_caseless_isequal ( element->id(), id, match );
         return CSS_OK;
     }
@@ -378,7 +378,7 @@ namespace AeonGUI
     css_error node_is_first_child ( void *pw, void *node, bool *match )
     {
         ( void ) ( pw );
-        Element *element {reinterpret_cast<Element*> ( node ) };
+        DOM::Element *element {reinterpret_cast<DOM::Element*> ( node ) };
         *match = element->parentElement() && element->parentElement()->childNodes() [0] == element;
         return CSS_OK;
     }
@@ -386,7 +386,7 @@ namespace AeonGUI
     css_error node_is_root ( void *pw, void *node, bool *match )
     {
         ( void ) ( pw );
-        Element *element {reinterpret_cast<Element*> ( node ) };
+        DOM::Element *element {reinterpret_cast<DOM::Element*> ( node ) };
         *match = element->parentNode() == nullptr;
         return CSS_OK;
     }
