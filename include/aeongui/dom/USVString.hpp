@@ -22,7 +22,7 @@ namespace AeonGUI
 {
     namespace DOM
     {
-        using USVString = std::u8string;
+        using USVString = std::string;
     }
 }
 #endif

@@ -119,6 +119,10 @@ namespace AeonGUI
 
         Element::~Element()
         {
+            for ( auto& c : mClasses )
+            {
+                lwc_string_unref ( c );
+            }
         }
 
         css_select_results* Element::GetParentComputedStyles() const
@@ -210,7 +214,7 @@ namespace AeonGUI
         {
             return mId;
         }
-        const std::vector<DOMString>& Element::classes() const
+        const std::vector<lwc_string*>& Element::classes() const
         {
             return mClasses;
         }

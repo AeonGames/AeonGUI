@@ -25,10 +25,10 @@ limitations under the License.
 
 namespace AeonGUI
 {
+    class Canvas;
+    class Document;
     namespace DOM
     {
-        class Canvas;
-        class Document;
         class Node
         {
         public:

@@ -1,5 +1,5 @@
 /*
-Copyright (C) 2019,2020,2024 Rodrigo Jose Hernandez Cordoba
+Copyright (C) 2019,2020,2024,2025 Rodrigo Jose Hernandez Cordoba
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -15,13 +15,9 @@ limitations under the License.
 */
 #ifndef AEONGUI_ATTRIBUTEMAP_H
 #define AEONGUI_ATTRIBUTEMAP_H
-#include "aeongui/Color.h"
-#include <string>
-#include <unordered_map>
-#include <variant>
+#include "aeongui/dom/DOMString.hpp"
 namespace AeonGUI
 {
-    //using AttributeType = std::variant<std::monostate, double, ColorAttr, std::string>;
-    using AttributeMap = std::unordered_map<std::string, std::string>;
+    using AttributeMap = std::unordered_map<DOM::DOMString, DOM::DOMString>;
 }
 #endif

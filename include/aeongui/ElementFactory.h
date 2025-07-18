@@ -29,8 +29,8 @@ namespace AeonGUI
         class Node;
         class Element;
     }
-    DLL DOM::Element* Construct ( const char8_t* aIdentifier, const AttributeMap& aAttributeMap, DOM::Node* aParent );
-    DLL void Destroy ( const char8_t* aIdentifier, DOM::Element* aElement );
+    DLL DOM::Element* Construct ( const char* aIdentifier, const AttributeMap& aAttributeMap, DOM::Node* aParent );
+    DLL void Destroy ( const char* aIdentifier, DOM::Element* aElement );
     DLL bool RegisterConstructor ( const StringLiteral& aIdentifier,
                                    const std::function < DOM::Element* ( const AttributeMap&, DOM::Node* ) > & aConstructor,
                                    const std::function < void ( DOM::Element* ) > & aDestructor );

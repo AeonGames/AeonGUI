@@ -27,7 +27,7 @@ namespace AeonGUI
          * but in this implementation, it is represented as a UTF-8 string which is more efficient and easier to work with.
          * If there is a need to handle UTF-16 specifically, it can be converted as needed.
          */
-        using DOMString = std::u8string;
+        using DOMString = std::string;
     }
 }
 #endif

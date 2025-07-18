@@ -41,7 +41,7 @@ limitations under the License.
 namespace AeonGUI
 {
     using ConstructorTuple = std::tuple <
-                             std::function < DOM::Element* ( const std::u8string& aTagName, const AttributeMap& aAttributeMap, DOM::Node* aParent ) >,
+                             std::function < DOM::Element* ( const DOM::DOMString& aTagName, const AttributeMap& aAttributeMap, DOM::Node* aParent ) >,
                              std::function < void ( DOM::Element* ) >>;
 
     using Constructor = std::tuple<StringLiteral, ConstructorTuple>;
@@ -53,7 +53,7 @@ namespace AeonGUI
         {
             aId,
             ConstructorTuple {
-                [] ( const std::u8string & aTagName, const AttributeMap & aAttributeMap, DOM::Node * aParent )
+                [] ( const DOM::DOMString & aTagName, const AttributeMap & aAttributeMap, DOM::Node * aParent )
                 {
                     return new T{ aTagName, aAttributeMap, aParent };
                 },
@@ -67,22 +67,22 @@ namespace AeonGUI
 
     static std::vector<Constructor> Constructors
     {
-        MakeConstructor<DOM::SVGSVGElement> ( u8"svg" ),
-        MakeConstructor<DOM::SVGGElement> ( u8"g" ),
-        MakeConstructor<DOM::SVGPathElement> ( u8"path" ),
-        MakeConstructor<DOM::SVGRectElement> ( u8"rect" ),
-        MakeConstructor<DOM::SVGLineElement> ( u8"line" ),
-        MakeConstructor<DOM::SVGPolylineElement> ( u8"polyline" ),
-        MakeConstructor<DOM::SVGPolygonElement> ( u8"polygon" ),
-        MakeConstructor<DOM::SVGCircleElement> ( u8"circle" ),
-        MakeConstructor<DOM::SVGEllipseElement> ( u8"ellipse" ),
-        MakeConstructor<DOM::SVGDefsElement> ( u8"defs" ),
-        MakeConstructor<DOM::SVGUseElement> ( u8"use" ),
-        MakeConstructor<DOM::SVGLinearGradientElement> ( u8"linearGradient" ),
-        MakeConstructor<DOM::SVGStopElement> ( u8"stop" ),
+        MakeConstructor<DOM::SVGSVGElement> ( "svg" ),
+        MakeConstructor<DOM::SVGGElement> ( "g" ),
+        MakeConstructor<DOM::SVGPathElement> ( "path" ),
+        MakeConstructor<DOM::SVGRectElement> ( "rect" ),
+        MakeConstructor<DOM::SVGLineElement> ( "line" ),
+        MakeConstructor<DOM::SVGPolylineElement> ( "polyline" ),
+        MakeConstructor<DOM::SVGPolygonElement> ( "polygon" ),
+        MakeConstructor<DOM::SVGCircleElement> ( "circle" ),
+        MakeConstructor<DOM::SVGEllipseElement> ( "ellipse" ),
+        MakeConstructor<DOM::SVGDefsElement> ( "defs" ),
+        MakeConstructor<DOM::SVGUseElement> ( "use" ),
+        MakeConstructor<DOM::SVGLinearGradientElement> ( "linearGradient" ),
+        MakeConstructor<DOM::SVGStopElement> ( "stop" ),
     };
 
-    DOM::Element* Construct ( const char8_t* aIdentifier, const AttributeMap& aAttributeMap, DOM::Node* aParent )
+    DOM::Element* Construct ( const char* aIdentifier, const AttributeMap& aAttributeMap, DOM::Node* aParent )
     {
         auto it = std::find_if ( Constructors.begin(), Constructors.end(),
                                  [aIdentifier] ( const Constructor & aConstructor )
@@ -93,10 +93,10 @@ namespace AeonGUI
         {
             return std::get<0> ( std::get<1> ( *it ) ) ( aIdentifier, aAttributeMap, aParent );
         }
-        return new DOM::Element { reinterpret_cast<const char8_t*> ( aIdentifier ), aAttributeMap, aParent };
+        return new DOM::Element {  aIdentifier, aAttributeMap, aParent };
     }
 
-    void Destroy ( const char8_t* aIdentifier, DOM::Element* aElement )
+    void Destroy ( const char* aIdentifier, DOM::Element* aElement )
     {
         auto it = std::find_if ( Constructors.begin(), Constructors.end(),
                                  [aIdentifier] ( const Constructor & aConstructor )
@@ -114,7 +114,7 @@ namespace AeonGUI
     }
 
     bool RegisterConstructor ( const StringLiteral& aIdentifier,
-                               const std::function < DOM::Element* ( const std::u8string& aTagName, const AttributeMap& aAttributeMap, DOM::Node* aParent ) > & aConstructor,
+                               const std::function < DOM::Element* ( const DOM::DOMString& aTagName, const AttributeMap& aAttributeMap, DOM::Node* aParent ) > & aConstructor,
                                const std::function < void ( DOM::Element* ) > & aDestructor
                              )
     {

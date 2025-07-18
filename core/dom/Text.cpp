@@ -17,44 +17,47 @@ limitations under the License.
 
 namespace AeonGUI
 {
-    Text::Text ( const std::string& aText, Node* aParent ) : Node{aParent}, mText{aText} {}
-    Text::~Text() = default;
+    namespace DOM
+    {
+        Text::Text ( const std::string& aText, Node* aParent ) : Node{aParent}, mText{aText} {}
+        Text::~Text() = default;
 
-    Node::NodeType Text::nodeType() const
-    {
-        return TEXT_NODE;
-    }
-    std::string Text::wholeText() const
-    {
-        auto parent  = parentNode();
-        if ( parent != nullptr )
+        Node::NodeType Text::nodeType() const
         {
-            size_t capacity{sizeof ( std::string::value_type ) }; // initialize with accomodation for the \0 character
-            size_t node_count{0};
-            // Calculate required capacity
-            for ( auto& i : parent->childNodes() )
-            {
-                if ( i->nodeType() == Node::TEXT_NODE )
-                {
-                    capacity += reinterpret_cast<const Text*> ( i )->mText.size();
-                    node_count++;
-                }
-            }
-            if ( node_count < 2 )
-            {
-                return mText;
-            }
-            std::string result{""};
-            result.reserve ( capacity );
-            for ( auto& i : parent->childNodes() )
-            {
-                if ( i->nodeType() == Node::TEXT_NODE )
-                {
-                    result += reinterpret_cast<const Text*> ( i )->mText;
-                }
-            }
-            return result;
+            return TEXT_NODE;
         }
-        return mText;
+        std::string Text::wholeText() const
+        {
+            auto parent  = parentNode();
+            if ( parent != nullptr )
+            {
+                size_t capacity{sizeof ( std::string::value_type ) }; // initialize with accomodation for the \0 character
+                size_t node_count{0};
+                // Calculate required capacity
+                for ( auto& i : parent->childNodes() )
+                {
+                    if ( i->nodeType() == Node::TEXT_NODE )
+                    {
+                        capacity += reinterpret_cast<const Text*> ( i )->mText.size();
+                        node_count++;
+                    }
+                }
+                if ( node_count < 2 )
+                {
+                    return mText;
+                }
+                std::string result{""};
+                result.reserve ( capacity );
+                for ( auto& i : parent->childNodes() )
+                {
+                    if ( i->nodeType() == Node::TEXT_NODE )
+                    {
+                        result += reinterpret_cast<const Text*> ( i )->mText;
+                    }
+                }
+                return result;
+            }
+            return mText;
+        }
     }
 }

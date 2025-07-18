@@ -49,7 +49,7 @@ namespace AeonGUI
             /**DOM Properties and Methods @{*/
             DLL const Document* document() const;
             /**@}*/
-            DLL Window* open ( const USVString& url = u8"", const DOMString& target = u8"_blank", const DOMString& features = u8"" );
+            DLL Window* open ( const USVString& url = "", const DOMString& target = "_blank", const DOMString& features = "" );
         private:
             Document mDocument{};
             CairoCanvas mCanvas{};

@@ -165,7 +165,7 @@ namespace AeonGUI
     {
         DOM::Element *element {reinterpret_cast<DOM::Element*> ( node ) };
         ( void ) ( pw );
-        qname->name = lwc_string_ref ( element->tagName() );
+        lwc_intern_string ( reinterpret_cast<const char*> ( element->tagName().c_str() ), element->tagName().size(), &qname->name );
         return CSS_OK;
     }
 
@@ -174,7 +174,7 @@ namespace AeonGUI
     {
         DOM::Element *element {reinterpret_cast<DOM::Element*> ( node ) };
         ( void ) ( pw );
-        *classes = element->classes().data();
+        *classes = const_cast<lwc_string**> ( element->classes().data() );
         *n_classes = static_cast<uint32_t> ( element->classes().size() );
         return CSS_OK;
     }
@@ -187,7 +187,11 @@ namespace AeonGUI
         }
         DOM::Element *element {reinterpret_cast<DOM::Element*> ( node ) };
         ( void ) ( pw );
-        *id = element->id() ? lwc_string_ref ( element->id() ) : nullptr;
+        if ( !element->id().empty() )
+        {
+            lwc_intern_string ( reinterpret_cast<const char*> ( element->id().c_str() ), element->id().size(), id );
+        }
+        //*id = element->id() ? lwc_string_ref ( element->id() ) : nullptr;
         return CSS_OK;
     }
 
@@ -261,7 +265,10 @@ namespace AeonGUI
     {
         ( void ) ( pw );
         DOM::Element *element {reinterpret_cast<DOM::Element*> ( node ) };
-        lwc_string_caseless_isequal ( element->tagName(), qname->name, match );
+        lwc_string* tag {nullptr};
+        lwc_intern_string ( reinterpret_cast<const char*> ( element->tagName().c_str() ), element->tagName().size(), &tag );
+        lwc_string_caseless_isequal ( tag, qname->name, match );
+        lwc_string_unref ( tag );
         return CSS_OK;
     }
 
@@ -282,7 +289,11 @@ namespace AeonGUI
     {
         ( void ) ( pw );
         DOM::Element *element {reinterpret_cast<DOM::Element*> ( node ) };
-        lwc_string_caseless_isequal ( element->id(), id, match );
+
+        lwc_string* element_id {nullptr};
+        lwc_intern_string ( reinterpret_cast<const char*> ( element->id().c_str() ), element->id().size(), &element_id );
+        lwc_string_caseless_isequal ( element_id, id, match );
+        lwc_string_unref ( element_id );
         return CSS_OK;
     }
 

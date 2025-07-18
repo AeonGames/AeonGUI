@@ -26,12 +26,15 @@ limitations under the License.
 #include "aeongui/dom/DOMString.hpp"
 #include "Node.hpp"
 
+extern "C"
+{
+    typedef struct lwc_string_s lwc_string;
+}
 namespace AeonGUI
 {
+    class Canvas;
     namespace DOM
     {
-        class Canvas;
-        class JavaScript;
         class Document;
         class Element : public Node
         {
@@ -45,12 +48,12 @@ namespace AeonGUI
             NodeType nodeType() const final;
             const DOMString& tagName() const;
             const DOMString& id() const;
-            const std::vector<DOMString>& classes() const;
+            const std::vector<lwc_string*>& classes() const;
             /**@}*/
         private:
             DOMString mTagName{};
             DOMString mId{};
-            std::vector<DOMString> mClasses{};
+            std::vector<lwc_string*> mClasses{};
             AttributeMap mAttributeMap{};
             DLL void OnAncestorChanged() override;
         protected:

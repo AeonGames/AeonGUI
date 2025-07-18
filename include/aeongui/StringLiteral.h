@@ -26,7 +26,7 @@ namespace AeonGUI
     {
     public:
         template<size_t aStringSize>
-        constexpr StringLiteral ( const char8_t ( &aString ) [aStringSize] ) :
+        constexpr StringLiteral ( const char ( &aString ) [aStringSize] ) :
             mString{aString}, mStringSize{aStringSize} {}
 
         constexpr StringLiteral() noexcept = default;
@@ -35,7 +35,7 @@ namespace AeonGUI
         constexpr StringLiteral& operator= ( const StringLiteral& ) noexcept = default;
         constexpr StringLiteral& operator= ( StringLiteral&& ) noexcept = default;
 
-        constexpr const char8_t* GetString() const
+        constexpr const char* GetString() const
         {
             return mString;
         }
@@ -45,25 +45,25 @@ namespace AeonGUI
         }
         constexpr bool operator == ( const StringLiteral& b ) const
         {
-            return ( mString == b.mString ) ? true : ( mStringSize != b.mStringSize ) ? false : ( std::char_traits<char8_t>::compare ( mString, b.mString, mStringSize ) == 0 );
+            return ( mString == b.mString ) ? true : ( mStringSize != b.mStringSize ) ? false : ( std::char_traits<char>::compare ( mString, b.mString, mStringSize ) == 0 );
         }
 #ifdef __GNUG__
         constexpr
 #endif
-        bool operator == ( const char8_t* b ) const
+        bool operator == ( const char* b ) const
         {
-            return ( mString == b ) ? true : ( mStringSize != std::char_traits<char8_t>::length ( b ) ) ? false : ( std::char_traits<char8_t>::compare ( mString, b, mStringSize ) == 0 );
+            return ( mString == b ) ? true : ( mStringSize != std::char_traits<char>::length ( b ) ) ? false : ( std::char_traits<char>::compare ( mString, b, mStringSize ) == 0 );
         }
-        bool operator == ( const std::u8string &b ) const
+        bool operator == ( const std::string &b ) const
         {
             return b == mString;
         }
-        operator std::u8string() const
+        operator std::string() const
         {
-            return std::u8string{mString};
+            return std::string{mString};
         }
     private:
-        const char8_t* mString{};
+        const char* mString{};
         size_t mStringSize{};
     };
 
@@ -71,7 +71,7 @@ namespace AeonGUI
     {
         size_t operator() ( const StringLiteral& Key ) const noexcept
         {
-            return std::hash<std::u8string> {} ( Key );
+            return std::hash<std::string> {} ( Key );
         }
     };
 }
