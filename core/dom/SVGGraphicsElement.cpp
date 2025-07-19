@@ -14,7 +14,6 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 #include "aeongui/dom/SVGGraphicsElement.hpp"
-#include "CSSSelectHandler.hpp"
 #include <libcss/libcss.h>
 
 namespace AeonGUI

@@ -15,14 +15,12 @@ limitations under the License.
 */
 #include <iostream>
 #include "aeongui/dom/SVGGeometryElement.hpp"
-#include "CSSSelectHandler.hpp"
 #include <libcss/libcss.h>
-
 namespace AeonGUI
 {
     namespace DOM
     {
-        SVGGeometryElement::SVGGeometryElement ( const std::string& aTagName, const AttributeMap& aAttributes, Node* aParent ) : SVGGraphicsElement ( aTagName, aAttributes, aParent ), mPath{}
+        SVGGeometryElement::SVGGeometryElement ( const DOMString& aTagName, const AttributeMap& aAttributes, Node* aParent ) : SVGGraphicsElement ( aTagName, aAttributes, aParent ), mPath{}
         {
         }
         SVGGeometryElement::~SVGGeometryElement() = default;

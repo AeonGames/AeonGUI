@@ -65,8 +65,6 @@ set(AEONGUI_SOURCES
     CairoPath.cpp
     Color.cpp
     StyleSheet.cpp
-    CSSSelectHandler.cpp
-    CSSSelectHandler.hpp
 )
 set(AEONGUI_DOM_SOURCES
     dom/Window.cpp
