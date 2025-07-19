@@ -32,7 +32,7 @@ namespace AeonGUI
         {
             if ( aAttributes.find ( "id" ) != aAttributes.end() )
             {
-                mId = aAttributes.at ( "id" ).c_str();
+                mId = aAttributes.at ( "id" );
             }
 
             std::string class_attribute {mAttributeMap.find ( "class" ) != mAttributeMap.end() ? mAttributeMap.at ( "class" ) : std::string{}};

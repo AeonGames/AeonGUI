@@ -48,6 +48,7 @@ namespace AeonGUI
 
     template<class T> Constructor MakeConstructor ( StringLiteral aId )
     {
+        std::cout << "Registering constructor for: " << aId.GetString() << std::endl;
         return
             Constructor
         {
@@ -93,6 +94,7 @@ namespace AeonGUI
         {
             return std::get<0> ( std::get<1> ( *it ) ) ( aIdentifier, aAttributeMap, aParent );
         }
+        std::cout << "No constructor registered for identifier: " << aIdentifier << std::endl;
         return new DOM::Element {  aIdentifier, aAttributeMap, aParent };
     }
 

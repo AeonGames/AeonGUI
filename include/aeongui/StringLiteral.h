@@ -19,6 +19,7 @@ limitations under the License.
 #include <string>
 #include <cstring>
 #include <functional>
+#include <iostream>
 
 namespace AeonGUI
 {
@@ -45,14 +46,14 @@ namespace AeonGUI
         }
         constexpr bool operator == ( const StringLiteral& b ) const
         {
-            return ( mString == b.mString ) ? true : ( mStringSize != b.mStringSize ) ? false : ( std::char_traits<char>::compare ( mString, b.mString, mStringSize ) == 0 );
+            return ( mString == b.mString || std::char_traits<char>::compare ( mString, b.mString, mStringSize ) == 0 );
         }
 #ifdef __GNUG__
         constexpr
 #endif
         bool operator == ( const char* b ) const
         {
-            return ( mString == b ) ? true : ( mStringSize != std::char_traits<char>::length ( b ) ) ? false : ( std::char_traits<char>::compare ( mString, b, mStringSize ) == 0 );
+            return ( mString == b ) || std::char_traits<char>::compare ( mString, b, mStringSize ) == 0;
         }
         bool operator == ( const std::string &b ) const
         {
