@@ -18,9 +18,9 @@ limitations under the License.
 #include <memory>
 #include <functional>
 #include <string>
-#include "aeongui/Platform.h"
-#include "aeongui/StringLiteral.h"
-#include "aeongui/AttributeMap.h"
+#include "aeongui/Platform.hpp"
+#include "aeongui/StringLiteral.hpp"
+#include "aeongui/AttributeMap.hpp"
 
 namespace AeonGUI
 {

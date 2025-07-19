@@ -17,8 +17,8 @@ limitations under the License.
 #define AEONGUI_WINDOW_H
 #include <cstdint>
 #include <string>
-#include "aeongui/Platform.h"
-#include "aeongui/CairoCanvas.h"
+#include "aeongui/Platform.hpp"
+#include "aeongui/CairoCanvas.hpp"
 #include "aeongui/dom/EventTarget.hpp"
 #include "aeongui/dom/USVString.hpp"
 #include "aeongui/dom/Document.hpp"

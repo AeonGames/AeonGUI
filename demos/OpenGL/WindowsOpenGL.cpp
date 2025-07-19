@@ -26,7 +26,7 @@ limitations under the License.
 #include <cassert>
 #include <cstdint>
 #include <crtdbg.h>
-#include "aeongui/AeonGUI.h"
+#include "aeongui/AeonGUI.hpp"
 #include "aeongui/dom/Window.hpp"
 #include "aeongui/dom/Document.hpp"
 

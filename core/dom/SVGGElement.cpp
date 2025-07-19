@@ -15,8 +15,8 @@ limitations under the License.
 */
 #include <iostream>
 #include "aeongui/dom/SVGGElement.hpp"
-#include "aeongui/Canvas.h"
-#include "aeongui/AttributeMap.h"
+#include "aeongui/Canvas.hpp"
+#include "aeongui/AttributeMap.hpp"
 
 namespace AeonGUI
 {

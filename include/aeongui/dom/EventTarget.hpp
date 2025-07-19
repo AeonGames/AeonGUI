@@ -21,7 +21,7 @@ limitations under the License.
 #include <vector>
 #include <functional>
 #include <unordered_map>
-#include "aeongui/Platform.h"
+#include "aeongui/Platform.hpp"
 #include "AnyType.hpp"
 #include "DOMString.hpp"
 #include "EventListener.hpp"

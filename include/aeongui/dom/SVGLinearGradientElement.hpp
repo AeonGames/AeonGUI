@@ -17,7 +17,7 @@ limitations under the License.
 #define AEONGUI_SVGLINEARGRADIENTELEMENT_H
 
 #include "SVGGradientElement.hpp"
-#include "aeongui/AttributeMap.h"
+#include "aeongui/AttributeMap.hpp"
 
 namespace AeonGUI
 {

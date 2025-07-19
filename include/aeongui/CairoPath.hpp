@@ -1,5 +1,5 @@
 /*
-Copyright (C) 2019,2020 Rodrigo Jose Hernandez Cordoba
+Copyright (C) 2019,2020,2025 Rodrigo Jose Hernandez Cordoba
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -13,23 +13,26 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 */
-#ifndef AEONGUI_PATH_H
-#define AEONGUI_PATH_H
-#include <cstdint>
-#include <cstddef>
-#include <vector>
-#include "aeongui/Platform.h"
-#include "aeongui/DrawType.h"
+#ifndef AEONGUI_CAIROPATH_H
+#define AEONGUI_CAIROPATH_H
+#include <cairo.h>
+#include "aeongui/CairoCanvas.hpp"
+#include "aeongui/Path.hpp"
 
 namespace AeonGUI
 {
     /** Base class for cached path data. */
-    class Path
+    class CairoPath : public Path
     {
     public:
-        virtual void Construct ( const std::vector<DrawType>& aCommands ) = 0;
-        virtual void Construct ( const DrawType* aCommands, size_t aCommandCount ) = 0;
-        DLL virtual ~Path() = 0;
+        CairoPath();
+        void Construct ( const std::vector<DrawType>& aCommands ) final;
+        void Construct ( const DrawType* aCommands, size_t aCommandCount ) final;
+        ~CairoPath();
+        const cairo_path_t* GetCairoPath() const;
+    private:
+        cairo_path_t mPath{};
+        std::vector<cairo_path_data_t> mPathData;
     };
 }
 #endif

@@ -28,7 +28,7 @@ limitations under the License.
 #include <X11/keysymdef.h>
 #include <GL/gl.h>
 #include <GL/glx.h>
-#include "aeongui/AeonGUI.h"
+#include "aeongui/AeonGUI.hpp"
 #include "aeongui/dom/Window.hpp"
 #include "aeongui/dom/Document.hpp"
 #include "Common.h"

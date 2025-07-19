@@ -1,5 +1,5 @@
 /*
-Copyright (C) 2019,2020,2024 Rodrigo Jose Hernandez Cordoba
+Copyright (C) 2019,2020,2024,2025 Rodrigo Jose Hernandez Cordoba
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -19,11 +19,11 @@ limitations under the License.
 #include <cstddef>
 #include <vector>
 #include <memory>
-#include "aeongui/Platform.h"
-#include "aeongui/DrawType.h"
-#include "aeongui/Color.h"
+#include "aeongui/Platform.hpp"
+#include "aeongui/DrawType.hpp"
+#include "aeongui/Color.hpp"
 #include "aeongui/Attribute.hpp"
-#include "aeongui/Matrix2x3.h"
+#include "aeongui/Matrix2x3.hpp"
 namespace AeonGUI
 {
     class Path;

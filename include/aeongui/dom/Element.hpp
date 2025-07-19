@@ -20,9 +20,9 @@ limitations under the License.
 #include <memory>
 #include <string>
 #include <variant>
-#include "aeongui/Platform.h"
-#include "aeongui/AttributeMap.h"
-#include "aeongui/StyleSheet.h"
+#include "aeongui/Platform.hpp"
+#include "aeongui/AttributeMap.hpp"
+#include "aeongui/StyleSheet.hpp"
 #include "aeongui/dom/DOMString.hpp"
 #include "Node.hpp"
 

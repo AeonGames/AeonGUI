@@ -1,5 +1,5 @@
 /*
-Copyright (C) 2019,2020,2024 Rodrigo Jose Hernandez Cordoba
+Copyright (C) 2019,2020,2024,2025 Rodrigo Jose Hernandez Cordoba
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -19,8 +19,8 @@ limitations under the License.
 #include <algorithm>
 #include <cmath>
 #include <limits>
-#include "aeongui/CairoCanvas.h"
-#include "aeongui/CairoPath.h"
+#include "aeongui/CairoCanvas.hpp"
+#include "aeongui/CairoPath.hpp"
 
 namespace AeonGUI
 {

@@ -17,7 +17,7 @@ limitations under the License.
 #define AEONGUI_SVGGELEMENT_H
 
 #include "SVGGraphicsElement.hpp"
-#include "aeongui/AttributeMap.h"
+#include "aeongui/AttributeMap.hpp"
 
 namespace AeonGUI
 {

@@ -1,5 +1,5 @@
 /*
-Copyright (C) 2019 Rodrigo Jose Hernandez Cordoba
+Copyright (C) 2019,2025 Rodrigo Jose Hernandez Cordoba
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -17,7 +17,7 @@ limitations under the License.
 #define AEONGUI_VECTOR2_H
 #include <cstddef>
 #include <cstdint>
-#include "aeongui/Platform.h"
+#include "aeongui/Platform.hpp"
 namespace AeonGUI
 {
     class Matrix2x3;

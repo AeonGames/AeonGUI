@@ -17,7 +17,7 @@ limitations under the License.
 #define AEONGUI_SVGPATHELEMENT_H
 
 #include <vector>
-#include "aeongui/DrawType.h"
+#include "aeongui/DrawType.hpp"
 #include "SVGGeometryElement.hpp"
 
 namespace AeonGUI

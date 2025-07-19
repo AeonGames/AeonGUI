@@ -67,7 +67,7 @@
 #line 1 "C:/Code/AeonGUI/core/parsers/path_data.ypp"
 
 /*
-Copyright (C) 2019-2021,2023 Rodrigo Jose Hernandez Cordoba
+Copyright (C) 2019-2021,2023,2025 Rodrigo Jose Hernandez Cordoba
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
 You may obtain a copy of the License at
@@ -99,8 +99,8 @@ limitations under the License.
 #include <cstdint>
 #include <cmath>
 #include <iostream>
-#include "../core/parsers/dstype.h"
-#include "aeongui/DrawType.h"
+#include "../core/parsers/dstype.hpp"
+#include "aeongui/DrawType.hpp"
 extern int dlex();
 extern "C"
 {
@@ -108,8 +108,8 @@ extern "C"
 }
 static void Merge ( dstype& aLeft, dstype& aRight )
 {
-    auto& left = std::get<std::vector<AeonGUI::DrawType>> ( aLeft );
-    auto& right = std::get<std::vector<AeonGUI::DrawType>> ( aRight );
+    auto& left = std::get<std::vector<AeonGUI::DrawType >> ( aLeft );
+    auto& right = std::get<std::vector<AeonGUI::DrawType >> ( aRight );
     left.reserve ( left.size() + right.size() );
     left.insert ( left.end(), right.begin(), right.end() );
 }
@@ -123,13 +123,13 @@ static dstype GetArcArgs ( const dstype& aRadii, const dstype& aRotation, const 
 {
     return std::vector<AeonGUI::DrawType>
     {
-        std::get<std::vector<AeonGUI::DrawType>> ( aRadii ) [0],
-                                              std::get<std::vector<AeonGUI::DrawType>> ( aRadii ) [1],
-                                              std::get<AeonGUI::DrawType> ( aRotation ),
-                                              std::get<double> ( std::get<AeonGUI::DrawType> ( aLarge ) ) ? true : false,
-                                              std::get<double> ( std::get<AeonGUI::DrawType> ( aSweep ) ) ? true : false,
-                                              std::get<std::vector<AeonGUI::DrawType>> ( aEnd ) [0],
-                                              std::get<std::vector<AeonGUI::DrawType>> ( aEnd ) [1]
+        std::get<std::vector<AeonGUI::DrawType >> ( aRadii ) [0],
+        std::get<std::vector<AeonGUI::DrawType >> ( aRadii ) [1],
+        std::get<AeonGUI::DrawType> ( aRotation ),
+        std::get<double> ( std::get<AeonGUI::DrawType> ( aLarge ) ) ? true : false,
+        std::get<double> ( std::get<AeonGUI::DrawType> ( aSweep ) ) ? true : false,
+        std::get<std::vector<AeonGUI::DrawType >> ( aEnd ) [0],
+        std::get<std::vector<AeonGUI::DrawType >> ( aEnd ) [1]
     };
 }
 
@@ -684,9 +684,9 @@ static const yytype_int8 yydefact[] =
 static const yytype_int8 yypgoto[] =
 {
     -63,   -63,   -63,    16,   -63,     2,   -63,   -63,   -63,   -63,
-        -63,   -63,   -63,   -63,   -63,   -63,     0,   -62,    10,   -49,
-        -8,   -48,     7,    -1,    18,    22
-    };
+    -63,   -63,   -63,   -63,   -63,   -63,     0,   -62,    10,   -49,
+    -8,   -48,     7,    -1,    18,    22
+};
 
 /* YYDEFGOTO[NTERM-NUM].  */
 static const yytype_int8 yydefgoto[] =
@@ -1257,293 +1257,242 @@ yyreduce:
     {
     case 19: /* moveto: 'M' single-coordinate-pair-argument-sequence  */
 #line 97 "C:/Code/AeonGUI/core/parsers/path_data.ypp"
-        {
-            AddCommandToPath ( aPath, std::get<AeonGUI::DrawType> ( yyvsp[-1] ), std::get<std::vector<AeonGUI::DrawType>> ( yyvsp[0] ) );
-        }
+    {AddCommandToPath ( aPath, std::get<AeonGUI::DrawType> ( yyvsp[-1] ), std::get<std::vector<AeonGUI::DrawType >> ( yyvsp[0] ) );}
 #line 1236 "C:/Code/AeonGUI/mingw64/core/path_data_parser.cpp"
-        break;
+    break;
 
     case 20: /* moveto: 'm' single-coordinate-pair-argument-sequence  */
 #line 99 "C:/Code/AeonGUI/core/parsers/path_data.ypp"
-        {
-            AddCommandToPath ( aPath, std::get<AeonGUI::DrawType> ( yyvsp[-1] ), std::get<std::vector<AeonGUI::DrawType>> ( yyvsp[0] ) );
-        }
+    {AddCommandToPath ( aPath, std::get<AeonGUI::DrawType> ( yyvsp[-1] ), std::get<std::vector<AeonGUI::DrawType >> ( yyvsp[0] ) );}
 #line 1242 "C:/Code/AeonGUI/mingw64/core/path_data_parser.cpp"
-        break;
+    break;
 
     case 21: /* closepath: 'Z'  */
 #line 102 "C:/Code/AeonGUI/core/parsers/path_data.ypp"
-        {
-            aPath.emplace_back ( std::get<AeonGUI::DrawType> ( yyvsp[0] ) );
-        }
+    {aPath.emplace_back ( std::get<AeonGUI::DrawType> ( yyvsp[0] ) );}
 #line 1248 "C:/Code/AeonGUI/mingw64/core/path_data_parser.cpp"
-        break;
+    break;
 
     case 22: /* closepath: 'z'  */
 #line 103 "C:/Code/AeonGUI/core/parsers/path_data.ypp"
-        {
-            aPath.emplace_back ( std::get<AeonGUI::DrawType> ( yyvsp[0] ) );
-        }
+    {aPath.emplace_back ( std::get<AeonGUI::DrawType> ( yyvsp[0] ) );}
 #line 1254 "C:/Code/AeonGUI/mingw64/core/path_data_parser.cpp"
-        break;
+    break;
 
     case 23: /* lineto: 'L' single-coordinate-pair-argument-sequence  */
 #line 106 "C:/Code/AeonGUI/core/parsers/path_data.ypp"
-        {
-            AddCommandToPath ( aPath, std::get<AeonGUI::DrawType> ( yyvsp[-1] ), std::get<std::vector<AeonGUI::DrawType>> ( yyvsp[0] ) );
-        }
+    {AddCommandToPath ( aPath, std::get<AeonGUI::DrawType> ( yyvsp[-1] ), std::get<std::vector<AeonGUI::DrawType >> ( yyvsp[0] ) );}
 #line 1260 "C:/Code/AeonGUI/mingw64/core/path_data_parser.cpp"
-        break;
+    break;
 
     case 24: /* lineto: 'l' single-coordinate-pair-argument-sequence  */
 #line 108 "C:/Code/AeonGUI/core/parsers/path_data.ypp"
-        {
-            AddCommandToPath ( aPath, std::get<AeonGUI::DrawType> ( yyvsp[-1] ), std::get<std::vector<AeonGUI::DrawType>> ( yyvsp[0] ) );
-        }
+    {AddCommandToPath ( aPath, std::get<AeonGUI::DrawType> ( yyvsp[-1] ), std::get<std::vector<AeonGUI::DrawType >> ( yyvsp[0] ) );}
 #line 1266 "C:/Code/AeonGUI/mingw64/core/path_data_parser.cpp"
-        break;
+    break;
 
     case 25: /* horizontal-lineto: 'H' coordinate-argument-sequence  */
 #line 111 "C:/Code/AeonGUI/core/parsers/path_data.ypp"
-        {
-            AddCommandToPath ( aPath, std::get<AeonGUI::DrawType> ( yyvsp[-1] ), std::get<std::vector<AeonGUI::DrawType>> ( yyvsp[0] ) );
-        }
+    {AddCommandToPath ( aPath, std::get<AeonGUI::DrawType> ( yyvsp[-1] ), std::get<std::vector<AeonGUI::DrawType >> ( yyvsp[0] ) );}
 #line 1272 "C:/Code/AeonGUI/mingw64/core/path_data_parser.cpp"
-        break;
+    break;
 
     case 26: /* horizontal-lineto: 'h' coordinate-argument-sequence  */
 #line 112 "C:/Code/AeonGUI/core/parsers/path_data.ypp"
-        {
-            AddCommandToPath ( aPath, std::get<AeonGUI::DrawType> ( yyvsp[-1] ), std::get<std::vector<AeonGUI::DrawType>> ( yyvsp[0] ) );
-        }
+    {AddCommandToPath ( aPath, std::get<AeonGUI::DrawType> ( yyvsp[-1] ), std::get<std::vector<AeonGUI::DrawType >> ( yyvsp[0] ) );}
 #line 1278 "C:/Code/AeonGUI/mingw64/core/path_data_parser.cpp"
-        break;
+    break;
 
     case 27: /* vertical-lineto: 'V' coordinate-argument-sequence  */
 #line 115 "C:/Code/AeonGUI/core/parsers/path_data.ypp"
-        {
-            AddCommandToPath ( aPath, std::get<AeonGUI::DrawType> ( yyvsp[-1] ), std::get<std::vector<AeonGUI::DrawType>> ( yyvsp[0] ) );
-        }
+    {AddCommandToPath ( aPath, std::get<AeonGUI::DrawType> ( yyvsp[-1] ), std::get<std::vector<AeonGUI::DrawType >> ( yyvsp[0] ) );}
 #line 1284 "C:/Code/AeonGUI/mingw64/core/path_data_parser.cpp"
-        break;
+    break;
 
     case 28: /* vertical-lineto: 'v' coordinate-argument-sequence  */
 #line 116 "C:/Code/AeonGUI/core/parsers/path_data.ypp"
-        {
-            AddCommandToPath ( aPath, std::get<AeonGUI::DrawType> ( yyvsp[-1] ), std::get<std::vector<AeonGUI::DrawType>> ( yyvsp[0] ) );
-        }
+    {AddCommandToPath ( aPath, std::get<AeonGUI::DrawType> ( yyvsp[-1] ), std::get<std::vector<AeonGUI::DrawType >> ( yyvsp[0] ) );}
 #line 1290 "C:/Code/AeonGUI/mingw64/core/path_data_parser.cpp"
-        break;
+    break;
 
     case 29: /* curveto: 'C' triple-coordinate-pair-argument-sequence  */
 #line 119 "C:/Code/AeonGUI/core/parsers/path_data.ypp"
-        {
-            AddCommandToPath ( aPath, std::get<AeonGUI::DrawType> ( yyvsp[-1] ), std::get<std::vector<AeonGUI::DrawType>> ( yyvsp[0] ) );
-        }
+    {AddCommandToPath ( aPath, std::get<AeonGUI::DrawType> ( yyvsp[-1] ), std::get<std::vector<AeonGUI::DrawType >> ( yyvsp[0] ) );}
 #line 1296 "C:/Code/AeonGUI/mingw64/core/path_data_parser.cpp"
-        break;
+    break;
 
     case 30: /* curveto: 'c' triple-coordinate-pair-argument-sequence  */
 #line 120 "C:/Code/AeonGUI/core/parsers/path_data.ypp"
-        {
-            AddCommandToPath ( aPath, std::get<AeonGUI::DrawType> ( yyvsp[-1] ), std::get<std::vector<AeonGUI::DrawType>> ( yyvsp[0] ) );
-        }
+    {AddCommandToPath ( aPath, std::get<AeonGUI::DrawType> ( yyvsp[-1] ), std::get<std::vector<AeonGUI::DrawType >> ( yyvsp[0] ) );}
 #line 1302 "C:/Code/AeonGUI/mingw64/core/path_data_parser.cpp"
-        break;
+    break;
 
     case 31: /* smooth-curveto: 'S' double-coordinate-pair-argument-sequence  */
 #line 123 "C:/Code/AeonGUI/core/parsers/path_data.ypp"
-        {
-            AddCommandToPath ( aPath, std::get<AeonGUI::DrawType> ( yyvsp[-1] ), std::get<std::vector<AeonGUI::DrawType>> ( yyvsp[0] ) );
-        }
+    {AddCommandToPath ( aPath, std::get<AeonGUI::DrawType> ( yyvsp[-1] ), std::get<std::vector<AeonGUI::DrawType >> ( yyvsp[0] ) );}
 #line 1308 "C:/Code/AeonGUI/mingw64/core/path_data_parser.cpp"
-        break;
+    break;
 
     case 32: /* smooth-curveto: 's' double-coordinate-pair-argument-sequence  */
 #line 124 "C:/Code/AeonGUI/core/parsers/path_data.ypp"
-        {
-            AddCommandToPath ( aPath, std::get<AeonGUI::DrawType> ( yyvsp[-1] ), std::get<std::vector<AeonGUI::DrawType>> ( yyvsp[0] ) );
-        }
+    {AddCommandToPath ( aPath, std::get<AeonGUI::DrawType> ( yyvsp[-1] ), std::get<std::vector<AeonGUI::DrawType >> ( yyvsp[0] ) );}
 #line 1314 "C:/Code/AeonGUI/mingw64/core/path_data_parser.cpp"
-        break;
+    break;
 
     case 33: /* quadratic-bezier-curveto: 'Q' double-coordinate-pair-argument-sequence  */
 #line 127 "C:/Code/AeonGUI/core/parsers/path_data.ypp"
-        {
-            AddCommandToPath ( aPath, std::get<AeonGUI::DrawType> ( yyvsp[-1] ), std::get<std::vector<AeonGUI::DrawType>> ( yyvsp[0] ) );
-        }
+    {AddCommandToPath ( aPath, std::get<AeonGUI::DrawType> ( yyvsp[-1] ), std::get<std::vector<AeonGUI::DrawType >> ( yyvsp[0] ) );}
 #line 1320 "C:/Code/AeonGUI/mingw64/core/path_data_parser.cpp"
-        break;
+    break;
 
     case 34: /* quadratic-bezier-curveto: 'q' double-coordinate-pair-argument-sequence  */
 #line 128 "C:/Code/AeonGUI/core/parsers/path_data.ypp"
-        {
-            AddCommandToPath ( aPath, std::get<AeonGUI::DrawType> ( yyvsp[-1] ), std::get<std::vector<AeonGUI::DrawType>> ( yyvsp[0] ) );
-        }
+    {AddCommandToPath ( aPath, std::get<AeonGUI::DrawType> ( yyvsp[-1] ), std::get<std::vector<AeonGUI::DrawType >> ( yyvsp[0] ) );}
 #line 1326 "C:/Code/AeonGUI/mingw64/core/path_data_parser.cpp"
-        break;
+    break;
 
     case 35: /* smooth-quadratic-bezier-curveto: 'T' single-coordinate-pair-argument-sequence  */
 #line 131 "C:/Code/AeonGUI/core/parsers/path_data.ypp"
-        {
-            AddCommandToPath ( aPath, std::get<AeonGUI::DrawType> ( yyvsp[-1] ), std::get<std::vector<AeonGUI::DrawType>> ( yyvsp[0] ) );
-        }
+    {AddCommandToPath ( aPath, std::get<AeonGUI::DrawType> ( yyvsp[-1] ), std::get<std::vector<AeonGUI::DrawType >> ( yyvsp[0] ) );}
 #line 1332 "C:/Code/AeonGUI/mingw64/core/path_data_parser.cpp"
-        break;
+    break;
 
     case 36: /* smooth-quadratic-bezier-curveto: 't' single-coordinate-pair-argument-sequence  */
 #line 132 "C:/Code/AeonGUI/core/parsers/path_data.ypp"
-        {
-            AddCommandToPath ( aPath, std::get<AeonGUI::DrawType> ( yyvsp[-1] ), std::get<std::vector<AeonGUI::DrawType>> ( yyvsp[0] ) );
-        }
+    {AddCommandToPath ( aPath, std::get<AeonGUI::DrawType> ( yyvsp[-1] ), std::get<std::vector<AeonGUI::DrawType >> ( yyvsp[0] ) );}
 #line 1338 "C:/Code/AeonGUI/mingw64/core/path_data_parser.cpp"
-        break;
+    break;
 
     case 37: /* elliptical-arc: 'A' elliptical-arc-argument-sequence  */
 #line 135 "C:/Code/AeonGUI/core/parsers/path_data.ypp"
-        {
-            AddCommandToPath ( aPath, std::get<AeonGUI::DrawType> ( yyvsp[-1] ), std::get<std::vector<AeonGUI::DrawType>> ( yyvsp[0] ) );
-        }
+    {AddCommandToPath ( aPath, std::get<AeonGUI::DrawType> ( yyvsp[-1] ), std::get<std::vector<AeonGUI::DrawType >> ( yyvsp[0] ) );}
 #line 1344 "C:/Code/AeonGUI/mingw64/core/path_data_parser.cpp"
-        break;
+    break;
 
     case 38: /* elliptical-arc: 'a' elliptical-arc-argument-sequence  */
 #line 137 "C:/Code/AeonGUI/core/parsers/path_data.ypp"
-        {
-            AddCommandToPath ( aPath, std::get<AeonGUI::DrawType> ( yyvsp[-1] ), std::get<std::vector<AeonGUI::DrawType>> ( yyvsp[0] ) );
-        }
+    {AddCommandToPath ( aPath, std::get<AeonGUI::DrawType> ( yyvsp[-1] ), std::get<std::vector<AeonGUI::DrawType >> ( yyvsp[0] ) );}
 #line 1350 "C:/Code/AeonGUI/mingw64/core/path_data_parser.cpp"
-        break;
+    break;
 
     case 39: /* elliptical-arc-argument-sequence: elliptical-arc-argument  */
 #line 140 "C:/Code/AeonGUI/core/parsers/path_data.ypp"
-        {
-            yyval = std::move ( yyvsp[0] );
-        }
+    { yyval = std::move ( yyvsp[0] ); }
 #line 1356 "C:/Code/AeonGUI/mingw64/core/path_data_parser.cpp"
-        break;
+    break;
 
     case 40: /* elliptical-arc-argument-sequence: elliptical-arc-argument-sequence elliptical-arc-argument  */
 #line 142 "C:/Code/AeonGUI/core/parsers/path_data.ypp"
-        {
-            Merge ( yyvsp[-1], yyvsp[0] );
-            yyval = std::move ( yyvsp[-1] );
-        }
+    {
+        Merge ( yyvsp[-1], yyvsp[0] );
+        yyval = std::move ( yyvsp[-1] );
+    }
 #line 1365 "C:/Code/AeonGUI/mingw64/core/path_data_parser.cpp"
-        break;
+    break;
 
     case 41: /* elliptical-arc-argument: coordinate-pair coordinate coordinate coordinate coordinate-pair  */
 #line 149 "C:/Code/AeonGUI/core/parsers/path_data.ypp"
-        {
-            yyval = GetArcArgs ( yyvsp[-4], yyvsp[-3], yyvsp[-2], yyvsp[-1], yyvsp[0] );
-        }
+    {
+        yyval = GetArcArgs ( yyvsp[-4], yyvsp[-3], yyvsp[-2], yyvsp[-1], yyvsp[0] );
+    }
 #line 1373 "C:/Code/AeonGUI/mingw64/core/path_data_parser.cpp"
-        break;
+    break;
 
     case 42: /* triple-coordinate-pair-argument-sequence: triple-coordinate-pair-argument  */
 #line 154 "C:/Code/AeonGUI/core/parsers/path_data.ypp"
-        {
-            yyval = std::move ( yyvsp[0] );
-        }
+    { yyval = std::move ( yyvsp[0] ); }
 #line 1379 "C:/Code/AeonGUI/mingw64/core/path_data_parser.cpp"
-        break;
+    break;
 
     case 43: /* triple-coordinate-pair-argument-sequence: triple-coordinate-pair-argument-sequence triple-coordinate-pair-argument  */
 #line 156 "C:/Code/AeonGUI/core/parsers/path_data.ypp"
-        {
-            Merge ( yyvsp[-1], yyvsp[0] );
-            yyval = std::move ( yyvsp[-1] );
-        }
+    {
+        Merge ( yyvsp[-1], yyvsp[0] );
+        yyval = std::move ( yyvsp[-1] );
+    }
 #line 1388 "C:/Code/AeonGUI/mingw64/core/path_data_parser.cpp"
-        break;
+    break;
 
     case 44: /* triple-coordinate-pair-argument: coordinate-pair coordinate-pair coordinate-pair  */
 #line 163 "C:/Code/AeonGUI/core/parsers/path_data.ypp"
-        {
-            auto& left = std::get<std::vector<AeonGUI::DrawType>> ( yyvsp[-2] );
-            auto& center = std::get<std::vector<AeonGUI::DrawType>> ( yyvsp[-1] );
-            auto& right = std::get<std::vector<AeonGUI::DrawType>> ( yyvsp[0] );
-            left.reserve ( left.size() + center.size() + right.size() );
-            left.insert ( left.end(), center.begin(), center.end() );
-            left.insert ( left.end(), right.begin(), right.end() );
-            yyval = std::move ( yyvsp[-2] );
-        }
+    {
+        auto& left = std::get<std::vector<AeonGUI::DrawType >> ( yyvsp[-2] );
+        auto& center = std::get<std::vector<AeonGUI::DrawType >> ( yyvsp[-1] );
+        auto& right = std::get<std::vector<AeonGUI::DrawType >> ( yyvsp[0] );
+        left.reserve ( left.size() + center.size() + right.size() );
+        left.insert ( left.end(), center.begin(), center.end() );
+        left.insert ( left.end(), right.begin(), right.end() );
+        yyval = std::move ( yyvsp[-2] );
+    }
 #line 1402 "C:/Code/AeonGUI/mingw64/core/path_data_parser.cpp"
-        break;
+    break;
 
     case 45: /* double-coordinate-pair-argument-sequence: double-coordinate-pair-argument  */
 #line 174 "C:/Code/AeonGUI/core/parsers/path_data.ypp"
-        {
-            yyval = std::move ( yyvsp[0] );
-        }
+    { yyval = std::move ( yyvsp[0] ); }
 #line 1408 "C:/Code/AeonGUI/mingw64/core/path_data_parser.cpp"
-        break;
+    break;
 
     case 46: /* double-coordinate-pair-argument-sequence: double-coordinate-pair-argument-sequence double-coordinate-pair-argument  */
 #line 177 "C:/Code/AeonGUI/core/parsers/path_data.ypp"
-        {
-            Merge ( yyvsp[-1], yyvsp[0] );
-            yyval = std::move ( yyvsp[-1] );
-        }
+    {
+        Merge ( yyvsp[-1], yyvsp[0] );
+        yyval = std::move ( yyvsp[-1] );
+    }
 #line 1417 "C:/Code/AeonGUI/mingw64/core/path_data_parser.cpp"
-        break;
+    break;
 
     case 47: /* double-coordinate-pair-argument: coordinate-pair coordinate-pair  */
 #line 184 "C:/Code/AeonGUI/core/parsers/path_data.ypp"
-        {
-            Merge ( yyvsp[-1], yyvsp[0] );
-            yyval = std::move ( yyvsp[-1] );
-        }
+    {
+        Merge ( yyvsp[-1], yyvsp[0] );
+        yyval = std::move ( yyvsp[-1] );
+    }
 #line 1426 "C:/Code/AeonGUI/mingw64/core/path_data_parser.cpp"
-        break;
+    break;
 
     case 48: /* single-coordinate-pair-argument-sequence: coordinate-pair  */
 #line 190 "C:/Code/AeonGUI/core/parsers/path_data.ypp"
-        {
-            yyval = std::move ( yyvsp[0] );
-        }
+    { yyval = std::move ( yyvsp[0] ); }
 #line 1432 "C:/Code/AeonGUI/mingw64/core/path_data_parser.cpp"
-        break;
+    break;
 
     case 49: /* single-coordinate-pair-argument-sequence: single-coordinate-pair-argument-sequence coordinate-pair  */
 #line 193 "C:/Code/AeonGUI/core/parsers/path_data.ypp"
-        {
-            Merge ( yyvsp[-1], yyvsp[0] );
-            yyval = std::move ( yyvsp[-1] );
-        }
+    {
+        Merge ( yyvsp[-1], yyvsp[0] );
+        yyval = std::move ( yyvsp[-1] );
+    }
 #line 1441 "C:/Code/AeonGUI/mingw64/core/path_data_parser.cpp"
-        break;
+    break;
 
     case 50: /* coordinate-pair: coordinate coordinate  */
 #line 199 "C:/Code/AeonGUI/core/parsers/path_data.ypp"
-        {
-            yyval = std::vector<AeonGUI::DrawType> {std::get<AeonGUI::DrawType> ( yyvsp[-1] ), std::get<AeonGUI::DrawType> ( yyvsp[0] ) };
-        }
+    {yyval = std::vector<AeonGUI::DrawType>{std::get<AeonGUI::DrawType> ( yyvsp[-1] ), std::get<AeonGUI::DrawType> ( yyvsp[0] ) };}
 #line 1447 "C:/Code/AeonGUI/mingw64/core/path_data_parser.cpp"
-        break;
+    break;
 
     case 51: /* coordinate-argument-sequence: coordinate  */
 #line 203 "C:/Code/AeonGUI/core/parsers/path_data.ypp"
-        {
-            yyval = std::vector<AeonGUI::DrawType> {std::get<AeonGUI::DrawType> ( yyvsp[0] ) };
-        }
+    {
+        yyval = std::vector<AeonGUI::DrawType>{std::get<AeonGUI::DrawType> ( yyvsp[0] ) };
+    }
 #line 1455 "C:/Code/AeonGUI/mingw64/core/path_data_parser.cpp"
-        break;
+    break;
 
     case 52: /* coordinate-argument-sequence: coordinate-argument-sequence coordinate  */
 #line 208 "C:/Code/AeonGUI/core/parsers/path_data.ypp"
-        {
-            std::get<std::vector<AeonGUI::DrawType>> ( yyvsp[-1] ).emplace_back ( std::get<AeonGUI::DrawType> ( yyvsp[0] ) );
-            yyval = std::move ( yyvsp[-1] );
-        }
+    {
+        std::get<std::vector<AeonGUI::DrawType >> ( yyvsp[-1] ).emplace_back ( std::get<AeonGUI::DrawType> ( yyvsp[0] ) );
+        yyval = std::move ( yyvsp[-1] );
+    }
 #line 1464 "C:/Code/AeonGUI/mingw64/core/path_data_parser.cpp"
-        break;
+    break;
 
 
 #line 1468 "C:/Code/AeonGUI/mingw64/core/path_data_parser.cpp"
 
-    default:
-        break;
+    default: break;
     }
     /* User semantic actions sometimes alter yychar, and that requires
        that yytoken be updated with the new translation.  We take the

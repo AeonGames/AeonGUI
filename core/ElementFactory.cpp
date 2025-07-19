@@ -21,8 +21,8 @@ limitations under the License.
 #include <tuple>
 #include <algorithm>
 #include <iostream>
-#include "aeongui/StringLiteral.h"
-#include "aeongui/ElementFactory.h"
+#include "aeongui/StringLiteral.hpp"
+#include "aeongui/ElementFactory.hpp"
 #include "aeongui/dom/Element.hpp"
 #include "aeongui/dom/SVGSVGElement.hpp"
 #include "aeongui/dom/SVGGElement.hpp"

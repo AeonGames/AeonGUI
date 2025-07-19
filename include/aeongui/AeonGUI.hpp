@@ -1,5 +1,5 @@
 /*
-Copyright (C) 2019,2020 Rodrigo Jose Hernandez Cordoba
+Copyright (C) 2013,2019,2020,2023,2025 Rodrigo Jose Hernandez Cordoba
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -13,19 +13,21 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 */
-#ifndef AEONGUI_DRAWTYPE_H
-#define AEONGUI_DRAWTYPE_H
 
-#include <cstdint>
-#include <cstddef>
-#include <vector>
-#include <initializer_list>
-#include <variant>
-#include "aeongui/Platform.h"
-#include "aeongui/Vector2.h"
+#ifndef AEONGAMES_AEONGUI_H
+#define AEONGAMES_AEONGUI_H
+#include "aeongui/Platform.hpp"
 
 namespace AeonGUI
 {
-    using DrawType = std::variant<uint64_t, double, bool>;
+    /*! \brief Initializes extensions and global resources required by the library.
+        \return true if initialization succeded, false if not.
+        \sa Finalize
+    */
+    DLL bool Initialize ( int argc, char *argv[] );
+    /*! \brief Finalizes any global resources allocated by Initialize.
+        \sa Initialize
+    */
+    DLL void Finalize();
 }
 #endif

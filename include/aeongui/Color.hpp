@@ -1,5 +1,5 @@
 /*
-Copyright (C) 2010-2012,2019,2020 Rodrigo Jose Hernandez Cordoba
+Copyright (C) 2010-2012,2019,2020,2025 Rodrigo Jose Hernandez Cordoba
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -19,7 +19,7 @@ limitations under the License.
 #include <cstdint>
 #include <regex>
 #include <variant>
-#include "aeongui/Platform.h"
+#include "aeongui/Platform.hpp"
 namespace AeonGUI
 {
     /// W3C CSS3 color keyword names (see https://en.wikipedia.org/wiki/Web_colors)

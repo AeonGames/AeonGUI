@@ -1,5 +1,5 @@
 /*
-Copyright (C) 2014,2019 Rodrigo Jose Hernandez Cordoba
+Copyright (C) 2019,2020,2025 Rodrigo Jose Hernandez Cordoba
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -13,18 +13,19 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 */
+#ifndef AEONGUI_DRAWTYPE_H
+#define AEONGUI_DRAWTYPE_H
 
-#ifndef AEONGUI_PLATFORM_H
-#define AEONGUI_PLATFORM_H
-#ifndef DLL
-#ifdef WIN32
-#ifdef AeonGUI_EXPORTS
-#define DLL __declspec( dllexport )
-#else
-#define DLL __declspec( dllimport )
-#endif
-#else
-#define DLL
-#endif
-#endif
+#include <cstdint>
+#include <cstddef>
+#include <vector>
+#include <initializer_list>
+#include <variant>
+#include "aeongui/Platform.hpp"
+#include "aeongui/Vector2.hpp"
+
+namespace AeonGUI
+{
+    using DrawType = std::variant<uint64_t, double, bool>;
+}
 #endif

@@ -19,7 +19,7 @@ limitations under the License.
 #include <optional>
 #include <vector>
 #include <chrono>
-#include "aeongui/Platform.h"
+#include "aeongui/Platform.hpp"
 #include "DOMString.hpp"
 #include "EventTarget.hpp"
 

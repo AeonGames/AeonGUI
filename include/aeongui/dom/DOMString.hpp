@@ -16,7 +16,7 @@ limitations under the License.
 #ifndef AEONGUI_DOM_DOMSTRING_H
 #define AEONGUI_DOM_DOMSTRING_H
 #include <string>
-#include "aeongui/Platform.h"
+#include "aeongui/Platform.hpp"
 
 namespace AeonGUI
 {

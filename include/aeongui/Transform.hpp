@@ -1,5 +1,5 @@
 /*
-Copyright (C) 2019 Rodrigo Jose Hernandez Cordoba
+Copyright (C) 2019,2025 Rodrigo Jose Hernandez Cordoba
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -16,9 +16,9 @@ limitations under the License.
 #ifndef AEONGUI_TRANSFORM_H
 #define AEONGUI_TRANSFORM_H
 #include <cstdint>
-#include "aeongui/Platform.h"
-#include "aeongui/Vector2.h"
-#include "aeongui/Matrix2x3.h"
+#include "aeongui/Platform.hpp"
+#include "aeongui/Vector2.hpp"
+#include "aeongui/Matrix2x3.hpp"
 
 namespace AeonGUI
 {

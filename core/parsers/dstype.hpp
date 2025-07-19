@@ -1,5 +1,5 @@
 /*
-Copyright (C) 2019 Rodrigo Jose Hernandez Cordoba
+Copyright (C) 2019,2025 Rodrigo Jose Hernandez Cordoba
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -19,7 +19,7 @@ limitations under the License.
 #include <vector>
 #include <cstdint>
 #include <cstddef>
-#include "aeongui/DrawType.h"
+#include "aeongui/DrawType.hpp"
 using dstype = std::variant<std::vector<AeonGUI::DrawType>, AeonGUI::DrawType>;
 #define DSTYPE dstype
 #endif

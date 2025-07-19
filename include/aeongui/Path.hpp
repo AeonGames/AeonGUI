@@ -1,5 +1,5 @@
 /*
-Copyright (C) 2013,2019,2020,2023 Rodrigo Jose Hernandez Cordoba
+Copyright (C) 2019,2020,2025 Rodrigo Jose Hernandez Cordoba
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -13,21 +13,23 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 */
-
-#ifndef AEONGAMES_AEONGUI_H
-#define AEONGAMES_AEONGUI_H
-#include "aeongui/Platform.h"
+#ifndef AEONGUI_PATH_H
+#define AEONGUI_PATH_H
+#include <cstdint>
+#include <cstddef>
+#include <vector>
+#include "aeongui/Platform.hpp"
+#include "aeongui/DrawType.hpp"
 
 namespace AeonGUI
 {
-    /*! \brief Initializes extensions and global resources required by the library.
-        \return true if initialization succeded, false if not.
-        \sa Finalize
-    */
-    DLL bool Initialize ( int argc, char *argv[] );
-    /*! \brief Finalizes any global resources allocated by Initialize.
-        \sa Initialize
-    */
-    DLL void Finalize();
+    /** Base class for cached path data. */
+    class Path
+    {
+    public:
+        virtual void Construct ( const std::vector<DrawType>& aCommands ) = 0;
+        virtual void Construct ( const DrawType* aCommands, size_t aCommandCount ) = 0;
+        DLL virtual ~Path() = 0;
+    };
 }
 #endif

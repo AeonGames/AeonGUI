@@ -3,22 +3,22 @@ find_package(FLEX)
 add_subdirectory(idl)
 
 set(AEONGUI_HEADERS
-    ../include/aeongui/AeonGUI.h
-    ../include/aeongui/Platform.h
-    ../include/aeongui/Rect.h
-    ../include/aeongui/ElementFactory.h
-    ../include/aeongui/StringLiteral.h
-    ../include/aeongui/Canvas.h
-    ../include/aeongui/CairoCanvas.h
-    ../include/aeongui/CairoPath.h
-    ../include/aeongui/Path.h
-    ../include/aeongui/AABB.h
-    ../include/aeongui/Matrix2x3.h
-    ../include/aeongui/Transform.h
-    ../include/aeongui/Vector2.h
-    ../include/aeongui/DrawType.h
-    ../include/aeongui/Color.h
-    ../include/aeongui/StyleSheet.h
+    ../include/aeongui/AeonGUI.hpp
+    ../include/aeongui/Platform.hpp
+    ../include/aeongui/Rect.hpp
+    ../include/aeongui/ElementFactory.hpp
+    ../include/aeongui/StringLiteral.hpp
+    ../include/aeongui/Canvas.hpp
+    ../include/aeongui/CairoCanvas.hpp
+    ../include/aeongui/CairoPath.hpp
+    ../include/aeongui/Path.hpp
+    ../include/aeongui/AABB.hpp
+    ../include/aeongui/Matrix2x3.hpp
+    ../include/aeongui/Transform.hpp
+    ../include/aeongui/Vector2.hpp
+    ../include/aeongui/DrawType.hpp
+    ../include/aeongui/Color.hpp
+    ../include/aeongui/StyleSheet.hpp
 )
 set(AEONGUI_DOM_HEADERS
     ../include/aeongui/dom/Window.hpp

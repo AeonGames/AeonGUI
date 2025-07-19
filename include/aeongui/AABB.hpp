@@ -1,5 +1,5 @@
 /*
-Copyright (C) 2019 Rodrigo Jose Hernandez Cordoba
+Copyright (C) 2019,2025 Rodrigo Jose Hernandez Cordoba
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -15,8 +15,8 @@ limitations under the License.
 */
 #ifndef AEONGUI_AABB_H
 #define AEONGUI_AABB_H
-#include "aeongui/Platform.h"
-#include "aeongui/Vector2.h"
+#include "aeongui/Platform.hpp"
+#include "aeongui/Vector2.hpp"
 namespace AeonGUI
 {
     class AABB

@@ -17,7 +17,7 @@ limitations under the License.
 #define AEONGUI_SVGGRAPHICSELEMENT_H
 
 #include "SVGElement.hpp"
-#include "aeongui/Matrix2x3.h"
+#include "aeongui/Matrix2x3.hpp"
 namespace AeonGUI
 {
     namespace DOM

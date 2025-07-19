@@ -16,7 +16,7 @@ limitations under the License.
 
 #include <iostream>
 #include <string>
-#include "aeongui/Color.h"
+#include "aeongui/Color.hpp"
 #include "aeongui/dom/Element.hpp"
 #include "CSSSelectHandler.hpp"
 #include <libcss/libcss.h>

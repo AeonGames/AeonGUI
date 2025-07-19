@@ -19,7 +19,7 @@ limitations under the License.
 #include <vector>
 #include "SVGGraphicsElement.hpp"
 // Path type should be selectable and should match Canvas type
-#include "aeongui/CairoPath.h"
+#include "aeongui/CairoPath.hpp"
 
 namespace AeonGUI
 {

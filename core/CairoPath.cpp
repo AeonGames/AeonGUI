@@ -1,5 +1,5 @@
 /*
-Copyright (C) 2019,2020 Rodrigo Jose Hernandez Cordoba
+Copyright (C) 2019,2020,2025 Rodrigo Jose Hernandez Cordoba
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -16,7 +16,7 @@ limitations under the License.
 
 #include <cmath>
 #include <cairo.h>
-#include "aeongui/CairoPath.h"
+#include "aeongui/CairoPath.hpp"
 
 namespace AeonGUI
 {
@@ -204,7 +204,7 @@ namespace AeonGUI
         Vector2 last_c_ctrl{};
         Vector2 last_q_ctrl{};
         const DrawType* end = aCommands + aCommandCount;
-        for ( const DrawType* i = aCommands; i != end; )
+        for ( const DrawType * i = aCommands; i != end; )
         {
             uint64_t cmd{std::get<uint64_t> ( * ( i ) ) };
             switch ( std::get<uint64_t> ( * ( i++ ) ) )

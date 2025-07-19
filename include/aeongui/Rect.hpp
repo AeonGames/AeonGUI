@@ -1,5 +1,5 @@
 /*
-Copyright (C) 2010-2012,2019 Rodrigo Jose Hernandez Cordoba
+Copyright (C) 2010-2012,2019,2025 Rodrigo Jose Hernandez Cordoba
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -16,7 +16,7 @@ limitations under the License.
 #ifndef AEONGUI_RECT_H
 #define AEONGUI_RECT_H
 #include <cstdint>
-#include "aeongui/Platform.h"
+#include "aeongui/Platform.hpp"
 namespace AeonGUI
 {
     /*! \brief Rectangle class. */

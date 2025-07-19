@@ -1,5 +1,5 @@
 /******************************************************************************
-Copyright (C) 2010-2012,2019,2020,2023 Rodrigo Hernandez Cordoba
+Copyright (C) 2010-2012,2019,2020,2023,2025 Rodrigo Hernandez Cordoba
 
    Licensed under the Apache License, Version 2.0 (the "License");
    you may not use this file except in compliance with the License.
@@ -13,7 +13,7 @@ Copyright (C) 2010-2012,2019,2020,2023 Rodrigo Hernandez Cordoba
    See the License for the specific language governing permissions and
    limitations under the License.
 ******************************************************************************/
-#include "aeongui/Color.h"
+#include "aeongui/Color.hpp"
 #include <algorithm>
 #include <iostream>
 #include <unordered_map>

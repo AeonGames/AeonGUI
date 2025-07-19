@@ -16,7 +16,7 @@ limitations under the License.
 #ifndef AEONGUI_DOM_EVENTLISTENER_H
 #define AEONGUI_DOM_EVENTLISTENER_H
 #include <cstdint>
-#include "aeongui/Platform.h"
+#include "aeongui/Platform.hpp"
 
 namespace AeonGUI
 {

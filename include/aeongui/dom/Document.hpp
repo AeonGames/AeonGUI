@@ -19,9 +19,9 @@ limitations under the License.
 #include <vector>
 #include <memory>
 #include <algorithm>
-#include "aeongui/Platform.h"
-#include "aeongui/Canvas.h"
-#include "aeongui/StyleSheet.h"
+#include "aeongui/Platform.hpp"
+#include "aeongui/Canvas.hpp"
+#include "aeongui/StyleSheet.hpp"
 #include "aeongui/dom/Node.hpp"
 #include "aeongui/dom/USVString.hpp"
 namespace AeonGUI

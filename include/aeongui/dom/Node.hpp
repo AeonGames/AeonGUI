@@ -20,8 +20,8 @@ limitations under the License.
 #include <memory>
 #include <functional>
 #include <variant>
-#include "aeongui/Platform.h"
-#include "aeongui/AttributeMap.h"
+#include "aeongui/Platform.hpp"
+#include "aeongui/AttributeMap.hpp"
 
 namespace AeonGUI
 {
