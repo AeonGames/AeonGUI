@@ -60,9 +60,10 @@ GLWindow::GLWindow ( char* aFilename ) :
     window ( 0 ),
     mWidth ( 800 ),
     mHeight ( 600 ),
-    mDocument ( aFilename ? aFilename : "" ),
-    mWindow{&mDocument, static_cast<uint32_t> ( mWidth ), static_cast<uint32_t> ( mHeight ) }
-{}
+    mWindow{static_cast<uint32_t> ( mWidth ), static_cast<uint32_t> ( mHeight ) }
+{
+    mWindow.open ( aFilename ? aFilename : "" );
+}
 
 bool GLWindow::Create ( Display* dpy )
 {
