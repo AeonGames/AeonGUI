@@ -22,6 +22,7 @@ set(AEONGUI_HEADERS
 )
 set(AEONGUI_DOM_HEADERS
     ../include/aeongui/dom/Window.hpp
+    ../include/aeongui/dom/Location.hpp
     ../include/aeongui/dom/Document.hpp
     ../include/aeongui/dom/DOMString.hpp
     ../include/aeongui/dom/AnyType.hpp
@@ -68,6 +69,7 @@ set(AEONGUI_SOURCES
 )
 set(AEONGUI_DOM_SOURCES
     dom/Window.cpp
+    dom/Location.cpp
     dom/Document.cpp
     dom/Event.cpp
     dom/EventTarget.cpp
