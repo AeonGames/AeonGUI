@@ -43,6 +43,7 @@ namespace AeonGUI
 
         Window* Window::open ( const USVString& url, const DOMString& target, const DOMString& features )
         {
+            mLocation.assign ( "https://example.org:8080/foo/bar?q=baz#bang" );
             mDocument.open ( url );
             return this;
         }

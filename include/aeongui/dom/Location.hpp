@@ -31,7 +31,7 @@ namespace AeonGUI
             // Methods to manipulate the URL
             DLL void assign ( const USVString& url );
             DLL void replace ( const USVString& url );
-            void reload();
+            DLL void reload();
             // Attributes to access various parts of the URL
             DLL const USVString& href() const;
             DLL const USVString& origin() const;
@@ -42,8 +42,16 @@ namespace AeonGUI
             DLL const USVString& pathname() const;
             DLL const USVString& search() const;
             DLL const USVString& hash() const;
-            // Ancestor origins for security context
-            DLL const std::vector<USVString>& ancestorOrigins() const;
+        private:
+            USVString m_href{};
+            USVString m_origin{};
+            USVString m_protocol{};
+            USVString m_host{};
+            USVString m_hostname{};
+            USVString m_port{};
+            USVString m_pathname{};
+            USVString m_search{};
+            USVString m_hash{};
         };
     }
 }

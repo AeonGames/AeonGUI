@@ -14,17 +14,45 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 #include "aeongui/dom/Location.hpp"
-
+#include <regex>
 namespace AeonGUI
 {
     namespace DOM
     {
+        static const std::regex url_regex (
+            R"(^((?:https?|ftp):)(?:\/\/)?([a-zA-Z0-9.-]+)(?::(\d+))?([\/\w .-]*)?(\?[\w=&-]*)?(#[\w-]*)?$)"
+        );
         Location::Location() = default;
         Location::~Location() = default;
 
         void Location::assign ( const USVString& url )
         {
-            // Implementation for assigning a new URL
+            // Validate the URL format using regex
+            std::smatch matches;
+            if ( !std::regex_match ( url, matches, url_regex ) )
+            {
+                throw std::invalid_argument ( "Invalid URL format" );
+            }
+            for ( auto& m : matches )
+            {
+                std::cout << m.str() << std::endl;
+            }
+            m_href = matches[0].str();
+            m_protocol = matches[1].str();
+            m_hostname = matches[2].str();
+            m_port = matches[3].str();
+            m_pathname = matches[4].str();
+            m_search = matches[5].str();
+            m_hash = matches[6].str();
+            std::cout << "Protocol: " << m_protocol << std::endl;
+            std::cout << "Hostname: " << m_hostname << std::endl;
+            std::cout << "Port: " << m_port << std::endl;
+            std::cout << "Pathname: " << m_pathname << std::endl;
+            std::cout << "Search: " << m_search << std::endl;
+            std::cout << "Hash: " << m_hash << std::endl;
+
+            m_host = m_hostname + ( m_port.empty() ? "" : ":" + m_port );
+            m_origin = m_protocol + "//" + m_host;
         }
 
         void Location::replace ( const USVString& url )
@@ -40,71 +68,55 @@ namespace AeonGUI
         const USVString& Location::href() const
         {
             // Return the full URL as a string
-            static USVString href;
-            return href;
+            return m_href;
         }
 
         const USVString& Location::origin() const
         {
             // Return the origin of the URL
-            static USVString origin;
-            return origin;
+            return m_origin;
         }
 
         const USVString& Location::protocol() const
         {
             // Return the protocol part of the URL
-            static USVString protocol;
-            return protocol;
+            return m_protocol;
         }
 
         const USVString& Location::host() const
         {
             // Return the host part of the URL
-            static USVString host;
-            return host;
+            return m_host;
         }
 
         const USVString& Location::hostname() const
         {
             // Return the hostname part of the URL
-            static USVString hostname;
-            return hostname;
+            return m_hostname;
         }
 
         const USVString& Location::port() const
         {
             // Return the port part of the URL
-            static USVString port;
-            return port;
+            return m_port;
         }
 
         const USVString& Location::pathname() const
         {
             // Return the pathname part of the URL
-            static USVString pathname;
-            return pathname;
+            return m_pathname;
         }
 
         const USVString& Location::search() const
         {
             // Return the search/query part of the URL
-            static USVString search;
-            return search;
+            return m_search;
         }
 
         const USVString& Location::hash() const
         {
             // Return the hash fragment of the URL
-            static USVString hash;
-            return hash;
-        }
-
-        const std::vector<DOMString>& Location::ancestorOrigins() const
-        {
-            // Return a list of ancestor origins for security context, if applicable
-            static std::vector<DOMString> ancestorOrigins;
-            return ancestorOrigins;
+            return m_hash;
         }
     }
 }

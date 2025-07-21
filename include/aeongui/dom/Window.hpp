@@ -21,6 +21,7 @@ limitations under the License.
 #include "aeongui/CairoCanvas.hpp"
 #include "aeongui/dom/EventTarget.hpp"
 #include "aeongui/dom/USVString.hpp"
+#include "aeongui/dom/Location.hpp"
 #include "aeongui/dom/Document.hpp"
 
 namespace AeonGUI
@@ -51,6 +52,7 @@ namespace AeonGUI
             /**@}*/
             DLL Window* open ( const USVString& url = "", const DOMString& target = "_blank", const DOMString& features = "" );
         private:
+            Location mLocation{};
             Document mDocument{};
             CairoCanvas mCanvas{};
         };
