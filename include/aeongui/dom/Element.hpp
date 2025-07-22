@@ -40,9 +40,6 @@ namespace AeonGUI
         {
         public:
             DLL Element ( const DOMString& aTagName, const AttributeMap& aAttributes, Node* aParent );
-            //DLL AttributeType GetAttribute ( const char* attrName, const AttributeType& aDefault = {} ) const;
-            //DLL AttributeType GetInheritedAttribute ( const char* attrName, const AttributeType& aDefault = {} ) const;
-            //DLL void SetAttribute ( const char* attrName, const AttributeType& aValue );
             DLL virtual ~Element();
             /**DOM Properties and Methods @{*/
             NodeType nodeType() const final;
@@ -54,7 +51,6 @@ namespace AeonGUI
             DOMString mTagName{};
             DOMString mId{};
             std::vector<lwc_string*> mClasses{};
-            AttributeMap mAttributeMap{};
             DLL void OnAncestorChanged() override;
         protected:
             StyleSheetPtr mInlineStyleSheet{};

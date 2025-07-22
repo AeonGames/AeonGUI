@@ -160,15 +160,9 @@ namespace AeonGUI
         Element::Element ( const DOMString& aTagName, const AttributeMap& aAttributes, Node* aParent ) :
             Node { aParent },
             mTagName{ aTagName },
-            mId{},
-            mAttributeMap{aAttributes}
+            mId{aAttributes.find ( "id" ) != aAttributes.end() ? aAttributes.at ( "id" ).c_str() : ""}
         {
-            if ( aAttributes.find ( "id" ) != aAttributes.end() )
-            {
-                mId = aAttributes.at ( "id" );
-            }
-
-            std::string class_attribute {mAttributeMap.find ( "class" ) != mAttributeMap.end() ? mAttributeMap.at ( "class" ) : std::string{}};
+            std::string class_attribute {aAttributes.find ( "class" ) != aAttributes.end() ? aAttributes.at ( "class" ) : std::string{}};
             if ( !class_attribute.empty() )
             {
                 std::regex class_regex {R"(\s+)"};
@@ -181,7 +175,6 @@ namespace AeonGUI
                     lwc_intern_string ( m->str().c_str(), m->str().size(), &mClasses.back() );
                 }
             }
-            auto style = mAttributeMap.find ( "style" );
             css_error code{};
             css_stylesheet_params params{};
             params.params_version = CSS_STYLESHEET_PARAMS_VERSION_1;
@@ -219,7 +212,8 @@ namespace AeonGUI
             }
 
             // Parse inline style
-            const std::string& css{ style != mAttributeMap.end() ? style->second : "" };
+            auto style = aAttributes.find ( "style" );
+            const std::string& css{ style != aAttributes.end() ? style->second : "" };
             std::cerr << tagName() << std::endl;
             std::cerr << "css: " << css << std::endl << std::endl;
             code = css_stylesheet_append_data ( mInlineStyleSheet.get(), reinterpret_cast<const uint8_t*> ( css.data() ), css.size() );
@@ -304,37 +298,6 @@ namespace AeonGUI
                 mComputedStyles->styles[CSS_PSEUDO_ELEMENT_NONE] = computed_style;
             }
         }
-#if 0
-        AttributeType Element::GetAttribute ( const char* attrName, const AttributeType& aDefault ) const
-        {
-            auto i = mAttributeMap.find ( attrName );
-            if ( i != mAttributeMap.end() )
-            {
-                return i->second;
-            }
-            return aDefault;
-        }
-
-        void Element::SetAttribute ( const char* attrName, const AttributeType& aValue )
-        {
-            mAttributeMap[attrName] = aValue;
-        }
-
-        AttributeType Element::GetInheritedAttribute ( const char* attrName, const AttributeType& aDefault ) const
-        {
-            AttributeType attr = GetAttribute ( attrName );
-            Node* parent = parentNode();
-            while ( std::holds_alternative<std::monostate> ( attr ) && parent != nullptr )
-            {
-                if ( parent->nodeType() == ELEMENT_NODE )
-                {
-                    attr = reinterpret_cast<Element*> ( parent )->GetAttribute ( attrName );
-                }
-                parent = parent->parentNode();
-            }
-            return std::holds_alternative<std::monostate> ( attr ) ? aDefault : attr;
-        }
-#endif
         Node::NodeType Element::nodeType() const
         {
             return ELEMENT_NODE;
