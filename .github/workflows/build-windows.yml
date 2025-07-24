@@ -31,6 +31,9 @@ jobs:
     - name: Configure CMake (Windows Visual Studio)
       run: cmake -DCMAKE_TOOLCHAIN_FILE="C:/vcpkg/scripts/buildsystems/vcpkg.cmake" -B ${{github.workspace}}/build
       if: matrix.compiler == 'msvc'
-        
+
     - name: Build
       run: cmake --build ${{github.workspace}}/build
+
+    - name: Run Tests
+      run: ctest --test-dir ${{github.workspace}}/build

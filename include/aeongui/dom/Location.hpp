@@ -27,6 +27,7 @@ namespace AeonGUI
         {
         public:
             DLL Location();
+            DLL Location ( std::function<void ( const Location& ) > callback );
             DLL ~Location();
             /**DOM Properties and Methods @{*/
             // Methods to manipulate the URL
@@ -46,11 +47,11 @@ namespace AeonGUI
             /**@}*/
             DLL void SetCallback ( std::function<void ( const Location& ) > callback );
         private:
-            USVString m_href{};
-            USVString m_origin{};
-            USVString m_protocol{};
-            USVString m_host{};
-            USVString m_hostname{};
+            USVString m_href{"about:blank"};
+            USVString m_origin{"about:blank"};
+            USVString m_protocol{"about:"};
+            USVString m_host{"blank"};
+            USVString m_hostname{"blank"};
             USVString m_port{};
             USVString m_pathname{};
             USVString m_search{};

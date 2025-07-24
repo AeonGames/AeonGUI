@@ -41,9 +41,19 @@ namespace AeonGUI
             return &mDocument;
         }
 
+        Location& Window::location() const
+        {
+            return const_cast<Location&> ( mLocation );
+        }
+
+        void Window::OnLocationChanged ( const Location& location )
+        {
+            // Handle location changes, e.g., update the document or UI
+        }
+
         Window* Window::open ( const USVString& url, const DOMString& target, const DOMString& features )
         {
-            mLocation.assign ( "https://example.org:8080/foo/bar?q=baz#bang" );
+            location().assign ( "https://example.org:8080/foo/bar?q=baz#bang" );
             mDocument.open ( url );
             return this;
         }

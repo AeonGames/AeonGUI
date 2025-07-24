@@ -49,10 +49,12 @@ namespace AeonGUI
             DLL void Draw();
             /**DOM Properties and Methods @{*/
             DLL const Document* document() const;
+            DLL Location& location() const;
             /**@}*/
             DLL Window* open ( const USVString& url = "", const DOMString& target = "_blank", const DOMString& features = "" );
         private:
-            Location mLocation{};
+            void OnLocationChanged ( const Location& location );
+            Location mLocation{std::bind ( &Window::OnLocationChanged, this, std::placeholders::_1 ) };
             Document mDocument{};
             CairoCanvas mCanvas{};
         };

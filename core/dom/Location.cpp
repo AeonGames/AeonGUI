@@ -24,6 +24,10 @@ namespace AeonGUI
         );
         Location::Location() = default;
         Location::~Location() = default;
+        Location::Location ( std::function<void ( const Location& ) > callback )
+            : mCallback ( std::move ( callback ) )
+        {
+        }
 
         void Location::SetCallback ( std::function<void ( const Location& ) > callback )
         {
