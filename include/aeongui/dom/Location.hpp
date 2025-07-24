@@ -18,7 +18,7 @@ limitations under the License.
 #include "aeongui/dom/USVString.hpp"
 #include "aeongui/Platform.hpp"
 #include <vector>
-
+#include <functional>
 namespace AeonGUI
 {
     namespace DOM
@@ -28,6 +28,7 @@ namespace AeonGUI
         public:
             DLL Location();
             DLL ~Location();
+            /**DOM Properties and Methods @{*/
             // Methods to manipulate the URL
             DLL void assign ( const USVString& url );
             DLL void replace ( const USVString& url );
@@ -42,6 +43,8 @@ namespace AeonGUI
             DLL const USVString& pathname() const;
             DLL const USVString& search() const;
             DLL const USVString& hash() const;
+            /**@}*/
+            DLL void SetCallback ( std::function<void ( const Location& ) > callback );
         private:
             USVString m_href{};
             USVString m_origin{};
@@ -52,6 +55,7 @@ namespace AeonGUI
             USVString m_pathname{};
             USVString m_search{};
             USVString m_hash{};
+            std::function<void ( const Location& ) > mCallback{};
         };
     }
 }

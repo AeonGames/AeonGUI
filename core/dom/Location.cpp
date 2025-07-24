@@ -25,6 +25,11 @@ namespace AeonGUI
         Location::Location() = default;
         Location::~Location() = default;
 
+        void Location::SetCallback ( std::function<void ( const Location& ) > callback )
+        {
+            mCallback = std::move ( callback );
+        }
+
         void Location::assign ( const USVString& url )
         {
             // Validate the URL format using regex
@@ -42,16 +47,27 @@ namespace AeonGUI
             m_hash = matches[7].str();
             m_host = m_hostname + ( m_port.empty() ? "" : ":" + m_port );
             m_origin = m_protocol + matches[2].str() + m_host;
+            if ( mCallback )
+            {
+                mCallback ( *this );
+            }
         }
 
         void Location::replace ( const USVString& url )
         {
             // Implementation for replacing the current URL
+            // We don't currently have a history, we may never support this
+            // so replace just calls assign.
+            assign ( url );
         }
 
         void Location::reload()
         {
             // Implementation for reloading the current URL
+            if ( mCallback )
+            {
+                mCallback ( *this );
+            }
         }
 
         const USVString& Location::href() const

@@ -14,6 +14,7 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 #include <gtest/gtest.h>
+#include <gmock/gmock.h>
 #include "aeongui/dom/Location.hpp"
 
 TEST ( LocationTest, Assign )
@@ -51,4 +52,19 @@ TEST ( LocationTest, Assign )
     EXPECT_EQ ( location.pathname(), "" );
     EXPECT_EQ ( location.search(), "" );
     EXPECT_EQ ( location.hash(), "" );
+}
+
+class MockLocationCallback
+{
+public:
+    MOCK_METHOD ( void, Call, ( const AeonGUI::DOM::Location& ) );
+};
+
+TEST ( LocationTest, SetCallback )
+{
+    MockLocationCallback mockCallback;
+    AeonGUI::DOM::Location location;
+    EXPECT_CALL ( mockCallback, Call ( testing::Ref ( location ) ) ).Times ( 1 );
+    location.SetCallback ( std::bind ( &MockLocationCallback::Call, &mockCallback, std::placeholders::_1 ) );
+    EXPECT_NO_THROW ( location.assign ( "https://example.com/" ) );
 }
