@@ -20,7 +20,7 @@ namespace AeonGUI
     namespace DOM
     {
         static const std::regex url_regex (
-            R"(^((?:https?|ftp):)(?:\/\/)?([a-zA-Z0-9.-]+)(?::(\d+))?([\/\w .-]*)?(\?[\w=&-]*)?(#[\w-]*)?$)"
+            R"(^((?:[/\w]+):)(//)?([^:/?#]+)(?::(\d+))?([/\w .-]*)?(\?[\w=&-]*)?(#[\w-]*)?$)"
         );
         Location::Location() = default;
         Location::~Location() = default;
@@ -33,26 +33,15 @@ namespace AeonGUI
             {
                 throw std::invalid_argument ( "Invalid URL format" );
             }
-            for ( auto& m : matches )
-            {
-                std::cout << m.str() << std::endl;
-            }
             m_href = matches[0].str();
             m_protocol = matches[1].str();
-            m_hostname = matches[2].str();
-            m_port = matches[3].str();
-            m_pathname = matches[4].str();
-            m_search = matches[5].str();
-            m_hash = matches[6].str();
-            std::cout << "Protocol: " << m_protocol << std::endl;
-            std::cout << "Hostname: " << m_hostname << std::endl;
-            std::cout << "Port: " << m_port << std::endl;
-            std::cout << "Pathname: " << m_pathname << std::endl;
-            std::cout << "Search: " << m_search << std::endl;
-            std::cout << "Hash: " << m_hash << std::endl;
-
+            m_hostname = matches[3].str();
+            m_port = matches[4].str();
+            m_pathname = matches[5].str();
+            m_search = matches[6].str();
+            m_hash = matches[7].str();
             m_host = m_hostname + ( m_port.empty() ? "" : ":" + m_port );
-            m_origin = m_protocol + "//" + m_host;
+            m_origin = m_protocol + matches[2].str() + m_host;
         }
 
         void Location::replace ( const USVString& url )

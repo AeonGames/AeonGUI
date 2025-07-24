@@ -1,4 +1,4 @@
-# Copyright (C) 2023 Rodrigo Jose Hernandez Cordoba
+# Copyright (C) 2023,2025 Rodrigo Jose Hernandez Cordoba
 #
 # Licensed under the Apache License, Version 2.0 (the "License"); you may not
 # use this file except in compliance with the License. You may obtain a copy of
@@ -30,6 +30,7 @@ include_directories(${GTEST_INCLUDE_DIR}
                     ${CMAKE_SOURCE_DIR}/include
                     ${CAIRO_INCLUDE_DIRS})
 set(TESTED_SRCS
+  Location.cpp
 )
 
 set(TEST_SRCS

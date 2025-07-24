@@ -165,6 +165,7 @@ include(parser)
 include_directories(include common demos/common core)
 add_subdirectory(css)
 add_subdirectory(core)
+add_subdirectory(tests)
 add_subdirectory(demos/OpenGL)
 
 install(TARGETS AeonGUI
