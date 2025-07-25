@@ -309,7 +309,7 @@ void Window::Initialize ( HINSTANCE hInstance, LPSTR aFilename, LONG aWidth, LON
     OPENGL_CHECK_ERROR;
     glActiveTexture ( GL_TEXTURE0 );
     OPENGL_CHECK_ERROR;
-    mWindow.open ( aFilename ? aFilename : "" );
+    mWindow.location() = ( aFilename ? aFilename : "" );
     ShowWindow ( hWnd, SW_SHOW );
 }
 

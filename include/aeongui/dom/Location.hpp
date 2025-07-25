@@ -33,6 +33,7 @@ namespace AeonGUI
             // Methods to manipulate the URL
             DLL void assign ( const USVString& url );
             DLL void replace ( const USVString& url );
+            DLL Location& operator= ( const USVString& url );
             DLL void reload();
             // Attributes to access various parts of the URL
             DLL const USVString& href() const;

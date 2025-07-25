@@ -48,14 +48,7 @@ namespace AeonGUI
 
         void Window::OnLocationChanged ( const Location& location )
         {
-            // Handle location changes, e.g., update the document or UI
-        }
-
-        Window* Window::open ( const USVString& url, const DOMString& target, const DOMString& features )
-        {
-            location().assign ( "https://example.org:8080/foo/bar?q=baz#bang" );
-            mDocument.open ( url );
-            return this;
+            mDocument.Load ( location.href() );
         }
 
         void Window::ResizeViewport ( uint32_t aWidth, uint32_t aHeight )

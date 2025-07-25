@@ -78,12 +78,12 @@ namespace AeonGUI
             return NodeType::DOCUMENT_NODE;
         }
 
-        void Document::open ( const USVString& aFilename )
+        void Document::Load ( const USVString& aFilename )
         {
             xmlDocPtr document{xmlReadFile ( reinterpret_cast<const char*> ( aFilename.c_str() ), nullptr, 0 ) };
             if ( document == nullptr )
             {
-                throw std::runtime_error ( "Could not open xml file" );
+                throw std::runtime_error ( "Could not open file: " + aFilename );
             }
 
             css_error code{};

@@ -51,7 +51,6 @@ namespace AeonGUI
             DLL const Document* document() const;
             DLL Location& location() const;
             /**@}*/
-            DLL Window* open ( const USVString& url = "", const DOMString& target = "_blank", const DOMString& features = "" );
         private:
             void OnLocationChanged ( const Location& location );
             Location mLocation{std::bind ( &Window::OnLocationChanged, this, std::placeholders::_1 ) };

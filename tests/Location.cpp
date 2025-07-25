@@ -52,6 +52,28 @@ TEST ( LocationTest, Assign )
     EXPECT_EQ ( location.pathname(), "" );
     EXPECT_EQ ( location.search(), "" );
     EXPECT_EQ ( location.hash(), "" );
+
+    EXPECT_NO_THROW ( location.assign ( "file:///AeonGUI/images/tiger-style.svg" ) );
+    EXPECT_EQ ( location.href(), "file:///AeonGUI/images/tiger-style.svg" );
+    EXPECT_EQ ( location.origin(), "file://" );
+    EXPECT_EQ ( location.protocol(), "file:" );
+    EXPECT_EQ ( location.host(), "" );
+    EXPECT_EQ ( location.hostname(), "" );
+    EXPECT_EQ ( location.port(), "" );
+    EXPECT_EQ ( location.pathname(), "/AeonGUI/images/tiger-style.svg" );
+    EXPECT_EQ ( location.search(), "" );
+    EXPECT_EQ ( location.hash(), "" );
+
+    EXPECT_NO_THROW ( location.assign ( "file:///C:/AeonGUI/images/tiger-style.svg" ) );
+    EXPECT_EQ ( location.href(), "file:///C:/AeonGUI/images/tiger-style.svg" );
+    EXPECT_EQ ( location.origin(), "file://" );
+    EXPECT_EQ ( location.protocol(), "file:" );
+    EXPECT_EQ ( location.host(), "" );
+    EXPECT_EQ ( location.hostname(), "" );
+    EXPECT_EQ ( location.port(), "" );
+    EXPECT_EQ ( location.pathname(), "/C:/AeonGUI/images/tiger-style.svg" );
+    EXPECT_EQ ( location.search(), "" );
+    EXPECT_EQ ( location.hash(), "" );
 }
 
 class MockLocationCallback

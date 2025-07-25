@@ -32,7 +32,7 @@ namespace AeonGUI
         {
         public:
             DLL Document();
-            DLL void open ( const USVString& aFilename ); /// @todo replace with the proper DOM method
+            DLL void Load ( const USVString& aFilename );
             DLL ~Document();
             DLL void Draw ( Canvas& aCanvas ) const;
             DLL void Load ();

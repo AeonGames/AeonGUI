@@ -20,7 +20,7 @@ namespace AeonGUI
     namespace DOM
     {
         static const std::regex url_regex (
-            R"(^((?:[/\w]+):)(//)?([^:/?#]+)(?::(\d+))?([/\w .-]*)?(\?[\w=&-]*)?(#[\w-]*)?$)"
+            R"(^((?:[/\w]+):)(//)?([^:/?#]+)?(?::(\d+))?([/\w :.-]+)?(\?[\w=&-]+)?(#[\w-]+)?$)"
         );
         Location::Location() = default;
         Location::~Location() = default;
@@ -34,13 +34,19 @@ namespace AeonGUI
             mCallback = std::move ( callback );
         }
 
+        Location& Location::operator= ( const USVString& url )
+        {
+            assign ( url );
+            return *this;
+        }
+
         void Location::assign ( const USVString& url )
         {
             // Validate the URL format using regex
             std::smatch matches;
             if ( !std::regex_match ( url, matches, url_regex ) )
             {
-                throw std::invalid_argument ( "Invalid URL format" );
+                throw std::invalid_argument ( "Invalid URL format:" + url );
             }
             m_href = matches[0].str();
             m_protocol = matches[1].str();
