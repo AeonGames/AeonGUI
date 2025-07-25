@@ -1,0 +1,53 @@
+name: Build on Windows (MSYS2)
+
+on: [push, pull_request]
+
+jobs:
+
+  build:
+    runs-on: ${{ matrix.runs-on }}
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - { icon: '🟦', sys: mingw64, runs-on: 'windows-latest' }
+          - { icon: '🟨', sys: ucrt64, runs-on: 'windows-latest' }
+          - { icon: '🟧', sys: clang64, runs-on: 'windows-latest' }
+    name: 🚧${{ matrix.icon }} ${{ matrix.sys }}
+    defaults:
+      run:
+        shell: msys2 {0}
+    steps:
+
+    - name: '🧰 Checkout'
+      uses: actions/checkout@v4
+      with:
+        fetch-depth: 0
+        persist-credentials: false
+
+    - name: '${{ matrix.icon }} Setup MSYS2'
+      uses: msys2/setup-msys2@v2
+      with:
+        msystem: ${{matrix.sys}}
+        update: true
+        install: >-
+          git
+          make
+        pacboy: >-
+          toolchain:p
+          cmake:p
+          make:p
+          tools-git:p
+          cairo:p
+          libxml2:p
+          gtest:p
+          pkg-config:p
+
+    - name: '🛠️ Configuring'
+      run: cmake -G "MSYS Makefiles" -B ${{github.workspace}}/build -DCMAKE_BUILD_TYPE=Release
+
+    - name: '🏗️ Building'
+      run: cmake --build ${{github.workspace}}/build
+
+    - name: '🧪 Running Tests'
+      run: ctest --test-dir ${{github.workspace}}/build

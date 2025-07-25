@@ -2,6 +2,7 @@
   "dependencies": [
     "cairo",
     "libxml2",
-    "pkgconf"
+    "pkgconf",
+    "gtest"
   ]
 }

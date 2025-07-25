@@ -45,7 +45,7 @@ namespace AeonGUI
         x2 = x3 + rx * ( t * std::sin ( th1 ) );
         y2 = y3 + ry * ( -t * std::cos ( th1 ) );
 
-        path_data.emplace_back ( cairo_path_data_t{CAIRO_PATH_CURVE_TO, 4} );
+        path_data.emplace_back ( cairo_path_data_t{{CAIRO_PATH_CURVE_TO, 4}} );
         path_data.emplace_back ( cairo_path_data_t{.point = {xc + cosf * x1 - sinf * y1, yc + sinf * x1 + cosf * y1}} );
         path_data.emplace_back ( cairo_path_data_t{.point = {xc + cosf * x2 - sinf * y2, yc + sinf * x2 + cosf * y2}} );
         path_data.emplace_back ( cairo_path_data_t{.point = {xc + cosf * x3 - sinf * y3, yc + sinf * x3 + cosf * y3}} );
@@ -85,7 +85,7 @@ namespace AeonGUI
 
         if ( ( rx < std::numeric_limits<double>::epsilon() ) || ( ry < std::numeric_limits<double>::epsilon() ) )
         {
-            path_data.emplace_back ( cairo_path_data_t{CAIRO_PATH_LINE_TO, 2} );
+            path_data.emplace_back ( cairo_path_data_t{{CAIRO_PATH_LINE_TO, 2}} );
             path_data.emplace_back ( cairo_path_data_t{.point = {x2, y2}} );
             return;
         }
@@ -212,13 +212,13 @@ namespace AeonGUI
             case 'M':
             case 'm':
             {
-                mPathData.emplace_back ( cairo_path_data_t{CAIRO_PATH_MOVE_TO, 2} );
+                mPathData.emplace_back ( cairo_path_data_t{{CAIRO_PATH_MOVE_TO, 2}} );
                 last_move = last_point = ( ( cmd == 'm' ) ? last_point : Vector2{0, 0} ) + Vector2{std::get<double> ( *i ), std::get<double> ( * ( i + 1 ) ) };
                 mPathData.emplace_back ( cairo_path_data_t{.point = {last_point[0], last_point[1]}} );
                 i += 2;
                 while ( i != end && std::holds_alternative<double> ( *i ) )
                 {
-                    mPathData.emplace_back ( cairo_path_data_t{CAIRO_PATH_LINE_TO, 2} );
+                    mPathData.emplace_back ( cairo_path_data_t{{CAIRO_PATH_LINE_TO, 2}} );
                     last_point += {std::get<double> ( *i ), std::get<double> ( * ( i + 1 ) ) };
                     mPathData.emplace_back ( cairo_path_data_t{.point = {last_point[0], last_point[1]}} );
                     i += 2;
@@ -227,8 +227,8 @@ namespace AeonGUI
             break;
             case 'Z':
             case 'z':
-                mPathData.emplace_back ( cairo_path_data_t{CAIRO_PATH_CLOSE_PATH, 1} );
-                mPathData.emplace_back ( cairo_path_data_t{CAIRO_PATH_MOVE_TO, 2} );
+                mPathData.emplace_back ( cairo_path_data_t{{CAIRO_PATH_CLOSE_PATH, 1}} );
+                mPathData.emplace_back ( cairo_path_data_t{{CAIRO_PATH_MOVE_TO, 2}} );
                 last_point = last_move;
                 mPathData.emplace_back ( cairo_path_data_t{.point = {last_point[0], last_point[1]}} );
                 break;
@@ -236,7 +236,7 @@ namespace AeonGUI
             case 'l':
                 while ( i != end && std::holds_alternative<double> ( *i ) )
                 {
-                    mPathData.emplace_back ( cairo_path_data_t{CAIRO_PATH_LINE_TO, 2} );
+                    mPathData.emplace_back ( cairo_path_data_t{{CAIRO_PATH_LINE_TO, 2}} );
                     last_point = ( ( cmd == 'l' ) ? last_point : Vector2{0, 0} ) + Vector2{std::get<double> ( *i ), std::get<double> ( * ( i + 1 ) ) };
                     mPathData.emplace_back ( cairo_path_data_t{.point = {last_point[0], last_point[1]}} );
                     i += 2;
@@ -245,7 +245,7 @@ namespace AeonGUI
             case 'H':
                 while ( i != end && std::holds_alternative<double> ( *i ) )
                 {
-                    mPathData.emplace_back ( cairo_path_data_t{CAIRO_PATH_LINE_TO, 2} );
+                    mPathData.emplace_back ( cairo_path_data_t{{CAIRO_PATH_LINE_TO, 2}} );
                     last_point[0] = std::get<double> ( *i );
                     mPathData.emplace_back ( cairo_path_data_t{.point = {last_point[0], last_point[1]}} );
                     ++i;
@@ -254,7 +254,7 @@ namespace AeonGUI
             case 'h':
                 while ( i != end && std::holds_alternative<double> ( *i ) )
                 {
-                    mPathData.emplace_back ( cairo_path_data_t{CAIRO_PATH_LINE_TO, 2} );
+                    mPathData.emplace_back ( cairo_path_data_t{{CAIRO_PATH_LINE_TO, 2}} );
                     last_point[0] += std::get<double> ( *i );
                     mPathData.emplace_back ( cairo_path_data_t{.point = {last_point[0], last_point[1]}} );
                     ++i;
@@ -263,7 +263,7 @@ namespace AeonGUI
             case 'V':
                 while ( i != end && std::holds_alternative<double> ( *i ) )
                 {
-                    mPathData.emplace_back ( cairo_path_data_t{CAIRO_PATH_LINE_TO, 2} );
+                    mPathData.emplace_back ( cairo_path_data_t{{CAIRO_PATH_LINE_TO, 2}} );
                     last_point[1] = std::get<double> ( *i );
                     mPathData.emplace_back ( cairo_path_data_t{.point = {last_point[0], last_point[1]}} );
                     ++i;
@@ -272,7 +272,7 @@ namespace AeonGUI
             case 'v':
                 while ( i != end && std::holds_alternative<double> ( *i ) )
                 {
-                    mPathData.emplace_back ( cairo_path_data_t{CAIRO_PATH_LINE_TO, 2} );
+                    mPathData.emplace_back ( cairo_path_data_t{{CAIRO_PATH_LINE_TO, 2}} );
                     last_point[1] += std::get<double> ( *i );
                     mPathData.emplace_back ( cairo_path_data_t{.point = {last_point[0], last_point[1]}} );
                     ++i;
@@ -283,7 +283,7 @@ namespace AeonGUI
                 {
                     last_c_ctrl = {std::get<double> ( * ( i + 2 ) ), std::get<double> ( * ( i + 3 ) ) };
                     last_point  = {std::get<double> ( * ( i + 4 ) ), std::get<double> ( * ( i + 5 ) ) };
-                    mPathData.emplace_back ( cairo_path_data_t{CAIRO_PATH_CURVE_TO, 4} );
+                    mPathData.emplace_back ( cairo_path_data_t{{CAIRO_PATH_CURVE_TO, 4}} );
                     mPathData.emplace_back ( cairo_path_data_t{.point = {std::get<double> ( *i ), std::get<double> ( * ( i + 1 ) ) }} );
                     mPathData.emplace_back ( cairo_path_data_t{.point = {last_c_ctrl[0], last_c_ctrl[1]}} );
                     mPathData.emplace_back ( cairo_path_data_t{.point = {last_point[0], last_point[1]}} );
@@ -293,7 +293,7 @@ namespace AeonGUI
             case 'c':
                 while ( i != end && std::holds_alternative<double> ( *i ) )
                 {
-                    mPathData.emplace_back ( cairo_path_data_t{CAIRO_PATH_CURVE_TO, 4} );
+                    mPathData.emplace_back ( cairo_path_data_t{{CAIRO_PATH_CURVE_TO, 4}} );
                     mPathData.emplace_back ( cairo_path_data_t{.point = {last_point[0] + std::get<double> ( *i ), last_point[1] + std::get<double> ( * ( i + 1 ) ) }} );
                     last_c_ctrl = last_point + Vector2{std::get<double> ( * ( i + 2 ) ), std::get<double> ( * ( i + 3 ) ) };
                     mPathData.emplace_back ( cairo_path_data_t{.point = {last_c_ctrl[0], last_c_ctrl[1]}} );
@@ -308,7 +308,7 @@ namespace AeonGUI
                     last_c_ctrl = ( last_cmd == 'C' || last_cmd == 'S' ) ? Vector2{ ( 2 * last_point[0] ) - last_c_ctrl[0], ( 2 * last_point[1] ) - last_c_ctrl[1]}:
                                   Vector2{};
                     last_point = {std::get<double> ( * ( i + 2 ) ), std::get<double> ( * ( i + 3 ) ) };
-                    mPathData.emplace_back ( cairo_path_data_t{CAIRO_PATH_CURVE_TO, 4} );
+                    mPathData.emplace_back ( cairo_path_data_t{{CAIRO_PATH_CURVE_TO, 4}} );
                     mPathData.emplace_back ( cairo_path_data_t{.point = {last_c_ctrl[0], last_c_ctrl[1]}} );
                     last_c_ctrl = {std::get<double> ( * ( i ) ), std::get<double> ( * ( i + 1 ) ) };
                     mPathData.emplace_back ( cairo_path_data_t{.point = {last_c_ctrl[0], last_c_ctrl[1]}} );
@@ -321,7 +321,7 @@ namespace AeonGUI
                 {
                     last_c_ctrl = ( last_cmd == 'c' || last_cmd == 's' ) ? Vector2{ ( 2 * last_point[0] ) - last_c_ctrl[0], ( 2 * last_point[1] ) - last_c_ctrl[1]}:
                                   Vector2{};
-                    mPathData.emplace_back ( cairo_path_data_t{CAIRO_PATH_CURVE_TO, 4} );
+                    mPathData.emplace_back ( cairo_path_data_t{{CAIRO_PATH_CURVE_TO, 4}} );
                     mPathData.emplace_back ( cairo_path_data_t{.point = {last_c_ctrl[0], last_c_ctrl[1]}} );
                     last_c_ctrl = last_point + Vector2{std::get<double> ( * ( i ) ), std::get<double> ( * ( i + 1 ) ) };
                     mPathData.emplace_back ( cairo_path_data_t{.point = {last_c_ctrl[0], last_c_ctrl[1]}} );
@@ -337,7 +337,7 @@ namespace AeonGUI
                     Vector2 Q1{Vector2{last_point[0]* ( 1.0 / 3.0 ), last_point[1]* ( 1.0 / 3.0 ) } + last_q_ctrl* ( 2.0 / 3.0 ) };
                     last_point = {std::get<double> ( * ( i + 2 ) ), std::get<double> ( * ( i + 3 ) ) };
                     Vector2 Q2{last_q_ctrl* ( 2.0 / 3.0 ) + last_point * ( 1.0 / 3.0 ) };
-                    mPathData.emplace_back ( cairo_path_data_t{CAIRO_PATH_CURVE_TO, 4} );
+                    mPathData.emplace_back ( cairo_path_data_t{{CAIRO_PATH_CURVE_TO, 4}} );
                     mPathData.emplace_back ( cairo_path_data_t{.point = {Q1[0], Q1[1]}} );
                     mPathData.emplace_back ( cairo_path_data_t{.point = {Q2[0], Q2[1]}} );
                     mPathData.emplace_back ( cairo_path_data_t{.point = {last_point[0], last_point[1]}} );
@@ -351,7 +351,7 @@ namespace AeonGUI
                     Vector2 Q1{Vector2{last_point[0]* ( 1.0 / 3.0 ), last_point[1]* ( 1.0 / 3.0 ) } + last_q_ctrl* ( 2.0 / 3.0 ) };
                     last_point += {std::get<double> ( * ( i + 2 ) ), std::get<double> ( * ( i + 3 ) ) };
                     Vector2 Q2{last_q_ctrl* ( 2.0 / 3.0 ) + last_point * ( 1.0 / 3.0 ) };
-                    mPathData.emplace_back ( cairo_path_data_t{CAIRO_PATH_CURVE_TO, 4} );
+                    mPathData.emplace_back ( cairo_path_data_t{{CAIRO_PATH_CURVE_TO, 4}} );
                     mPathData.emplace_back ( cairo_path_data_t{.point = {Q1[0], Q1[1]}} );
                     mPathData.emplace_back ( cairo_path_data_t{.point = {Q2[0], Q2[1]}} );
                     mPathData.emplace_back ( cairo_path_data_t{.point = {last_point[0], last_point[1]}} );
@@ -366,7 +366,7 @@ namespace AeonGUI
                     Vector2 Q1{Vector2{last_point[0]* ( 1.0 / 3.0 ), last_point[1]* ( 1.0 / 3.0 ) } + last_q_ctrl* ( 2.0 / 3.0 ) };
                     last_point = {std::get<double> ( * ( i ) ), std::get<double> ( * ( i + 1 ) ) };
                     Vector2 Q2{last_q_ctrl* ( 2.0 / 3.0 ) + last_point* ( 1.0 / 3.0 ) };
-                    mPathData.emplace_back ( cairo_path_data_t{CAIRO_PATH_CURVE_TO, 4} );
+                    mPathData.emplace_back ( cairo_path_data_t{{CAIRO_PATH_CURVE_TO, 4}} );
                     mPathData.emplace_back ( cairo_path_data_t{.point = {Q1[0], Q1[1]}} );
                     mPathData.emplace_back ( cairo_path_data_t{.point = {Q2[0], Q2[1]}} );
                     mPathData.emplace_back ( cairo_path_data_t{.point = {last_point[0], last_point[1]}} );
@@ -381,7 +381,7 @@ namespace AeonGUI
                     Vector2 Q1{Vector2{last_point[0]* ( 1.0 / 3.0 ), last_point[1]* ( 1.0 / 3.0 ) } + last_q_ctrl* ( 2.0 / 3.0 ) };
                     last_point += {std::get<double> ( * ( i ) ), std::get<double> ( * ( i + 1 ) ) };
                     Vector2 Q2{last_q_ctrl* ( 2.0 / 3.0 ) + last_point* ( 1.0 / 3.0 ) };
-                    mPathData.emplace_back ( cairo_path_data_t{CAIRO_PATH_CURVE_TO, 4} );
+                    mPathData.emplace_back ( cairo_path_data_t{{CAIRO_PATH_CURVE_TO, 4}} );
                     mPathData.emplace_back ( cairo_path_data_t{.point = {Q1[0], Q1[1]}} );
                     mPathData.emplace_back ( cairo_path_data_t{.point = {Q2[0], Q2[1]}} );
                     mPathData.emplace_back ( cairo_path_data_t{.point = {last_point[0], last_point[1]}} );

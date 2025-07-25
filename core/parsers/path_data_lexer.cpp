@@ -1288,9 +1288,10 @@ limitations under the License.
 #include "../core/parsers/dstype.hpp"
 #include "path_data_parser.hpp"
 #define YY_NO_UNISTD_H 1
-#line 1289 "C:/Code/AeonGUI/mingw64/core/path_data_lexer.cpp"
+#define YY_NO_INPUT 1
+#line 1290 "C:/Code/AeonGUI/mingw64/core/path_data_lexer.cpp"
 #define YY_NO_UNISTD_H 1
-#line 1291 "C:/Code/AeonGUI/mingw64/core/path_data_lexer.cpp"
+#line 1292 "C:/Code/AeonGUI/mingw64/core/path_data_lexer.cpp"
 
 #define INITIAL 0
 
@@ -1512,9 +1513,9 @@ YY_DECL
     }
 
     {
-#line 38 "C:/Code/AeonGUI/core/parsers/path_data.l"
+#line 39 "C:/Code/AeonGUI/core/parsers/path_data.l"
 
-#line 1508 "C:/Code/AeonGUI/mingw64/core/path_data_lexer.cpp"
+#line 1509 "C:/Code/AeonGUI/mingw64/core/path_data_lexer.cpp"
 
         while ( /*CONSTCOND*/1 )        /* loops until end-of-file is reached */
         {
@@ -1562,7 +1563,7 @@ do_action:  /* This label is used only to access EOF actions. */
 
             case 1:
                 YY_RULE_SETUP
-#line 39 "C:/Code/AeonGUI/core/parsers/path_data.l"
+#line 40 "C:/Code/AeonGUI/core/parsers/path_data.l"
                 {
                     dlval = std::strtod ( yytext, nullptr );
                     return NUMBER;
@@ -1570,115 +1571,115 @@ do_action:  /* This label is used only to access EOF actions. */
                 YY_BREAK
             case 2:
                 YY_RULE_SETUP
-#line 43 "C:/Code/AeonGUI/core/parsers/path_data.l"
+#line 44 "C:/Code/AeonGUI/core/parsers/path_data.l"
                 { dlval = static_cast<uint64_t> ( 'M' ); return 'M';}
                 YY_BREAK
             case 3:
                 YY_RULE_SETUP
-#line 44 "C:/Code/AeonGUI/core/parsers/path_data.l"
+#line 45 "C:/Code/AeonGUI/core/parsers/path_data.l"
                 { dlval = static_cast<uint64_t> ( 'm' ); return 'm';}
                 YY_BREAK
             case 4:
                 YY_RULE_SETUP
-#line 45 "C:/Code/AeonGUI/core/parsers/path_data.l"
+#line 46 "C:/Code/AeonGUI/core/parsers/path_data.l"
                 { dlval = static_cast<uint64_t> ( 'Z' ); return 'Z';}
                 YY_BREAK
             case 5:
                 YY_RULE_SETUP
-#line 46 "C:/Code/AeonGUI/core/parsers/path_data.l"
+#line 47 "C:/Code/AeonGUI/core/parsers/path_data.l"
                 { dlval = static_cast<uint64_t> ( 'z' ); return 'z';}
                 YY_BREAK
             case 6:
                 YY_RULE_SETUP
-#line 47 "C:/Code/AeonGUI/core/parsers/path_data.l"
+#line 48 "C:/Code/AeonGUI/core/parsers/path_data.l"
                 { dlval = static_cast<uint64_t> ( 'L' ); return 'L';}
                 YY_BREAK
             case 7:
                 YY_RULE_SETUP
-#line 48 "C:/Code/AeonGUI/core/parsers/path_data.l"
+#line 49 "C:/Code/AeonGUI/core/parsers/path_data.l"
                 { dlval = static_cast<uint64_t> ( 'l' ); return 'l';}
                 YY_BREAK
             case 8:
                 YY_RULE_SETUP
-#line 49 "C:/Code/AeonGUI/core/parsers/path_data.l"
+#line 50 "C:/Code/AeonGUI/core/parsers/path_data.l"
                 { dlval = static_cast<uint64_t> ( 'H' ); return 'H';}
                 YY_BREAK
             case 9:
                 YY_RULE_SETUP
-#line 50 "C:/Code/AeonGUI/core/parsers/path_data.l"
+#line 51 "C:/Code/AeonGUI/core/parsers/path_data.l"
                 { dlval = static_cast<uint64_t> ( 'h' ); return 'h';}
                 YY_BREAK
             case 10:
                 YY_RULE_SETUP
-#line 51 "C:/Code/AeonGUI/core/parsers/path_data.l"
+#line 52 "C:/Code/AeonGUI/core/parsers/path_data.l"
                 { dlval = static_cast<uint64_t> ( 'V' ); return 'V';}
                 YY_BREAK
             case 11:
                 YY_RULE_SETUP
-#line 52 "C:/Code/AeonGUI/core/parsers/path_data.l"
+#line 53 "C:/Code/AeonGUI/core/parsers/path_data.l"
                 { dlval = static_cast<uint64_t> ( 'v' ); return 'v';}
                 YY_BREAK
             case 12:
                 YY_RULE_SETUP
-#line 53 "C:/Code/AeonGUI/core/parsers/path_data.l"
+#line 54 "C:/Code/AeonGUI/core/parsers/path_data.l"
                 { dlval = static_cast<uint64_t> ( 'C' ); return 'C';}
                 YY_BREAK
             case 13:
                 YY_RULE_SETUP
-#line 54 "C:/Code/AeonGUI/core/parsers/path_data.l"
+#line 55 "C:/Code/AeonGUI/core/parsers/path_data.l"
                 { dlval = static_cast<uint64_t> ( 'c' ); return 'c';}
                 YY_BREAK
             case 14:
                 YY_RULE_SETUP
-#line 55 "C:/Code/AeonGUI/core/parsers/path_data.l"
+#line 56 "C:/Code/AeonGUI/core/parsers/path_data.l"
                 { dlval = static_cast<uint64_t> ( 'S' ); return 'S';}
                 YY_BREAK
             case 15:
                 YY_RULE_SETUP
-#line 56 "C:/Code/AeonGUI/core/parsers/path_data.l"
+#line 57 "C:/Code/AeonGUI/core/parsers/path_data.l"
                 { dlval = static_cast<uint64_t> ( 's' ); return 's';}
                 YY_BREAK
             case 16:
                 YY_RULE_SETUP
-#line 57 "C:/Code/AeonGUI/core/parsers/path_data.l"
+#line 58 "C:/Code/AeonGUI/core/parsers/path_data.l"
                 { dlval = static_cast<uint64_t> ( 'Q' ); return 'Q';}
                 YY_BREAK
             case 17:
                 YY_RULE_SETUP
-#line 58 "C:/Code/AeonGUI/core/parsers/path_data.l"
+#line 59 "C:/Code/AeonGUI/core/parsers/path_data.l"
                 { dlval = static_cast<uint64_t> ( 'q' ); return 'q';}
                 YY_BREAK
             case 18:
                 YY_RULE_SETUP
-#line 59 "C:/Code/AeonGUI/core/parsers/path_data.l"
+#line 60 "C:/Code/AeonGUI/core/parsers/path_data.l"
                 { dlval = static_cast<uint64_t> ( 'T' ); return 'T';}
                 YY_BREAK
             case 19:
                 YY_RULE_SETUP
-#line 60 "C:/Code/AeonGUI/core/parsers/path_data.l"
+#line 61 "C:/Code/AeonGUI/core/parsers/path_data.l"
                 { dlval = static_cast<uint64_t> ( 't' ); return 't';}
                 YY_BREAK
             case 20:
                 YY_RULE_SETUP
-#line 61 "C:/Code/AeonGUI/core/parsers/path_data.l"
+#line 62 "C:/Code/AeonGUI/core/parsers/path_data.l"
                 { dlval = static_cast<uint64_t> ( 'A' ); return 'A';}
                 YY_BREAK
             case 21:
                 YY_RULE_SETUP
-#line 62 "C:/Code/AeonGUI/core/parsers/path_data.l"
+#line 63 "C:/Code/AeonGUI/core/parsers/path_data.l"
                 { dlval = static_cast<uint64_t> ( 'a' ); return 'a';}
                 YY_BREAK
             case 22:
                 YY_RULE_SETUP
-#line 63 "C:/Code/AeonGUI/core/parsers/path_data.l"
+#line 64 "C:/Code/AeonGUI/core/parsers/path_data.l"
 
                 YY_BREAK
             case 23:
                 YY_RULE_SETUP
-#line 64 "C:/Code/AeonGUI/core/parsers/path_data.l"
+#line 65 "C:/Code/AeonGUI/core/parsers/path_data.l"
                 ECHO;
                 YY_BREAK
-#line 1671 "C:/Code/AeonGUI/mingw64/core/path_data_lexer.cpp"
+#line 1672 "C:/Code/AeonGUI/mingw64/core/path_data_lexer.cpp"
             case YY_STATE_EOF ( INITIAL ) :
                 yyterminate();
 
@@ -2718,7 +2719,7 @@ void yyfree ( void * ptr )
 
 #define YYTABLES_NAME "yytables"
 
-#line 64 "C:/Code/AeonGUI/core/parsers/path_data.l"
+#line 65 "C:/Code/AeonGUI/core/parsers/path_data.l"
 
 
 namespace AeonGUI

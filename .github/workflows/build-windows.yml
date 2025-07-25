@@ -28,12 +28,12 @@ jobs:
       run: C:/vcpkg/vcpkg.exe install --binarysource="clear;x-gha,readwrite" --x-manifest-root=${{github.workspace}}
       if: matrix.compiler == 'msvc'
 
-    - name: Configure CMake (Windows Visual Studio)
+    - name: '🛠️ Configuring'
       run: cmake -DCMAKE_TOOLCHAIN_FILE="C:/vcpkg/scripts/buildsystems/vcpkg.cmake" -B ${{github.workspace}}/build
       if: matrix.compiler == 'msvc'
 
-    - name: Build
+    - name: '🏗️ Building'
       run: cmake --build ${{github.workspace}}/build
 
-    - name: Run Tests
-      run: ctest --test-dir ${{github.workspace}}/build
+    - name: '🧪 Running Tests'
+      run: ctest -C Debug --test-dir ${{github.workspace}}/build

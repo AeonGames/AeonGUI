@@ -19,12 +19,12 @@ jobs:
       run: sudo apt-get install -y build-essential software-properties-common gcc g++ sed python3 tar wget cmake autoconf automake libtool curl make unzip zlib1g-dev libpng-dev vim-common git libgtest-dev google-mock libglu1-mesa-dev freeglut3-dev mesa-common-dev libcairo-dev libxml2-dev
       if: matrix.compiler == 'gcc'
 
-    - name: Configure CMake (Linux)
+    - name: '🛠️ Configuring'
       run: cmake -B ${{github.workspace}}/build -DCMAKE_BUILD_TYPE=${{env.BUILD_TYPE}}
       if: matrix.compiler == 'gcc'
 
-    - name: Build
+    - name: '🏗️ Building'
       run: cmake --build ${{github.workspace}}/build
 
-    - name: Run Tests
+    - name: '🧪 Running Tests'
       run: ctest --test-dir ${{github.workspace}}/build

@@ -21,6 +21,7 @@ limitations under the License.
 #include "../core/parsers/dstype.hpp"
 #include "path_data_parser.hpp"
 #define YY_NO_UNISTD_H 1
+#define YY_NO_INPUT 1
 %}
 
 %option nounput

@@ -41,6 +41,8 @@ msvc64
 msvc32
 mingw32
 mingw64
+clang32
+clang64
 .vscode
 include/GL
 build

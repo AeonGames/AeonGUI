@@ -253,13 +253,13 @@ namespace AeonGUI
 
     void Color::Blend ( Color src )
     {
-        if ( ( src.a == 0 ) )
+        if ( src.a == 0 )
         {
             /*  If the source alpha is 0
                 the destination color is unchanged */
             return;
         }
-        else if ( ( src.a == 255 ) )
+        else if ( src.a == 255 )
         {
             /*  Full source opacity
                 do a simple replacement*/
