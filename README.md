@@ -1,20 +1,18 @@
-AeonGUI
-=======
+# AeonGUI
 
 [![Windows Build status](https://github.com/AeonGames/AeonGUI/actions/workflows/build-windows.yml/badge.svg)](https://github.com/AeonGames/AeonGUI/actions/workflows/build-windows.yml) [![Ubuntu Build status](https://github.com/AeonGames/AeonGUI/actions/workflows/build-ubuntu.yml/badge.svg)](https://github.com/AeonGames/AeonGUI/actions/workflows/build-ubuntu.yml)
+[![Twitch Status](https://img.shields.io/twitch/status/Kwizatz77?style=social)](https://www.twitch.tv/Kwizatz77)
 
 Last Updated: 11-23-2020
 
-DESCRIPTION
------------
+## DESCRIPTION
 
 Right now AeonGUI is a project to create a graphic user interface library to be used primarily on video games and interactive media.
 It's primary goal is to stay agnostic of any advanced/dedicated graphics rendering API such as OpenGL, Vulkan, Direct3D, X11 or GDI.
 
 **WARNING!!!: The library is not currently on a stable or even usable state, and is mostly a sandbox for ideas and POCs.**
 
-HISTORY
--------
+## HISTORY
 
 The idea for the library was born around 2004 or 2005 under the name 'Glitch', and has evolved overtime but never quite reached maturity.
 The name change to AeonGUI came about as a way to identify the library as part of the AeonGames brand
@@ -38,8 +36,7 @@ At this time GCC 11/12 has too many incompatibilities to be able to keep up, mor
 really worth it, so JavaScript support is being dropped at this time. C# via Mono is being considered instead,
 but the code will stay C++ for the moment and for the near future.
 
-COMPILATION
------------
+## COMPILATION
 
 The library uses CMake to build the required files used to build the binary depending on the platform.
 For information on how to use CMake refer to its [official site](https://www.cmake.org).
@@ -50,20 +47,18 @@ As of 11/23/2020 the library has a hard dependency on [v8](https://v8.dev/), Goo
 the binaries for which can be obtained from [vcpkg](https://github.com/microsoft/vcpkg) for MSVC or Ubuntu,
 or directly from [MSYS2](https://www.msys2.org/)'s repositories in the case of mingw-w64 builds.
 
-LICENSE
--------
+## LICENSE
 
 The library is released under the terms of the permissive [Apache 2.0 license](http://www.apache.org/licenses/LICENSE-2.0)
-The Aeon Games logo is __NOT__ covered by the Apache license, it is a Trade Mark and may not be used for any purpose without permission.
+The Aeon Games logo is ***NOT*** covered by the Apache license, it is a Trade Mark and may not be used for any purpose without permission.
 
-TO-DO List
+## TO-DO List
 
 * Have the code that reads a document create element nodes wrapped into JavaScript classes.
 
-MISCELLANEOUS
--------------
+## MISCELLANEOUS
 
-## Installing Zsh on MSYS2
+### Installing Zsh on MSYS2
 
 If you want to use Zsh on MSYS2, with powerlevel10k theme you can install it with the following commands:
 
@@ -83,7 +78,6 @@ Then you can restart the shell to configure powerlevel10k.
 
 To have the multiple Msys2 terminals use zsh instead of bash, you can edit the corresponding .ini files under C:\msys64 to add a `SHELL=/usr/bin/zsh` line.
 
-AUTHORS
--------
+## AUTHORS
 
 Rodrigo Hernandez (kwizatz at aeongames dot com).

@@ -62,4 +62,4 @@ jobs:
       run: cmake --build ${{github.workspace}}/build
 
     - name: '🧪 Running Tests'
-      run: ctest -C Debug --test-dir ${{github.workspace}}/build
+      run: ctest --output-on-failure --verbose -C Debug --test-dir ${{github.workspace}}/build
