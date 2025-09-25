@@ -1,6 +1,5 @@
 find_package(BISON)
 find_package(FLEX)
-add_subdirectory(idl)
 
 set(AEONGUI_HEADERS
     ../include/aeongui/AeonGUI.hpp
