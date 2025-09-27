@@ -1,4 +1,4 @@
-# Copyright (C) 2021 Rodrigo Jose Hernandez Cordoba
+# Copyright (C) 2021,2025 Rodrigo Jose Hernandez Cordoba
 #
 # Licensed under the Apache License, Version 2.0 (the "License"); you may not
 # use this file except in compliance with the License. You may obtain a copy of
@@ -17,6 +17,12 @@ find_package(FLEX)
 
 function(parser_code parser_name source_path output_path)
     if(FLEX_FOUND AND BISON_FOUND)
+        if(BISON_VERSION VERSION_LESS "3.0")
+            message(FATAL_ERROR "Bison version 3.0 or greater is required.")
+        endif()
+        if(FLEX_VERSION VERSION_LESS "2.6")
+            message(FATAL_ERROR "Flex version 2.6 or greater is required.")
+        endif()
         message(STATUS "Parser for ${parser_name} code will be generated from Flex and Bison code.")
         message(STATUS "Build the 'update-${parser_name}-parser-code' target if you want to update the pre-generated code.")
 

@@ -24,12 +24,31 @@ find_package(Git)
 
 find_program(BASH_EXECUTABLE bash HINTS ENV MINGW_PREFIX MSYS2_PATH)
 find_program(ZSH_EXECUTABLE zsh HINTS ENV MINGW_PREFIX MSYS2_PATH)
-find_program(SED_EXECUTABLE sed
-             HINTS ENV
-                   MINGW_PREFIX
-                   MSYS2_PATH
-                   ProgramFiles
-             PATH_SUFFIXES bin usr/bin Git/usr/bin)
+
+function(gnu_sed_check validator_result_var item)
+  execute_process(COMMAND ${item} --version
+                  RESULT_VARIABLE sed_result
+                  OUTPUT_VARIABLE sed_output
+                  ERROR_VARIABLE sed_error
+                  OUTPUT_STRIP_TRAILING_WHITESPACE
+                  ERROR_STRIP_TRAILING_WHITESPACE)
+  if(sed_output MATCHES "GNU sed")
+    message(STATUS "Found GNU sed: ${item}")
+    set(${validator_result_var} TRUE PARENT_SCOPE)
+  else()
+    set(${validator_result_var} FALSE PARENT_SCOPE)
+  endif()
+endfunction()
+
+find_program(SED_EXECUTABLE NAMES gsed sed
+            PATHS ENV MSYSTEM_PREFIX ENV ProgramFiles
+            PATH_SUFFIXES
+                  bin
+                  usr/bin
+                  Git/usr/bin
+                  VALIDATOR gnu_sed_check
+)
+
 find_program(GREP_EXECUTABLE grep
              HINTS ENV
                    MINGW_PREFIX
@@ -123,7 +142,7 @@ set(CMAKE_C_STANDARD 11)
 set(CMAKE_C_STANDARD_REQUIRED ON)
 set(CMAKE_C_EXTENSIONS ON)
 
-if(CMAKE_CXX_COMPILER_ID STREQUAL "GNU" OR CMAKE_CXX_COMPILER_ID STREQUAL "Clang")
+if(CMAKE_CXX_COMPILER_ID STREQUAL "GNU" OR CMAKE_CXX_COMPILER_ID STREQUAL "Clang" OR APPLE)
 	set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -finput-charset=UTF-8 -fexec-charset=UTF-8 -Wfatal-errors -Wall -Drestrict=__restrict__")
   set(CMAKE_CXX_FLAGS_RELEASE "-DNDEBUG -fomit-frame-pointer -O3")
   set(CMAKE_CXX_FLAGS_DEBUG "-DDEBUG -g -O0")

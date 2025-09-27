@@ -28,6 +28,7 @@ namespace AeonGUI
 {
     namespace DOM
     {
+        class Element; // Forward declaration
         class Document : public Node
         {
         public:

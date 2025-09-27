@@ -280,7 +280,7 @@ namespace AeonGUI
     std::string Color::ToString() const
     {
         char color[10] = {};
-        sprintf ( color, "#%02x%02x%02x%02x", a, r, g, b );
+        snprintf ( color, sizeof ( color ), "#%02x%02x%02x%02x", a, r, g, b );
         return std::string{color};
     }
 }
