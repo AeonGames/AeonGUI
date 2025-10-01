@@ -47,6 +47,10 @@ set(AEONGUI_DOM_HEADERS
     ../include/aeongui/dom/SVGPolygonElement.hpp
     ../include/aeongui/dom/SVGCircleElement.hpp
     ../include/aeongui/dom/SVGEllipseElement.hpp
+    ../include/aeongui/dom/SVGTextElement.hpp
+    ../include/aeongui/dom/SVGTSpanElement.hpp
+    ../include/aeongui/dom/SVGTextPositioningElement.hpp
+    ../include/aeongui/dom/SVGTextContentElement.hpp
     ../include/aeongui/dom/Text.hpp
     ../include/aeongui/dom/USVString.hpp
 )
@@ -91,6 +95,10 @@ set(AEONGUI_DOM_SOURCES
     dom/SVGPolygonElement.cpp
     dom/SVGCircleElement.cpp
     dom/SVGEllipseElement.cpp
+    dom/SVGTextPositioningElement.cpp
+    dom/SVGTextContentElement.cpp
+    dom/SVGTextElement.cpp
+    dom/SVGTSpanElement.cpp
     dom/Text.cpp
     dom/Attribute.cpp
 )
