@@ -51,6 +51,7 @@ set(AEONGUI_DOM_HEADERS
     ../include/aeongui/dom/SVGTSpanElement.hpp
     ../include/aeongui/dom/SVGTextPositioningElement.hpp
     ../include/aeongui/dom/SVGTextContentElement.hpp
+    ../include/aeongui/dom/SVGLength.hpp
     ../include/aeongui/dom/Text.hpp
     ../include/aeongui/dom/USVString.hpp
 )
@@ -99,6 +100,7 @@ set(AEONGUI_DOM_SOURCES
     dom/SVGTextContentElement.cpp
     dom/SVGTextElement.cpp
     dom/SVGTSpanElement.cpp
+    dom/SVGLength.cpp
     dom/Text.cpp
     dom/Attribute.cpp
 )
