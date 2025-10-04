@@ -35,12 +35,13 @@ namespace AeonGUI
 
         const DOMString& SVGLength::valueAsString() const
         {
-            return std::to_string ( mValue ) + " " + std::to_string ( static_cast<int> ( mUnitType ) );
+            return mValueAsString;
         }
 
         void SVGLength::valueAsString ( const DOMString& value )
         {
             mValue = std::stof ( value );
+            mValueAsString = value;
         }
 
         float SVGLength::valueInSpecifiedUnits() const
