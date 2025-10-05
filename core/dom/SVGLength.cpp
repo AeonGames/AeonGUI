@@ -33,19 +33,32 @@ namespace AeonGUI
             return mValue;
         }
 
+        float SVGLength::value ( float value )
+        {
+            mValue = value;
+            return mValue;
+        }
+
         const DOMString& SVGLength::valueAsString() const
         {
             return mValueAsString;
         }
 
-        void SVGLength::valueAsString ( const DOMString& value )
+        const DOMString& SVGLength::valueAsString ( const DOMString& value )
         {
             mValue = std::stof ( value );
             mValueAsString = value;
+            return mValueAsString;
         }
 
         float SVGLength::valueInSpecifiedUnits() const
         {
+            return mValueInSpecifiedUnits;
+        }
+
+        float SVGLength::valueInSpecifiedUnits ( float value )
+        {
+            mValueInSpecifiedUnits = value;
             return mValueInSpecifiedUnits;
         }
 

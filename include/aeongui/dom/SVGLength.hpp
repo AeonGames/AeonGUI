@@ -47,13 +47,15 @@ namespace AeonGUI
 
             /// @brief The value as a floating point value, in user units.
             float value() const;
+            float value ( float value );
 
             /// @brief The value as a string value, in the units expressed by unitType.
             const DOMString& valueAsString() const;
-            void valueAsString ( const DOMString& value );
+            const DOMString& valueAsString ( const DOMString& value );
 
             /// @brief The value as a floating point value, in the units expressed by unitType.
             float valueInSpecifiedUnits() const;
+            float valueInSpecifiedUnits ( float value );
 
             /// @brief Preserve the same underlying stored value, but reset the stored unit identifier to the given unitType.
             void convertToSpecifiedUnits ( SVGLengthType unitType );
