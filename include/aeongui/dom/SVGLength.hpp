@@ -63,6 +63,7 @@ namespace AeonGUI
             /// @brief Reset the value as a number with an associated unitType, thereby replacing the values for all of the attributes on the object.
             void newValueSpecifiedUnits ( SVGLengthType unitType, float valueInSpecifiedUnits );
         private:
+            void UpdateValueAsString();
             SVGLengthType mUnitType{SVGLengthType::UNKNOWN};
             float mValue{};
             float mValueInSpecifiedUnits{};

@@ -31,6 +31,7 @@ include_directories(${GTEST_INCLUDE_DIR}
                     ${CAIRO_INCLUDE_DIRS})
 set(TESTED_SRCS
   Location.cpp
+  SVGLengthTest.cpp
 )
 
 set(TEST_SRCS
