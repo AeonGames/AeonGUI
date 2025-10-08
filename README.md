@@ -78,6 +78,17 @@ Then you can restart the shell to configure powerlevel10k.
 
 To have the multiple Msys2 terminals use zsh instead of bash, you can edit the corresponding .ini files under C:\msys64 to add a `SHELL=/usr/bin/zsh` line.
 
+### Adding MSYS terminal integration to VSCode
+
+If you want to use MSYS2's bash or zsh as the integrated terminal in VSCode, you can add the following to your `.bashrc` or `.zshrc` file:
+
+```bash
+export PATH="$PATH:$(cygpath "$LOCALAPPDATA/Programs/Microsoft VS Code/bin")"
+[[ "$TERM_PROGRAM" == "vscode" ]] && . "$(cygpath "$(code --locate-shell-integration-path <zsh|bash>)")"
+```
+
+replace `<zsh|bash>` with the corresponding shell.
+
 ## AUTHORS
 
 Rodrigo Hernandez (kwizatz at aeongames dot com).

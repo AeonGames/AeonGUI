@@ -1,0 +1,398 @@
+#!/usr/bin/env python3
+"""
+Copyright (C) 2025 Rodrigo Jose Hernandez Cordoba
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+
+AeonGUI Class Generator
+
+This script generates C++ class files (.hpp and .cpp) with proper structure
+and inheritance for the AeonGUI project.
+
+Usage:
+    python generate_class.py <ClassName> [BaseClassName]
+
+Arguments:
+    ClassName     - The name of the class to generate (required)
+    BaseClassName - The name of the base class to inherit from (optional)
+
+Examples:
+    python generate_class.py SVGElement
+    python generate_class.py SVGGraphicsElement SVGElement
+"""
+
+import argparse
+import os
+import re
+import subprocess
+import sys
+from datetime import datetime
+from pathlib import Path
+
+
+def get_copyright_header():
+    """Generate the copyright header with current year."""
+    current_year = datetime.now().year
+    return f"""/*
+Copyright (C) {current_year} Rodrigo Jose Hernandez Cordoba
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+*/"""
+
+
+def generate_header_guard(class_name):
+    """Generate the header guard macro name."""
+    return f"AEONGUI_{class_name.upper()}_HPP"
+
+
+def generate_hpp_content(class_name, base_class=None):
+    """Generate the .hpp file content."""
+    copyright_header = get_copyright_header()
+    header_guard = generate_header_guard(class_name)
+    
+    # Determine includes
+    includes = ['#include "aeongui/Platform.hpp"']
+    if base_class:
+        includes.append(f'#include "aeongui/dom/{base_class}.hpp"')
+    
+    includes_str = '\n'.join(includes)
+    
+    # Determine inheritance
+    inheritance_str = ""
+    if base_class:
+        inheritance_str = f" : public {base_class}"
+    
+    content = f"""{copyright_header}
+#ifndef {header_guard}
+#define {header_guard}
+
+{includes_str}
+
+namespace AeonGUI
+{{
+    namespace DOM
+    {{
+        class DLL {class_name}{inheritance_str}
+        {{
+        public:
+            {class_name}();
+            ~{class_name}();
+        private:
+        }};
+    }}
+}}
+
+#endif
+"""
+    return content
+
+
+def generate_cpp_content(class_name, base_class=None):
+    """Generate the .cpp file content."""
+    copyright_header = get_copyright_header()
+    
+    # Constructor implementation
+    if base_class:
+        constructor_impl = f"""        {class_name}::{class_name}() : {base_class}()
+        {{
+        }}"""
+    else:
+        constructor_impl = f"        {class_name}::{class_name}() = default;"
+    
+    content = f"""{copyright_header}
+#include "aeongui/dom/{class_name}.hpp"
+
+namespace AeonGUI
+{{
+    namespace DOM
+    {{
+{constructor_impl}
+
+        {class_name}::~{class_name}() = default;
+    }}
+}}
+"""
+    return content
+
+
+def write_file_safely(file_path, content, force=False):
+    """Write content to file, creating directories if needed."""
+    # Create parent directories if they don't exist
+    os.makedirs(os.path.dirname(file_path), exist_ok=True)
+    
+    # Check if file already exists
+    if os.path.exists(file_path) and not force:
+        try:
+            response = input(f"File {file_path} already exists. Overwrite? (y/N): ")
+        except EOFError:
+            # Handle case where input is piped or not available
+            print(f"File {file_path} already exists. Skipping (no input available).")
+            return False
+        
+        if response.lower() != 'y':
+            print(f"Skipping {file_path}")
+            return False
+    
+    with open(file_path, 'w', encoding='utf-8') as f:
+        f.write(content)
+    return True
+
+
+def update_cmake_lists(project_root, class_name, force=False):
+    """Update CMakeLists.txt to include the new class files."""
+    cmake_path = project_root / "core" / "CMakeLists.txt"
+    
+    if not cmake_path.exists():
+        print(f"Warning: CMakeLists.txt not found at {cmake_path}")
+        return False
+    
+    # Read the current CMakeLists.txt content
+    with open(cmake_path, 'r', encoding='utf-8') as f:
+        content = f.read()
+    
+    # Define the entries to add
+    header_entry = f"    ../include/aeongui/dom/{class_name}.hpp"
+    source_entry = f"    dom/{class_name}.cpp"
+    
+    # Check if entries already exist
+    if header_entry in content and source_entry in content:
+        print(f"Files already present in CMakeLists.txt")
+        return True
+    
+    # Find the AEONGUI_DOM_HEADERS section and add the header
+    headers_pattern = r'(set\(AEONGUI_DOM_HEADERS\n(?:.*\n)*?)(\))'
+    headers_match = re.search(headers_pattern, content, re.MULTILINE)
+    
+    if headers_match:
+        if header_entry not in content:
+            # Insert the header before the closing parenthesis, maintaining alphabetical order
+            headers_section = headers_match.group(1)
+            headers_lines = headers_section.split('\n')
+            
+            # Find the insertion point (alphabetical order)
+            insert_index = len(headers_lines) - 1  # Default to end
+            for i, line in enumerate(headers_lines[1:], 1):  # Skip the set( line
+                if line.strip().startswith('../include/aeongui/dom/'):
+                    if line.strip() > header_entry:
+                        insert_index = i
+                        break
+            
+            headers_lines.insert(insert_index, header_entry)
+            new_headers_section = '\n'.join(headers_lines)
+            content = content.replace(headers_match.group(1), new_headers_section)
+    else:
+        print("Warning: Could not find AEONGUI_DOM_HEADERS section in CMakeLists.txt")
+        return False
+    
+    # Find the AEONGUI_DOM_SOURCES section and add the source
+    sources_pattern = r'(set\(AEONGUI_DOM_SOURCES\n(?:.*\n)*?)(\))'
+    sources_match = re.search(sources_pattern, content, re.MULTILINE)
+    
+    if sources_match:
+        if source_entry not in content:
+            # Insert the source before the closing parenthesis, maintaining alphabetical order
+            sources_section = sources_match.group(1)
+            sources_lines = sources_section.split('\n')
+            
+            # Find the insertion point (alphabetical order)
+            insert_index = len(sources_lines) - 1  # Default to end
+            for i, line in enumerate(sources_lines[1:], 1):  # Skip the set( line
+                if line.strip().startswith('dom/'):
+                    if line.strip() > source_entry:
+                        insert_index = i
+                        break
+            
+            sources_lines.insert(insert_index, source_entry)
+            new_sources_section = '\n'.join(sources_lines)
+            content = content.replace(sources_match.group(1), new_sources_section)
+    else:
+        print("Warning: Could not find AEONGUI_DOM_SOURCES section in CMakeLists.txt")
+        return False
+    
+    # Write the updated content back
+    try:
+        if not force and cmake_path.exists():
+            try:
+                response = input(f"Update CMakeLists.txt? (y/N): ")
+            except EOFError:
+                print("Cannot update CMakeLists.txt (no input available)")
+                return False
+            
+            if response.lower() != 'y':
+                print("Skipping CMakeLists.txt update")
+                return False
+        
+        with open(cmake_path, 'w', encoding='utf-8') as f:
+            f.write(content)
+        print(f"Updated: {cmake_path}")
+        return True
+        
+    except Exception as e:
+        print(f"Error updating CMakeLists.txt: {e}")
+        return False
+
+
+def add_files_to_git(project_root, class_name, force=False):
+    """Add the generated files to git."""
+    hpp_path = project_root / "include" / "aeongui" / "dom" / f"{class_name}.hpp"
+    cpp_path = project_root / "core" / "dom" / f"{class_name}.cpp"
+    
+    files_to_add = []
+    if hpp_path.exists():
+        files_to_add.append(str(hpp_path))
+    if cpp_path.exists():
+        files_to_add.append(str(cpp_path))
+    
+    if not files_to_add:
+        print("No files to add to git")
+        return False
+    
+    try:
+        # Check if we're in a git repository
+        result = subprocess.run(['git', 'rev-parse', '--git-dir'], 
+                              cwd=str(project_root), 
+                              capture_output=True, 
+                              text=True)
+        if result.returncode != 0:
+            print("Warning: Not in a git repository")
+            return False
+        
+        # Add files to git
+        cmd = ['git', 'add'] + files_to_add
+        result = subprocess.run(cmd, 
+                              cwd=str(project_root), 
+                              capture_output=True, 
+                              text=True)
+        
+        if result.returncode == 0:
+            print(f"Added to git: {', '.join([os.path.basename(f) for f in files_to_add])}")
+            return True
+        else:
+            print(f"Error adding files to git: {result.stderr}")
+            return False
+            
+    except subprocess.CalledProcessError as e:
+        print(f"Error running git command: {e}")
+        return False
+    except FileNotFoundError:
+        print("Error: git command not found")
+        return False
+
+
+def main():
+    parser = argparse.ArgumentParser(
+        description='Generate C++ class files for AeonGUI project',
+        formatter_class=argparse.RawDescriptionHelpFormatter,
+        epilog="""
+Examples:
+  %(prog)s SVGElement
+  %(prog)s SVGGraphicsElement SVGElement
+  %(prog)s MyCustomClass BaseClass
+  %(prog)s --force ExistingClass  # Overwrite without prompting
+  %(prog)s --cmake --git NewClass  # Generate, update CMake, and add to git
+        """
+    )
+    
+    parser.add_argument('class_name', 
+                       help='Name of the class to generate')
+    parser.add_argument('base_class', 
+                       nargs='?', 
+                       help='Name of the base class to inherit from (optional)')
+    parser.add_argument('--force', '-f',
+                       action='store_true',
+                       help='Overwrite existing files without prompting')
+    parser.add_argument('--cmake', '-c',
+                       action='store_true',
+                       help='Automatically add files to CMakeLists.txt')
+    parser.add_argument('--git', '-g',
+                       action='store_true',
+                       help='Automatically add files to git')
+    
+    args = parser.parse_args()
+    
+    class_name = args.class_name
+    base_class = args.base_class
+    
+    # Validate class name
+    if not class_name.isidentifier():
+        print(f"Error: '{class_name}' is not a valid C++ class name")
+        return 1
+    
+    if base_class and not base_class.isidentifier():
+        print(f"Error: '{base_class}' is not a valid C++ class name")
+        return 1
+    
+    # Get project root directory (assuming script is in tools/)
+    script_dir = Path(__file__).parent
+    project_root = script_dir.parent
+    
+    # Define output paths
+    hpp_path = project_root / "include" / "aeongui" / "dom" / f"{class_name}.hpp"
+    cpp_path = project_root / "core" / "dom" / f"{class_name}.cpp"
+    
+    # Generate content
+    hpp_content = generate_hpp_content(class_name, base_class)
+    cpp_content = generate_cpp_content(class_name, base_class)
+    
+    # Write files
+    print(f"Generating class '{class_name}'", end="")
+    if base_class:
+        print(f" inheriting from '{base_class}'")
+    else:
+        print()
+    
+    hpp_written = write_file_safely(str(hpp_path), hpp_content, args.force)
+    cpp_written = write_file_safely(str(cpp_path), cpp_content, args.force)
+    
+    if hpp_written:
+        print(f"Created: {hpp_path}")
+    if cpp_written:
+        print(f"Created: {cpp_path}")
+    
+    # Update CMakeLists.txt if requested and files were created
+    cmake_updated = False
+    if args.cmake and (hpp_written or cpp_written):
+        cmake_updated = update_cmake_lists(project_root, class_name, args.force)
+    
+    # Add files to git if requested and files were created
+    git_added = False
+    if args.git and (hpp_written or cpp_written):
+        git_added = add_files_to_git(project_root, class_name, args.force)
+    
+    if hpp_written or cpp_written:
+        print("\nDon't forget to:")
+        next_step = 1
+        if not args.cmake or not cmake_updated:
+            print(f"{next_step}. Add the .cpp file to the appropriate CMakeLists.txt")
+            next_step += 1
+        if not args.git or not git_added:
+            print(f"{next_step}. Add the files to git (git add)")
+            next_step += 1
+        print(f"{next_step}. Include any additional headers needed for your class")
+        print(f"{next_step + 1}. Implement the class methods as needed")
+    
+    return 0
+
+
+if __name__ == "__main__":
+    sys.exit(main())

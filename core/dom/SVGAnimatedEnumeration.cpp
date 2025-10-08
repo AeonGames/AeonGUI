@@ -13,20 +13,24 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 */
-#ifndef AEONGUI_SVGTEXTPOSITIONINGELEMENT_H
-#define AEONGUI_SVGTEXTPOSITIONINGELEMENT_H
+#include "aeongui/dom/SVGAnimatedEnumeration.hpp"
 
-#include "SVGTextContentElement.hpp"
 namespace AeonGUI
 {
     namespace DOM
     {
-        class SVGTextPositioningElement : public SVGTextContentElement
+        SVGAnimatedEnumeration::SVGAnimatedEnumeration() = default;
+
+        SVGAnimatedEnumeration::~SVGAnimatedEnumeration() = default;
+
+        int32_t SVGAnimatedEnumeration::baseVal() const
         {
-        public:
-            SVGTextPositioningElement ( const DOMString& aTagName, const AttributeMap& aAttributes, Node* aParent );
-            ~SVGTextPositioningElement() override;
-        };
+            return mBaseVal;
+        }
+
+        int32_t SVGAnimatedEnumeration::animVal() const
+        {
+            return mAnimVal;
+        }
     }
 }
-#endif

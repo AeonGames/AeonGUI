@@ -13,20 +13,14 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 */
-#ifndef AEONGUI_SVGTEXTPOSITIONINGELEMENT_H
-#define AEONGUI_SVGTEXTPOSITIONINGELEMENT_H
+#include "aeongui/dom/DOMPointReadOnly.hpp"
 
-#include "SVGTextContentElement.hpp"
 namespace AeonGUI
 {
     namespace DOM
     {
-        class SVGTextPositioningElement : public SVGTextContentElement
-        {
-        public:
-            SVGTextPositioningElement ( const DOMString& aTagName, const AttributeMap& aAttributes, Node* aParent );
-            ~SVGTextPositioningElement() override;
-        };
+        DOMPointReadOnly::DOMPointReadOnly() = default;
+
+        DOMPointReadOnly::~DOMPointReadOnly() = default;
     }
 }
-#endif
