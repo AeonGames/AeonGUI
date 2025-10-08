@@ -111,58 +111,48 @@ namespace AeonGUI
                 return; // No conversion needed
             }
 
-            // Get the current value in user units (absolute value)
-            float absoluteValue = mValue;
-
             // Convert from user units to the specified unit type
             switch ( unitType )
             {
             case SVGLengthType::NUMBER:
             case SVGLengthType::PX:
                 // User units are px, so no conversion needed
-                mValueInSpecifiedUnits = absoluteValue;
-                mValue = absoluteValue;
+                mValueInSpecifiedUnits = mValue;
                 break;
 
             case SVGLengthType::CM:
                 // 1 inch = 2.54 cm, 1 inch = 96 px (at 96 DPI)
                 // So 1 cm = 96/2.54 px
-                mValueInSpecifiedUnits = absoluteValue * 2.54f / 96.0f;
-                mValue = absoluteValue;
+                mValueInSpecifiedUnits = mValue * 2.54f / 96.0f;
                 break;
 
             case SVGLengthType::MM:
                 // 1 inch = 25.4 mm, 1 inch = 96 px (at 96 DPI)
                 // So 1 mm = 96/25.4 px
-                mValueInSpecifiedUnits = absoluteValue * 25.4f / 96.0f;
-                mValue = absoluteValue;
+                mValueInSpecifiedUnits = mValue * 25.4f / 96.0f;
                 break;
 
             case SVGLengthType::IN:
                 // 1 inch = 96 px (at 96 DPI)
-                mValueInSpecifiedUnits = absoluteValue / 96.0f;
-                mValue = absoluteValue;
+                mValueInSpecifiedUnits = mValue / 96.0f;
                 break;
 
             case SVGLengthType::PT:
                 // 1 inch = 72 pt, 1 inch = 96 px (at 96 DPI)
                 // So 1 pt = 96/72 px = 4/3 px
-                mValueInSpecifiedUnits = absoluteValue * 72.0f / 96.0f;
-                mValue = absoluteValue;
+                mValueInSpecifiedUnits = mValue * 72.0f / 96.0f;
                 break;
 
             case SVGLengthType::PC:
                 // 1 inch = 6 pc, 1 inch = 96 px (at 96 DPI)
                 // So 1 pc = 96/6 px = 16 px
-                mValueInSpecifiedUnits = absoluteValue * 6.0f / 96.0f;
-                mValue = absoluteValue;
+                mValueInSpecifiedUnits = mValue * 6.0f / 96.0f;
                 break;
 
             case SVGLengthType::PERCENTAGE:
                 // Percentage conversion requires viewport context
                 // For now, assume 100% = 100 user units (this should be context-dependent)
-                mValueInSpecifiedUnits = absoluteValue;
-                mValue = absoluteValue;
+                mValueInSpecifiedUnits = mValue;
                 break;
 
             case SVGLengthType::EMS:
@@ -171,8 +161,7 @@ namespace AeonGUI
                 // Font-relative units require font context
                 // For now, assume 1em = 16px (default font size)
                 float fontBase = ( unitType == SVGLengthType::EMS ) ? 16.0f : 8.0f; // ex is typically half of em
-                mValueInSpecifiedUnits = absoluteValue / fontBase;
-                mValue = absoluteValue;
+                mValueInSpecifiedUnits = mValue / fontBase;
             }
             break;
 
