@@ -17,6 +17,7 @@ limitations under the License.
 #define AEONGUI_SVGLENGTH_HPP
 
 #include "DOMString.hpp"
+#include "aeongui/Platform.hpp"
 
 namespace AeonGUI
 {
@@ -37,7 +38,7 @@ namespace AeonGUI
             PC = 10
         };
 
-        class SVGLength
+        class DLL SVGLength
         {
         public:
             SVGLength();
