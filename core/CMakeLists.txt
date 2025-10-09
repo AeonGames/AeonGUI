@@ -20,6 +20,10 @@ set(AEONGUI_HEADERS
     ../include/aeongui/StyleSheet.hpp
 )
 set(AEONGUI_DOM_HEADERS
+    ../include/aeongui/dom/DOMRect.hpp
+    ../include/aeongui/dom/DOMRectReadOnly.hpp
+    ../include/aeongui/dom/DOMPoint.hpp
+    ../include/aeongui/dom/DOMPointReadOnly.hpp
     ../include/aeongui/dom/Window.hpp
     ../include/aeongui/dom/Location.hpp
     ../include/aeongui/dom/Document.hpp
@@ -74,6 +78,10 @@ set(AEONGUI_SOURCES
     StyleSheet.cpp
 )
 set(AEONGUI_DOM_SOURCES
+    dom/DOMRect.cpp
+    dom/DOMRectReadOnly.cpp
+    dom/DOMPoint.cpp
+    dom/DOMPointReadOnly.cpp
     dom/Window.cpp
     dom/Location.cpp
     dom/Document.cpp

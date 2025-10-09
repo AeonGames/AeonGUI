@@ -20,6 +20,8 @@ limitations under the License.
 #include "SVGAnimatedLength.hpp"
 #include "SVGAnimatedEnumeration.hpp"
 #include "DOMPoint.hpp"
+#include "DOMRect.hpp"
+
 namespace AeonGUI
 {
     namespace DOM
@@ -37,7 +39,7 @@ namespace AeonGUI
             float getSubStringLength ( long start, long end ) const;
             DOMPoint getStartPositionOfChar ( long index ) const;
             DOMPoint getEndPositionOfChar ( long index ) const;
-            //DOMRect getExtentOfChar(long index) const;
+            DOMRect getExtentOfChar ( long index ) const;
             float getRotationOfChar ( long index ) const;
             long getCharNumAtPosition ( const DOMPoint& point ) const;
         private:

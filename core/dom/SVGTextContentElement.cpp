@@ -47,10 +47,10 @@ namespace AeonGUI
         {
             return DOMPoint();
         }
-        //DOMRect SVGTextContentElement::getExtentOfChar(long index) const
-        //{
-        //    return DOMRect();
-        //}
+        DOMRect SVGTextContentElement::getExtentOfChar ( long index ) const
+        {
+            return DOMRect();
+        }
         float SVGTextContentElement::getRotationOfChar ( long index ) const
         {
             return 0.0f;
