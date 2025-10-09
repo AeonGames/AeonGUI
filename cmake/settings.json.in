@@ -1,10 +1,6 @@
 {
     "git.path": "${GIT_EXECUTABLE}",
     "git.ignoreLimitWarning": true,
-    "terminal.integrated.automationProfile.windows":
-    {
-        "path": "C:\\Windows\\System32\\cmd.exe"
-    },
     "terminal.integrated.profiles.windows": {
         "MinGW GCC Bash": {
             "path": "${BASH_EXECUTABLE}",
