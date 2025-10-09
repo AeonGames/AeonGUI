@@ -27,7 +27,7 @@ namespace AeonGUI
         {
         public:
             DOMPoint();
-            ~DOMPoint();
+            virtual ~DOMPoint();
         private:
         };
     }

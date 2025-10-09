@@ -26,7 +26,7 @@ namespace AeonGUI
         {
         public:
             DOMPointReadOnly();
-            ~DOMPointReadOnly();
+            virtual ~DOMPointReadOnly();
         private:
         };
     }

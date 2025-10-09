@@ -59,6 +59,7 @@
         "PowerShell":null,
         "Command Prompt":null
     },  
+    "terminal.integrated.defaultProfile.windows": "MinGW GCC Zsh",
     "python.defaultInterpreterPath": "${Python3_EXECUTABLE}",
     "clang.executable": "${CLANG_EXECUTABLE}",
     "cmake.cmakePath": "${CMAKE_COMMAND}",

@@ -14,6 +14,8 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 #include <iostream>
+#include <regex>
+#include "aeongui/Canvas.hpp"
 #include "aeongui/dom/SVGSVGElement.hpp"
 
 namespace AeonGUI

@@ -15,6 +15,7 @@ limitations under the License.
 */
 #ifndef AEONGUI_ATTRIBUTEMAP_H
 #define AEONGUI_ATTRIBUTEMAP_H
+#include <unordered_map>
 #include "aeongui/dom/DOMString.hpp"
 namespace AeonGUI
 {

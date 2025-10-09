@@ -65,7 +65,107 @@ def generate_header_guard(class_name):
     return f"AEONGUI_{class_name.upper()}_HPP"
 
 
-def generate_hpp_content(class_name, base_class=None):
+def check_base_class_has_virtual_destructor(project_root, base_class):
+    """Check if the base class has a virtual destructor."""
+    if not base_class:
+        return False
+    
+    base_header_path = project_root / "include" / "aeongui" / "dom" / f"{base_class}.hpp"
+    
+    if not base_header_path.exists():
+        return False
+    
+    try:
+        with open(base_header_path, 'r', encoding='utf-8') as f:
+            content = f.read()
+        
+        # Look for virtual destructor patterns
+        # This is a simple regex that looks for "virtual" followed by "~ClassName"
+        virtual_destructor_patterns = [
+            rf'virtual\s+~{base_class}\s*\(',
+            r'virtual\s+~\w+\s*\(',
+        ]
+        
+        for pattern in virtual_destructor_patterns:
+            if re.search(pattern, content, re.IGNORECASE):
+                return True
+        
+        return False
+        
+    except Exception:
+        return False
+
+
+def should_use_virtual_destructor(project_root, class_name, base_class):
+    """Determine if virtual destructor should be used for this class."""
+    if not base_class:
+        # No inheritance, no need for virtual destructor by default
+        return False
+    
+    # If there's a base class, we should use virtual destructors
+    return True
+
+
+def ensure_base_class_has_virtual_destructor(project_root, base_class, force=False):
+    """Ensure the base class has a virtual destructor, offer to update if not."""
+    if not base_class:
+        return True
+    
+    base_header_path = project_root / "include" / "aeongui" / "dom" / f"{base_class}.hpp"
+    
+    if not base_header_path.exists():
+        print(f"Warning: Base class header {base_header_path} not found")
+        return False
+    
+    if check_base_class_has_virtual_destructor(project_root, base_class):
+        return True
+    
+    # Base class doesn't have virtual destructor
+    print(f"Warning: Base class '{base_class}' does not have a virtual destructor.")
+    
+    if not force:
+        try:
+            response = input(f"Would you like to add 'virtual' to {base_class}'s destructor? (y/N): ")
+        except EOFError:
+            print("Cannot update base class destructor (no input available)")
+            return False
+        
+        if response.lower() != 'y':
+            print("Proceeding without updating base class destructor (not recommended)")
+            return False
+    
+    # Update the base class header to add virtual destructor
+    try:
+        with open(base_header_path, 'r', encoding='utf-8') as f:
+            content = f.read()
+        
+        # Look for non-virtual destructor and make it virtual
+        destructor_pattern = rf'(\s+)~{base_class}\s*\(\s*\)\s*;'
+        match = re.search(destructor_pattern, content)
+        
+        if match:
+            # Replace with virtual destructor
+            updated_content = re.sub(
+                destructor_pattern, 
+                rf'\1virtual ~{base_class}();',
+                content
+            )
+            
+            with open(base_header_path, 'w', encoding='utf-8') as f:
+                f.write(updated_content)
+            
+            print(f"Updated: Added 'virtual' to {base_class} destructor in {base_header_path}")
+            return True
+        else:
+            print(f"Could not find destructor pattern in {base_class} header")
+            return False
+            
+    except Exception as e:
+        print(f"Error updating base class header: {e}")
+        return False
+
+
+def generate_hpp_content(class_name, base_class=None, project_root=None):
     """Generate the .hpp file content."""
     copyright_header = get_copyright_header()
     header_guard = generate_header_guard(class_name)
@@ -82,6 +182,10 @@ def generate_hpp_content(class_name, base_class=None):
     if base_class:
         inheritance_str = f" : public {base_class}"
     
+    # Determine if we should use virtual destructor
+    use_virtual = should_use_virtual_destructor(project_root, class_name, base_class)
+    destructor_decl = f"virtual ~{class_name}();" if use_virtual else f"~{class_name}();"
+    
     content = f"""{copyright_header}
 #ifndef {header_guard}
 #define {header_guard}
@@ -96,7 +200,7 @@ namespace AeonGUI
         {{
         public:
             {class_name}();
-            ~{class_name}();
+            {destructor_decl}
         private:
         }};
     }}
@@ -346,12 +450,18 @@ Examples:
     script_dir = Path(__file__).parent
     project_root = script_dir.parent
     
+    # Check and ensure proper virtual destructor setup for inheritance
+    if base_class:
+        base_updated = ensure_base_class_has_virtual_destructor(project_root, base_class, args.force)
+        if not base_updated:
+            print("Warning: Base class may not have proper virtual destructor")
+    
     # Define output paths
     hpp_path = project_root / "include" / "aeongui" / "dom" / f"{class_name}.hpp"
     cpp_path = project_root / "core" / "dom" / f"{class_name}.cpp"
     
     # Generate content
-    hpp_content = generate_hpp_content(class_name, base_class)
+    hpp_content = generate_hpp_content(class_name, base_class, project_root)
     cpp_content = generate_cpp_content(class_name, base_class)
     
     # Write files

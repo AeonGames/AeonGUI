@@ -26,9 +26,32 @@ namespace AeonGUI
         class DLL DOMRect : public DOMRectReadOnly
         {
         public:
-            DOMRect();
-            ~DOMRect();
-        private:
+            DOMRect ( float x = 0.0f, float y = 0.0f, float width = 0.0f, float height = 0.0f );
+            virtual ~DOMRect() final;
+
+            using DOMRectReadOnly::x;
+            using DOMRectReadOnly::y;
+            using DOMRectReadOnly::width;
+            using DOMRectReadOnly::height;
+            using DOMRectReadOnly::top;
+            using DOMRectReadOnly::right;
+            using DOMRectReadOnly::bottom;
+            using DOMRectReadOnly::left;
+
+            float x ( float newX );
+            float y ( float newY );
+            float width ( float newWidth );
+            float height ( float newHeight );
+            float top ( float newTop );
+            float right ( float newRight );
+            float bottom ( float newBottom );
+            float left ( float newLeft );
+
+            template <typename T>
+            static DOMRect fromRect ( const T& rect )
+            {
+                return DOMRect ( rect.x(), rect.y(), rect.width(), rect.height() );
+            }
         };
     }
 }

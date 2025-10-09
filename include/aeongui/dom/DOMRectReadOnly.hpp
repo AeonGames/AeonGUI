@@ -17,6 +17,7 @@ limitations under the License.
 #define AEONGUI_DOMRECTREADONLY_HPP
 
 #include "aeongui/Platform.hpp"
+#include "DOMString.hpp"
 
 namespace AeonGUI
 {
@@ -25,9 +26,31 @@ namespace AeonGUI
         class DLL DOMRectReadOnly
         {
         public:
-            DOMRectReadOnly();
-            ~DOMRectReadOnly();
-        private:
+            DOMRectReadOnly ( float x = 0.0f, float y = 0.0f, float width = 0.0f, float height = 0.0f );
+            virtual ~DOMRectReadOnly();
+
+            float x() const;
+            float y() const;
+            float width() const;
+            float height() const;
+            float top() const;
+            float right() const;
+            float bottom() const;
+            float left() const;
+
+            template <typename T>
+            static DOMRectReadOnly fromRect ( const T& rect )
+            {
+                return DOMRectReadOnly ( rect.x(), rect.y(), rect.width(), rect.height() );
+            }
+
+            DOMString toJSON() const;
+
+        protected:
+            float mX{};
+            float mY{};
+            float mWidth{};
+            float mHeight{};
         };
     }
 }

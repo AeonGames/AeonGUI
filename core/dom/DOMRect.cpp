@@ -19,10 +19,58 @@ namespace AeonGUI
 {
     namespace DOM
     {
-        DOMRect::DOMRect() : DOMRectReadOnly()
+        DOMRect::DOMRect ( float x, float y, float width, float height ) : DOMRectReadOnly ( x, y, width, height )
         {
         }
 
         DOMRect::~DOMRect() = default;
+
+        float DOMRect::x ( float newX )
+        {
+            mX = newX;
+            return mX;
+        }
+
+        float DOMRect::y ( float newY )
+        {
+            mY = newY;
+            return mY;
+        }
+
+        float DOMRect::width ( float newWidth )
+        {
+            mWidth = newWidth;
+            return mWidth;
+        }
+
+        float DOMRect::height ( float newHeight )
+        {
+            mHeight = newHeight;
+            return mHeight;
+        }
+
+        float DOMRect::top ( float newTop )
+        {
+            mY = newTop;
+            return mY;
+        }
+
+        float DOMRect::right ( float newRight )
+        {
+            mX = newRight - mWidth;
+            return mX;
+        }
+
+        float DOMRect::bottom ( float newBottom )
+        {
+            mY = newBottom - mHeight;
+            return mY;
+        }
+
+        float DOMRect::left ( float newLeft )
+        {
+            mX = newLeft;
+            return mX;
+        }
     }
 }

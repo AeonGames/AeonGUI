@@ -14,6 +14,7 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 #include "aeongui/dom/SVGGraphicsElement.hpp"
+#include "aeongui/Canvas.hpp"
 #include <libcss/libcss.h>
 
 namespace AeonGUI

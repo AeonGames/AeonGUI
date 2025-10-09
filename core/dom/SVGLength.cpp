@@ -17,6 +17,8 @@ limitations under the License.
 #include <unordered_map>
 #include <regex>
 #include <string_view>
+#include <format>
+
 namespace AeonGUI
 {
     namespace DOM
