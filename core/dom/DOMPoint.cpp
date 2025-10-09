@@ -19,10 +19,34 @@ namespace AeonGUI
 {
     namespace DOM
     {
-        DOMPoint::DOMPoint() : DOMPointReadOnly()
+        DOMPoint::DOMPoint ( float x, float y, float z, float w ) : DOMPointReadOnly ( x, y, z, w )
         {
         }
 
         DOMPoint::~DOMPoint() = default;
+
+        float DOMPoint::x ( float newX )
+        {
+            mX = newX;
+            return mX;
+        }
+
+        float DOMPoint::y ( float newY )
+        {
+            mY = newY;
+            return mY;
+        }
+
+        float DOMPoint::z ( float newZ )
+        {
+            mZ = newZ;
+            return mZ;
+        }
+
+        float DOMPoint::w ( float newW )
+        {
+            mW = newW;
+            return mW;
+        }
     }
 }

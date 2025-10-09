@@ -17,6 +17,7 @@ limitations under the License.
 #define AEONGUI_DOMPOINTREADONLY_HPP
 
 #include "aeongui/Platform.hpp"
+#include "DOMString.hpp"
 
 namespace AeonGUI
 {
@@ -25,9 +26,25 @@ namespace AeonGUI
         class DLL DOMPointReadOnly
         {
         public:
-            DOMPointReadOnly();
+            DOMPointReadOnly ( float x = 0.0f, float y = 0.0f, float z = 0.0f, float w = 1.0f );
             virtual ~DOMPointReadOnly();
-        private:
+            float x() const;
+            float y() const;
+            float z() const;
+            float w() const;
+
+            template <typename T>
+            static DOMPointReadOnly fromPoint ( const T& point )
+            {
+                return DOMPointReadOnly ( point.x(), point.y(), point.z(), point.w() );
+            }
+            //matrixTransform()
+            DOMString toJSON() const;
+        protected:
+            float mX{};
+            float mY{};
+            float mZ{};
+            float mW{};
         };
     }
 }

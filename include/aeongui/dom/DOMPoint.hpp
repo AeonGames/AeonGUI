@@ -26,9 +26,21 @@ namespace AeonGUI
         class DLL DOMPoint : public DOMPointReadOnly
         {
         public:
-            DOMPoint();
-            virtual ~DOMPoint();
-        private:
+            DOMPoint ( float x = 0.0f, float y = 0.0f, float z = 0.0f, float w = 1.0f );
+            virtual ~DOMPoint() final;
+            using DOMPointReadOnly::x;
+            using DOMPointReadOnly::y;
+            using DOMPointReadOnly::z;
+            using DOMPointReadOnly::w;
+            template <typename T>
+            static DOMPoint fromPoint ( const T& point )
+            {
+                return DOMPoint ( point.x(), point.y(), point.z(), point.w() );
+            }
+            float x ( float newX );
+            float y ( float newY );
+            float z ( float newZ );
+            float w ( float newW );
         };
     }
 }
