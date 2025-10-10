@@ -47,5 +47,19 @@ namespace AeonGUI
             // Convert the point to a JSON representation
             return std::format ( R"({{"x": {:.10f}, "y": {:.10f}, "z": {:.10f}, "w": {:.10f}}})", mX, mY, mZ, mW );
         }
+
+        DOMPointReadOnly DOMPointReadOnly::matrixTransform ( const DOMMatrixReadOnly& matrix ) const
+        {
+#if 0
+            // Apply the matrix transformation to the point
+            float x = mX * matrix.a() + mY * matrix.c() + mZ * matrix.e() + mW * matrix.g();
+            float y = mX * matrix.b() + mY * matrix.d() + mZ * matrix.f() + mW * matrix.h();
+            float z = mX * matrix.i() + mY * matrix.j() + mZ * matrix.k() + mW * matrix.l();
+            float w = mX * matrix.m() + mY * matrix.n() + mZ * matrix.o() + mW * matrix.p();
+            return DOMPointReadOnly ( x, y, z, w );
+#else
+            return DOMPointReadOnly ( mX, mY, mZ, mW );
+#endif
+        }
     }
 }

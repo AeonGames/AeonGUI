@@ -20,6 +20,8 @@ set(AEONGUI_HEADERS
     ../include/aeongui/StyleSheet.hpp
 )
 set(AEONGUI_DOM_HEADERS
+    ../include/aeongui/dom/DOMMatrix.hpp
+    ../include/aeongui/dom/DOMMatrixReadOnly.hpp
     ../include/aeongui/dom/DOMRect.hpp
     ../include/aeongui/dom/DOMRectReadOnly.hpp
     ../include/aeongui/dom/DOMPoint.hpp
@@ -78,6 +80,8 @@ set(AEONGUI_SOURCES
     StyleSheet.cpp
 )
 set(AEONGUI_DOM_SOURCES
+    dom/DOMMatrix.cpp
+    dom/DOMMatrixReadOnly.cpp
     dom/DOMRect.cpp
     dom/DOMRectReadOnly.cpp
     dom/DOMPoint.cpp

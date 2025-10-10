@@ -18,6 +18,7 @@ limitations under the License.
 
 #include "aeongui/Platform.hpp"
 #include "DOMString.hpp"
+#include "DOMMatrixReadOnly.hpp"
 
 namespace AeonGUI
 {
@@ -38,7 +39,7 @@ namespace AeonGUI
             {
                 return DOMPointReadOnly ( point.x(), point.y(), point.z(), point.w() );
             }
-            //matrixTransform()
+            DOMPointReadOnly matrixTransform ( const DOMMatrixReadOnly& matrix ) const;
             DOMString toJSON() const;
         protected:
             float mX{};
