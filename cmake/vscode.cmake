@@ -30,6 +30,19 @@ if(CMAKE_GENERATOR MATCHES "(MSYS|Unix) Makefiles")
 
   set(DEBUG_CONFIGURATIONS "")
 
+    #
+    # Generate VS Code Environment
+    #
+    if("$ENV{MSYSTEM}" STREQUAL "MINGW64")
+    set(VSCODE_DEFAULT_PROFILE_WINDOWS "MinGW GCC Bash")
+    elseif("$ENV{MSYSTEM}" STREQUAL "UCRT64")
+    set(VSCODE_DEFAULT_PROFILE_WINDOWS "MinGW UCRT64 Bash")
+    elseif("$ENV{MSYSTEM}" STREQUAL "CLANG64")
+    set(VSCODE_DEFAULT_PROFILE_WINDOWS "MinGW Clang Bash")
+    else()
+    set(VSCODE_DEFAULT_PROFILE_WINDOWS "PowerShell")
+    endif()
+
   if(${ARGC})
   foreach(DIRECTORY ${ARGV})
       if(IS_DIRECTORY ${DIRECTORY} AND EXISTS ${DIRECTORY}/CMakeLists.txt)
