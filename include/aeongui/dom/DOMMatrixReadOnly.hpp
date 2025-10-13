@@ -16,6 +16,8 @@ limitations under the License.
 #ifndef AEONGUI_DOMMATRIXREADONLY_HPP
 #define AEONGUI_DOMMATRIXREADONLY_HPP
 
+#include <initializer_list>
+#include <array>
 #include "aeongui/Platform.hpp"
 
 namespace AeonGUI
@@ -25,9 +27,39 @@ namespace AeonGUI
         class DLL DOMMatrixReadOnly
         {
         public:
-            DOMMatrixReadOnly();
+            // Constructor from initializer list
+            DOMMatrixReadOnly ( std::initializer_list<float> values = {1, 0, 0, 1, 0, 0} );
             virtual ~DOMMatrixReadOnly();
-        private:
+            bool is2D() const;
+            bool isIdentity() const;
+            // Accessors for matrix values
+            float a() const;
+            float b() const;
+            float c() const;
+            float d() const;
+            float e() const;
+            float f() const;
+
+            float m11() const;
+            float m12() const;
+            float m13() const;
+            float m14() const;
+            float m21() const;
+            float m22() const;
+            float m23() const;
+            float m24() const;
+            float m31() const;
+            float m32() const;
+            float m33() const;
+            float m34() const;
+            float m41() const;
+            float m42() const;
+            float m43() const;
+            float m44() const;
+
+        protected:
+            std::array<float, 16> mValues{};
+            bool mIs2D{};
         };
     }
 }

@@ -20,6 +20,7 @@ set(AEONGUI_HEADERS
     ../include/aeongui/StyleSheet.hpp
 )
 set(AEONGUI_DOM_HEADERS
+    ../include/aeongui/dom/DOMException.hpp
     ../include/aeongui/dom/DOMMatrix.hpp
     ../include/aeongui/dom/DOMMatrixReadOnly.hpp
     ../include/aeongui/dom/DOMRect.hpp

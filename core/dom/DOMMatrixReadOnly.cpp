@@ -14,12 +14,18 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 #include "aeongui/dom/DOMMatrixReadOnly.hpp"
-
+#include "aeongui/dom/DOMException.hpp"
 namespace AeonGUI
 {
     namespace DOM
     {
-        DOMMatrixReadOnly::DOMMatrixReadOnly() = default;
+        DOMMatrixReadOnly::DOMMatrixReadOnly ( std::initializer_list<float> values ) : mIs2D {values.size() == 6}
+        {
+            if ( values.size() != 6 && values.size() != 16 )
+            {
+                throw DOMTypeMismatchError ( "DOMMatrixReadOnly constructor requires 6 or 16 values." );
+            }
+        }
 
         DOMMatrixReadOnly::~DOMMatrixReadOnly() = default;
     }
