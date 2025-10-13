@@ -262,7 +262,7 @@ def write_file_safely(file_path, content, force=False):
     return True
 
 
-def update_cmake_lists(project_root, class_name, force=False):
+def update_cmake_lists(project_root, class_name, force=False, header_only=False):
     """Update CMakeLists.txt to include the new class files."""
     cmake_path = project_root / "core" / "CMakeLists.txt"
     
@@ -279,7 +279,13 @@ def update_cmake_lists(project_root, class_name, force=False):
     source_entry = f"    dom/{class_name}.cpp"
     
     # Check if entries already exist
-    if header_entry in content and source_entry in content:
+    header_exists = header_entry in content
+    source_exists = source_entry in content
+    
+    if header_only and header_exists:
+        print(f"Header file already present in CMakeLists.txt")
+        return True
+    elif not header_only and header_exists and source_exists:
         print(f"Files already present in CMakeLists.txt")
         return True
     
@@ -308,30 +314,31 @@ def update_cmake_lists(project_root, class_name, force=False):
         print("Warning: Could not find AEONGUI_DOM_HEADERS section in CMakeLists.txt")
         return False
     
-    # Find the AEONGUI_DOM_SOURCES section and add the source
-    sources_pattern = r'(set\(AEONGUI_DOM_SOURCES\n(?:.*\n)*?)(\))'
-    sources_match = re.search(sources_pattern, content, re.MULTILINE)
-    
-    if sources_match:
-        if source_entry not in content:
-            # Insert the source before the closing parenthesis, maintaining alphabetical order
-            sources_section = sources_match.group(1)
-            sources_lines = sources_section.split('\n')
-            
-            # Find the insertion point (alphabetical order)
-            insert_index = len(sources_lines) - 1  # Default to end
-            for i, line in enumerate(sources_lines[1:], 1):  # Skip the set( line
-                if line.strip().startswith('dom/'):
-                    if line.strip() > source_entry:
-                        insert_index = i
-                        break
-            
-            sources_lines.insert(insert_index, source_entry)
-            new_sources_section = '\n'.join(sources_lines)
-            content = content.replace(sources_match.group(1), new_sources_section)
-    else:
-        print("Warning: Could not find AEONGUI_DOM_SOURCES section in CMakeLists.txt")
-        return False
+    # Find the AEONGUI_DOM_SOURCES section and add the source (only if not header-only)
+    if not header_only:
+        sources_pattern = r'(set\(AEONGUI_DOM_SOURCES\n(?:.*\n)*?)(\))'
+        sources_match = re.search(sources_pattern, content, re.MULTILINE)
+        
+        if sources_match:
+            if source_entry not in content:
+                # Insert the source before the closing parenthesis, maintaining alphabetical order
+                sources_section = sources_match.group(1)
+                sources_lines = sources_section.split('\n')
+                
+                # Find the insertion point (alphabetical order)
+                insert_index = len(sources_lines) - 1  # Default to end
+                for i, line in enumerate(sources_lines[1:], 1):  # Skip the set( line
+                    if line.strip().startswith('dom/'):
+                        if line.strip() > source_entry:
+                            insert_index = i
+                            break
+                
+                sources_lines.insert(insert_index, source_entry)
+                new_sources_section = '\n'.join(sources_lines)
+                content = content.replace(sources_match.group(1), new_sources_section)
+        else:
+            print("Warning: Could not find AEONGUI_DOM_SOURCES section in CMakeLists.txt")
+            return False
     
     # Write the updated content back
     try:
@@ -356,7 +363,7 @@ def update_cmake_lists(project_root, class_name, force=False):
         return False
 
 
-def add_files_to_git(project_root, class_name, force=False):
+def add_files_to_git(project_root, class_name, force=False, header_only=False):
     """Add the generated files to git."""
     hpp_path = project_root / "include" / "aeongui" / "dom" / f"{class_name}.hpp"
     cpp_path = project_root / "core" / "dom" / f"{class_name}.cpp"
@@ -364,7 +371,7 @@ def add_files_to_git(project_root, class_name, force=False):
     files_to_add = []
     if hpp_path.exists():
         files_to_add.append(str(hpp_path))
-    if cpp_path.exists():
+    if not header_only and cpp_path.exists():
         files_to_add.append(str(cpp_path))
     
     if not files_to_add:
@@ -414,6 +421,7 @@ Examples:
   %(prog)s MyCustomClass BaseClass
   %(prog)s --force ExistingClass  # Overwrite without prompting
   %(prog)s --cmake --git NewClass  # Generate, update CMake, and add to git
+  %(prog)s --header-only MyTemplateClass  # Generate only header file
         """
     )
     
@@ -431,6 +439,9 @@ Examples:
     parser.add_argument('--git', '-g',
                        action='store_true',
                        help='Automatically add files to git')
+    parser.add_argument('--header-only', '-ho',
+                       action='store_true',
+                       help='Generate only the header file (.hpp), no source file (.cpp)')
     
     args = parser.parse_args()
     
@@ -462,7 +473,6 @@ Examples:
     
     # Generate content
     hpp_content = generate_hpp_content(class_name, base_class, project_root)
-    cpp_content = generate_cpp_content(class_name, base_class)
     
     # Write files
     print(f"Generating class '{class_name}'", end="")
@@ -471,35 +481,50 @@ Examples:
     else:
         print()
     
+    if args.header_only:
+        print("(header-only mode)")
+    
     hpp_written = write_file_safely(str(hpp_path), hpp_content, args.force)
-    cpp_written = write_file_safely(str(cpp_path), cpp_content, args.force)
+    
+    # Only generate and write .cpp file if not in header-only mode
+    cpp_written = False
+    if not args.header_only:
+        cpp_content = generate_cpp_content(class_name, base_class)
+        cpp_written = write_file_safely(str(cpp_path), cpp_content, args.force)
     
     if hpp_written:
         print(f"Created: {hpp_path}")
     if cpp_written:
         print(f"Created: {cpp_path}")
+    elif not args.header_only:
+        # .cpp file was supposed to be created but wasn't
+        pass
     
     # Update CMakeLists.txt if requested and files were created
     cmake_updated = False
     if args.cmake and (hpp_written or cpp_written):
-        cmake_updated = update_cmake_lists(project_root, class_name, args.force)
+        cmake_updated = update_cmake_lists(project_root, class_name, args.force, args.header_only)
     
     # Add files to git if requested and files were created
     git_added = False
     if args.git and (hpp_written or cpp_written):
-        git_added = add_files_to_git(project_root, class_name, args.force)
+        git_added = add_files_to_git(project_root, class_name, args.force, args.header_only)
     
     if hpp_written or cpp_written:
         print("\nDon't forget to:")
         next_step = 1
-        if not args.cmake or not cmake_updated:
+        if not args.header_only and (not args.cmake or not cmake_updated):
             print(f"{next_step}. Add the .cpp file to the appropriate CMakeLists.txt")
             next_step += 1
         if not args.git or not git_added:
-            print(f"{next_step}. Add the files to git (git add)")
+            files_text = "files" if not args.header_only else "file"
+            print(f"{next_step}. Add the {files_text} to git (git add)")
             next_step += 1
         print(f"{next_step}. Include any additional headers needed for your class")
-        print(f"{next_step + 1}. Implement the class methods as needed")
+        if not args.header_only:
+            print(f"{next_step + 1}. Implement the class methods as needed")
+        else:
+            print(f"{next_step + 1}. Implement inline methods in the header if needed")
     
     return 0
 
