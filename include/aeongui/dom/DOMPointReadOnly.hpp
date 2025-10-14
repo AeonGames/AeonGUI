@@ -18,12 +18,12 @@ limitations under the License.
 
 #include "aeongui/Platform.hpp"
 #include "DOMString.hpp"
-#include "DOMMatrixReadOnly.hpp"
 
 namespace AeonGUI
 {
     namespace DOM
     {
+        class DOMMatrixReadOnly;
         class DLL DOMPointReadOnly
         {
         public:

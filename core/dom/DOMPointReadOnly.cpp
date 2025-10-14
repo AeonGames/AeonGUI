@@ -14,6 +14,7 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 #include "aeongui/dom/DOMPointReadOnly.hpp"
+#include "aeongui/dom/DOMMatrixReadOnly.hpp"
 #include <format>
 
 namespace AeonGUI
@@ -50,16 +51,12 @@ namespace AeonGUI
 
         DOMPointReadOnly DOMPointReadOnly::matrixTransform ( const DOMMatrixReadOnly& matrix ) const
         {
-#if 0
             // Apply the matrix transformation to the point
-            float x = mX * matrix.a() + mY * matrix.c() + mZ * matrix.e() + mW * matrix.g();
-            float y = mX * matrix.b() + mY * matrix.d() + mZ * matrix.f() + mW * matrix.h();
-            float z = mX * matrix.i() + mY * matrix.j() + mZ * matrix.k() + mW * matrix.l();
-            float w = mX * matrix.m() + mY * matrix.n() + mZ * matrix.o() + mW * matrix.p();
+            float x = mX * matrix.m11() + mY * matrix.m21() + mZ * matrix.m31() + mW * matrix.m41();
+            float y = mX * matrix.m12() + mY * matrix.m22() + mZ * matrix.m32() + mW * matrix.m42();
+            float z = mX * matrix.m13() + mY * matrix.m23() + mZ * matrix.m33() + mW * matrix.m43();
+            float w = mX * matrix.m14() + mY * matrix.m24() + mZ * matrix.m34() + mW * matrix.m44();
             return DOMPointReadOnly ( x, y, z, w );
-#else
-            return DOMPointReadOnly ( mX, mY, mZ, mW );
-#endif
         }
     }
 }

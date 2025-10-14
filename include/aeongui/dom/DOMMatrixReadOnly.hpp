@@ -19,6 +19,8 @@ limitations under the License.
 #include <initializer_list>
 #include <array>
 #include "aeongui/Platform.hpp"
+#include "DOMString.hpp"
+#include "DOMPoint.hpp"
 
 namespace AeonGUI
 {
@@ -56,6 +58,25 @@ namespace AeonGUI
             float m42() const;
             float m43() const;
             float m44() const;
+
+            DOMMatrixReadOnly flipX() const;
+            DOMMatrixReadOnly flipY() const;
+            DOMMatrixReadOnly inverse() const;
+            DOMMatrixReadOnly multiply ( const DOMMatrixReadOnly& other ) const;
+            DOMMatrixReadOnly rotateAxisAngle ( float x, float y, float z, float angle ) const;
+            DOMMatrixReadOnly rotate ( float rotX, float rotY, float rotZ ) const;
+            DOMMatrixReadOnly rotateFromVector ( float x, float y ) const;
+            DOMMatrixReadOnly scale ( float scaleX, float scaleY, float scaleZ, float originX, float originY, float originZ ) const;
+            DOMMatrixReadOnly scale3d ( float scale, float originX, float originY, float originZ ) const;
+            DOMMatrixReadOnly skewX ( float sx ) const;
+            DOMMatrixReadOnly skewY ( float sy ) const;
+
+            std::array<float, 16> toFloat32Array() const;
+            std::array<double, 16> toFloat64Array() const;
+            DOMString toJSON() const;
+            DOMString toString() const;
+            DOMPoint transformPoint ( const DOMPoint& point ) const;
+            DOMMatrixReadOnly translate ( float x, float y, float z ) const;
 
         protected:
             std::array<float, 16> mValues{};
