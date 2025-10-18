@@ -177,7 +177,7 @@ namespace AeonGUI
         // Follows https://www.w3.org/TR/SVG2/coords.html#ComputingAViewportsTransform
         double scale_x = GetWidth() / aViewBox.width;
         double scale_y = GetHeight() / aViewBox.height;
-        if ( aPreserveAspectRatio.GetAlign() != PreserveAspectRatio::Align::None )
+        if ( aPreserveAspectRatio.GetAlign() != PreserveAspectRatio::Align::none )
         {
             if ( aPreserveAspectRatio.GetMeetOrSlice() == PreserveAspectRatio::MeetOrSlice::Meet )
             {

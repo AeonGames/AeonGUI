@@ -17,6 +17,7 @@ limitations under the License.
 #define AEONGUI_MATRIX2X3_H
 #include <array>
 #include <cstdint>
+#include <cstddef>
 #include "aeongui/Platform.hpp"
 namespace AeonGUI
 {

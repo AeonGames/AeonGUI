@@ -89,6 +89,14 @@ export PATH="$PATH:$(cygpath "$LOCALAPPDATA/Programs/Microsoft VS Code/bin")"
 
 replace `<zsh|bash>` with the corresponding shell.
 
+### Disabling precompiled headers
+
+Precompiled headers are enabled by default to speed up compilation times, however at development time they can be a hindrance as any changes can trigger recompilation of unrelated compilation units causing the opposite effect. Precompiled headers can be disabled by passing the following option to CMake:
+
+```bash
+cmake -DCMAKE_DISABLE_PRECOMPILE_HEADERS=ON ...
+```
+
 ## AUTHORS
 
 Rodrigo Hernandez (kwizatz at aeongames dot com).

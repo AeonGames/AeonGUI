@@ -19,6 +19,7 @@ limitations under the License.
 #include <unordered_map>
 #include <variant>
 #include <cstdint>
+#include <cstddef>
 namespace AeonGUI
 {
     struct ViewBox
@@ -42,7 +43,7 @@ namespace AeonGUI
         };
         enum Align : uint8_t
         {
-            None = 0,
+            none = 0,
             XMinYMin = Min << 4 | Min,
             XMinYMid = Min << 4 | Mid,
             XMinYMax = Min << 4 | Max,

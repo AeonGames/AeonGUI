@@ -7,10 +7,17 @@ env:
 jobs:
   build:
     runs-on: ubuntu-latest
+    name: ${{ matrix.name }}
 
     strategy:
       matrix:
-        compiler: [gcc]
+        include:
+          - compiler: gcc
+            precompile_headers: "ON"
+            name: "GCC with PCH"
+          - compiler: gcc
+            precompile_headers: "OFF"
+            name: "GCC without PCH"
 
     steps:
     - name: '🧰 Checkout'
@@ -21,7 +28,7 @@ jobs:
       if: matrix.compiler == 'gcc'
 
     - name: '🛠️ Configuring'
-      run: cmake -B ${{github.workspace}}/build -DCMAKE_BUILD_TYPE=${{env.BUILD_TYPE}}
+      run: cmake -B ${{github.workspace}}/build -DCMAKE_DISABLE_PRECOMPILE_HEADERS=${{ matrix.precompile_headers == 'OFF' && 'ON' || 'OFF' }} -DCMAKE_BUILD_TYPE=${{env.BUILD_TYPE}}
       if: matrix.compiler == 'gcc'
 
     - name: '🏗️ Building'

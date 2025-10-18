@@ -1,5 +1,5 @@
 /*
-Copyright (C) 2024 Rodrigo Jose Hernandez Cordoba
+Copyright (C) 2024,2025 Rodrigo Jose Hernandez Cordoba
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -27,7 +27,7 @@ namespace AeonGUI
     const std::regex PreserveAspectRatioRegex{"\\s*(none|xMinYMin|xMidYMin|xMaxYMin|xMinYMid|xMidYMid|xMaxYMid|xMinYMax|xMidYMax|xMaxYMax)\\s*(meet|slice)?\\s*"};
     static const std::unordered_map<std::string_view, PreserveAspectRatio::Align> PreserveAspectRatioMap
     {
-        {"none", PreserveAspectRatio::Align::None},
+        {"none", PreserveAspectRatio::Align::none},
         {"xMinYMin", PreserveAspectRatio::Align::XMinYMin},
         {"xMidYMin", PreserveAspectRatio::Align::XMidYMin},
         {"xMaxYMin", PreserveAspectRatio::Align::XMaxYMin},
