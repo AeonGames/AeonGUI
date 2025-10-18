@@ -31,6 +31,7 @@ include_directories(${GTEST_INCLUDE_DIR}
                     ${CAIRO_INCLUDE_DIRS})
 set(TESTED_SRCS
   DOMMatrixReadOnlyTest.cpp
+  DOMMatrixTest.cpp
   DOMPointReadOnlyTest.cpp
   DOMPointTest.cpp
   DOMRectReadOnlyTest.cpp
