@@ -43,6 +43,9 @@ namespace AeonGUI
             float getRotationOfChar ( long index ) const;
             long getCharNumAtPosition ( const DOMPoint& point ) const;
         private:
+            /// Helper function to get the text content from all child text nodes
+            std::string getTextContent() const;
+
             SVGAnimatedLength mTextLength;
             SVGAnimatedEnumeration mLengthAdjust;
         };
