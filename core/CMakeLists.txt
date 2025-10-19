@@ -59,8 +59,12 @@ set(AEONGUI_DOM_HEADERS
     ../include/aeongui/dom/SVGTextPositioningElement.hpp
     ../include/aeongui/dom/SVGTextContentElement.hpp
     ../include/aeongui/dom/SVGLength.hpp
+    ../include/aeongui/dom/SVGLengthList.hpp
     ../include/aeongui/dom/SVGAnimatedLength.hpp
+    ../include/aeongui/dom/SVGAnimatedLengthList.hpp
     ../include/aeongui/dom/SVGAnimatedEnumeration.hpp
+    ../include/aeongui/dom/SVGNumberList.hpp
+    ../include/aeongui/dom/SVGAnimatedNumberList.hpp
     ../include/aeongui/dom/Text.hpp
     ../include/aeongui/dom/USVString.hpp
 )
@@ -116,8 +120,12 @@ set(AEONGUI_DOM_SOURCES
     dom/SVGTextElement.cpp
     dom/SVGTSpanElement.cpp
     dom/SVGLength.cpp
+    dom/SVGLengthList.cpp
     dom/SVGAnimatedLength.cpp
+    dom/SVGAnimatedLengthList.cpp
     dom/SVGAnimatedEnumeration.cpp
+    dom/SVGNumberList.cpp
+    dom/SVGAnimatedNumberList.cpp
     dom/Text.cpp
     dom/Attribute.cpp
 )

@@ -17,6 +17,8 @@ limitations under the License.
 #define AEONGUI_SVGTEXTPOSITIONINGELEMENT_H
 
 #include "SVGTextContentElement.hpp"
+#include "SVGAnimatedLengthList.hpp"
+#include "SVGAnimatedNumberList.hpp"
 namespace AeonGUI
 {
     namespace DOM
@@ -26,6 +28,25 @@ namespace AeonGUI
         public:
             SVGTextPositioningElement ( const DOMString& aTagName, const AttributeMap& aAttributes, Node* aParent );
             ~SVGTextPositioningElement() override;
+
+            // SVGTextPositioningElement interface
+            const SVGAnimatedLengthList& x() const;
+            const SVGAnimatedLengthList& y() const;
+            const SVGAnimatedLengthList& dx() const;
+            const SVGAnimatedLengthList& dy() const;
+            const SVGAnimatedNumberList& rotate() const;
+
+        private:
+            /// Helper methods for parsing attribute values
+            void parsePositioningAttributes ( const AttributeMap& aAttributes );
+            void parseLengthList ( const DOMString& value, SVGLengthList& lengthList );
+            void parseNumberList ( const DOMString& value, SVGNumberList& numberList );
+
+            SVGAnimatedLengthList mX;
+            SVGAnimatedLengthList mY;
+            SVGAnimatedLengthList mDx;
+            SVGAnimatedLengthList mDy;
+            SVGAnimatedNumberList mRotate;
         };
     }
 }
