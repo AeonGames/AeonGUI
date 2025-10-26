@@ -39,6 +39,7 @@ jobs:
           make:p
           tools-git:p
           cairo:p
+          pango:p
           libxml2:p
           gtest:p
           pkg-config:p

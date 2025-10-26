@@ -22,7 +22,7 @@ jobs:
     - name: '📦 Install dependencies'
       run: |
         brew update
-        brew install cmake pkg-config cairo libxml2 googletest gsed bison
+        brew install cmake pkg-config cairo pango libxml2 googletest gsed bison
       if: matrix.compiler == 'clang'
 
     - name: '🛠️ Configuring'

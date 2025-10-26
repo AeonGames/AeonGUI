@@ -122,6 +122,7 @@ if(PKG_CONFIG_FOUND)
       set(ENV{PKG_CONFIG_PATH} ${VCPKG_INSTALLED_DIR}/${VCPKG_TARGET_TRIPLET}/lib/pkgconfig)
     endif()
     pkg_check_modules(CAIRO cairo)
+    pkg_check_modules(PANGO pango pangocairo)
 endif()
 
 find_package(Freetype)

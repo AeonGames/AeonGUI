@@ -1,6 +1,7 @@
 {
   "dependencies": [
     "cairo",
+    "pango",
     "libxml2",
     "pkgconf",
     "gtest"
