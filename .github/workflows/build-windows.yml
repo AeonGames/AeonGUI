@@ -37,6 +37,8 @@ jobs:
         cd C:\vcpkg
         git pull
         .\bootstrap-vcpkg.bat
+        mkdir C:\vcpkg\downloads
+        curl -o C:\vcpkg\downloads\GNOME-pango-1.56.1.tar.gz "https://gitlab.gnome.org//GNOME/pango/-/archive/1.56.1/pango-1.56.1.tar.gz"
       if: matrix.compiler == 'msvc'
 
     - name: 📦 Add NuGet sources
