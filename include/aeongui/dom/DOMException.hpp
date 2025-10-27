@@ -15,7 +15,6 @@ limitations under the License.
 */
 #ifndef AEONGUI_DOMEXCEPTION_HPP
 #define AEONGUI_DOMEXCEPTION_HPP
-
 #include <exception>
 #include "aeongui/Platform.hpp"
 #include "DOMString.hpp"
@@ -23,7 +22,7 @@ namespace AeonGUI
 {
     namespace DOM
     {
-        class DLL DOMException : public std::exception
+        class DOMException : public std::exception
         {
         public:
             enum ExceptionCode : unsigned short
@@ -75,9 +74,9 @@ namespace AeonGUI
             // Constructor to initialize the message
             DOMException ( unsigned short code, const DOMString& message = "", const DOMString& name = "Error" ) : mMessage ( message ), mName ( name ), mCode ( code ) {}
             virtual ~DOMException() = default;
+            unsigned short mCode{ 0 };
             DOMString mMessage{};
             DOMString mName{"Error"};
-            unsigned short mCode{0};
         };
 
         class DOMIndexSizeError : public DOMException

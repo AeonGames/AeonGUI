@@ -68,7 +68,9 @@ namespace AeonGUI
             SVGLengthType mUnitType{SVGLengthType::UNKNOWN};
             float mValue{};
             float mValueInSpecifiedUnits{};
+            PRIVATE_TEMPLATE_MEMBERS_START
             DOMString mValueAsString{};
+            PRIVATE_TEMPLATE_MEMBERS_END
         };
     }
 }

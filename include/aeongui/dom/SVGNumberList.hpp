@@ -41,7 +41,9 @@ namespace AeonGUI
             float appendItem ( float newItem );
 
         private:
+            PRIVATE_TEMPLATE_MEMBERS_START
             std::vector<float> mItems;
+            PRIVATE_TEMPLATE_MEMBERS_END
         };
     }
 }

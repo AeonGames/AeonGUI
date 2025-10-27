@@ -42,7 +42,9 @@ namespace AeonGUI
             SVGLength appendItem ( const SVGLength& newItem );
 
         private:
+            PRIVATE_TEMPLATE_MEMBERS_START
             std::vector<SVGLength> mItems;
+            PRIVATE_TEMPLATE_MEMBERS_END
         };
     }
 }

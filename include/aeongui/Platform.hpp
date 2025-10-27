@@ -28,3 +28,14 @@ limitations under the License.
 #endif
 #endif
 #endif
+
+#ifdef _MSC_VER
+#define PRIVATE_TEMPLATE_MEMBERS_START \
+_Pragma("warning(push)") \
+_Pragma("warning(disable: 4251)")
+#define PRIVATE_TEMPLATE_MEMBERS_END \
+_Pragma("warning(pop)")
+#else
+#define PRIVATE_TEMPLATE_MEMBERS_START
+#define PRIVATE_TEMPLATE_MEMBERS_END
+#endif
