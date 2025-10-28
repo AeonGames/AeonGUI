@@ -74,9 +74,9 @@ namespace AeonGUI
             // Constructor to initialize the message
             DOMException ( unsigned short code, const DOMString& message = "", const DOMString& name = "Error" ) : mMessage ( message ), mName ( name ), mCode ( code ) {}
             virtual ~DOMException() = default;
-            unsigned short mCode{ 0 };
             DOMString mMessage{};
             DOMString mName{"Error"};
+            unsigned short mCode{ 0 };
         };
 
         class DOMIndexSizeError : public DOMException
