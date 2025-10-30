@@ -47,12 +47,12 @@ namespace AeonGUI
             ( void ) aCanvas;
         }
 
-        void Node::Load ()
+        void Node::OnLoad ()
         {
             // Do nothing by default
         }
 
-        void Node::Unload ()
+        void Node::OnUnload ()
         {
             // Do nothing by default
         }

@@ -26,6 +26,8 @@ namespace AeonGUI
         public:
             SVGTSpanElement ( const DOMString& aTagName, const AttributeMap& aAttributes, Node* aParent );
             ~SVGTSpanElement() override;
+            void OnLoad() override;
+            void OnUnload() override;
         private:
         };
     }

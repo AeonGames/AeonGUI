@@ -14,7 +14,8 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 #include "aeongui/dom/SVGTSpanElement.hpp"
-
+#include "aeongui/dom/Text.hpp"
+#include <iostream>
 namespace AeonGUI
 {
     namespace DOM
@@ -23,5 +24,23 @@ namespace AeonGUI
         {
         }
         SVGTSpanElement::~SVGTSpanElement() = default;
+
+        void SVGTSpanElement::OnLoad()
+        {
+            std::cout << "Loading SVGTSpanElement" << std::endl;
+            for ( auto& child : this->childNodes() )
+            {
+                if ( child->nodeType() == Node::TEXT_NODE )
+                {
+                    const Text* textNode = static_cast<const Text*> ( child );
+                    std::cout << "Text content: " << textNode->wholeText() << std::endl;
+                }
+            }
+        }
+
+        void SVGTSpanElement::OnUnload()
+        {
+            std::cout << "Unloading SVGTSpanElement" << std::endl;
+        }
     }
 }

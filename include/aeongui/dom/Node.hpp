@@ -22,6 +22,7 @@ limitations under the License.
 #include <variant>
 #include "aeongui/Platform.hpp"
 #include "aeongui/AttributeMap.hpp"
+#include "aeongui/dom/EventTarget.hpp"
 
 namespace AeonGUI
 {
@@ -29,7 +30,7 @@ namespace AeonGUI
     class Document;
     namespace DOM
     {
-        class Node
+        class Node : public EventTarget
         {
         public:
             enum NodeType
@@ -61,8 +62,20 @@ namespace AeonGUI
 
             DLL virtual void DrawStart ( Canvas& aCanvas ) const;
             DLL virtual void DrawFinish ( Canvas& aCanvas ) const;
-            DLL virtual void Load ();
-            DLL virtual void Unload ();
+            /**
+             * Use OnLoad to implement custom loading behavior in derived classes.
+             * This method is called after all nodes are created and all children
+             * have been set.
+             * Nodes are visited in depth-first pre-order.
+             */
+            DLL virtual void OnLoad ();
+            /**
+             * Use OnUnload to implement custom unloading behavior in derived classes.
+             * This method is called while all nodes are still in place but before
+             * they are destroyed.
+             * Nodes are visited in depth-first post-order.
+             */
+            DLL virtual void OnUnload ();
             /** Returns whether this node and all descendants should be skipped
              *  in a drawing operation.
              *  @return true by default override to disable drawing.

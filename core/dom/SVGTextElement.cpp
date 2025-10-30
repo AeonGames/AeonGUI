@@ -14,7 +14,7 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 #include "aeongui/dom/SVGTextElement.hpp"
-
+#include <iostream>
 namespace AeonGUI
 {
     namespace DOM
@@ -23,5 +23,13 @@ namespace AeonGUI
         {
         }
         SVGTextElement::~SVGTextElement() = default;
+        void SVGTextElement::OnLoad()
+        {
+            std::cout << "Loading SVGTextElement" << std::endl;
+        }
+        void SVGTextElement::OnUnload()
+        {
+            std::cout << "Unloading SVGTextElement" << std::endl;
+        }
     }
 }

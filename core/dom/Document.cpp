@@ -119,7 +119,7 @@ namespace AeonGUI
             mDocumentElement = Construct ( reinterpret_cast<const char*> ( root_element->name ), ExtractElementAttributes ( root_element ), nullptr );
             AddNodes ( mDocumentElement, root_element->children );
             xmlFreeDoc ( document );
-            /**@todo Emit onload event.*/
+            Load();
         }
 
         void Document::Load()
@@ -127,20 +127,23 @@ namespace AeonGUI
             mDocumentElement->TraverseDepthFirstPreOrder (
                 [] ( Node * aNode )
             {
-                aNode->Load();
+                aNode->OnLoad();
             } );
         }
 
         void Document::Unload ()
         {
-            mDocumentElement->TraverseDepthFirstPreOrder (
+            mDocumentElement->TraverseDepthFirstPostOrder (
                 [] ( Node * aNode )
             {
-                aNode->Unload ();
+                aNode->OnUnload ();
             } );
         }
 
-        Document::~Document() = default;
+        Document::~Document()
+        {
+            Unload();
+        }
 
         void Document::Draw ( Canvas& aCanvas ) const
         {

@@ -26,6 +26,8 @@ namespace AeonGUI
         public:
             SVGTextElement ( const DOMString& aTagName, const AttributeMap& aAttributes, Node* aParent );
             ~SVGTextElement() override;
+            void OnLoad() override;
+            void OnUnload() override;
         private:
         };
     }

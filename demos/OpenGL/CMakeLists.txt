@@ -34,7 +34,8 @@ else()
     add_executable(OpenGLDemo Common.h LinuxOpenGL.cpp)
 endif()
 
-set_target_properties(OpenGLDemo PROPERTIES VS_DEBUGGER_COMMAND_ARGUMENTS "file:///${CMAKE_SOURCE_DIR}/images/tiger-style.svg")
+#set_target_properties(OpenGLDemo PROPERTIES VS_DEBUGGER_COMMAND_ARGUMENTS "file:///${CMAKE_SOURCE_DIR}/images/tiger-style.svg")
+set_target_properties(OpenGLDemo PROPERTIES VS_DEBUGGER_COMMAND_ARGUMENTS "file:///${CMAKE_SOURCE_DIR}/images/text.svg")
 set_target_properties(OpenGLDemo PROPERTIES COMPILE_FLAGS "-DNOMINMAX -D_CRT_SECURE_NO_WARNINGS")
 
 if(APPLE)

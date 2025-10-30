@@ -36,12 +36,12 @@ namespace AeonGUI
             DLL void Load ( const USVString& aFilename );
             DLL ~Document();
             DLL void Draw ( Canvas& aCanvas ) const;
-            DLL void Load ();
-            DLL void Unload ();
             /**DOM Properties and Methods @{*/
             DLL NodeType nodeType() const final;
             /**@}*/
         private:
+            void Load ();
+            void Unload ();
             Element* mDocumentElement{};
             StyleSheetPtr mStyleSheet{};
         };

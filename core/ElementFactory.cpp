@@ -37,6 +37,8 @@ limitations under the License.
 #include "aeongui/dom/SVGPolygonElement.hpp"
 #include "aeongui/dom/SVGCircleElement.hpp"
 #include "aeongui/dom/SVGEllipseElement.hpp"
+#include "aeongui/dom/SVGTextElement.hpp"
+#include "aeongui/dom/SVGTSpanElement.hpp"
 
 namespace AeonGUI
 {
@@ -81,6 +83,8 @@ namespace AeonGUI
         MakeConstructor<DOM::SVGUseElement> ( "use" ),
         MakeConstructor<DOM::SVGLinearGradientElement> ( "linearGradient" ),
         MakeConstructor<DOM::SVGStopElement> ( "stop" ),
+        MakeConstructor<DOM::SVGTextElement> ( "text" ),
+        MakeConstructor<DOM::SVGTSpanElement> ( "tspan" ),
     };
 
     DOM::Element* Construct ( const char* aIdentifier, const AttributeMap& aAttributeMap, DOM::Node* aParent )
