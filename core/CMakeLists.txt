@@ -18,6 +18,8 @@ set(AEONGUI_HEADERS
     ../include/aeongui/DrawType.hpp
     ../include/aeongui/Color.hpp
     ../include/aeongui/StyleSheet.hpp
+    ../include/aeongui/FontLayout.hpp
+    ../include/aeongui/PangoFontLayout.hpp
 )
 set(AEONGUI_DOM_HEADERS
     ../include/aeongui/dom/DOMException.hpp
@@ -83,7 +85,11 @@ set(AEONGUI_SOURCES
     CairoPath.cpp
     Color.cpp
     StyleSheet.cpp
+    Canvas.cpp
+    FontLayout.cpp
+    PangoFontLayout.cpp
 )
+
 set(AEONGUI_DOM_SOURCES
     dom/DOMMatrix.cpp
     dom/DOMMatrixReadOnly.cpp
