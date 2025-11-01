@@ -21,6 +21,7 @@ limitations under the License.
 #include <limits>
 #include "aeongui/CairoCanvas.hpp"
 #include "aeongui/CairoPath.hpp"
+#include "aeongui/PangoTextLayout.hpp"
 
 namespace AeonGUI
 {
@@ -242,5 +243,9 @@ namespace AeonGUI
             aMatrix[4], aMatrix[5]
         };
         cairo_transform ( mCairoContext, &transform );
+    }
+    void* CairoCanvas::GetNativeSurface() const
+    {
+        return mCairoSurface;
     }
 }

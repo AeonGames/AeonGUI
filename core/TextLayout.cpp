@@ -14,10 +14,9 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-#include "aeongui/PangoFontLayout.hpp"
+#include "aeongui/TextLayout.hpp"
 
 namespace AeonGUI
 {
-    PangoFontLayout::PangoFontLayout () = default;
-    PangoFontLayout::~PangoFontLayout () = default;
+    TextLayout::~TextLayout() = default;
 }

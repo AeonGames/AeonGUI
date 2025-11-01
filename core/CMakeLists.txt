@@ -18,8 +18,8 @@ set(AEONGUI_HEADERS
     ../include/aeongui/DrawType.hpp
     ../include/aeongui/Color.hpp
     ../include/aeongui/StyleSheet.hpp
-    ../include/aeongui/FontLayout.hpp
-    ../include/aeongui/PangoFontLayout.hpp
+    ../include/aeongui/TextLayout.hpp
+    ../include/aeongui/PangoTextLayout.hpp
 )
 set(AEONGUI_DOM_HEADERS
     ../include/aeongui/dom/DOMException.hpp
@@ -86,8 +86,8 @@ set(AEONGUI_SOURCES
     Color.cpp
     StyleSheet.cpp
     Canvas.cpp
-    FontLayout.cpp
-    PangoFontLayout.cpp
+    TextLayout.cpp
+    PangoTextLayout.cpp
 )
 
 set(AEONGUI_DOM_SOURCES
@@ -155,7 +155,7 @@ parser_code(path_data ${CMAKE_CURRENT_SOURCE_DIR}/parsers ${CMAKE_CURRENT_SOURCE
 include_directories(${CAIRO_INCLUDE_DIRS} ${PANGO_INCLUDE_DIRS} ${FREETYPE_INCLUDE_DIR_freetype2} ${FREETYPE_INCLUDE_DIR_ft2build} ${LIBXML2_INCLUDE_DIRS})
 add_library(AeonGUI SHARED ${AEONGUI_HEADERS} ${AEONGUI_SOURCES} ${AEONGUI_DOM_HEADERS} ${AEONGUI_DOM_SOURCES} ${AEONGUI_RESOURCES} ${BISON_path_data_parser_OUTPUTS} ${FLEX_path_data_lexer_OUTPUTS})
 set_target_properties(AeonGUI PROPERTIES COMPILE_FLAGS "-DNOMINMAX -D_CRT_SECURE_NO_WARNINGS")
-target_link_libraries(AeonGUI PRIVATE libcss ${pkgcfg_lib_CAIRO_cairo} ${pkgcfg_lib_PANGO_pango} ${pkgcfg_lib_PANGO_pangocairo} ${LIBXML2_LIBRARIES} ${FREETYPE_LIBRARIES})
+target_link_libraries(AeonGUI PRIVATE libcss ${pkgcfg_lib_CAIRO_cairo} ${pkgcfg_lib_PANGO_pango-1.0} ${pkgcfg_lib_PANGO_pangocairo-1.0} ${pkgcfg_lib_PANGO_gobject-2.0} ${LIBXML2_LIBRARIES} ${FREETYPE_LIBRARIES})
 
 target_precompile_headers(AeonGUI
   PUBLIC

@@ -24,6 +24,7 @@ limitations under the License.
 #include "aeongui/Color.hpp"
 #include "aeongui/Attribute.hpp"
 #include "aeongui/Matrix2x3.hpp"
+#include "aeongui/TextLayout.hpp"
 namespace AeonGUI
 {
     class Path;
@@ -52,7 +53,8 @@ namespace AeonGUI
         virtual void SetViewBox ( const ViewBox& aViewBox, const PreserveAspectRatio& aPreserveAspectRatio ) = 0;
         virtual void SetTransform ( const Matrix2x3& aMatrix ) = 0;
         virtual void Transform ( const Matrix2x3& aMatrix ) = 0;
-        DLL virtual ~Canvas() = 0;
+        virtual void* GetNativeSurface() const = 0;
+        virtual ~Canvas() = 0;
     };
 }
 #endif

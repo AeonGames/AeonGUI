@@ -19,8 +19,8 @@ limitations under the License.
 #include "aeongui/Canvas.hpp"
 
 struct _cairo_surface;
-struct _cairo;
 typedef struct _cairo_surface cairo_surface_t;
+struct _cairo;
 typedef struct _cairo cairo_t;
 
 namespace AeonGUI
@@ -30,6 +30,7 @@ namespace AeonGUI
     public:
         CairoCanvas ();
         CairoCanvas ( uint32_t aWidth, uint32_t aHeight );
+        DLL ~CairoCanvas() final;
         void ResizeViewport ( uint32_t aWidth, uint32_t aHeight ) final;
         const uint8_t* GetPixels() const final;
         size_t GetWidth() const final;
@@ -52,7 +53,7 @@ namespace AeonGUI
         void SetViewBox ( const ViewBox& aViewBox, const PreserveAspectRatio& aPreserveAspectRatio ) final;
         void SetTransform ( const Matrix2x3& aMatrix ) final;
         void Transform ( const Matrix2x3& aMatrix ) final;
-        DLL ~CairoCanvas() final;
+        void* GetNativeSurface() const final;
     private:
         cairo_surface_t* mCairoSurface{};
         cairo_t* mCairoContext{};
