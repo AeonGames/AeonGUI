@@ -1,5 +1,5 @@
 /*
-Copyright (C) 2025,2026 Rodrigo Jose Hernandez Cordoba
+Copyright (C) 2026 Rodrigo Jose Hernandez Cordoba
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -13,29 +13,30 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 */
-#ifndef AEONGUI_SVGANIMATEDLENGTH_HPP
-#define AEONGUI_SVGANIMATEDLENGTH_HPP
+#ifndef AEONGUI_SVGANIMATEDPRESERVEASPECTRATIO_HPP
+#define AEONGUI_SVGANIMATEDPRESERVEASPECTRATIO_HPP
 
-#include "SVGLength.hpp"
+#include "aeongui/Attribute.hpp"
+#include "aeongui/Platform.hpp"
 
 namespace AeonGUI
 {
     namespace DOM
     {
-        class DLL SVGAnimatedLength
+        class DLL SVGAnimatedPreserveAspectRatio
         {
         public:
-            SVGAnimatedLength();
-            ~SVGAnimatedLength();
+            SVGAnimatedPreserveAspectRatio();
+            ~SVGAnimatedPreserveAspectRatio();
 
-            SVGLength& baseVal();
-            const SVGLength& baseVal() const;
-            SVGLength& animVal();
-            const SVGLength& animVal() const;
+            PreserveAspectRatio& baseVal();
+            const PreserveAspectRatio& baseVal() const;
+            PreserveAspectRatio& animVal();
+            const PreserveAspectRatio& animVal() const;
 
         private:
-            SVGLength mBaseVal;
-            SVGLength mAnimVal;
+            PreserveAspectRatio mBaseVal{};
+            PreserveAspectRatio mAnimVal{};
         };
     }
 }

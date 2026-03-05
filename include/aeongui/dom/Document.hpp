@@ -1,5 +1,5 @@
 /*
-Copyright (C) 2019,2020,2023,2025 Rodrigo Jose Hernandez Cordoba
+Copyright (C) 2019,2020,2023,2025,2026 Rodrigo Jose Hernandez Cordoba
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -36,6 +36,7 @@ namespace AeonGUI
             DLL void Load ( const USVString& aFilename );
             DLL ~Document();
             DLL void Draw ( Canvas& aCanvas ) const;
+            DLL const USVString& url() const;
             /**DOM Properties and Methods @{*/
             DLL NodeType nodeType() const final;
             /**@}*/
@@ -44,6 +45,7 @@ namespace AeonGUI
             void Unload ();
             Element* mDocumentElement{};
             StyleSheetPtr mStyleSheet{};
+            USVString mUrl{};
         };
     }
 }

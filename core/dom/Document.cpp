@@ -1,5 +1,5 @@
 /*
-Copyright (C) 2019,2020,2023,2024,2025 Rodrigo Jose Hernandez Cordoba
+Copyright (C) 2019,2020,2023,2024-2026 Rodrigo Jose Hernandez Cordoba
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -80,6 +80,7 @@ namespace AeonGUI
 
         void Document::Load ( const USVString& aFilename )
         {
+            mUrl = aFilename;
             xmlDocPtr document{xmlReadFile ( reinterpret_cast<const char*> ( aFilename.c_str() ), nullptr, 0 ) };
             if ( document == nullptr )
             {
@@ -116,10 +117,15 @@ namespace AeonGUI
 
             ///@todo use document->children instead?
             xmlElementPtr root_element = reinterpret_cast<xmlElementPtr> ( xmlDocGetRootElement ( document ) );
-            mDocumentElement = Construct ( reinterpret_cast<const char*> ( root_element->name ), ExtractElementAttributes ( root_element ), nullptr );
+            mDocumentElement = Construct ( reinterpret_cast<const char*> ( root_element->name ), ExtractElementAttributes ( root_element ), this );
             AddNodes ( mDocumentElement, root_element->children );
             xmlFreeDoc ( document );
             Load();
+        }
+
+        const USVString& Document::url() const
+        {
+            return mUrl;
         }
 
         void Document::Load()

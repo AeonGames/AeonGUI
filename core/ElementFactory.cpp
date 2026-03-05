@@ -1,5 +1,5 @@
 /*
-Copyright (C) 2019,2020,2023-2025 Rodrigo Jose Hernandez Cordoba
+Copyright (C) 2019,2020,2023-2026 Rodrigo Jose Hernandez Cordoba
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -37,6 +37,7 @@ limitations under the License.
 #include "aeongui/dom/SVGPolygonElement.hpp"
 #include "aeongui/dom/SVGCircleElement.hpp"
 #include "aeongui/dom/SVGEllipseElement.hpp"
+#include "aeongui/dom/SVGImageElement.hpp"
 #include "aeongui/dom/SVGTextElement.hpp"
 #include "aeongui/dom/SVGTSpanElement.hpp"
 
@@ -79,6 +80,7 @@ namespace AeonGUI
         MakeConstructor<DOM::SVGPolygonElement> ( "polygon" ),
         MakeConstructor<DOM::SVGCircleElement> ( "circle" ),
         MakeConstructor<DOM::SVGEllipseElement> ( "ellipse" ),
+        MakeConstructor<DOM::SVGImageElement> ( "image" ),
         MakeConstructor<DOM::SVGDefsElement> ( "defs" ),
         MakeConstructor<DOM::SVGUseElement> ( "use" ),
         MakeConstructor<DOM::SVGLinearGradientElement> ( "linearGradient" ),

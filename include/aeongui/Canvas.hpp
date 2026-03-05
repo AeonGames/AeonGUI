@@ -51,6 +51,15 @@ namespace AeonGUI
         virtual void SetOpacity ( double aWidth ) = 0;
         virtual double GetOpacity () const = 0;
         virtual void Draw ( const Path& ) = 0;
+        virtual void DrawImage ( const uint8_t* aPixels,
+                                 size_t aImageWidth,
+                                 size_t aImageHeight,
+                                 size_t aImageStride,
+                                 double aX,
+                                 double aY,
+                                 double aWidth,
+                                 double aHeight,
+                                 double aOpacity ) = 0;
         /** Draw text at the given position using the specified font description and size.
          *  @param aText The UTF-8 text string to render.
          *  @param aX The x coordinate for the text start position.

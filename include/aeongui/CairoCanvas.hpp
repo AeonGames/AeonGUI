@@ -39,6 +39,15 @@ namespace AeonGUI
         size_t GetStride() const final;
         void Clear() final;
         void Draw ( const Path& ) final;
+        void DrawImage ( const uint8_t* aPixels,
+                         size_t aImageWidth,
+                         size_t aImageHeight,
+                         size_t aImageStride,
+                         double aX,
+                         double aY,
+                         double aWidth,
+                         double aHeight,
+                         double aOpacity ) final;
         void DrawText ( const std::string& aText, double aX, double aY,
                         const std::string& aFontFamily, double aFontSize,
                         int aFontWeight, int aFontStyle ) final;

@@ -58,6 +58,7 @@ set(AEONGUI_DOM_HEADERS
     ../include/aeongui/dom/SVGPolygonElement.hpp
     ../include/aeongui/dom/SVGCircleElement.hpp
     ../include/aeongui/dom/SVGEllipseElement.hpp
+    ../include/aeongui/dom/SVGImageElement.hpp
     ../include/aeongui/dom/SVGTextElement.hpp
     ../include/aeongui/dom/SVGTSpanElement.hpp
     ../include/aeongui/dom/SVGTextPositioningElement.hpp
@@ -65,6 +66,8 @@ set(AEONGUI_DOM_HEADERS
     ../include/aeongui/dom/SVGLength.hpp
     ../include/aeongui/dom/SVGLengthList.hpp
     ../include/aeongui/dom/SVGAnimatedLength.hpp
+    ../include/aeongui/dom/SVGAnimatedString.hpp
+    ../include/aeongui/dom/SVGAnimatedPreserveAspectRatio.hpp
     ../include/aeongui/dom/SVGAnimatedLengthList.hpp
     ../include/aeongui/dom/SVGAnimatedEnumeration.hpp
     ../include/aeongui/dom/SVGNumberList.hpp
@@ -125,6 +128,7 @@ set(AEONGUI_DOM_SOURCES
     dom/SVGPolygonElement.cpp
     dom/SVGCircleElement.cpp
     dom/SVGEllipseElement.cpp
+    dom/SVGImageElement.cpp
     dom/SVGTextPositioningElement.cpp
     dom/SVGTextContentElement.cpp
     dom/SVGTextElement.cpp
@@ -132,6 +136,8 @@ set(AEONGUI_DOM_SOURCES
     dom/SVGLength.cpp
     dom/SVGLengthList.cpp
     dom/SVGAnimatedLength.cpp
+    dom/SVGAnimatedString.cpp
+    dom/SVGAnimatedPreserveAspectRatio.cpp
     dom/SVGAnimatedLengthList.cpp
     dom/SVGAnimatedEnumeration.cpp
     dom/SVGNumberList.cpp

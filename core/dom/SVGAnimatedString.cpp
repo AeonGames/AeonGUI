@@ -1,5 +1,5 @@
 /*
-Copyright (C) 2025,2026 Rodrigo Jose Hernandez Cordoba
+Copyright (C) 2026 Rodrigo Jose Hernandez Cordoba
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -13,32 +13,31 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 */
-#include "aeongui/dom/SVGAnimatedLength.hpp"
+#include "aeongui/dom/SVGAnimatedString.hpp"
 
 namespace AeonGUI
 {
     namespace DOM
     {
-        SVGAnimatedLength::SVGAnimatedLength() = default;
+        SVGAnimatedString::SVGAnimatedString() = default;
+        SVGAnimatedString::~SVGAnimatedString() = default;
 
-        SVGAnimatedLength::~SVGAnimatedLength() = default;
-
-        SVGLength& SVGAnimatedLength::baseVal()
+        DOMString& SVGAnimatedString::baseVal()
         {
             return mBaseVal;
         }
 
-        const SVGLength& SVGAnimatedLength::baseVal() const
+        const DOMString& SVGAnimatedString::baseVal() const
         {
             return mBaseVal;
         }
 
-        SVGLength& SVGAnimatedLength::animVal()
+        DOMString& SVGAnimatedString::animVal()
         {
             return mAnimVal;
         }
 
-        const SVGLength& SVGAnimatedLength::animVal() const
+        const DOMString& SVGAnimatedString::animVal() const
         {
             return mAnimVal;
         }

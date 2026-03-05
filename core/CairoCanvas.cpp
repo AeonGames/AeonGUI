@@ -21,6 +21,7 @@ limitations under the License.
 #include <algorithm>
 #include <cmath>
 #include <limits>
+#include <vector>
 #include "aeongui/CairoCanvas.hpp"
 #include "aeongui/CairoPath.hpp"
 #include "aeongui/PangoTextLayout.hpp"
@@ -175,6 +176,76 @@ namespace AeonGUI
             cairo_paint_with_alpha ( mCairoContext, mOpacity );
         }
         cairo_new_path ( mCairoContext );
+    }
+
+    void CairoCanvas::DrawImage ( const uint8_t* aPixels,
+                                  size_t aImageWidth,
+                                  size_t aImageHeight,
+                                  size_t aImageStride,
+                                  double aX,
+                                  double aY,
+                                  double aWidth,
+                                  double aHeight,
+                                  double aOpacity )
+    {
+        if ( mCairoContext == nullptr || aPixels == nullptr || aImageWidth == 0 || aImageHeight == 0 || aWidth <= 0.0 || aHeight <= 0.0 )
+        {
+            return;
+        }
+
+        const double opacity = std::clamp ( aOpacity, 0.0, 1.0 );
+        if ( opacity <= 0.0 )
+        {
+            return;
+        }
+
+        const int cairoStride = cairo_format_stride_for_width ( CAIRO_FORMAT_ARGB32, static_cast<int> ( aImageWidth ) );
+        std::vector<uint8_t> cairoPixels ( static_cast<size_t> ( cairoStride ) * aImageHeight, 0u );
+        for ( size_t y = 0; y < aImageHeight; ++y )
+        {
+            const uint8_t* sourceRow = aPixels + ( y * aImageStride );
+            uint8_t* destRow = cairoPixels.data() + ( y * static_cast<size_t> ( cairoStride ) );
+            for ( size_t x = 0; x < aImageWidth; ++x )
+            {
+                const uint8_t r = sourceRow[x * 4 + 0];
+                const uint8_t g = sourceRow[x * 4 + 1];
+                const uint8_t b = sourceRow[x * 4 + 2];
+                const uint8_t a = sourceRow[x * 4 + 3];
+                const uint8_t outAlpha = static_cast<uint8_t> ( std::round ( static_cast<double> ( a ) * opacity ) );
+                const uint8_t outRed = static_cast<uint8_t> ( ( static_cast<uint16_t> ( r ) * outAlpha + 127u ) / 255u );
+                const uint8_t outGreen = static_cast<uint8_t> ( ( static_cast<uint16_t> ( g ) * outAlpha + 127u ) / 255u );
+                const uint8_t outBlue = static_cast<uint8_t> ( ( static_cast<uint16_t> ( b ) * outAlpha + 127u ) / 255u );
+
+                // Cairo ARGB32 on little-endian stores bytes as BGRA.
+                destRow[x * 4 + 0] = outBlue;
+                destRow[x * 4 + 1] = outGreen;
+                destRow[x * 4 + 2] = outRed;
+                destRow[x * 4 + 3] = outAlpha;
+            }
+        }
+
+        cairo_surface_t* imageSurface = cairo_image_surface_create_for_data ( cairoPixels.data(),
+                                        CAIRO_FORMAT_ARGB32,
+                                        static_cast<int> ( aImageWidth ),
+                                        static_cast<int> ( aImageHeight ),
+                                        cairoStride );
+        if ( cairo_surface_status ( imageSurface ) != CAIRO_STATUS_SUCCESS )
+        {
+            cairo_surface_destroy ( imageSurface );
+            return;
+        }
+
+        cairo_save ( mCairoContext );
+        cairo_translate ( mCairoContext, aX, aY );
+        cairo_scale ( mCairoContext,
+                      aWidth / static_cast<double> ( aImageWidth ),
+                      aHeight / static_cast<double> ( aImageHeight ) );
+        cairo_set_source_surface ( mCairoContext, imageSurface, 0.0, 0.0 );
+        cairo_pattern_set_filter ( cairo_get_source ( mCairoContext ), CAIRO_FILTER_BILINEAR );
+        cairo_paint ( mCairoContext );
+        cairo_restore ( mCairoContext );
+
+        cairo_surface_destroy ( imageSurface );
     }
 
     static PangoFontDescription* CreateFontDescription ( const std::string& aFontFamily, double aFontSize,
