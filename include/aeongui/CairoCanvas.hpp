@@ -1,5 +1,5 @@
 /*
-Copyright (C) 2019,2020,2024,2025 Rodrigo Jose Hernandez Cordoba
+Copyright (C) 2019,2020,2024,2025,2026 Rodrigo Jose Hernandez Cordoba
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -16,6 +16,7 @@ limitations under the License.
 #ifndef AEONGUI_CAIROCANVAS_H
 #define AEONGUI_CAIROCANVAS_H
 #include <cstdint>
+#include <string>
 #include "aeongui/Canvas.hpp"
 
 struct _cairo_surface;
@@ -38,6 +39,12 @@ namespace AeonGUI
         size_t GetStride() const final;
         void Clear() final;
         void Draw ( const Path& ) final;
+        void DrawText ( const std::string& aText, double aX, double aY,
+                        const std::string& aFontFamily, double aFontSize,
+                        int aFontWeight, int aFontStyle ) final;
+        double MeasureText ( const std::string& aText,
+                             const std::string& aFontFamily, double aFontSize,
+                             int aFontWeight, int aFontStyle ) const final;
         void SetFillColor ( const ColorAttr& aColor ) final;
         const ColorAttr& GetFillColor() const final;
         void SetStrokeColor ( const ColorAttr& aColor ) final;

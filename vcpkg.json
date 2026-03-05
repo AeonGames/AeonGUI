@@ -1,6 +1,7 @@
 {
   "dependencies": [
     "cairo",
+    "fontconfig",
     "pango",
     "libxml2",
     "pkgconf",

@@ -1,5 +1,5 @@
 /*
-Copyright (C) 2019,2020,2024,2025 Rodrigo Jose Hernandez Cordoba
+Copyright (C) 2019,2020,2024,2025,2026 Rodrigo Jose Hernandez Cordoba
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -15,6 +15,8 @@ limitations under the License.
 */
 
 #include <cairo.h>
+#include <pango/pango.h>
+#include <pango/pangocairo.h>
 #include <iostream>
 #include <algorithm>
 #include <cmath>
@@ -22,6 +24,7 @@ limitations under the License.
 #include "aeongui/CairoCanvas.hpp"
 #include "aeongui/CairoPath.hpp"
 #include "aeongui/PangoTextLayout.hpp"
+#include "aeongui/FontDatabase.hpp"
 
 namespace AeonGUI
 {
@@ -173,6 +176,164 @@ namespace AeonGUI
         }
         cairo_new_path ( mCairoContext );
     }
+
+    static PangoFontDescription* CreateFontDescription ( const std::string& aFontFamily, double aFontSize,
+            int aFontWeight, int aFontStyle )
+    {
+        PangoFontDescription* desc = pango_font_description_new();
+        pango_font_description_set_family ( desc, aFontFamily.c_str() );
+        pango_font_description_set_size ( desc, static_cast<gint> ( aFontSize * PANGO_SCALE ) );
+
+        // Map CSS font-weight (100-900) to Pango weight
+        if ( aFontWeight <= 100 )
+        {
+            pango_font_description_set_weight ( desc, PANGO_WEIGHT_THIN );
+        }
+        else if ( aFontWeight <= 200 )
+        {
+            pango_font_description_set_weight ( desc, PANGO_WEIGHT_ULTRALIGHT );
+        }
+        else if ( aFontWeight <= 300 )
+        {
+            pango_font_description_set_weight ( desc, PANGO_WEIGHT_LIGHT );
+        }
+        else if ( aFontWeight <= 400 )
+        {
+            pango_font_description_set_weight ( desc, PANGO_WEIGHT_NORMAL );
+        }
+        else if ( aFontWeight <= 500 )
+        {
+            pango_font_description_set_weight ( desc, PANGO_WEIGHT_MEDIUM );
+        }
+        else if ( aFontWeight <= 600 )
+        {
+            pango_font_description_set_weight ( desc, PANGO_WEIGHT_SEMIBOLD );
+        }
+        else if ( aFontWeight <= 700 )
+        {
+            pango_font_description_set_weight ( desc, PANGO_WEIGHT_BOLD );
+        }
+        else if ( aFontWeight <= 800 )
+        {
+            pango_font_description_set_weight ( desc, PANGO_WEIGHT_ULTRABOLD );
+        }
+        else
+        {
+            pango_font_description_set_weight ( desc, PANGO_WEIGHT_HEAVY );
+        }
+
+        // Map CSS font-style: 0 = normal, 1 = italic, 2 = oblique
+        switch ( aFontStyle )
+        {
+        case 1:
+            pango_font_description_set_style ( desc, PANGO_STYLE_ITALIC );
+            break;
+        case 2:
+            pango_font_description_set_style ( desc, PANGO_STYLE_OBLIQUE );
+            break;
+        default:
+            pango_font_description_set_style ( desc, PANGO_STYLE_NORMAL );
+            break;
+        }
+        return desc;
+    }
+
+    void CairoCanvas::DrawText ( const std::string& aText, double aX, double aY,
+                                 const std::string& aFontFamily, double aFontSize,
+                                 int aFontWeight, int aFontStyle )
+    {
+        if ( aText.empty() || mCairoContext == nullptr )
+        {
+            return;
+        }
+
+        PangoContext* pangoContext = FontDatabase::GetFontMap()
+                                     ? FontDatabase::CreateContext()
+                                     : pango_cairo_create_context ( mCairoContext );
+        PangoLayout* layout = pango_layout_new ( pangoContext );
+        PangoFontDescription* desc = CreateFontDescription ( aFontFamily, aFontSize, aFontWeight, aFontStyle );
+
+        pango_layout_set_font_description ( layout, desc );
+        pango_layout_set_text ( layout, aText.c_str(), -1 );
+
+        // Move to the text position. SVG text y is the baseline, but Pango
+        // draws from the top-left of the layout. We offset by ascent.
+        PangoLayoutIter* iter = pango_layout_get_iter ( layout );
+        int baseline = pango_layout_iter_get_baseline ( iter );
+        pango_layout_iter_free ( iter );
+
+        cairo_save ( mCairoContext );
+        cairo_move_to ( mCairoContext, aX, aY - static_cast<double> ( baseline ) / PANGO_SCALE );
+
+        if ( mOpacity < 1.0 && mOpacity > 0.0 )
+        {
+            cairo_push_group ( mCairoContext );
+        }
+
+        // Render fill
+        if ( std::holds_alternative<Color> ( mFillColor ) )
+        {
+            Color& fill = std::get<Color> ( mFillColor );
+            cairo_set_source_rgba ( mCairoContext, fill.R(), fill.G(), fill.B(),
+                                    ( mFillOpacity >= 1.0 ) ? fill.A() : mFillOpacity );
+            pango_cairo_update_layout ( mCairoContext, layout );
+            pango_cairo_show_layout ( mCairoContext, layout );
+        }
+
+        // Render stroke
+        if ( std::holds_alternative<Color> ( mStrokeColor ) )
+        {
+            Color& stroke = std::get<Color> ( mStrokeColor );
+            cairo_set_line_width ( mCairoContext, mStrokeWidth );
+            cairo_set_source_rgba ( mCairoContext, stroke.R(), stroke.G(), stroke.B(),
+                                    ( mStrokeOpacity >= 1.0 ) ? stroke.A() : mStrokeOpacity );
+            cairo_move_to ( mCairoContext, aX, aY - static_cast<double> ( baseline ) / PANGO_SCALE );
+            pango_cairo_layout_path ( mCairoContext, layout );
+            cairo_stroke ( mCairoContext );
+        }
+
+        if ( mOpacity < 1.0 && mOpacity > 0.0 )
+        {
+            cairo_pop_group_to_source ( mCairoContext );
+            cairo_paint_with_alpha ( mCairoContext, mOpacity );
+        }
+
+        cairo_restore ( mCairoContext );
+
+        pango_font_description_free ( desc );
+        g_object_unref ( layout );
+        g_object_unref ( pangoContext );
+    }
+
+    double CairoCanvas::MeasureText ( const std::string& aText,
+                                      const std::string& aFontFamily, double aFontSize,
+                                      int aFontWeight, int aFontStyle ) const
+    {
+        if ( aText.empty() || mCairoContext == nullptr )
+        {
+            return 0.0;
+        }
+
+        PangoContext* pangoContext = FontDatabase::GetFontMap()
+                                     ? FontDatabase::CreateContext()
+                                     : pango_cairo_create_context ( mCairoContext );
+        PangoLayout* layout = pango_layout_new ( pangoContext );
+        PangoFontDescription* desc = CreateFontDescription ( aFontFamily, aFontSize, aFontWeight, aFontStyle );
+
+        pango_layout_set_font_description ( layout, desc );
+        pango_layout_set_text ( layout, aText.c_str(), -1 );
+
+        int width = 0;
+        int height = 0;
+        pango_layout_get_pixel_size ( layout, &width, &height );
+
+        pango_font_description_free ( desc );
+        g_object_unref ( layout );
+        g_object_unref ( pangoContext );
+
+        return static_cast<double> ( width );
+    }
+
     void CairoCanvas::SetViewBox ( const ViewBox& aViewBox, const PreserveAspectRatio& aPreserveAspectRatio )
     {
         // Follows https://www.w3.org/TR/SVG2/coords.html#ComputingAViewportsTransform

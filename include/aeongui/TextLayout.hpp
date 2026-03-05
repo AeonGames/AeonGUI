@@ -1,5 +1,5 @@
 /*
-Copyright (C) 2025 Rodrigo Jose Hernandez Cordoba
+Copyright (C) 2025,2026 Rodrigo Jose Hernandez Cordoba
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -17,6 +17,7 @@ limitations under the License.
 #define AEONGUI_TEXTLAYOUT_H
 #include <cstdint>
 #include <cstddef>
+#include <string>
 #include <vector>
 #include <memory>
 #include "aeongui/Platform.hpp"
@@ -32,6 +33,19 @@ namespace AeonGUI
     {
     public:
         DLL virtual ~TextLayout() = 0;
+        virtual void SetText ( const std::string& aText ) = 0;
+        virtual void SetFontFamily ( const std::string& aFamily ) = 0;
+        virtual void SetFontSize ( double aSize ) = 0;
+        virtual void SetFontWeight ( int aWeight ) = 0;
+        virtual void SetFontStyle ( int aStyle ) = 0;
+        virtual double GetTextWidth() const = 0;
+        virtual double GetTextHeight() const = 0;
+        virtual double GetBaseline() const = 0;
+        /** Get the x-offset of the character at the given index.
+         *  @param aIndex UTF-8 byte index.
+         *  @return x offset in CSS pixels.
+         */
+        virtual double GetCharOffsetX ( long aIndex ) const = 0;
     };
 }
 #endif

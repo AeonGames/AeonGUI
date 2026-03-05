@@ -1,5 +1,5 @@
 /*
-Copyright (C) 2019,2020,2024,2025 Rodrigo Jose Hernandez Cordoba
+Copyright (C) 2019,2020,2024,2025,2026 Rodrigo Jose Hernandez Cordoba
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -19,6 +19,7 @@ limitations under the License.
 #include <cstddef>
 #include <vector>
 #include <memory>
+#include <string>
 #include "aeongui/Platform.hpp"
 #include "aeongui/DrawType.hpp"
 #include "aeongui/Color.hpp"
@@ -50,6 +51,24 @@ namespace AeonGUI
         virtual void SetOpacity ( double aWidth ) = 0;
         virtual double GetOpacity () const = 0;
         virtual void Draw ( const Path& ) = 0;
+        /** Draw text at the given position using the specified font description and size.
+         *  @param aText The UTF-8 text string to render.
+         *  @param aX The x coordinate for the text start position.
+         *  @param aY The y coordinate for the text baseline.
+         *  @param aFontFamily Font family name (e.g. "sans-serif").
+         *  @param aFontSize Font size in CSS pixels.
+         *  @param aFontWeight CSS font weight (400 = normal, 700 = bold).
+         *  @param aFontStyle 0 = normal, 1 = italic, 2 = oblique.
+         */
+        virtual void DrawText ( const std::string& aText, double aX, double aY,
+                                const std::string& aFontFamily, double aFontSize,
+                                int aFontWeight, int aFontStyle ) = 0;
+        /** Measure the width of text with the given font parameters.
+         *  @return The logical width in CSS pixels.
+         */
+        virtual double MeasureText ( const std::string& aText,
+                                     const std::string& aFontFamily, double aFontSize,
+                                     int aFontWeight, int aFontStyle ) const = 0;
         virtual void SetViewBox ( const ViewBox& aViewBox, const PreserveAspectRatio& aPreserveAspectRatio ) = 0;
         virtual void SetTransform ( const Matrix2x3& aMatrix ) = 0;
         virtual void Transform ( const Matrix2x3& aMatrix ) = 0;

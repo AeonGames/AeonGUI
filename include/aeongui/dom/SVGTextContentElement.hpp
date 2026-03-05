@@ -1,5 +1,5 @@
 /*
-Copyright (C) 2025 Rodrigo Jose Hernandez Cordoba
+Copyright (C) 2025,2026 Rodrigo Jose Hernandez Cordoba
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -21,6 +21,8 @@ limitations under the License.
 #include "SVGAnimatedEnumeration.hpp"
 #include "DOMPoint.hpp"
 #include "DOMRect.hpp"
+#include "aeongui/PangoTextLayout.hpp"
+#include <memory>
 
 namespace AeonGUI
 {
@@ -42,12 +44,18 @@ namespace AeonGUI
             DOMRect getExtentOfChar ( long index ) const;
             float getRotationOfChar ( long index ) const;
             long getCharNumAtPosition ( const DOMPoint& point ) const;
+        protected:
+            /// Access the internal text layout for subclass use.
+            PangoTextLayout& GetTextLayout() const;
         private:
             /// Helper function to get the text content from all child text nodes
             std::string getTextContent() const;
+            /// Ensure the text layout is up to date with current text and font.
+            void syncTextLayout() const;
 
             SVGAnimatedLength mTextLength;
             SVGAnimatedEnumeration mLengthAdjust;
+            mutable PangoTextLayout mTextLayout;
         };
     }
 }

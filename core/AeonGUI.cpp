@@ -1,5 +1,5 @@
 /*
-Copyright (C) 2010-2012,2020,2023,2025 Rodrigo Jose Hernandez Cordoba
+Copyright (C) 2010-2012,2020,2023,2025,2026 Rodrigo Jose Hernandez Cordoba
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -16,14 +16,16 @@ limitations under the License.
 
 #include <memory>
 #include "aeongui/AeonGUI.hpp"
+#include "aeongui/FontDatabase.hpp"
 
 namespace AeonGUI
 {
     bool Initialize ( int argc, char *argv[] )
     {
-        return true;
+        return FontDatabase::Initialize();
     }
     void Finalize()
     {
+        FontDatabase::Finalize();
     }
 }

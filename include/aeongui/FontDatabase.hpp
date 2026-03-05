@@ -1,0 +1,61 @@
+/*
+Copyright (C) 2026 Rodrigo Jose Hernandez Cordoba
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+*/
+#ifndef AEONGUI_FONTDATABASE_H
+#define AEONGUI_FONTDATABASE_H
+
+#include <string>
+#include <vector>
+#include "aeongui/Platform.hpp"
+
+struct _PangoFontMap;
+typedef struct _PangoFontMap PangoFontMap;
+struct _PangoContext;
+typedef struct _PangoContext PangoContext;
+struct _FcConfig;
+typedef struct _FcConfig FcConfig;
+
+namespace AeonGUI
+{
+    /**
+     * FontDatabase provides a local font database for AeonGUI,
+     * independent of system-installed fonts.
+     * It uses FcConfig + PangoFontMap to load fonts from
+     * application-provided directories.
+     *
+     * This is a singleton; call Initialize()/Finalize() once.
+     */
+    class FontDatabase
+    {
+    public:
+        /// Initialize the font database. Call once at startup.
+        DLL static bool Initialize();
+        /// Finalize the font database. Call once at shutdown.
+        DLL static void Finalize();
+        /// Add a directory of font files (.ttf, .otf, etc.) to the database.
+        DLL static bool AddFontDirectory ( const std::string& aPath );
+        /// Add a single font file to the database.
+        DLL static bool AddFontFile ( const std::string& aPath );
+        /// Get the PangoFontMap backed by the local font database.
+        DLL static PangoFontMap* GetFontMap();
+        /// Create a new PangoContext from the local font map.
+        DLL static PangoContext* CreateContext();
+    private:
+        FontDatabase() = delete;
+        static FcConfig* sFcConfig;
+        static PangoFontMap* sFontMap;
+    };
+}
+#endif

@@ -1,5 +1,5 @@
 /*
-Copyright (C) 2025 Rodrigo Jose Hernandez Cordoba
+Copyright (C) 2025,2026 Rodrigo Jose Hernandez Cordoba
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -16,6 +16,7 @@ limitations under the License.
 #include "aeongui/dom/SVGTextContentElement.hpp"
 #include "aeongui/dom/Text.hpp"
 #include "aeongui/dom/DOMException.hpp"
+#include <libcss/libcss.h>
 #include <algorithm>
 #include <cmath>
 
@@ -37,11 +38,113 @@ namespace AeonGUI
             return mLengthAdjust;
         }
 
+        PangoTextLayout& SVGTextContentElement::GetTextLayout() const
+        {
+            return mTextLayout;
+        }
+
+        void SVGTextContentElement::syncTextLayout() const
+        {
+            std::string text = getTextContent();
+            mTextLayout.SetText ( text );
+
+            // Apply font properties from CSS computed styles if available.
+            css_select_results* results{ GetComputedStyles() };
+            if ( results && results->styles[CSS_PSEUDO_ELEMENT_NONE] )
+            {
+                css_computed_style* style = results->styles[CSS_PSEUDO_ELEMENT_NONE];
+
+                // Font family
+                lwc_string** names = nullptr;
+                uint8_t family = css_computed_font_family ( style, &names );
+                if ( names && names[0] )
+                {
+                    mTextLayout.SetFontFamily ( std::string ( lwc_string_data ( names[0] ), lwc_string_length ( names[0] ) ) );
+                }
+                else
+                {
+                    switch ( family )
+                    {
+                    case CSS_FONT_FAMILY_SERIF:
+                        mTextLayout.SetFontFamily ( "serif" );
+                        break;
+                    case CSS_FONT_FAMILY_MONOSPACE:
+                        mTextLayout.SetFontFamily ( "monospace" );
+                        break;
+                    case CSS_FONT_FAMILY_CURSIVE:
+                        mTextLayout.SetFontFamily ( "cursive" );
+                        break;
+                    case CSS_FONT_FAMILY_FANTASY:
+                        mTextLayout.SetFontFamily ( "fantasy" );
+                        break;
+                    default:
+                        mTextLayout.SetFontFamily ( "sans-serif" );
+                        break;
+                    }
+                }
+
+                // Font size
+                css_fixed length{};
+                css_unit unit{};
+                if ( css_computed_font_size ( style, &length, &unit ) == CSS_FONT_SIZE_DIMENSION )
+                {
+                    mTextLayout.SetFontSize ( FIXTOFLT ( length ) );
+                }
+
+                // Font weight
+                uint8_t w = css_computed_font_weight ( style );
+                int weight = 400;
+                switch ( w )
+                {
+                case CSS_FONT_WEIGHT_100:
+                    weight = 100;
+                    break;
+                case CSS_FONT_WEIGHT_200:
+                    weight = 200;
+                    break;
+                case CSS_FONT_WEIGHT_300:
+                    weight = 300;
+                    break;
+                case CSS_FONT_WEIGHT_500:
+                    weight = 500;
+                    break;
+                case CSS_FONT_WEIGHT_600:
+                    weight = 600;
+                    break;
+                case CSS_FONT_WEIGHT_700:
+                case CSS_FONT_WEIGHT_BOLD:
+                    weight = 700;
+                    break;
+                case CSS_FONT_WEIGHT_800:
+                    weight = 800;
+                    break;
+                case CSS_FONT_WEIGHT_900:
+                    weight = 900;
+                    break;
+                default:
+                    break;
+                }
+                mTextLayout.SetFontWeight ( weight );
+
+                // Font style
+                uint8_t s = css_computed_font_style ( style );
+                int fontStyle = 0;
+                if ( s == CSS_FONT_STYLE_ITALIC )
+                {
+                    fontStyle = 1;
+                }
+                else if ( s == CSS_FONT_STYLE_OBLIQUE )
+                {
+                    fontStyle = 2;
+                }
+                mTextLayout.SetFontStyle ( fontStyle );
+            }
+        }
+
         std::string SVGTextContentElement::getTextContent() const
         {
             std::string textContent;
 
-            // Traverse all child nodes and collect text content
             for ( const auto& child : this->childNodes() )
             {
                 if ( child->nodeType() == Node::TEXT_NODE )
@@ -49,10 +152,8 @@ namespace AeonGUI
                     const Text* textNode = static_cast<const Text*> ( child );
                     textContent += textNode->wholeText();
                 }
-                // For child elements, recursively get their text content
                 else if ( child->nodeType() == Node::ELEMENT_NODE )
                 {
-                    // Cast to SVGTextContentElement if it's a text content element
                     const SVGTextContentElement* childElement = dynamic_cast<const SVGTextContentElement*> ( child );
                     if ( childElement )
                     {
@@ -72,15 +173,8 @@ namespace AeonGUI
 
         float SVGTextContentElement::getComputedTextLength() const
         {
-            // This should compute the actual rendered length of the text
-            // For now, return a basic approximation based on character count
-            // In a real implementation, this would use font metrics and rendering context
-            std::string textContent = getTextContent();
-
-            // Basic approximation: assume average character width of 8 pixels
-            // This should be replaced with actual font metrics calculation
-            const float averageCharWidth = 8.0f;
-            return static_cast<float> ( textContent.length() ) * averageCharWidth;
+            syncTextLayout();
+            return static_cast<float> ( mTextLayout.GetTextWidth() );
         }
 
         float SVGTextContentElement::getSubStringLength ( long start, long end ) const
@@ -88,7 +182,6 @@ namespace AeonGUI
             std::string textContent = getTextContent();
             long totalChars = static_cast<long> ( textContent.length() );
 
-            // Validate parameters according to SVG specification
             if ( start < 0 )
             {
                 throw DOMIndexSizeError ( "Start index cannot be negative" );
@@ -96,22 +189,20 @@ namespace AeonGUI
 
             if ( start >= totalChars )
             {
-                return 0.0f; // Return 0 if start is beyond text length
+                return 0.0f;
             }
 
-            // Clamp end to valid range
             long actualEnd = std::min ( end, totalChars );
             if ( actualEnd <= start )
             {
-                return 0.0f; // Return 0 if end is not after start
+                return 0.0f;
             }
 
-            // Calculate length of substring
-            long substringLength = actualEnd - start;
-
-            // Basic approximation: assume average character width of 8 pixels
-            const float averageCharWidth = 8.0f;
-            return static_cast<float> ( substringLength ) * averageCharWidth;
+            // Measure full text up to actualEnd and subtract measurement up to start.
+            syncTextLayout();
+            double endX = mTextLayout.GetCharOffsetX ( actualEnd );
+            double startX = mTextLayout.GetCharOffsetX ( start );
+            return static_cast<float> ( endX - startX );
         }
 
         DOMPoint SVGTextContentElement::getStartPositionOfChar ( long index ) const
@@ -124,13 +215,9 @@ namespace AeonGUI
                 throw DOMIndexSizeError ( "Character index out of bounds" );
             }
 
-            // Basic approximation: assume characters are laid out horizontally
-            // starting at origin with average character width of 8 pixels
-            const float averageCharWidth = 8.0f;
-            float x = static_cast<float> ( index ) * averageCharWidth;
-
-            // Y position would depend on font metrics - using 0 for now
-            return DOMPoint ( x, 0.0f, 0.0f, 1.0f );
+            syncTextLayout();
+            float xPos = static_cast<float> ( mTextLayout.GetCharOffsetX ( index ) );
+            return DOMPoint ( xPos, 0.0f, 0.0f, 1.0f );
         }
 
         DOMPoint SVGTextContentElement::getEndPositionOfChar ( long index ) const
@@ -143,11 +230,9 @@ namespace AeonGUI
                 throw DOMIndexSizeError ( "Character index out of bounds" );
             }
 
-            // Basic approximation: end position is start position + character width
-            const float averageCharWidth = 8.0f;
-            float x = static_cast<float> ( index + 1 ) * averageCharWidth;
-
-            return DOMPoint ( x, 0.0f, 0.0f, 1.0f );
+            syncTextLayout();
+            float xPos = static_cast<float> ( mTextLayout.GetCharOffsetX ( index + 1 ) );
+            return DOMPoint ( xPos, 0.0f, 0.0f, 1.0f );
         }
 
         DOMRect SVGTextContentElement::getExtentOfChar ( long index ) const
@@ -160,14 +245,13 @@ namespace AeonGUI
                 throw DOMIndexSizeError ( "Character index out of bounds" );
             }
 
-            // Basic approximation: character extent as a rectangle
-            const float averageCharWidth = 8.0f;
-            const float averageCharHeight = 12.0f; // Typical font height
+            syncTextLayout();
+            float xStart = static_cast<float> ( mTextLayout.GetCharOffsetX ( index ) );
+            float xEnd = static_cast<float> ( mTextLayout.GetCharOffsetX ( index + 1 ) );
+            float charWidth = xEnd - xStart;
+            float height = static_cast<float> ( mTextLayout.GetTextHeight() );
 
-            float x = static_cast<float> ( index ) * averageCharWidth;
-            float y = -averageCharHeight; // Negative because text baseline is typically above the origin
-
-            return DOMRect ( x, y, averageCharWidth, averageCharHeight );
+            return DOMRect ( xStart, -height, charWidth, height );
         }
 
         float SVGTextContentElement::getRotationOfChar ( long index ) const
@@ -180,8 +264,6 @@ namespace AeonGUI
                 throw DOMIndexSizeError ( "Character index out of bounds" );
             }
 
-            // Basic implementation: assume no rotation
-            // In a full implementation, this would consider text-on-path, transforms, etc.
             return 0.0f;
         }
 
@@ -192,27 +274,22 @@ namespace AeonGUI
 
             if ( totalChars == 0 )
             {
-                return -1; // No characters available
+                return -1;
             }
 
-            // Basic approximation: determine character based on x coordinate
-            const float averageCharWidth = 8.0f;
-
-            // Calculate which character position this point corresponds to
-            long charIndex = static_cast<long> ( std::floor ( point.x() / averageCharWidth ) );
-
-            // Clamp to valid range
-            if ( charIndex < 0 )
+            syncTextLayout();
+            // Walk character positions to find hit.
+            for ( long i = 0; i < totalChars; ++i )
             {
-                return -1; // Before first character
+                float xStart = static_cast<float> ( mTextLayout.GetCharOffsetX ( i ) );
+                float xEnd = static_cast<float> ( mTextLayout.GetCharOffsetX ( i + 1 ) );
+                if ( point.x() >= xStart && point.x() < xEnd )
+                {
+                    return i;
+                }
             }
 
-            if ( charIndex >= totalChars )
-            {
-                return -1; // After last character
-            }
-
-            return charIndex;
+            return -1;
         }
 
     }

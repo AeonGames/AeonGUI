@@ -122,7 +122,8 @@ if(PKG_CONFIG_FOUND)
       set(ENV{PKG_CONFIG_PATH} ${VCPKG_INSTALLED_DIR}/${VCPKG_TARGET_TRIPLET}/lib/pkgconfig)
     endif()
     pkg_check_modules(CAIRO cairo)
-    pkg_check_modules(PANGO pango pangocairo)
+    pkg_check_modules(PANGO pango pangocairo pangofc)
+    pkg_check_modules(FONTCONFIG fontconfig)
 endif()
 
 find_package(Freetype)
@@ -183,6 +184,7 @@ endif()
 
 
 include(parser)
+include(opensans)
 include_directories(include common demos/common core)
 add_subdirectory(css)
 add_subdirectory(core)
