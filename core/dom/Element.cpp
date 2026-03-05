@@ -1,5 +1,5 @@
 /*
-Copyright (C) 2010-2013,2019,2020,2023-2025 Rodrigo Jose Hernandez Cordoba
+Copyright (C) 2010-2013,2019,2020,2023-2026 Rodrigo Jose Hernandez Cordoba
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -16,6 +16,7 @@ limitations under the License.
 
 #include <iostream>
 #include <string>
+#include <cstdio>
 #include "aeongui/Color.hpp"
 #include "aeongui/dom/Element.hpp"
 #include <libcss/libcss.h>
@@ -285,6 +286,11 @@ namespace AeonGUI
             css_select_results* results {GetParentComputedStyles() };
             if ( results != nullptr )
             {
+                if ( results->styles[CSS_PSEUDO_ELEMENT_NONE] == nullptr ||
+                     mComputedStyles->styles[CSS_PSEUDO_ELEMENT_NONE] == nullptr )
+                {
+                    return;
+                }
                 css_computed_style* computed_style{};
                 css_error err
                 {
@@ -292,7 +298,8 @@ namespace AeonGUI
                 };
                 if ( err != CSS_OK )
                 {
-                    throw std::runtime_error ( css_error_to_string ( err ) );
+                    std::fprintf ( stderr, "Element::OnAncestorChanged: style composition failed for <%s>: %s\n", tagName().c_str(), css_error_to_string ( err ) );
+                    return;
                 }
                 css_computed_style_destroy ( mComputedStyles->styles[CSS_PSEUDO_ELEMENT_NONE] );
                 mComputedStyles->styles[CSS_PSEUDO_ELEMENT_NONE] = computed_style;

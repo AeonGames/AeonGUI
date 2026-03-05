@@ -55,6 +55,10 @@ namespace AeonGUI
 
     const uint8_t* CairoCanvas::GetPixels() const
     {
+        if ( mCairoSurface )
+        {
+            cairo_surface_flush ( const_cast<cairo_surface_t*> ( mCairoSurface ) );
+        }
         return cairo_image_surface_get_data ( mCairoSurface );
     }
 

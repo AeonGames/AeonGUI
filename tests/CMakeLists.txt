@@ -30,6 +30,7 @@ include_directories(${GTEST_INCLUDE_DIR}
                     ${CMAKE_SOURCE_DIR}/include
                     ${CAIRO_INCLUDE_DIRS})
 set(TESTED_SRCS
+  DocumentTest.cpp
   DOMMatrixReadOnlyTest.cpp
   DOMMatrixTest.cpp
   DOMPointReadOnlyTest.cpp
@@ -37,6 +38,9 @@ set(TESTED_SRCS
   DOMRectReadOnlyTest.cpp
   DOMRectTest.cpp
   Location.cpp
+  RasterImageTest.cpp
+  SVGAnimatedTypesTest.cpp
+  SVGImageElementTest.cpp
   SVGLengthTest.cpp
 )
 
