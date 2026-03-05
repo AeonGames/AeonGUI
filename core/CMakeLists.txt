@@ -17,6 +17,7 @@ set(AEONGUI_HEADERS
     ../include/aeongui/Vector2.hpp
     ../include/aeongui/DrawType.hpp
     ../include/aeongui/Color.hpp
+    ../include/aeongui/RasterImage.hpp
     ../include/aeongui/StyleSheet.hpp
     ../include/aeongui/TextLayout.hpp
     ../include/aeongui/PangoTextLayout.hpp
@@ -85,6 +86,7 @@ set(AEONGUI_SOURCES
     Path.cpp
     CairoPath.cpp
     Color.cpp
+    RasterImage.cpp
     StyleSheet.cpp
     Canvas.cpp
     TextLayout.cpp
@@ -158,6 +160,16 @@ include_directories(${CAIRO_INCLUDE_DIRS} ${PANGO_INCLUDE_DIRS} ${FONTCONFIG_INC
 add_library(AeonGUI SHARED ${AEONGUI_HEADERS} ${AEONGUI_SOURCES} ${AEONGUI_DOM_HEADERS} ${AEONGUI_DOM_SOURCES} ${AEONGUI_RESOURCES} ${BISON_path_data_parser_OUTPUTS} ${FLEX_path_data_lexer_OUTPUTS})
 set_target_properties(AeonGUI PROPERTIES COMPILE_FLAGS "-DNOMINMAX -D_CRT_SECURE_NO_WARNINGS")
 target_link_libraries(AeonGUI PRIVATE libcss ${pkgcfg_lib_CAIRO_cairo} ${pkgcfg_lib_PANGO_pango-1.0} ${pkgcfg_lib_PANGO_pangocairo-1.0} ${pkgcfg_lib_PANGO_pangoft2-1.0} ${pkgcfg_lib_PANGO_gobject-2.0} ${pkgcfg_lib_FONTCONFIG_fontconfig} ${LIBXML2_LIBRARIES} ${FREETYPE_LIBRARIES})
+
+if(USE_PNG AND LIBPNG_FOUND)
+  target_compile_definitions(AeonGUI PRIVATE USE_PNG=1)
+  target_link_libraries(AeonGUI PRIVATE ${LIBPNG_LIBRARIES})
+endif()
+
+if(USE_JPEG AND libjpeg-turbo_FOUND)
+  target_compile_definitions(AeonGUI PRIVATE USE_JPEG=1)
+  target_link_libraries(AeonGUI PRIVATE libjpeg-turbo::jpeg)
+endif()
 
 target_precompile_headers(AeonGUI
   PUBLIC

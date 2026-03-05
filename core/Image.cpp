@@ -1,5 +1,5 @@
 /******************************************************************************
-Copyright 2010-2012,2015 Rodrigo Hernandez Cordoba
+Copyright (C) 2010-2012,2015,2026 Rodrigo Hernandez Cordoba
 
    Licensed under the Apache License, Version 2.0 (the "License");
    you may not use this file except in compliance with the License.
@@ -15,7 +15,6 @@ Copyright 2010-2012,2015 Rodrigo Hernandez Cordoba
 ******************************************************************************/
 #include "Image.h"
 #include <fstream>
-#include "pcx.h"
 
 #ifdef USE_PNG
 #include "png.h"
@@ -506,35 +505,8 @@ namespace AeonGUI
 
     bool Image::LoadFromMemory ( uint32_t buffer_size, void* buffer )
     {
-        if ( reinterpret_cast<uint8_t*> ( buffer ) [0] == 0x0A )
-        {
-            // Posible PCX file
-            Pcx pcx;
-            if ( !pcx.Decode ( buffer_size, buffer ) )
-            {
-                return false;
-            }
-
-            // If the patch9 values are embeded into the image, get them.
-            stretchxstart = static_cast<int32_t> ( pcx.GetXStretchStart() );
-            padxstart = static_cast<int32_t> ( pcx.GetXPadStart() );
-            padxend = static_cast<int32_t> ( pcx.GetXPadEnd() );
-            stretchystart = static_cast<int32_t> ( pcx.GetYStretchStart() );
-            padystart = static_cast<int32_t> ( pcx.GetYPadStart() );
-            padyend = static_cast<int32_t> ( pcx.GetYPadEnd() );
-
-            if ( pcx.GetNumBitPlanes() == 3 )
-            {
-                return Load ( pcx.GetWidth(), pcx.GetHeight(), RGB, BYTE, pcx.GetPixels() );
-            }
-            else if ( pcx.GetNumBitPlanes() == 4 )
-            {
-                return Load ( pcx.GetWidth(), pcx.GetHeight(), RGBA, BYTE, pcx.GetPixels() );
-            }
-            // Let the Pcx destructor release its pixel buffer.
-        }
 #if USE_PNG
-        else if ( png_sig_cmp ( reinterpret_cast<png_const_bytep> ( buffer ), 0, 8 ) == 0 )
+        if ( png_sig_cmp ( reinterpret_cast<png_const_bytep> ( buffer ), 0, 8 ) == 0 )
         {
             png_structp png_ptr = png_create_read_struct ( PNG_LIBPNG_VER_STRING, NULL, NULL, NULL );
             if ( png_ptr == NULL )
