@@ -43,6 +43,9 @@ jobs:
           libxml2:p
           gtest:p
           pkg-config:p
+          zlib:p
+          libpng:p
+          libjpeg-turbo:p
 
     - name: '🛠️ Configuring'
       run: cmake -G "MSYS Makefiles" -B ${{github.workspace}}/build -DCMAKE_BUILD_TYPE=Release

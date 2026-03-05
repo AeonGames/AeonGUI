@@ -5,6 +5,9 @@
     "pango",
     "libxml2",
     "pkgconf",
-    "gtest"
+    "gtest",
+    "zlib",
+    "libpng",
+    "libjpeg-turbo"
   ]
 }
