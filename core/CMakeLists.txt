@@ -167,9 +167,9 @@ add_library(AeonGUI SHARED ${AEONGUI_HEADERS} ${AEONGUI_SOURCES} ${AEONGUI_DOM_H
 set_target_properties(AeonGUI PROPERTIES COMPILE_FLAGS "-DNOMINMAX -D_CRT_SECURE_NO_WARNINGS")
 target_link_libraries(AeonGUI PRIVATE libcss ${pkgcfg_lib_CAIRO_cairo} ${pkgcfg_lib_PANGO_pango-1.0} ${pkgcfg_lib_PANGO_pangocairo-1.0} ${pkgcfg_lib_PANGO_pangoft2-1.0} ${pkgcfg_lib_PANGO_gobject-2.0} ${pkgcfg_lib_FONTCONFIG_fontconfig} ${LIBXML2_LIBRARIES} ${FREETYPE_LIBRARIES})
 
-if(USE_PNG AND LIBPNG_FOUND)
+if(USE_PNG AND PNG_FOUND)
   target_compile_definitions(AeonGUI PRIVATE USE_PNG=1)
-  target_link_libraries(AeonGUI PRIVATE ${LIBPNG_LIBRARIES})
+  target_link_libraries(AeonGUI PRIVATE PNG::PNG)
 endif()
 
 if(USE_JPEG AND libjpeg-turbo_FOUND)
