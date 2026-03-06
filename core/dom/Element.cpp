@@ -402,13 +402,18 @@ namespace AeonGUI
 
         css_error parent_node ( void *pw, void *node, void **parent )
         {
-            if ( !parent )
-            {
-                return  CSS_BADPARM;
-            }
-            DOM::Element *element {reinterpret_cast<DOM::Element*> ( node ) };
             ( void ) ( pw );
-            *parent = element->parentNode();
+            DOM::Element *element = reinterpret_cast<DOM::Element*> ( node );
+            Node* p = element->parentNode();  // May return Non Element Node — that's correct
+            // But for libcss, only return Element parents
+            if ( p != nullptr && p->nodeType() == Node::ELEMENT_NODE )
+            {
+                *parent = p;
+            }
+            else
+            {
+                *parent = nullptr;
+            }
             return CSS_OK;
         }
 
