@@ -28,7 +28,7 @@ namespace AeonGUI
 {
     namespace DOM
     {
-        class Element; // Forward declaration
+        //class Element; // Forward declaration
         class Document : public Node
         {
         public:
@@ -43,7 +43,7 @@ namespace AeonGUI
         private:
             void Load ();
             void Unload ();
-            Element* mDocumentElement{};
+            //Element* mDocumentElement{};
             StyleSheetPtr mStyleSheet{};
             USVString mUrl{};
         };

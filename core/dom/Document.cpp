@@ -117,8 +117,7 @@ namespace AeonGUI
 
             ///@todo use document->children instead?
             xmlElementPtr root_element = reinterpret_cast<xmlElementPtr> ( xmlDocGetRootElement ( document ) );
-            mDocumentElement = Construct ( reinterpret_cast<const char*> ( root_element->name ), ExtractElementAttributes ( root_element ), this );
-            AddNodes ( mDocumentElement, root_element->children );
+            AddNodes ( Construct ( reinterpret_cast<const char*> ( root_element->name ), ExtractElementAttributes ( root_element ), this ), root_element->children );
             xmlFreeDoc ( document );
             Load();
         }
@@ -130,7 +129,7 @@ namespace AeonGUI
 
         void Document::Load()
         {
-            mDocumentElement->TraverseDepthFirstPreOrder (
+            TraverseDepthFirstPreOrder (
                 [] ( Node * aNode )
             {
                 aNode->OnLoad();
@@ -139,7 +138,7 @@ namespace AeonGUI
 
         void Document::Unload ()
         {
-            mDocumentElement->TraverseDepthFirstPostOrder (
+            TraverseDepthFirstPostOrder (
                 [] ( Node * aNode )
             {
                 aNode->OnUnload ();
@@ -153,7 +152,7 @@ namespace AeonGUI
 
         void Document::Draw ( Canvas& aCanvas ) const
         {
-            mDocumentElement->TraverseDepthFirstPreOrder (
+            TraverseDepthFirstPreOrder (
                 [&aCanvas] ( const Node * aNode )
             {
                 aNode->DrawStart ( aCanvas );
