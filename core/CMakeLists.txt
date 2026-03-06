@@ -172,9 +172,9 @@ if(USE_PNG AND PNG_FOUND)
   target_link_libraries(AeonGUI PRIVATE PNG::PNG)
 endif()
 
-if(USE_JPEG AND libjpeg-turbo_FOUND)
+if(USE_JPEG AND JPEG_FOUND)
   target_compile_definitions(AeonGUI PRIVATE USE_JPEG=1)
-  target_link_libraries(AeonGUI PRIVATE libjpeg-turbo::jpeg)
+  target_link_libraries(AeonGUI PRIVATE JPEG::JPEG)
 endif()
 
 target_precompile_headers(AeonGUI

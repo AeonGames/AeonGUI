@@ -1,5 +1,5 @@
 /*
-Copyright (C) 2019,2020,2023-2025 Rodrigo Jose Hernandez Cordoba
+Copyright (C) 2019,2020,2023-2026 Rodrigo Jose Hernandez Cordoba
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -46,11 +46,13 @@ namespace AeonGUI
             const DOMString& tagName() const;
             const DOMString& id() const;
             const std::vector<lwc_string*>& classes() const;
+            const AttributeMap& attributes() const;
             /**@}*/
         private:
             DOMString mTagName{};
             DOMString mId{};
             std::vector<lwc_string*> mClasses{};
+            AttributeMap mAttributes{};
             DLL void OnAncestorChanged() override;
         protected:
             StyleSheetPtr mInlineStyleSheet{};

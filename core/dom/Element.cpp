@@ -17,6 +17,7 @@ limitations under the License.
 #include <iostream>
 #include <string>
 #include <cstdio>
+#include <cstdlib>
 #include "aeongui/Color.hpp"
 #include "aeongui/dom/Element.hpp"
 #include <libcss/libcss.h>
@@ -161,7 +162,8 @@ namespace AeonGUI
         Element::Element ( const DOMString& aTagName, const AttributeMap& aAttributes, Node* aParent ) :
             Node { aParent },
             mTagName{ aTagName },
-            mId{aAttributes.find ( "id" ) != aAttributes.end() ? aAttributes.at ( "id" ).c_str() : ""}
+            mId{aAttributes.find ( "id" ) != aAttributes.end() ? aAttributes.at ( "id" ).c_str() : ""},
+            mAttributes{ aAttributes }
         {
             std::string class_attribute {aAttributes.find ( "class" ) != aAttributes.end() ? aAttributes.at ( "class" ) : std::string{}};
             if ( !class_attribute.empty() )
@@ -320,6 +322,10 @@ namespace AeonGUI
         const std::vector<lwc_string*>& Element::classes() const
         {
             return mClasses;
+        }
+        const AttributeMap& Element::attributes() const
+        {
+            return mAttributes;
         }
 
         css_error node_name ( void *pw, void *node, css_qname *qname )
@@ -675,9 +681,123 @@ namespace AeonGUI
                                              uint32_t *nhints, css_hint **hints )
         {
             ( void ) ( pw );
-            ( void ) ( node );
-            *nhints = 0;
-            *hints = nullptr;
+            Element *element {reinterpret_cast<Element*> ( node ) };
+            const AttributeMap& attrs = element->attributes();
+
+            // Count hints needed first
+            static const size_t MAX_HINTS = 8;
+            static thread_local css_hint hint_buf[MAX_HINTS];
+            uint32_t n = 0;
+
+            // fill → CSS_PROP_FILL
+            auto it = attrs.find ( "fill" );
+            if ( it != attrs.end() && n < MAX_HINTS )
+            {
+                if ( it->second == "none" )
+                {
+                    hint_buf[n].prop = CSS_PROP_FILL;
+                    hint_buf[n].status = CSS_PAINT_NONE;
+                    n++;
+                }
+                else
+                {
+                    uint32_t color_value{};
+                    if ( Color::IsColor ( it->second, &color_value ) )
+                    {
+                        hint_buf[n].data.color = static_cast<css_color> ( color_value );
+                        hint_buf[n].prop = CSS_PROP_FILL;
+                        hint_buf[n].status = CSS_PAINT_COLOR;
+                        n++;
+                    }
+                }
+            }
+
+            // stroke → CSS_PROP_STROKE
+            it = attrs.find ( "stroke" );
+            if ( it != attrs.end() && n < MAX_HINTS )
+            {
+                if ( it->second == "none" )
+                {
+                    hint_buf[n].prop = CSS_PROP_STROKE;
+                    hint_buf[n].status = CSS_PAINT_NONE;
+                    n++;
+                }
+                else
+                {
+                    uint32_t color_value{};
+                    if ( Color::IsColor ( it->second, &color_value ) )
+                    {
+                        hint_buf[n].data.color = static_cast<css_color> ( color_value );
+                        hint_buf[n].prop = CSS_PROP_STROKE;
+                        hint_buf[n].status = CSS_PAINT_COLOR;
+                        n++;
+                    }
+                }
+            }
+
+            // fill-opacity → CSS_PROP_FILL_OPACITY
+            it = attrs.find ( "fill-opacity" );
+            if ( it != attrs.end() && n < MAX_HINTS )
+            {
+                char* end{};
+                double val = strtod ( it->second.c_str(), &end );
+                if ( end != it->second.c_str() )
+                {
+                    hint_buf[n].data.fixed = FLTTOFIX ( static_cast<float> ( val ) );
+                    hint_buf[n].prop = CSS_PROP_FILL_OPACITY;
+                    hint_buf[n].status = CSS_FILL_OPACITY_SET;
+                    n++;
+                }
+            }
+
+            // stroke-opacity → CSS_PROP_STROKE_OPACITY
+            it = attrs.find ( "stroke-opacity" );
+            if ( it != attrs.end() && n < MAX_HINTS )
+            {
+                char* end{};
+                double val = strtod ( it->second.c_str(), &end );
+                if ( end != it->second.c_str() )
+                {
+                    hint_buf[n].data.fixed = FLTTOFIX ( static_cast<float> ( val ) );
+                    hint_buf[n].prop = CSS_PROP_STROKE_OPACITY;
+                    hint_buf[n].status = CSS_STROKE_OPACITY_SET;
+                    n++;
+                }
+            }
+
+            // stroke-width → CSS_PROP_STROKE_WIDTH
+            it = attrs.find ( "stroke-width" );
+            if ( it != attrs.end() && n < MAX_HINTS )
+            {
+                char* end{};
+                double val = strtod ( it->second.c_str(), &end );
+                if ( end != it->second.c_str() )
+                {
+                    hint_buf[n].data.length.value = FLTTOFIX ( static_cast<float> ( val ) );
+                    hint_buf[n].data.length.unit = CSS_UNIT_PX;
+                    hint_buf[n].prop = CSS_PROP_STROKE_WIDTH;
+                    hint_buf[n].status = CSS_STROKE_WIDTH_SET;
+                    n++;
+                }
+            }
+
+            // opacity → CSS_PROP_OPACITY
+            it = attrs.find ( "opacity" );
+            if ( it != attrs.end() && n < MAX_HINTS )
+            {
+                char* end{};
+                double val = strtod ( it->second.c_str(), &end );
+                if ( end != it->second.c_str() )
+                {
+                    hint_buf[n].data.fixed = FLTTOFIX ( static_cast<float> ( val ) );
+                    hint_buf[n].prop = CSS_PROP_OPACITY;
+                    hint_buf[n].status = CSS_OPACITY_SET;
+                    n++;
+                }
+            }
+
+            *nhints = n;
+            *hints = n > 0 ? hint_buf : nullptr;
             return CSS_OK;
         }
 
