@@ -1,5 +1,5 @@
 /*
-Copyright (C) 2023-2025 Rodrigo Jose Hernandez Cordoba
+Copyright (C) 2023-2026 Rodrigo Jose Hernandez Cordoba
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -43,6 +43,15 @@ namespace AeonGUI
         if ( code != CSS_OK )
         {
             std::cerr << "css_select_results_destroy failed with code: " << code << std::endl;
+        }
+    }
+
+    void css_computed_style_deleter::operator() ( css_computed_style* p )
+    {
+        css_error code{ css_computed_style_destroy ( p ) };
+        if ( code != CSS_OK )
+        {
+            std::cerr << "css_computed_style_destroy failed with code: " << code << std::endl;
         }
     }
 }
