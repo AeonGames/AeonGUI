@@ -149,12 +149,12 @@ namespace AeonGUI
             {
                 if ( child->nodeType() == Node::TEXT_NODE )
                 {
-                    const Text* textNode = static_cast<const Text*> ( child );
+                    const Text* textNode = static_cast<const Text*> ( child.get() );
                     textContent += textNode->wholeText();
                 }
                 else if ( child->nodeType() == Node::ELEMENT_NODE )
                 {
-                    const SVGTextContentElement* childElement = dynamic_cast<const SVGTextContentElement*> ( child );
+                    const SVGTextContentElement* childElement = dynamic_cast<const SVGTextContentElement*> ( child.get() );
                     if ( childElement )
                     {
                         textContent += childElement->getTextContent();

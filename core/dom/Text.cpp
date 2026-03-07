@@ -1,5 +1,5 @@
 /*
-Copyright (C) 2020,2024,2025 Rodrigo Jose Hernandez Cordoba
+Copyright (C) 2020,2024-2026 Rodrigo Jose Hernandez Cordoba
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -38,7 +38,7 @@ namespace AeonGUI
                 {
                     if ( i->nodeType() == Node::TEXT_NODE )
                     {
-                        capacity += reinterpret_cast<const Text*> ( i )->mText.size();
+                        capacity += reinterpret_cast<const Text*> ( i.get() )->mText.size();
                         node_count++;
                     }
                 }
@@ -52,7 +52,7 @@ namespace AeonGUI
                 {
                     if ( i->nodeType() == Node::TEXT_NODE )
                     {
-                        result += reinterpret_cast<const Text*> ( i )->mText;
+                        result += reinterpret_cast<const Text*> ( i.get() )->mText;
                     }
                 }
                 return result;

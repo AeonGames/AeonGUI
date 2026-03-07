@@ -1,5 +1,5 @@
 /******************************************************************************
-Copyright (C) 2010-2013,2019,2020,2023-2025 Rodrigo Hernandez Cordoba
+Copyright (C) 2010-2013,2019,2020,2023-2026 Rodrigo Hernandez Cordoba
 
    Licensed under the Apache License, Version 2.0 (the "License");
    you may not use this file except in compliance with the License.
@@ -25,7 +25,7 @@ namespace AeonGUI
         Node::Node ( Node* aParent ) : mParent{aParent} {};
         Node::~Node() = default;
 
-        const std::vector<Node*>& Node::childNodes() const
+        const std::vector<std::unique_ptr<Node>>& Node::childNodes() const
         {
             return mChildren;
         }
@@ -87,7 +87,7 @@ namespace AeonGUI
             if ( node->mIterator < node->mChildren.size() )\
             {\
                 auto prev = node;\
-                node = node->mChildren[node->mIterator];\
+                node = node->mChildren[node->mIterator].get();\
                 aAction ( node );\
                 prev->mIterator++;\
             }\
@@ -117,7 +117,7 @@ namespace AeonGUI
             if ( node->mIterator < node->mChildren.size() ) \
             { \
                 auto prev = node; \
-                node = node->mChildren[node->mIterator]; \
+                node = node->mChildren[node->mIterator].get(); \
                 ++prev->mIterator; \
             } \
             else \
@@ -147,7 +147,7 @@ namespace AeonGUI
             if ( node->mIterator < node->mChildren.size() ) \
             { \
                 auto prev = node; \
-                node = node->mChildren[node->mIterator]; \
+                node = node->mChildren[node->mIterator].get(); \
                 aPreamble ( node ); \
                 ++prev->mIterator; \
             } \
@@ -179,7 +179,7 @@ namespace AeonGUI
             if ( node->mIterator < node->mChildren.size() && aUnaryPredicate(node)) \
             { \
                 auto prev = node; \
-                node = node->mChildren[node->mIterator]; \
+                node = node->mChildren[node->mIterator].get(); \
                 aPreamble ( node ); \
                 ++prev->mIterator; \
             } \
@@ -201,10 +201,10 @@ namespace AeonGUI
             // Do nothing by default
         }
 
-        Node* Node::AddNode ( Node* aNode )
+        Node* Node::AddNode ( std::unique_ptr<Node> aNode )
         {
             aNode->mParent = this;
-            Node* node { mChildren.emplace_back ( aNode ) };
+            Node* node { mChildren.emplace_back ( std::move ( aNode ) ).get() };
             node->TraverseDepthFirstPreOrder (  (
                                                     [] ( Node * node )
             {
@@ -213,17 +213,17 @@ namespace AeonGUI
             return node;
         }
 
-        Node* Node::RemoveNode ( const Node* aNode )
+        std::unique_ptr<Node> Node::RemoveNode ( const Node* aNode )
         {
-            Node* node{};
-            auto i = std::find_if ( mChildren.begin(), mChildren.end(), [aNode] ( const Node * node )
+            std::unique_ptr<Node> node{};
+            auto i = std::find_if ( mChildren.begin(), mChildren.end(), [aNode] ( const std::unique_ptr<Node>& node )
             {
-                return aNode == node;
+                return aNode == node.get();
             } );
             if ( i != mChildren.end() )
             {
                 node = std::move ( *i );
-                mChildren.erase ( std::remove ( i, mChildren.end(), *i ), mChildren.end() );
+                mChildren.erase ( i );
             }
             node->mParent = nullptr;
             node->TraverseDepthFirstPreOrder (  (

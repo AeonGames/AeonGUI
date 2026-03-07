@@ -55,7 +55,7 @@ namespace AeonGUI
                 }
                 else if ( xmlNodeIsText ( node ) && !xmlIsBlankNode ( node ) )
                 {
-                    AddNodes ( aNode->AddNode ( new Text { reinterpret_cast<const char*> ( node->content ), aNode } ), node->children );
+                    AddNodes ( aNode->AddNode ( std::make_unique<Text> ( reinterpret_cast<const char*> ( node->content ), aNode ) ), node->children );
                 }
             }
         }

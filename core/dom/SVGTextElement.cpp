@@ -165,7 +165,7 @@ namespace AeonGUI
             {
                 if ( child->nodeType() == Node::TEXT_NODE )
                 {
-                    const Text* textNode = static_cast<const Text*> ( child );
+                    const Text* textNode = static_cast<const Text*> ( child.get() );
                     std::string text = textNode->wholeText();
                     if ( !text.empty() )
                     {

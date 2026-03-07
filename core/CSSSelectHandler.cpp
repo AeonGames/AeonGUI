@@ -1,5 +1,5 @@
 /*
-Copyright (C) 2024,2025 Rodrigo Jose Hernandez Cordoba
+Copyright (C) 2024-2026 Rodrigo Jose Hernandez Cordoba
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -390,7 +390,7 @@ namespace AeonGUI
     {
         ( void ) ( pw );
         DOM::Element *element {reinterpret_cast<DOM::Element*> ( node ) };
-        *match = element->parentElement() && element->parentElement()->childNodes() [0] == element;
+        *match = element->parentElement() && element->parentElement()->childNodes() [0].get() == element;
         return CSS_OK;
     }
 
@@ -571,5 +571,4 @@ namespace AeonGUI
 
         return CSS_OK;
     }
-
 }
