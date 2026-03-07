@@ -73,14 +73,14 @@ namespace AeonGUI
         /*  This is ugly, but it is only way to use the same code for the const and the non const version
             without having to add template or friend members to the class declaration. */
 #define TraverseDepthFirstPreOrder(...) \
-    void Node::TraverseDepthFirstPreOrder ( const std::function<void ( __VA_ARGS__ Node* ) >& aAction ) __VA_ARGS__ \
+    void Node::TraverseDepthFirstPreOrder ( const std::function<void ( __VA_ARGS__ Node& ) >& aAction ) __VA_ARGS__ \
     {\
         /** @todo (EC++ Item 3) This code is the same as the constant overload,\
         but can't easily be implemented in terms of that because of aAction's Node parameter\
         need to also be const.\
         */\
         auto node{this};\
-        aAction ( node );\
+        aAction ( *node );\
         auto parent = mParent;\
         while ( node != parent )\
         {\
@@ -88,7 +88,7 @@ namespace AeonGUI
             {\
                 auto prev = node;\
                 node = node->mChildren[node->mIterator].get();\
-                aAction ( node );\
+                aAction ( *node );\
                 prev->mIterator++;\
             }\
             else\
@@ -104,7 +104,7 @@ namespace AeonGUI
 #undef TraverseDepthFirstPreOrder
 
 #define TraverseDepthFirstPostOrder(...) \
-    void Node::TraverseDepthFirstPostOrder ( const std::function<void ( __VA_ARGS__ Node* ) >& aAction ) __VA_ARGS__ \
+    void Node::TraverseDepthFirstPostOrder ( const std::function<void ( __VA_ARGS__ Node& ) >& aAction ) __VA_ARGS__ \
     { \
         /* \
         This code implements a similar solution to this stackoverflow answer: \
@@ -122,7 +122,7 @@ namespace AeonGUI
             } \
             else \
             { \
-                aAction ( node ); \
+                aAction ( *node ); \
                 node->mIterator = 0; /* Reset counter for next traversal. */ \
                 node = node->mParent; \
             } \
@@ -136,11 +136,11 @@ namespace AeonGUI
 
 #define TraverseDepthFirstPostOrder(...) \
     void Node::TraverseDepthFirstPreOrder ( \
-        const std::function<void ( __VA_ARGS__ Node* ) >& aPreamble, \
-        const std::function<void ( __VA_ARGS__ Node* ) >& aPostamble ) __VA_ARGS__ \
+        const std::function<void ( __VA_ARGS__ Node& ) >& aPreamble, \
+        const std::function<void ( __VA_ARGS__ Node& ) >& aPostamble ) __VA_ARGS__ \
     { \
         auto node = this; \
-        aPreamble ( node ); \
+        aPreamble ( *node ); \
         auto parent = mParent; \
         while ( node != parent ) \
         { \
@@ -148,12 +148,12 @@ namespace AeonGUI
             { \
                 auto prev = node; \
                 node = node->mChildren[node->mIterator].get(); \
-                aPreamble ( node ); \
+                aPreamble ( *node ); \
                 ++prev->mIterator; \
             } \
             else \
             { \
-                aPostamble ( node ); \
+                aPostamble ( *node ); \
                 node->mIterator = 0; \
                 node = node->mParent; \
             } \
@@ -166,26 +166,26 @@ namespace AeonGUI
 
 #define TraverseDepthFirstPostOrder(...) \
     void Node::TraverseDepthFirstPreOrder ( \
-        const std::function<void ( __VA_ARGS__ Node* ) >& aPreamble, \
-        const std::function<void ( __VA_ARGS__ Node* ) >& aPostamble, \
-        const std::function<bool ( __VA_ARGS__ Node* ) >& aUnaryPredicate ) __VA_ARGS__ \
+        const std::function<void ( __VA_ARGS__ Node& ) >& aPreamble, \
+        const std::function<void ( __VA_ARGS__ Node& ) >& aPostamble, \
+        const std::function<bool ( __VA_ARGS__ Node& ) >& aUnaryPredicate ) __VA_ARGS__ \
     { \
-        if(!aUnaryPredicate(this)){return;} \
+        if(!aUnaryPredicate(*this)){return;} \
         auto node = this; \
-        aPreamble ( node ); \
+        aPreamble ( *node ); \
         auto parent = mParent; \
         while ( node != parent ) \
         { \
-            if ( node->mIterator < node->mChildren.size() && aUnaryPredicate(node)) \
+            if ( node->mIterator < node->mChildren.size() && aUnaryPredicate(*node)) \
             { \
                 auto prev = node; \
                 node = node->mChildren[node->mIterator].get(); \
-                aPreamble ( node ); \
+                aPreamble ( *node ); \
                 ++prev->mIterator; \
             } \
             else \
             { \
-                aPostamble ( node ); \
+                aPostamble ( *node ); \
                 node->mIterator = 0; \
                 node = node->mParent; \
             } \
@@ -206,9 +206,9 @@ namespace AeonGUI
             aNode->mParent = this;
             Node* node { mChildren.emplace_back ( std::move ( aNode ) ).get() };
             node->TraverseDepthFirstPreOrder (  (
-                                                    [] ( Node * node )
+                                                    [] ( Node & node )
             {
-                node->OnAncestorChanged();
+                node.OnAncestorChanged();
             } ) );
             return node;
         }
@@ -227,9 +227,9 @@ namespace AeonGUI
             }
             node->mParent = nullptr;
             node->TraverseDepthFirstPreOrder (  (
-                                                    [] ( Node * node )
+                                                    [] ( Node & node )
             {
-                node->OnAncestorChanged();
+                node.OnAncestorChanged();
             } ) );
             return node;
         }

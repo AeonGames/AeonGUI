@@ -130,18 +130,18 @@ namespace AeonGUI
         void Document::Load()
         {
             TraverseDepthFirstPreOrder (
-                [] ( Node * aNode )
+                [] ( Node & aNode )
             {
-                aNode->OnLoad();
+                aNode.OnLoad();
             } );
         }
 
         void Document::Unload ()
         {
             TraverseDepthFirstPostOrder (
-                [] ( Node * aNode )
+                [] ( Node & aNode )
             {
-                aNode->OnUnload ();
+                aNode.OnUnload ();
             } );
         }
 
@@ -153,17 +153,17 @@ namespace AeonGUI
         void Document::Draw ( Canvas& aCanvas ) const
         {
             TraverseDepthFirstPreOrder (
-                [&aCanvas] ( const Node * aNode )
+                [&aCanvas] ( const Node & aNode )
             {
-                aNode->DrawStart ( aCanvas );
+                aNode.DrawStart ( aCanvas );
             },
-            [&aCanvas] ( const Node * aNode )
+            [&aCanvas] ( const Node & aNode )
             {
-                aNode->DrawFinish ( aCanvas );
+                aNode.DrawFinish ( aCanvas );
             },
-            [] ( const Node * aNode )
+            [] ( const Node & aNode )
             {
-                return aNode->IsDrawEnabled();
+                return aNode.IsDrawEnabled();
             } );
         }
     }
