@@ -31,7 +31,7 @@ namespace AeonGUI
         class SVGTextContentElement : public SVGGraphicsElement
         {
         public:
-            SVGTextContentElement ( const DOMString& aTagName, const AttributeMap& aAttributes, Node* aParent );
+            SVGTextContentElement ( const DOMString& aTagName, AttributeMap&& aAttributes, Node* aParent );
             ~SVGTextContentElement() override;
             const SVGAnimatedLength& textLength() const;
             const SVGAnimatedEnumeration& lengthAdjust() const;

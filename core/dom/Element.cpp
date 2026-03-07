@@ -159,13 +159,13 @@ namespace AeonGUI
             get_libcss_node_data,
         };
 
-        Element::Element ( const DOMString& aTagName, const AttributeMap& aAttributes, Node* aParent ) :
+        Element::Element ( const DOMString& aTagName, AttributeMap&& aAttributes, Node* aParent ) :
             Node { aParent },
             mTagName{ aTagName },
             mId{aAttributes.find ( "id" ) != aAttributes.end() ? aAttributes.at ( "id" ).c_str() : ""},
-            mAttributes{ aAttributes }
+            mAttributes{ std::move ( aAttributes ) }
         {
-            std::string class_attribute {aAttributes.find ( "class" ) != aAttributes.end() ? aAttributes.at ( "class" ) : std::string{}};
+            std::string class_attribute {mAttributes.find ( "class" ) != mAttributes.end() ? mAttributes.at ( "class" ) : std::string{}};
             if ( !class_attribute.empty() )
             {
                 std::regex class_regex {R"(\s+)"};
@@ -215,8 +215,8 @@ namespace AeonGUI
             }
 
             // Parse inline style
-            auto style = aAttributes.find ( "style" );
-            const std::string& css{ style != aAttributes.end() ? style->second : "" };
+            auto style = mAttributes.find ( "style" );
+            const std::string& css{ style != mAttributes.end() ? style->second : "" };
             std::cerr << tagName() << std::endl;
             std::cerr << "css: " << css << std::endl << std::endl;
             code = css_stylesheet_append_data ( mInlineStyleSheet.get(), reinterpret_cast<const uint8_t*> ( css.data() ), css.size() );

@@ -1,5 +1,5 @@
 /*
-Copyright (C) 2019,2020,2024,2025 Rodrigo Jose Hernandez Cordoba
+Copyright (C) 2019,2020,2024,2025,2026 Rodrigo Jose Hernandez Cordoba
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -20,12 +20,12 @@ namespace AeonGUI
 {
     namespace DOM
     {
-        SVGCircleElement::SVGCircleElement ( const std::string& aTagName, const AttributeMap& aAttributes, Node* aParent ) : SVGGeometryElement { aTagName, aAttributes, aParent }
+        SVGCircleElement::SVGCircleElement ( const std::string& aTagName, AttributeMap&& aAttributes, Node* aParent ) : SVGGeometryElement { aTagName, std::move ( aAttributes ), aParent }
         {
             std::cout << "Circle" << std::endl;
-            double cx{aAttributes.find ( "cx" ) != aAttributes.end() ? std::stod ( aAttributes.at ( "cx" ) ) : 0.0};
-            double cy{aAttributes.find ( "cy" ) != aAttributes.end() ? std::stod ( aAttributes.at ( "cy" ) ) : 0.0};
-            double r{aAttributes.find ( "r" ) != aAttributes.end() ? std::stod ( aAttributes.at ( "r" ) ) : 0.0};
+            double cx{mAttributes.find ( "cx" ) != mAttributes.end() ? std::stod ( mAttributes.at ( "cx" ) ) : 0.0};
+            double cy{mAttributes.find ( "cy" ) != mAttributes.end() ? std::stod ( mAttributes.at ( "cy" ) ) : 0.0};
+            double r{mAttributes.find ( "r" ) != mAttributes.end() ? std::stod ( mAttributes.at ( "r" ) ) : 0.0};
             /**
              * https://www.w3.org/TR/SVG/shapes.html#CircleElement
              * The cx and cy attributes define the coordinates of the center of the circle.

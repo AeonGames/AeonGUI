@@ -32,7 +32,7 @@ TEST ( SVGImageElementTest, ParsesCoreAttributes )
         {"decoding", "sync"}
     };
 
-    AeonGUI::DOM::SVGImageElement image{"image", attributes, nullptr};
+    AeonGUI::DOM::SVGImageElement image{"image", std::move ( attributes ), nullptr};
 
     EXPECT_FLOAT_EQ ( image.x().baseVal().value(), 10.0f );
     EXPECT_FLOAT_EQ ( image.y().baseVal().value(), 20.0f );
@@ -52,7 +52,7 @@ TEST ( SVGImageElementTest, SupportsXlinkHrefFallback )
         {"xlink:href", "images/fallback.pcx"}
     };
 
-    AeonGUI::DOM::SVGImageElement image{"image", attributes, nullptr};
+    AeonGUI::DOM::SVGImageElement image{"image", std::move ( attributes ), nullptr};
     EXPECT_EQ ( image.href().baseVal(), "images/fallback.pcx" );
 }
 
@@ -63,7 +63,7 @@ TEST ( SVGImageElementTest, DrawWithMissingHrefDoesNotThrow )
         {"width", "10"},
         {"height", "10"}
     };
-    AeonGUI::DOM::SVGImageElement image{"image", attributes, nullptr};
+    AeonGUI::DOM::SVGImageElement image{"image", std::move ( attributes ), nullptr};
     AeonGUI::CairoCanvas canvas{32, 32};
 
     EXPECT_NO_THROW ( image.DrawStart ( canvas ) );

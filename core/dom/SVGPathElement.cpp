@@ -1,5 +1,5 @@
 /*
-Copyright (C) 2019,2020,2024,2025 Rodrigo Jose Hernandez Cordoba
+Copyright (C) 2019,2020,2024,2025,2026 Rodrigo Jose Hernandez Cordoba
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -22,12 +22,12 @@ namespace AeonGUI
     namespace DOM
     {
         int ParsePathData ( std::vector<DrawType>& aPath, const char* s );
-        SVGPathElement::SVGPathElement ( const std::string& aTagName, const AttributeMap& aAttributes, Node* aParent ) : SVGGeometryElement { aTagName, aAttributes, aParent }
+        SVGPathElement::SVGPathElement ( const std::string& aTagName, AttributeMap&& aAttributes, Node* aParent ) : SVGGeometryElement { aTagName, std::move ( aAttributes ), aParent }
         {
-            if ( aAttributes.find ( "d" ) != aAttributes.end() )
+            if ( mAttributes.find ( "d" ) != mAttributes.end() )
             {
                 std::vector<DrawType> path;
-                if ( ParsePathData ( path, aAttributes.at ( "d" ).c_str() ) )
+                if ( ParsePathData ( path, mAttributes.at ( "d" ).c_str() ) )
                 {
 #if 0
                     auto id = GetAttribute ( "id" );

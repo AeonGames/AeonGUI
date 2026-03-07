@@ -1,5 +1,5 @@
 /*
-Copyright (C) 2019,2020,2024,2025 Rodrigo Jose Hernandez Cordoba
+Copyright (C) 2019,2020,2024,2025,2026 Rodrigo Jose Hernandez Cordoba
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -21,32 +21,32 @@ namespace AeonGUI
 {
     namespace DOM
     {
-        SVGRectElement::SVGRectElement ( const std::string& aTagName, const AttributeMap& aAttributes, Node* aParent ) : SVGGeometryElement {aTagName, aAttributes, aParent}
+        SVGRectElement::SVGRectElement ( const std::string& aTagName, AttributeMap&& aAttributes, Node* aParent ) : SVGGeometryElement {aTagName, std::move ( aAttributes ), aParent}
         {
             std::cout << "Rect" << std::endl;
-            if ( aAttributes.find ( "width" ) != aAttributes.end() )
+            if ( mAttributes.find ( "width" ) != mAttributes.end() )
             {
-                mWidth = std::stod ( aAttributes.at ( "width" ) );
+                mWidth = std::stod ( mAttributes.at ( "width" ) );
             }
-            if ( aAttributes.find ( "height" ) != aAttributes.end() )
+            if ( mAttributes.find ( "height" ) != mAttributes.end() )
             {
-                mHeight = std::stod ( aAttributes.at ( "height" ) );
+                mHeight = std::stod ( mAttributes.at ( "height" ) );
             }
-            if ( aAttributes.find ( "x" ) != aAttributes.end() )
+            if ( mAttributes.find ( "x" ) != mAttributes.end() )
             {
-                mX = std::stod ( aAttributes.at ( "x" ) );
+                mX = std::stod ( mAttributes.at ( "x" ) );
             }
-            if ( aAttributes.find ( "y" ) != aAttributes.end() )
+            if ( mAttributes.find ( "y" ) != mAttributes.end() )
             {
-                mY = std::stod ( aAttributes.at ( "y" ) );
+                mY = std::stod ( mAttributes.at ( "y" ) );
             }
-            if ( aAttributes.find ( "rx" ) != aAttributes.end() )
+            if ( mAttributes.find ( "rx" ) != mAttributes.end() )
             {
-                mRx = std::stod ( aAttributes.at ( "rx" ) );
+                mRx = std::stod ( mAttributes.at ( "rx" ) );
             }
-            if ( aAttributes.find ( "ry" ) != aAttributes.end() )
+            if ( mAttributes.find ( "ry" ) != mAttributes.end() )
             {
-                mRy = std::stod ( aAttributes.at ( "ry" ) );
+                mRy = std::stod ( mAttributes.at ( "ry" ) );
             }
             /**
              * https://www.w3.org/TR/SVG/shapes.html#RectElement

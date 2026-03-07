@@ -1,5 +1,5 @@
 /*
-Copyright (C) 2019,2020,2023-2025 Rodrigo Jose Hernandez Cordoba
+Copyright (C) 2019,2020,2023-2025,2026 Rodrigo Jose Hernandez Cordoba
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -22,15 +22,15 @@ namespace AeonGUI
 {
     namespace DOM
     {
-        SVGSVGElement::SVGSVGElement ( const std::string& aTagName, const AttributeMap& aAttributes, Node* aParent ) :
-            SVGGraphicsElement { aTagName, aAttributes, aParent }
+        SVGSVGElement::SVGSVGElement ( const std::string& aTagName, AttributeMap&& aAttributes, Node* aParent ) :
+            SVGGraphicsElement { aTagName, std::move ( aAttributes ), aParent }
         {
             std::cout << "This is a specialized implementation for the svg element." << std::endl;
-            if ( aAttributes.find ( "viewBox" ) != aAttributes.end() )
+            if ( mAttributes.find ( "viewBox" ) != mAttributes.end() )
             {
                 static const std::regex viewBoxRegex{R"((-?(?:[0-9]*\.[0-9]+(?:[eE][-+]?[0-9]+)?|[0-9]+))[[:space:]]+(-?(?:[0-9]*\.[0-9]+(?:[eE][-+]?[0-9]+)?|[0-9]+))[[:space:]]+(-?(?:[0-9]*\.[0-9]+(?:[eE][-+]?[0-9]+)?|[0-9]+))[[:space:]]+(-?(?:[0-9]*\.[0-9]+(?:[eE][-+]?[0-9]+)?|[0-9]+)))"};
 
-                const std::string& viewBoxStr{aAttributes.at ( "viewBox" ) };
+                const std::string& viewBoxStr{mAttributes.at ( "viewBox" ) };
                 std::smatch match{};
                 if ( std::regex_match ( viewBoxStr, match, viewBoxRegex ) )
                 {
@@ -40,17 +40,17 @@ namespace AeonGUI
                     mViewBox.min_y      = std::stod ( match[2] );
                 }
             }
-            if ( aAttributes.find ( "width" ) != aAttributes.end() )
+            if ( mAttributes.find ( "width" ) != mAttributes.end() )
             {
-                mWidth = std::stod ( aAttributes.at ( "width" ) );
+                mWidth = std::stod ( mAttributes.at ( "width" ) );
             }
-            if ( aAttributes.find ( "height" ) != aAttributes.end() )
+            if ( mAttributes.find ( "height" ) != mAttributes.end() )
             {
-                mHeight = std::stod ( aAttributes.at ( "height" ) );
+                mHeight = std::stod ( mAttributes.at ( "height" ) );
             }
-            if ( aAttributes.find ( "preserveAspectRatio" ) != aAttributes.end() )
+            if ( mAttributes.find ( "preserveAspectRatio" ) != mAttributes.end() )
             {
-                mPreserveAspectRatio = PreserveAspectRatio{aAttributes.at ( "preserveAspectRatio" ) };
+                mPreserveAspectRatio = PreserveAspectRatio{mAttributes.at ( "preserveAspectRatio" ) };
             }
         }
 

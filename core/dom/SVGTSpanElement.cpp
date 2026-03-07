@@ -106,7 +106,7 @@ namespace AeonGUI
             }
         }
 
-        SVGTSpanElement::SVGTSpanElement ( const std::string& aTagName, const AttributeMap& aAttributes, Node* aParent ) : SVGTextPositioningElement { aTagName, aAttributes, aParent }
+        SVGTSpanElement::SVGTSpanElement ( const std::string& aTagName, AttributeMap&& aAttributes, Node* aParent ) : SVGTextPositioningElement { aTagName, std::move ( aAttributes ), aParent }
         {
         }
         SVGTSpanElement::~SVGTSpanElement() = default;

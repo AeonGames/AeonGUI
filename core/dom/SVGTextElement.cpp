@@ -104,8 +104,8 @@ namespace AeonGUI
             }
         }
 
-        SVGTextElement::SVGTextElement ( const std::string& aTagName, const AttributeMap& aAttributes, Node* aParent ) :
-            SVGTextPositioningElement { aTagName, aAttributes, aParent }
+        SVGTextElement::SVGTextElement ( const std::string& aTagName, AttributeMap&& aAttributes, Node* aParent ) :
+            SVGTextPositioningElement { aTagName, std::move ( aAttributes ), aParent }
         {
         }
         SVGTextElement::~SVGTextElement() = default;

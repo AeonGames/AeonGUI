@@ -24,7 +24,7 @@ namespace AeonGUI
         class SVGTextElement : public SVGTextPositioningElement
         {
         public:
-            SVGTextElement ( const DOMString& aTagName, const AttributeMap& aAttributes, Node* aParent );
+            SVGTextElement ( const DOMString& aTagName, AttributeMap&& aAttributes, Node* aParent );
             ~SVGTextElement() override;
             void DrawStart ( Canvas& aCanvas ) const override;
         private:

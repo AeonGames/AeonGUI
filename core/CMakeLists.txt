@@ -170,6 +170,9 @@ target_link_libraries(AeonGUI PRIVATE libcss ${pkgcfg_lib_CAIRO_cairo} ${pkgcfg_
 if(USE_PNG AND PNG_FOUND)
   target_compile_definitions(AeonGUI PRIVATE USE_PNG=1)
   target_link_libraries(AeonGUI PRIVATE PNG::PNG)
+  if(MSVC)
+    target_compile_definitions(AeonGUI PRIVATE PNG_RESTRICT=__restrict)
+  endif()
 endif()
 
 if(USE_JPEG AND JPEG_FOUND)

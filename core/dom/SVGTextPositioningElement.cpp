@@ -1,5 +1,5 @@
 /*
-Copyright (C) 2020,2024,2025 Rodrigo Jose Hernandez Cordoba
+Copyright (C) 2020,2024,2025,2026 Rodrigo Jose Hernandez Cordoba
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -22,10 +22,10 @@ namespace AeonGUI
 {
     namespace DOM
     {
-        SVGTextPositioningElement::SVGTextPositioningElement ( const DOMString& aTagName, const AttributeMap& aAttributes, Node* aParent ) : SVGTextContentElement { aTagName, aAttributes, aParent }
+        SVGTextPositioningElement::SVGTextPositioningElement ( const DOMString& aTagName, AttributeMap&& aAttributes, Node* aParent ) : SVGTextContentElement { aTagName, std::move ( aAttributes ), aParent }
         {
             // Parse positioning attributes from the attribute map
-            parsePositioningAttributes ( aAttributes );
+            parsePositioningAttributes ( mAttributes );
         }
 
         SVGTextPositioningElement::~SVGTextPositioningElement() = default;

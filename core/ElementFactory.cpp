@@ -44,7 +44,7 @@ limitations under the License.
 namespace AeonGUI
 {
     using ConstructorTuple = std::tuple <
-                             std::function < DOM::Element* ( const DOM::DOMString& aTagName, const AttributeMap& aAttributeMap, DOM::Node* aParent ) >,
+                             std::function < DOM::Element * ( const DOM::DOMString& aTagName, AttributeMap && aAttributeMap, DOM::Node* aParent ) >,
                              std::function < void ( DOM::Element* ) >>;
 
     using Constructor = std::tuple<StringLiteral, ConstructorTuple>;
@@ -57,9 +57,9 @@ namespace AeonGUI
         {
             aId,
             ConstructorTuple {
-                [] ( const DOM::DOMString & aTagName, const AttributeMap & aAttributeMap, DOM::Node * aParent )
+                [] ( const DOM::DOMString & aTagName, AttributeMap && aAttributeMap, DOM::Node * aParent )
                 {
-                    return new T{ aTagName, aAttributeMap, aParent };
+                    return new T{ aTagName, std::move ( aAttributeMap ), aParent };
                 },
                 [] ( DOM::Element * aElement ) -> void
                 {
@@ -89,7 +89,7 @@ namespace AeonGUI
         MakeConstructor<DOM::SVGTSpanElement> ( "tspan" ),
     };
 
-    DOM::Element* Construct ( const char* aIdentifier, const AttributeMap& aAttributeMap, DOM::Node* aParent )
+    DOM::Element* Construct ( const char* aIdentifier, AttributeMap&& aAttributeMap, DOM::Node* aParent )
     {
         auto it = std::find_if ( Constructors.begin(), Constructors.end(),
                                  [aIdentifier] ( const Constructor & aConstructor )
@@ -98,10 +98,10 @@ namespace AeonGUI
         } );
         if ( it != Constructors.end() )
         {
-            return std::get<0> ( std::get<1> ( *it ) ) ( aIdentifier, aAttributeMap, aParent );
+            return std::get<0> ( std::get<1> ( *it ) ) ( aIdentifier, std::move ( aAttributeMap ), aParent );
         }
         std::cout << "No constructor registered for identifier: " << aIdentifier << std::endl;
-        return new DOM::Element {  aIdentifier, aAttributeMap, aParent };
+        return new DOM::Element {  aIdentifier, std::move ( aAttributeMap ), aParent };
     }
 
     void Destroy ( const char* aIdentifier, DOM::Element* aElement )
@@ -122,7 +122,7 @@ namespace AeonGUI
     }
 
     bool RegisterConstructor ( const StringLiteral& aIdentifier,
-                               const std::function < DOM::Element* ( const DOM::DOMString& aTagName, const AttributeMap& aAttributeMap, DOM::Node* aParent ) > & aConstructor,
+                               const std::function < DOM::Element * ( const DOM::DOMString& aTagName, AttributeMap&& aAttributeMap, DOM::Node* aParent ) > & aConstructor,
                                const std::function < void ( DOM::Element* ) > & aDestructor
                              )
     {

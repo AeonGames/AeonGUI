@@ -1,5 +1,5 @@
 /*
-Copyright (C) 2020,2024,2025 Rodrigo Jose Hernandez Cordoba
+Copyright (C) 2020,2024,2025,2026 Rodrigo Jose Hernandez Cordoba
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -21,7 +21,7 @@ namespace AeonGUI
 {
     namespace DOM
     {
-        SVGGraphicsElement::SVGGraphicsElement ( const std::string& aTagName, const AttributeMap& aAttributes, Node* aParent ) : SVGElement { aTagName, aAttributes, aParent }
+        SVGGraphicsElement::SVGGraphicsElement ( const std::string& aTagName, AttributeMap&& aAttributes, Node* aParent ) : SVGElement { aTagName, std::move ( aAttributes ), aParent }
         {
             css_select_results* results{ GetComputedStyles() };
             css_matrix transform{};

@@ -1,5 +1,5 @@
 /*
-Copyright (C) 2019,2020,2023-2025 Rodrigo Jose Hernandez Cordoba
+Copyright (C) 2019,2020,2023-2025,2026 Rodrigo Jose Hernandez Cordoba
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -29,10 +29,10 @@ namespace AeonGUI
         class Node;
         class Element;
     }
-    DLL DOM::Element* Construct ( const char* aIdentifier, const AttributeMap& aAttributeMap, DOM::Node* aParent );
+    DLL DOM::Element* Construct ( const char* aIdentifier, AttributeMap&& aAttributeMap, DOM::Node* aParent );
     DLL void Destroy ( const char* aIdentifier, DOM::Element* aElement );
     DLL bool RegisterConstructor ( const StringLiteral& aIdentifier,
-                                   const std::function < DOM::Element* ( const AttributeMap&, DOM::Node* ) > & aConstructor,
+                                   const std::function < DOM::Element * ( AttributeMap&&, DOM::Node* ) > & aConstructor,
                                    const std::function < void ( DOM::Element* ) > & aDestructor );
     DLL bool UnregisterConstructor ( const StringLiteral& aIdentifier );
     DLL void EnumerateConstructors ( const std::function<bool ( const StringLiteral& ) >& aEnumerator );

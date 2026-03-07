@@ -24,7 +24,7 @@ namespace AeonGUI
 {
     namespace DOM
     {
-        SVGTextContentElement::SVGTextContentElement ( const DOMString& aTagName, const AttributeMap& aAttributes, Node* aParent ) : SVGGraphicsElement { aTagName, aAttributes, aParent }
+        SVGTextContentElement::SVGTextContentElement ( const DOMString& aTagName, AttributeMap&& aAttributes, Node* aParent ) : SVGGraphicsElement { aTagName, std::move ( aAttributes ), aParent }
         {
         }
         SVGTextContentElement::~SVGTextContentElement() = default;

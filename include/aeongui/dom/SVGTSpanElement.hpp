@@ -24,7 +24,7 @@ namespace AeonGUI
         class SVGTSpanElement : public SVGTextPositioningElement
         {
         public:
-            SVGTSpanElement ( const DOMString& aTagName, const AttributeMap& aAttributes, Node* aParent );
+            SVGTSpanElement ( const DOMString& aTagName, AttributeMap&& aAttributes, Node* aParent );
             ~SVGTSpanElement() override;
             void DrawStart ( Canvas& aCanvas ) const override;
         private:

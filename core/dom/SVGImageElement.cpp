@@ -81,10 +81,10 @@ namespace AeonGUI
             return std::filesystem::path ( aDocumentUrl );
         }
 
-        SVGImageElement::SVGImageElement ( const DOMString& aTagName, const AttributeMap& aAttributes, Node* aParent ) :
-            SVGGraphicsElement ( aTagName, aAttributes, aParent )
+        SVGImageElement::SVGImageElement ( const DOMString& aTagName, AttributeMap&& aAttributes, Node* aParent ) :
+            SVGGraphicsElement ( aTagName, std::move ( aAttributes ), aParent )
         {
-            ParseAttributes ( aAttributes );
+            ParseAttributes ( mAttributes );
         }
 
         SVGImageElement::~SVGImageElement() = default;

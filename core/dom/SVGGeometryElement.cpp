@@ -1,5 +1,5 @@
 /*
-Copyright (C) 2020,2024,2025 Rodrigo Jose Hernandez Cordoba
+Copyright (C) 2020,2024,2025,2026 Rodrigo Jose Hernandez Cordoba
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -20,7 +20,7 @@ namespace AeonGUI
 {
     namespace DOM
     {
-        SVGGeometryElement::SVGGeometryElement ( const DOMString& aTagName, const AttributeMap& aAttributes, Node* aParent ) : SVGGraphicsElement ( aTagName, aAttributes, aParent ), mPath{}
+        SVGGeometryElement::SVGGeometryElement ( const DOMString& aTagName, AttributeMap&& aAttributes, Node* aParent ) : SVGGraphicsElement ( aTagName, std::move ( aAttributes ), aParent ), mPath{}
         {
         }
         SVGGeometryElement::~SVGGeometryElement() = default;

@@ -1,5 +1,5 @@
 /*
-Copyright (C) 2019,2020,2024,2025 Rodrigo Jose Hernandez Cordoba
+Copyright (C) 2019,2020,2024,2025,2026 Rodrigo Jose Hernandez Cordoba
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -21,14 +21,14 @@ namespace AeonGUI
     namespace DOM
     {
         static const std::regex coord{R"((-?(?:[0-9]*\.[0-9]+(?:[eE][-+]?[0-9]+)?|[0-9]+))[[:space:]]*,?[[:space:]]*(-?(?:[0-9]*\.[0-9]+(?:[eE][-+]?[0-9]+)?|[0-9]+)))"};
-        SVGPolygonElement::SVGPolygonElement ( const std::string& aTagName, const AttributeMap& aAttributes, Node* aParent ) : SVGGeometryElement { aTagName, aAttributes, aParent }
+        SVGPolygonElement::SVGPolygonElement ( const std::string& aTagName, AttributeMap&& aAttributes, Node* aParent ) : SVGGeometryElement { aTagName, std::move ( aAttributes ), aParent }
         {
             std::cout << "Polygon" << std::endl;
             /// https://www.w3.org/TR/SVG/shapes.html#PolygonElement
-            if ( aAttributes.find ( "points" ) != aAttributes.end() )
+            if ( mAttributes.find ( "points" ) != mAttributes.end() )
             {
                 std::vector<DrawType> path;
-                const std::string& points = aAttributes.at ( "points" );
+                const std::string& points = mAttributes.at ( "points" );
                 auto it = std::sregex_iterator ( points.begin(), points.end(), coord );
                 path.reserve ( ( std::distance ( it, std::sregex_iterator() ) * 3 ) + 1 );
                 std::smatch match = *it;

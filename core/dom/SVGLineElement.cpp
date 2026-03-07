@@ -1,5 +1,5 @@
 /*
-Copyright (C) 2019,2020,2024,2025 Rodrigo Jose Hernandez Cordoba
+Copyright (C) 2019,2020,2024,2025,2026 Rodrigo Jose Hernandez Cordoba
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -20,27 +20,27 @@ namespace AeonGUI
 {
     namespace DOM
     {
-        SVGLineElement::SVGLineElement ( const std::string& aTagName, const AttributeMap& aAttributes, Node* aParent ) : SVGGeometryElement { aTagName, aAttributes, aParent }
+        SVGLineElement::SVGLineElement ( const std::string& aTagName, AttributeMap&& aAttributes, Node* aParent ) : SVGGeometryElement { aTagName, std::move ( aAttributes ), aParent }
         {
             std::cout << "Line" << std::endl;
             /**
              * https://www.w3.org/TR/SVG/shapes.html#LineElement
             */
-            if ( aAttributes.find ( "x1" ) != aAttributes.end() )
+            if ( mAttributes.find ( "x1" ) != mAttributes.end() )
             {
-                mX1 = std::stod ( aAttributes.at ( "x1" ) );
+                mX1 = std::stod ( mAttributes.at ( "x1" ) );
             }
-            if ( aAttributes.find ( "y1" ) != aAttributes.end() )
+            if ( mAttributes.find ( "y1" ) != mAttributes.end() )
             {
-                mY1 = std::stod ( aAttributes.at ( "y1" ) );
+                mY1 = std::stod ( mAttributes.at ( "y1" ) );
             }
-            if ( aAttributes.find ( "x2" ) != aAttributes.end() )
+            if ( mAttributes.find ( "x2" ) != mAttributes.end() )
             {
-                mX2 = std::stod ( aAttributes.at ( "x2" ) );
+                mX2 = std::stod ( mAttributes.at ( "x2" ) );
             }
-            if ( aAttributes.find ( "y2" ) != aAttributes.end() )
+            if ( mAttributes.find ( "y2" ) != mAttributes.end() )
             {
-                mY2 = std::stod ( aAttributes.at ( "y2" ) );
+                mY2 = std::stod ( mAttributes.at ( "y2" ) );
             }
             std::vector<DrawType> path
             {

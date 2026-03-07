@@ -39,7 +39,7 @@ namespace AeonGUI
         class Element : public Node
         {
         public:
-            DLL Element ( const DOMString& aTagName, const AttributeMap& aAttributes, Node* aParent );
+            DLL Element ( const DOMString& aTagName, AttributeMap&& aAttributes, Node* aParent );
             DLL virtual ~Element();
             /**DOM Properties and Methods @{*/
             NodeType nodeType() const final;
@@ -52,9 +52,9 @@ namespace AeonGUI
             DOMString mTagName{};
             DOMString mId{};
             std::vector<lwc_string*> mClasses{};
-            AttributeMap mAttributes{};
             DLL void OnAncestorChanged() override;
         protected:
+            AttributeMap mAttributes{};
             StyleSheetPtr mInlineStyleSheet{};
             SelectResultsPtr mComputedStyles{};
             css_select_results* GetParentComputedStyles() const;

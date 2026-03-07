@@ -1,5 +1,5 @@
 /*
-Copyright (C) 2020,2024,2025 Rodrigo Jose Hernandez Cordoba
+Copyright (C) 2020,2024,2025,2026 Rodrigo Jose Hernandez Cordoba
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -25,7 +25,7 @@ namespace AeonGUI
         class SVGDefsElement : public SVGGraphicsElement
         {
         public:
-            SVGDefsElement ( const DOMString& aTagName, const AttributeMap& aAttributes, Node* aParent );
+            SVGDefsElement ( const DOMString& aTagName, AttributeMap&& aAttributes, Node* aParent );
             ~SVGDefsElement() final;
             bool IsDrawEnabled() const final;
         };

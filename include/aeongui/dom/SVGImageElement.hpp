@@ -29,7 +29,7 @@ namespace AeonGUI
         class SVGImageElement : public SVGGraphicsElement
         {
         public:
-            SVGImageElement ( const DOMString& aTagName, const AttributeMap& aAttributes, Node* aParent );
+            SVGImageElement ( const DOMString& aTagName, AttributeMap&& aAttributes, Node* aParent );
             ~SVGImageElement() final;
 
             const SVGAnimatedLength& x() const;
