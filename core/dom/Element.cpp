@@ -19,6 +19,7 @@ limitations under the License.
 #include <cstdio>
 #include <cstdlib>
 #include "aeongui/Color.hpp"
+#include "aeongui/Matrix2x3.hpp"
 #include "aeongui/dom/Element.hpp"
 #include <libcss/libcss.h>
 namespace AeonGUI
@@ -562,7 +563,7 @@ namespace AeonGUI
         {
             ( void ) ( pw );
             DOM::Element *element {reinterpret_cast<DOM::Element*> ( node ) };
-            *match = element->parentElement() && element->parentElement()->childNodes() [0] == element;
+            *match = element->parentElement() && element->parentElement()->childNodes() [0].get() == element;
             return CSS_OK;
         }
 
@@ -687,6 +688,7 @@ namespace AeonGUI
             // Count hints needed first
             static const size_t MAX_HINTS = 8;
             static thread_local css_hint hint_buf[MAX_HINTS];
+            static thread_local css_matrix transform_matrix;
             uint32_t n = 0;
 
             // fill → CSS_PROP_FILL
@@ -794,6 +796,23 @@ namespace AeonGUI
                     hint_buf[n].status = CSS_OPACITY_SET;
                     n++;
                 }
+            }
+
+            // transform → CSS_PROP_TRANSFORM
+            it = attrs.find ( "transform" );
+            if ( it != attrs.end() && n < MAX_HINTS )
+            {
+                Matrix2x3 m = ParseSVGTransform ( it->second );
+                transform_matrix.m[0] = FLTTOFIX ( static_cast<float> ( m[0] ) );
+                transform_matrix.m[1] = FLTTOFIX ( static_cast<float> ( m[1] ) );
+                transform_matrix.m[2] = FLTTOFIX ( static_cast<float> ( m[2] ) );
+                transform_matrix.m[3] = FLTTOFIX ( static_cast<float> ( m[3] ) );
+                transform_matrix.m[4] = FLTTOFIX ( static_cast<float> ( m[4] ) );
+                transform_matrix.m[5] = FLTTOFIX ( static_cast<float> ( m[5] ) );
+                hint_buf[n].data.transform = &transform_matrix;
+                hint_buf[n].prop = CSS_PROP_TRANSFORM;
+                hint_buf[n].status = CSS_TRANSFORM_SET;
+                n++;
             }
 
             *nhints = n;

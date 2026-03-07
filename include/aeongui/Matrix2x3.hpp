@@ -1,5 +1,5 @@
 /*
-Copyright (C) 2019,2024,2025 Rodrigo Jose Hernandez Cordoba
+Copyright (C) 2019,2024-2026 Rodrigo Jose Hernandez Cordoba
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -18,6 +18,7 @@ limitations under the License.
 #include <array>
 #include <cstdint>
 #include <cstddef>
+#include <string>
 #include "aeongui/Platform.hpp"
 namespace AeonGUI
 {
@@ -42,5 +43,6 @@ namespace AeonGUI
         double mMatrix2x3[6];
     };
     const Matrix2x3 Abs ( const Matrix2x3& aMatrix2x3 );
+    DLL Matrix2x3 ParseSVGTransform ( const std::string& value );
 }
 #endif

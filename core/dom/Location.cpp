@@ -1,5 +1,5 @@
 /*
-Copyright (C) 2025 Rodrigo Jose Hernandez Cordoba
+Copyright (C) 2025,2026 Rodrigo Jose Hernandez Cordoba
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -15,6 +15,7 @@ limitations under the License.
 */
 #include "aeongui/dom/Location.hpp"
 #include <regex>
+#include <filesystem>
 namespace AeonGUI
 {
     namespace DOM
@@ -22,6 +23,25 @@ namespace AeonGUI
         static const std::regex url_regex (
             R"(^((?:[/\w]+):)(//)?([^:/?#]+)?(?::(\d+))?([/\w :.-]+)?(\?[\w=&-]+)?(#[\w-]+)?$)"
         );
+
+        static bool HasScheme ( const USVString& url )
+        {
+            static const std::regex scheme_regex ( R"(^[a-zA-Z][a-zA-Z0-9+\-.]*:)" );
+            return std::regex_search ( url, scheme_regex );
+        }
+
+        static USVString PathToFileURL ( const USVString& path )
+        {
+            std::filesystem::path abs = std::filesystem::absolute ( path );
+            std::string generic = abs.generic_string();
+            // Ensure leading slash for the file URI (Windows paths need it).
+            if ( !generic.empty() && generic[0] != '/' )
+            {
+                generic = "/" + generic;
+            }
+            return "file://" + generic;
+        }
+
         Location::Location() = default;
         Location::~Location() = default;
         Location::Location ( std::function<void ( const Location& ) > callback )
@@ -42,13 +62,14 @@ namespace AeonGUI
 
         void Location::assign ( const USVString& url )
         {
+            USVString resolved = HasScheme ( url ) ? url : PathToFileURL ( url );
             // Validate the URL format using regex
             std::smatch matches;
-            if ( !std::regex_match ( url, matches, url_regex ) )
+            if ( !std::regex_match ( resolved, matches, url_regex ) )
             {
                 throw std::invalid_argument ( "Invalid URL format:" + url );
             }
-            m_href = matches[0].str();
+            m_href = resolved;
             m_protocol = matches[1].str();
             m_hostname = matches[3].str();
             m_port = matches[4].str();

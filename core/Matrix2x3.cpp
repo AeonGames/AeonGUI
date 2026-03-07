@@ -1,5 +1,5 @@
 /*
-Copyright (C) 2019,2024,2025 Rodrigo Jose Hernandez Cordoba
+Copyright (C) 2019,2024-2026 Rodrigo Jose Hernandez Cordoba
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -17,6 +17,9 @@ limitations under the License.
 #include "aeongui/Vector2.hpp"
 #include <cmath>
 #include <cstring>
+#include <regex>
+#include <vector>
+#include <string>
 namespace AeonGUI
 {
     Matrix2x3::Matrix2x3()
@@ -98,5 +101,62 @@ namespace AeonGUI
                 std::abs ( aMatrix2x3[5] ),
             }
         };
+    }
+
+    Matrix2x3 ParseSVGTransform ( const std::string& value )
+    {
+        Matrix2x3 result{};
+        static const std::regex transform_regex ( R"((\w+)\s*\(([^)]+)\))" );
+        static const std::regex num_regex ( R"([-+]?[0-9]*\.?[0-9]+(?:[eE][-+]?[0-9]+)?)" );
+        auto begin = std::sregex_iterator ( value.begin(), value.end(), transform_regex );
+        auto end = std::sregex_iterator();
+        for ( auto it = begin; it != end; ++it )
+        {
+            std::string func = ( *it ) [1].str();
+            std::string args_str = ( *it ) [2].str();
+            std::vector<double> args;
+            auto nbegin = std::sregex_iterator ( args_str.begin(), args_str.end(), num_regex );
+            auto nend = std::sregex_iterator();
+            for ( auto nit = nbegin; nit != nend; ++nit )
+            {
+                args.push_back ( std::stod ( nit->str() ) );
+            }
+            if ( func == "matrix" && args.size() == 6 )
+            {
+                result *= Matrix2x3 { args[0], args[1], args[2], args[3], args[4], args[5] };
+            }
+            else if ( func == "translate" && !args.empty() )
+            {
+                double tx = args[0];
+                double ty = args.size() > 1 ? args[1] : 0.0;
+                result *= Matrix2x3 { 1.0, 0.0, 0.0, 1.0, tx, ty };
+            }
+            else if ( func == "scale" && !args.empty() )
+            {
+                double sx = args[0];
+                double sy = args.size() > 1 ? args[1] : sx;
+                result *= Matrix2x3 { sx, 0.0, 0.0, sy, 0.0, 0.0 };
+            }
+            else if ( func == "rotate" && !args.empty() )
+            {
+                double angle = args[0] * M_PI / 180.0;
+                double cx = args.size() > 1 ? args[1] : 0.0;
+                double cy = args.size() > 2 ? args[2] : 0.0;
+                double cos_a = std::cos ( angle );
+                double sin_a = std::sin ( angle );
+                result *= Matrix2x3 { cos_a, sin_a, -sin_a, cos_a,
+                                      cx - cx * cos_a + cy * sin_a,
+                                      cy - cx * sin_a - cy * cos_a };
+            }
+            else if ( func == "skewX" && !args.empty() )
+            {
+                result *= Matrix2x3 { 1.0, 0.0, std::tan ( args[0] * M_PI / 180.0 ), 1.0, 0.0, 0.0 };
+            }
+            else if ( func == "skewY" && !args.empty() )
+            {
+                result *= Matrix2x3 { 1.0, std::tan ( args[0] * M_PI / 180.0 ), 0.0, 1.0, 0.0, 0.0 };
+            }
+        }
+        return result;
     }
 }
