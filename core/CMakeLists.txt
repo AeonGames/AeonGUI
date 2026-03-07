@@ -171,7 +171,12 @@ if(USE_PNG AND PNG_FOUND)
   target_compile_definitions(AeonGUI PRIVATE USE_PNG=1)
   target_link_libraries(AeonGUI PRIVATE PNG::PNG)
   if(MSVC)
-    target_compile_definitions(AeonGUI PRIVATE PNG_RESTRICT=__restrict)
+    set_source_files_properties(
+        RasterImage.cpp
+        PROPERTIES
+        SKIP_PRECOMPILE_HEADERS ON
+        COMPILE_OPTIONS -Drestrict=
+    )
   endif()
 endif()
 

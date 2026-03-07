@@ -29,19 +29,19 @@ namespace AeonGUI
         class SVGImageElement : public SVGGraphicsElement
         {
         public:
-            SVGImageElement ( const DOMString& aTagName, AttributeMap&& aAttributes, Node* aParent );
-            ~SVGImageElement() final;
+            DLL SVGImageElement ( const DOMString& aTagName, AttributeMap&& aAttributes, Node* aParent );
+            DLL ~SVGImageElement() final;
 
-            const SVGAnimatedLength& x() const;
-            const SVGAnimatedLength& y() const;
-            const SVGAnimatedLength& width() const;
-            const SVGAnimatedLength& height() const;
-            const SVGAnimatedString& href() const;
-            const SVGAnimatedPreserveAspectRatio& preserveAspectRatio() const;
-            const DOMString& crossOrigin() const;
-            const DOMString& decoding() const;
+            DLL const SVGAnimatedLength& x() const;
+            DLL const SVGAnimatedLength& y() const;
+            DLL const SVGAnimatedLength& width() const;
+            DLL const SVGAnimatedLength& height() const;
+            DLL const SVGAnimatedString& href() const;
+            DLL const SVGAnimatedPreserveAspectRatio& preserveAspectRatio() const;
+            DLL const DOMString& crossOrigin() const;
+            DLL const DOMString& decoding() const;
 
-            void DrawStart ( Canvas& aCanvas ) const final;
+            DLL void DrawStart ( Canvas& aCanvas ) const final;
 
         private:
             void ParseAttributes ( const AttributeMap& aAttributes );

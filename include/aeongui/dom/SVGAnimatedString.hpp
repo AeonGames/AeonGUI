@@ -23,16 +23,16 @@ namespace AeonGUI
 {
     namespace DOM
     {
-        class DLL SVGAnimatedString
+        class SVGAnimatedString
         {
         public:
-            SVGAnimatedString();
-            ~SVGAnimatedString();
+            DLL SVGAnimatedString();
+            DLL ~SVGAnimatedString();
 
-            DOMString& baseVal();
-            const DOMString& baseVal() const;
-            DOMString& animVal();
-            const DOMString& animVal() const;
+            DLL DOMString& baseVal();
+            DLL const DOMString& baseVal() const;
+            DLL DOMString& animVal();
+            DLL const DOMString& animVal() const;
 
         private:
             DOMString mBaseVal{};

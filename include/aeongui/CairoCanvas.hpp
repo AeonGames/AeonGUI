@@ -29,47 +29,47 @@ namespace AeonGUI
     class CairoCanvas : public Canvas
     {
     public:
-        CairoCanvas ();
-        CairoCanvas ( uint32_t aWidth, uint32_t aHeight );
+        DLL CairoCanvas ();
+        DLL CairoCanvas ( uint32_t aWidth, uint32_t aHeight );
         DLL ~CairoCanvas() final;
-        void ResizeViewport ( uint32_t aWidth, uint32_t aHeight ) final;
-        const uint8_t* GetPixels() const final;
-        size_t GetWidth() const final;
-        size_t GetHeight() const final;
-        size_t GetStride() const final;
-        void Clear() final;
-        void Draw ( const Path& ) final;
-        void DrawImage ( const uint8_t* aPixels,
-                         size_t aImageWidth,
-                         size_t aImageHeight,
-                         size_t aImageStride,
-                         double aX,
-                         double aY,
-                         double aWidth,
-                         double aHeight,
-                         double aOpacity ) final;
-        void DrawText ( const std::string& aText, double aX, double aY,
-                        const std::string& aFontFamily, double aFontSize,
-                        int aFontWeight, int aFontStyle ) final;
-        double MeasureText ( const std::string& aText,
-                             const std::string& aFontFamily, double aFontSize,
-                             int aFontWeight, int aFontStyle ) const final;
-        void SetFillColor ( const ColorAttr& aColor ) final;
-        const ColorAttr& GetFillColor() const final;
-        void SetStrokeColor ( const ColorAttr& aColor ) final;
-        const ColorAttr& GetStrokeColor() const final;
-        void SetStrokeWidth ( double aWidth ) final;
-        double GetStrokeWidth () const final;
-        void SetStrokeOpacity ( double aWidth ) final;
-        double GetStrokeOpacity () const final;
-        void SetFillOpacity ( double aWidth ) final;
-        double GetFillOpacity () const final;
-        void SetOpacity ( double aWidth ) final;
-        double GetOpacity () const final;
-        void SetViewBox ( const ViewBox& aViewBox, const PreserveAspectRatio& aPreserveAspectRatio ) final;
-        void SetTransform ( const Matrix2x3& aMatrix ) final;
-        void Transform ( const Matrix2x3& aMatrix ) final;
-        void* GetNativeSurface() const final;
+        DLL void ResizeViewport ( uint32_t aWidth, uint32_t aHeight ) final;
+        DLL const uint8_t* GetPixels() const final;
+        DLL size_t GetWidth() const final;
+        DLL size_t GetHeight() const final;
+        DLL size_t GetStride() const final;
+        DLL void Clear() final;
+        DLL void Draw ( const Path& ) final;
+        DLL void DrawImage ( const uint8_t* aPixels,
+                             size_t aImageWidth,
+                             size_t aImageHeight,
+                             size_t aImageStride,
+                             double aX,
+                             double aY,
+                             double aWidth,
+                             double aHeight,
+                             double aOpacity ) final;
+        DLL void DrawText ( const std::string& aText, double aX, double aY,
+                            const std::string& aFontFamily, double aFontSize,
+                            int aFontWeight, int aFontStyle ) final;
+        DLL double MeasureText ( const std::string& aText,
+                                 const std::string& aFontFamily, double aFontSize,
+                                 int aFontWeight, int aFontStyle ) const final;
+        DLL void SetFillColor ( const ColorAttr& aColor ) final;
+        DLL const ColorAttr& GetFillColor() const final;
+        DLL void SetStrokeColor ( const ColorAttr& aColor ) final;
+        DLL const ColorAttr& GetStrokeColor() const final;
+        DLL void SetStrokeWidth ( double aWidth ) final;
+        DLL double GetStrokeWidth () const final;
+        DLL void SetStrokeOpacity ( double aWidth ) final;
+        DLL double GetStrokeOpacity () const final;
+        DLL void SetFillOpacity ( double aWidth ) final;
+        DLL double GetFillOpacity () const final;
+        DLL void SetOpacity ( double aWidth ) final;
+        DLL double GetOpacity () const final;
+        DLL void SetViewBox ( const ViewBox& aViewBox, const PreserveAspectRatio& aPreserveAspectRatio ) final;
+        DLL void SetTransform ( const Matrix2x3& aMatrix ) final;
+        DLL void Transform ( const Matrix2x3& aMatrix ) final;
+        DLL void* GetNativeSurface() const final;
     private:
         cairo_surface_t* mCairoSurface{};
         cairo_t* mCairoContext{};
