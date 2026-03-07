@@ -25,13 +25,14 @@ jobs:
         brew install cmake pkg-config cairo pango libxml2 googletest gsed bison zlib libpng libjpeg-turbo
       if: matrix.compiler == 'clang'
 
-    - name: '� Install Metal Toolchain'
-      run: xcodebuild -downloadComponent MetalToolchain
     - name: '🌋 Install Vulkan SDK'
-      run: |
-        brew install --cask vulkan-sdk
-        echo "VULKAN_SDK=$(brew --prefix)/share/vulkan" >> $GITHUB_ENV
-    - name: '�🛠️ Configuring'
+      uses: jakoch/install-vulkan-sdk-action@v1.4.0
+      with:
+        vulkan_version: latest
+        install_runtime: true
+        cache: true
+
+    - name: '🛠️ Configuring'
       run: |
         export PATH="/opt/homebrew/opt/bison/bin:$PATH"
         export PKG_CONFIG_PATH="/opt/homebrew/lib/pkgconfig:$PKG_CONFIG_PATH"

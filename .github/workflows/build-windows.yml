@@ -57,12 +57,11 @@ jobs:
       if: matrix.compiler == 'msvc'
 
     - name: '🌋 Install Vulkan SDK'
-      uses: jakoch/install-vulkan-sdk-action@v1.0.5
+      uses: jakoch/install-vulkan-sdk-action@v1.4.0
       with:
         vulkan_version: latest
         install_runtime: true
         cache: true
-        optional_components: com.lunarg.vulkan.glslang
       if: matrix.compiler == 'msvc'
 
     - name: '🛠️ Configuring'
