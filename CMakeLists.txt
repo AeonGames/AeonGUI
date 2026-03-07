@@ -101,7 +101,7 @@ if(USE_CUDA)
 endif(USE_CUDA)
 
 if(USE_ZLIB)
-	find_package(zlib)
+	find_package(ZLIB)
   if(ZLIB_FOUND)
     include_directories(${ZLIB_INCLUDE_DIRS})
   else()
