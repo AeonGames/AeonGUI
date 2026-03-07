@@ -46,6 +46,9 @@ jobs:
           zlib:p
           libpng:p
           libjpeg-turbo:p
+          vulkan-devel:p
+          vulkan-loader:p
+          glslang:p
 
     - name: '🛠️ Configuring'
       run: cmake -G "MSYS Makefiles" -B ${{github.workspace}}/build -DCMAKE_BUILD_TYPE=Release

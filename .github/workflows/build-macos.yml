@@ -27,7 +27,10 @@ jobs:
 
     - name: '� Install Metal Toolchain'
       run: xcodebuild -downloadComponent MetalToolchain
-
+    - name: '🌋 Install Vulkan SDK'
+      run: |
+        brew install --cask vulkan-sdk
+        echo "VULKAN_SDK=$(brew --prefix)/share/vulkan" >> $GITHUB_ENV
     - name: '�🛠️ Configuring'
       run: |
         export PATH="/opt/homebrew/opt/bison/bin:$PATH"

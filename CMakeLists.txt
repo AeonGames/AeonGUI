@@ -212,11 +212,13 @@ add_subdirectory(demos/OpenGL)
 if(APPLE)
     add_subdirectory(demos/Metal)
 endif()
+add_subdirectory(demos/Vulkan)
 
 set(DEMO_DIRS ${CMAKE_SOURCE_DIR}/demos/OpenGL)
 if(APPLE)
     list(APPEND DEMO_DIRS ${CMAKE_SOURCE_DIR}/demos/Metal)
 endif()
+list(APPEND DEMO_DIRS ${CMAKE_SOURCE_DIR}/demos/Vulkan)
 configure_vscode(${DEMO_DIRS})
 
 install(TARGETS AeonGUI
