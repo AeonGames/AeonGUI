@@ -4,7 +4,7 @@
 <svg
    width="800"
    height="600"
-   viewBox="0 0 211.66666 158.75"
+   viewBox="0 0 800 600"
    version="1.1"
    id="svg1"
    sodipodi:docname="text.svg"
@@ -22,7 +22,7 @@
      inkscape:pageopacity="0"
      inkscape:pagecheckerboard="1"
      inkscape:deskcolor="#505050"
-     inkscape:document-units="mm"
+     inkscape:document-units="px"
      inkscape:zoom="0.71891835"
      inkscape:cx="396.42889"
      inkscape:cy="449.98156"
@@ -34,18 +34,25 @@
      inkscape:current-layer="svg1" />
   <defs
      id="defs1" />
-  <g
-     id="layer1"
-     transform="matrix(10.068884,0,0,28.928668,-233.94315,-760.34745)">
-    <text
-       xml:space="preserve"
-       style="font-size:3.175px;text-align:start;writing-mode:lr-tb;direction:ltr;text-anchor:start;fill:#000000;stroke-width:0.264583"
-       x="24.289961"
-       y="30.178438"
-       id="text1"><tspan
-         id="tspan1"
-         style="stroke-width:0.264583"
-         x="24.289961"
-         y="30.178438">AeonGames</tspan></text>
-  </g>
+  <text
+     xml:space="preserve"
+     style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:85.3333px;font-family:'Open Sans';-inkscape-font-specification:'Open Sans, Normal';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;text-align:start;writing-mode:lr-tb;direction:ltr;text-anchor:start;fill:#000000;fill-opacity:1;stroke:#000000;stroke-linecap:square;stroke-opacity:1"
+     x="160.62511"
+     y="139.09785"
+     id="text2"><tspan
+       sodipodi:role="line"
+       id="tspan2"
+       x="160.62511"
+       y="139.09785"
+       style="fill:#4448c1;fill-opacity:1">AeonGames</tspan></text>
+  <text
+     xml:space="preserve"
+     style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:85.3333px;font-family:'Open Sans';-inkscape-font-specification:'Open Sans, Normal';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;text-align:start;writing-mode:lr-tb;direction:ltr;text-anchor:start;fill:#4448c1;fill-opacity:1;stroke:#000000;stroke-linecap:square;stroke-opacity:1"
+     x="227.3959"
+     y="330.47916"
+     id="text3"><tspan
+       sodipodi:role="line"
+       id="tspan3"
+       x="227.3959"
+       y="330.47916">AeonGUI</tspan></text>
 </svg>
