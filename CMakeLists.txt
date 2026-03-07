@@ -209,6 +209,15 @@ add_subdirectory(css)
 add_subdirectory(core)
 add_subdirectory(tests)
 add_subdirectory(demos/OpenGL)
+if(APPLE)
+    add_subdirectory(demos/Metal)
+endif()
+
+set(DEMO_DIRS ${CMAKE_SOURCE_DIR}/demos/OpenGL)
+if(APPLE)
+    list(APPEND DEMO_DIRS ${CMAKE_SOURCE_DIR}/demos/Metal)
+endif()
+configure_vscode(${DEMO_DIRS})
 
 install(TARGETS AeonGUI
     EXPORT aeongui
