@@ -257,7 +257,7 @@ namespace AeonGUI
     {
         PangoFontDescription* desc = pango_font_description_new();
         pango_font_description_set_family ( desc, aFontFamily.c_str() );
-        pango_font_description_set_size ( desc, static_cast<gint> ( aFontSize * PANGO_SCALE ) );
+        pango_font_description_set_absolute_size ( desc, aFontSize * PANGO_SCALE );
 
         // Map CSS font-weight (100-900) to Pango weight
         if ( aFontWeight <= 100 )
