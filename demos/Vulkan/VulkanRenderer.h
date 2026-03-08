@@ -45,10 +45,10 @@ struct Vertex
 
 static const Vertex kVertices[] =
 {
-    { {-1.0f,  1.0f}, {0.0f, 0.0f} },
-    { {-1.0f, -1.0f}, {0.0f, 1.0f} },
-    { { 1.0f, -1.0f}, {1.0f, 1.0f} },
-    { { 1.0f,  1.0f}, {1.0f, 0.0f} },
+    { {-1.0f,  1.0f}, {0.0f, 1.0f} },
+    { {-1.0f, -1.0f}, {0.0f, 0.0f} },
+    { { 1.0f, -1.0f}, {1.0f, 0.0f} },
+    { { 1.0f,  1.0f}, {1.0f, 1.0f} },
 };
 
 static const uint16_t kIndices[] = { 0, 1, 2, 0, 2, 3 };
@@ -409,7 +409,7 @@ public:
         rasterizer.sType       = VK_STRUCTURE_TYPE_PIPELINE_RASTERIZATION_STATE_CREATE_INFO;
         rasterizer.polygonMode = VK_POLYGON_MODE_FILL;
         rasterizer.lineWidth   = 1.0f;
-        rasterizer.cullMode    = VK_CULL_MODE_BACK_BIT;
+        rasterizer.cullMode    = VK_CULL_MODE_NONE;
         rasterizer.frontFace   = VK_FRONT_FACE_COUNTER_CLOCKWISE;
 
         VkPipelineMultisampleStateCreateInfo multisampling{};
@@ -418,7 +418,7 @@ public:
 
         VkPipelineColorBlendAttachmentState blendAttachment{};
         blendAttachment.blendEnable         = VK_TRUE;
-        blendAttachment.srcColorBlendFactor = VK_BLEND_FACTOR_SRC_ALPHA;
+        blendAttachment.srcColorBlendFactor = VK_BLEND_FACTOR_ONE;
         blendAttachment.dstColorBlendFactor = VK_BLEND_FACTOR_ONE_MINUS_SRC_ALPHA;
         blendAttachment.colorBlendOp        = VK_BLEND_OP_ADD;
         blendAttachment.srcAlphaBlendFactor = VK_BLEND_FACTOR_ONE;
@@ -666,6 +666,9 @@ public:
         presentInfo.pSwapchains        = &mSwapchain;
         presentInfo.pImageIndices      = &imageIndex;
         vkQueuePresentKHR ( mPresentQueue, &presentInfo );
+
+        // Ensure present completes before next frame reuses mRenderFinished semaphore
+        vkQueueWaitIdle ( mPresentQueue );
     }
 
     // ── Resize handling ────────────────────────────────────────────────────
