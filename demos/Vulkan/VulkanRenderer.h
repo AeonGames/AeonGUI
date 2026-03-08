@@ -623,6 +623,10 @@ public:
     // ── Draw one frame ─────────────────────────────────────────────────────
     void DrawFrame ( AeonGUI::DOM::Window& window )
     {
+        if ( !mDevice )
+        {
+            return;
+        }
         vkWaitForFences ( mDevice, 1, &mInFlightFence, VK_TRUE, UINT64_MAX );
         vkResetFences ( mDevice, 1, &mInFlightFence );
 
@@ -677,6 +681,10 @@ public:
                              const std::string& vertSpvPath,
                              const std::string& fragSpvPath )
     {
+        if ( !mDevice )
+        {
+            return;
+        }
         vkDeviceWaitIdle ( mDevice );
         CleanupSwapchain();
         CleanupTextureResources();

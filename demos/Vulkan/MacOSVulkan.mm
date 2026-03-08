@@ -51,6 +51,7 @@ limitations under the License.
                      vertPath:(const std::string&)vertPath
                      fragPath:(const std::string&)fragPath;
 - (void)render:(NSTimer*)timer;
+- (void)stopRendering;
 
 @end
 
@@ -121,6 +122,16 @@ limitations under the License.
     if (mRenderer && mWindow) {
         mRenderer->DrawFrame(*mWindow);
     }
+}
+
+- (void)stopRendering
+{
+    if (renderTimer) {
+        [renderTimer invalidate];
+        renderTimer = nil;
+    }
+    mRenderer = nullptr;
+    mWindow = nullptr;
 }
 
 - (void)mouseDown:(NSEvent*)event   { }
@@ -208,8 +219,10 @@ limitations under the License.
 
 - (void)dealloc
 {
+    [vulkanView stopRendering];
     if (renderer) { renderer->Cleanup(); delete renderer; renderer = nullptr; }
     delete aeonWindow;
+    aeonWindow = nullptr;
     [vulkanView release];
     [window release];
     [super dealloc];
