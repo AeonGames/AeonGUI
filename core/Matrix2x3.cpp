@@ -52,6 +52,7 @@ namespace AeonGUI
         mMatrix2x3[0] = mMatrix2x3[3] = std::cos ( radians );
         mMatrix2x3[1] = -std::sin ( radians );
         mMatrix2x3[2] = std::sin ( radians );
+        mMatrix2x3[4] = mMatrix2x3[5] = 0.0;
     }
     Matrix2x3::Matrix2x3 ( const Vector2& aScale )
     {
