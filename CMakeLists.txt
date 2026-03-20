@@ -223,6 +223,18 @@ endif()
 list(APPEND DEMO_DIRS ${CMAKE_SOURCE_DIR}/demos/Vulkan)
 configure_vscode(${DEMO_DIRS})
 
+find_package(Doxygen)
+if(DOXYGEN_FOUND)
+  set(DOXYGEN_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/docs")
+  configure_file(${CMAKE_SOURCE_DIR}/Doxyfile ${CMAKE_BINARY_DIR}/Doxyfile @ONLY)
+  add_custom_target(doc
+    COMMAND ${DOXYGEN_EXECUTABLE} ${CMAKE_BINARY_DIR}/Doxyfile
+    WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
+    COMMENT "Generating API documentation with Doxygen"
+    VERBATIM
+  )
+endif()
+
 install(TARGETS AeonGUI
     EXPORT aeongui
     RUNTIME DESTINATION bin
