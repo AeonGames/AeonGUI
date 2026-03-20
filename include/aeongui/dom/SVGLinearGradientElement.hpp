@@ -24,10 +24,19 @@ namespace AeonGUI
     namespace DOM
     {
 
+        /** @brief SVG linear gradient element.
+         *  @see https://www.w3.org/TR/SVG2/pservers.html#InterfaceSVGLinearGradientElement
+         */
         class SVGLinearGradientElement : public SVGGradientElement
         {
         public:
+            /** @brief Construct an SVGLinearGradientElement.
+             *  @param aTagName    Tag name.
+             *  @param aAttributes Element attributes.
+             *  @param aParent     Parent node.
+             */
             SVGLinearGradientElement ( const DOMString& aTagName, AttributeMap&& aAttributes, Node* aParent );
+            /** @brief Destructor. */
             ~SVGLinearGradientElement() final;
         };
     }

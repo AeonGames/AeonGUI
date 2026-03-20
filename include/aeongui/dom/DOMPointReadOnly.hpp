@@ -1,5 +1,5 @@
 /*
-Copyright (C) 2025 Rodrigo Jose Hernandez Cordoba
+Copyright (C) 2025,2026 Rodrigo Jose Hernandez Cordoba
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -24,22 +24,50 @@ namespace AeonGUI
     namespace DOM
     {
         class DOMMatrixReadOnly;
+        /** @brief Immutable 3D point with a perspective component.
+         *
+         *  Implements the DOM DOMPointReadOnly interface.
+         *  @see https://drafts.fxtf.org/geometry/#dompointreadonly
+         */
         class DLL DOMPointReadOnly
         {
         public:
+            /** @brief Construct a point.
+             *  @param x X coordinate (default 0).
+             *  @param y Y coordinate (default 0).
+             *  @param z Z coordinate (default 0).
+             *  @param w Perspective component (default 1).
+             */
             DOMPointReadOnly ( float x = 0.0f, float y = 0.0f, float z = 0.0f, float w = 1.0f );
+            /** @brief Destructor. */
             virtual ~DOMPointReadOnly();
+            /** @brief Get the X coordinate. */
             float x() const;
+            /** @brief Get the Y coordinate. */
             float y() const;
+            /** @brief Get the Z coordinate. */
             float z() const;
+            /** @brief Get the W (perspective) component. */
             float w() const;
 
+            /** @brief Create a DOMPointReadOnly from any point-like object.
+             *  @tparam T A type with x(), y(), z(), and w() accessors.
+             *  @param point The source point.
+             *  @return A new DOMPointReadOnly.
+             */
             template <typename T>
             static DOMPointReadOnly fromPoint ( const T& point )
             {
                 return DOMPointReadOnly ( point.x(), point.y(), point.z(), point.w() );
             }
+            /** @brief Transform this point by a matrix.
+             *  @param matrix The transformation matrix.
+             *  @return The transformed point.
+             */
             DOMPointReadOnly matrixTransform ( const DOMMatrixReadOnly& matrix ) const;
+            /** @brief Serialize to JSON.
+             *  @return A JSON string representation.
+             */
             DOMString toJSON() const;
         protected:
             float mX{};

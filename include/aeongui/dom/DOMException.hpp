@@ -1,5 +1,5 @@
 /*
-Copyright (C) 2025 Rodrigo Jose Hernandez Cordoba
+Copyright (C) 2025,2026 Rodrigo Jose Hernandez Cordoba
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -22,9 +22,16 @@ namespace AeonGUI
 {
     namespace DOM
     {
+        /** @brief Base class for all DOM exceptions.
+         *
+         *  Encapsulates a numeric error code, a message, and a name.
+         *  Derived classes represent specific W3C DOM exception types.
+         *  @see https://webidl.spec.whatwg.org/#idl-DOMException
+         */
         class DOMException : public std::exception
         {
         public:
+            /** @brief W3C DOM exception codes. */
             enum ExceptionCode : unsigned short
             {
                 INDEX_SIZE_ERR = 1,
@@ -53,19 +60,24 @@ namespace AeonGUI
                 INVALID_NODE_TYPE_ERR = 24,
                 DATA_CLONE_ERR = 25
             };
-            // Override the virtual what() function
+            /** @brief Get the human-readable error name.
+             *  @return Null-terminated error name.
+             */
             const char* what() const noexcept override
             {
                 return mName.c_str();
             }
+            /** @brief Get the error message. */
             const DOMString& message() const
             {
                 return mMessage;
             }
+            /** @brief Get the error name. */
             const DOMString& name() const
             {
                 return mName;
             }
+            /** @brief Get the numeric exception code. */
             unsigned short code() const
             {
                 return mCode;

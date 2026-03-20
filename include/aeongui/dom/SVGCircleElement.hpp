@@ -22,10 +22,19 @@ namespace AeonGUI
 {
     namespace DOM
     {
+        /** @brief SVG circle shape element.
+         *  @see https://www.w3.org/TR/SVG2/shapes.html#InterfaceSVGCircleElement
+         */
         class SVGCircleElement : public SVGGeometryElement
         {
         public:
+            /** @brief Construct an SVGCircleElement.
+             *  @param aTagName    Tag name.
+             *  @param aAttributes Element attributes.
+             *  @param aParent     Parent node.
+             */
             SVGCircleElement ( const DOMString& aTagName, AttributeMap&& aAttributes, Node* aParent );
+            /** @brief Destructor. */
             ~SVGCircleElement() final;
         };
     }

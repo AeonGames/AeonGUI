@@ -21,10 +21,19 @@ namespace AeonGUI
 {
     namespace DOM
     {
+        /** @brief Base class for all SVG DOM elements.
+         *  @see https://www.w3.org/TR/SVG2/types.html#InterfaceSVGElement
+         */
         class SVGElement : public Element
         {
         public:
+            /** @brief Construct an SVGElement.
+             *  @param aTagName    Tag name.
+             *  @param aAttributes Element attributes.
+             *  @param aParent     Parent node.
+             */
             SVGElement ( const DOMString& aTagName, AttributeMap&& aAttributes, Node* aParent );
+            /** @brief Destructor. */
             ~SVGElement() override;
         };
     }

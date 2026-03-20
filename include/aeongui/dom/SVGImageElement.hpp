@@ -26,21 +26,41 @@ namespace AeonGUI
 {
     namespace DOM
     {
+        /** @brief SVG image element for embedding raster images.
+         *  @see https://www.w3.org/TR/SVG2/embedded.html#InterfaceSVGImageElement
+         */
         class SVGImageElement : public SVGGraphicsElement
         {
         public:
+            /** @brief Construct an SVGImageElement.
+             *  @param aTagName    Tag name.
+             *  @param aAttributes Element attributes.
+             *  @param aParent     Parent node.
+             */
             DLL SVGImageElement ( const DOMString& aTagName, AttributeMap&& aAttributes, Node* aParent );
+            /** @brief Destructor. */
             DLL ~SVGImageElement() final;
 
+            /** @brief Get the animated x position. */
             DLL const SVGAnimatedLength& x() const;
+            /** @brief Get the animated y position. */
             DLL const SVGAnimatedLength& y() const;
+            /** @brief Get the animated width. */
             DLL const SVGAnimatedLength& width() const;
+            /** @brief Get the animated height. */
             DLL const SVGAnimatedLength& height() const;
+            /** @brief Get the animated href (image source URL). */
             DLL const SVGAnimatedString& href() const;
+            /** @brief Get the animated preserveAspectRatio. */
             DLL const SVGAnimatedPreserveAspectRatio& preserveAspectRatio() const;
+            /** @brief Get the crossOrigin attribute value. */
             DLL const DOMString& crossOrigin() const;
+            /** @brief Get the decoding hint ("auto", "sync", or "async"). */
             DLL const DOMString& decoding() const;
 
+            /** @brief Draw the embedded image onto the canvas.
+             *  @param aCanvas Target canvas.
+             */
             DLL void DrawStart ( Canvas& aCanvas ) const final;
 
         private:

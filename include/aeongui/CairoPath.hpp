@@ -1,5 +1,5 @@
 /*
-Copyright (C) 2019,2020,2025 Rodrigo Jose Hernandez Cordoba
+Copyright (C) 2019,2020,2025,2026 Rodrigo Jose Hernandez Cordoba
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -21,14 +21,30 @@ limitations under the License.
 
 namespace AeonGUI
 {
-    /** Base class for cached path data. */
+    /** @brief Cairo-backend path implementation.
+     *
+     *  Converts DrawType command sequences into a cached cairo_path_t
+     *  structure for efficient repeated rendering.
+     */
     class CairoPath : public Path
     {
     public:
+        /** @brief Default constructor. */
         CairoPath();
+        /** @brief Build the Cairo path from a vector of draw commands.
+         *  @param aCommands The draw command sequence.
+         */
         void Construct ( const std::vector<DrawType>& aCommands ) final;
+        /** @brief Build the Cairo path from a raw array of draw commands.
+         *  @param aCommands    Pointer to the command array.
+         *  @param aCommandCount Number of commands.
+         */
         void Construct ( const DrawType* aCommands, size_t aCommandCount ) final;
+        /** @brief Destructor. Frees path data. */
         ~CairoPath();
+        /** @brief Get the underlying Cairo path structure.
+         *  @return Pointer to the cairo_path_t.
+         */
         const cairo_path_t* GetCairoPath() const;
     private:
         cairo_path_t mPath{};

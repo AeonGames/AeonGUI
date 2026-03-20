@@ -23,15 +23,25 @@ namespace AeonGUI
 {
     namespace DOM
     {
+        /** @brief Animated string attribute (SVG).
+         *
+         *  Wraps base and animated DOMString values.
+         */
         class SVGAnimatedString
         {
         public:
+            /** @brief Default constructor. */
             DLL SVGAnimatedString();
+            /** @brief Destructor. */
             DLL ~SVGAnimatedString();
 
+            /** @brief Get the base value (mutable). */
             DLL DOMString& baseVal();
+            /** @brief Get the base value (const). */
             DLL const DOMString& baseVal() const;
+            /** @brief Get the animated value (mutable). */
             DLL DOMString& animVal();
+            /** @brief Get the animated value (const). */
             DLL const DOMString& animVal() const;
 
         private:

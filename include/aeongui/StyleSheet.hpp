@@ -28,29 +28,37 @@ extern "C"
 
 namespace AeonGUI
 {
+    /** @brief Custom deleter for css_stylesheet. */
     struct css_stylesheet_deleter
     {
         void operator() ( css_stylesheet* p );
     };
 
+    /** @brief Custom deleter for css_select_ctx. */
     struct css_select_ctx_deleter
     {
         void operator() ( css_select_ctx* p );
     };
 
+    /** @brief Custom deleter for css_select_results. */
     struct css_select_results_deleter
     {
         void operator() ( css_select_results* p );
     };
 
+    /** @brief Custom deleter for css_computed_style. */
     struct css_computed_style_deleter
     {
         void operator() ( css_computed_style* p );
     };
 
+    /** @brief Owning pointer to a libcss stylesheet. */
     using StyleSheetPtr = std::unique_ptr<css_stylesheet, css_stylesheet_deleter>;
+    /** @brief Owning pointer to a libcss selection context. */
     using SelectCtxPtr = std::unique_ptr<css_select_ctx, css_select_ctx_deleter>;
+    /** @brief Owning pointer to libcss selection results. */
     using SelectResultsPtr = std::unique_ptr<css_select_results, css_select_results_deleter>;
+    /** @brief Owning pointer to a libcss computed style. */
     using ComputedStylePtr = std::unique_ptr<css_computed_style, css_computed_style_deleter>;
 }
 #endif

@@ -22,10 +22,19 @@ namespace AeonGUI
 {
     namespace DOM
     {
+        /** @brief SVG ellipse shape element.
+         *  @see https://www.w3.org/TR/SVG2/shapes.html#InterfaceSVGEllipseElement
+         */
         class SVGEllipseElement : public SVGGeometryElement
         {
         public:
+            /** @brief Construct an SVGEllipseElement.
+             *  @param aTagName    Tag name.
+             *  @param aAttributes Element attributes.
+             *  @param aParent     Parent node.
+             */
             SVGEllipseElement ( const DOMString& aTagName, AttributeMap&& aAttributes, Node* aParent );
+            /** @brief Destructor. */
             ~SVGEllipseElement() final;
         };
     }

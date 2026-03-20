@@ -1,5 +1,5 @@
 /*
-Copyright (C) 2025 Rodrigo Jose Hernandez Cordoba
+Copyright (C) 2025,2026 Rodrigo Jose Hernandez Cordoba
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -24,6 +24,11 @@ namespace AeonGUI
 {
     namespace DOM
     {
+        /** @brief Variant type representing any DOM value.
+         *
+         *  Used where the DOM specification calls for an "any" type.
+         *  Can hold a DOMString, integer, floating-point, or boolean value.
+         */
         using AnyType = std::variant <
                         DOMString,
                         int8_t, int16_t, int32_t, int64_t,

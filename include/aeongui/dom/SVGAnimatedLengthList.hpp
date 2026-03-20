@@ -1,5 +1,5 @@
 /*
-Copyright (C) 2025 Rodrigo Jose Hernandez Cordoba
+Copyright (C) 2025,2026 Rodrigo Jose Hernandez Cordoba
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -23,14 +23,23 @@ namespace AeonGUI
 {
     namespace DOM
     {
+        /** @brief Animated length list attribute (SVG).
+         *
+         *  Wraps base and animated SVGLengthList values.
+         */
         class DLL SVGAnimatedLengthList
         {
         public:
+            /** @brief Default constructor. */
             SVGAnimatedLengthList();
+            /** @brief Destructor. */
             ~SVGAnimatedLengthList();
 
+            /** @brief Get the base value (mutable). */
             SVGLengthList& baseVal();
+            /** @brief Get the base value (const). */
             const SVGLengthList& baseVal() const;
+            /** @brief Get the animated value (const). */
             const SVGLengthList& animVal() const;
 
         private:

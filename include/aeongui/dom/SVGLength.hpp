@@ -1,5 +1,5 @@
 /*
-Copyright (C) 2025 Rodrigo Jose Hernandez Cordoba
+Copyright (C) 2025,2026 Rodrigo Jose Hernandez Cordoba
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -23,25 +23,33 @@ namespace AeonGUI
 {
     namespace DOM
     {
+        /** @brief SVG length unit type constants. */
         enum class SVGLengthType
         {
-            UNKNOWN = 0,
-            NUMBER = 1,
-            PERCENTAGE = 2,
-            EMS = 3,
-            EXS = 4,
-            PX = 5,
-            CM = 6,
-            MM = 7,
-            IN = 8,
-            PT = 9,
-            PC = 10
+            UNKNOWN = 0,    ///< Unknown or unsupported unit.
+            NUMBER = 1,     ///< Unitless number.
+            PERCENTAGE = 2, ///< Percentage.
+            EMS = 3,        ///< Font-relative em units.
+            EXS = 4,        ///< x-height units.
+            PX = 5,         ///< CSS pixels.
+            CM = 6,         ///< Centimeters.
+            MM = 7,         ///< Millimeters.
+            IN = 8,         ///< Inches.
+            PT = 9,         ///< Points (1/72 of an inch).
+            PC = 10         ///< Picas (1/6 of an inch).
         };
 
+        /** @brief Represents an SVG length value with a unit.
+         *
+         *  Stores a numeric value and its associated unit type.
+         *  @see https://www.w3.org/TR/SVG2/types.html#InterfaceSVGLength
+         */
         class DLL SVGLength
         {
         public:
+            /** @brief Default constructor. */
             SVGLength();
+            /** @brief Destructor. */
             ~SVGLength();
             /// @brief The type of the length. One of the SVGLengthType constants.
             SVGLengthType unitType() const;

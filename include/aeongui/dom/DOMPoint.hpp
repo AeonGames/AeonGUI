@@ -1,5 +1,5 @@
 /*
-Copyright (C) 2025 Rodrigo Jose Hernandez Cordoba
+Copyright (C) 2025,2026 Rodrigo Jose Hernandez Cordoba
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -23,23 +23,56 @@ namespace AeonGUI
 {
     namespace DOM
     {
+        /** @brief Mutable 3D point with a perspective component.
+         *
+         *  Extends DOMPointReadOnly with setters for x, y, z, and w.
+         *  @see https://drafts.fxtf.org/geometry/#dompoint
+         */
         class DLL DOMPoint : public DOMPointReadOnly
         {
         public:
+            /** @brief Construct a point.
+             *  @param x X coordinate (default 0).
+             *  @param y Y coordinate (default 0).
+             *  @param z Z coordinate (default 0).
+             *  @param w Perspective component (default 1).
+             */
             DOMPoint ( float x = 0.0f, float y = 0.0f, float z = 0.0f, float w = 1.0f );
+            /** @brief Destructor. */
             virtual ~DOMPoint() final;
             using DOMPointReadOnly::x;
             using DOMPointReadOnly::y;
             using DOMPointReadOnly::z;
             using DOMPointReadOnly::w;
+            /** @brief Create a DOMPoint from any point-like object.
+             *  @tparam T A type with x(), y(), z(), and w() accessors.
+             *  @param point The source point.
+             *  @return A new DOMPoint.
+             */
             template <typename T>
             static DOMPoint fromPoint ( const T& point )
             {
                 return DOMPoint ( point.x(), point.y(), point.z(), point.w() );
             }
+            /** @brief Set the X coordinate.
+             *  @param newX The new X value.
+             *  @return The set value.
+             */
             float x ( float newX );
+            /** @brief Set the Y coordinate.
+             *  @param newY The new Y value.
+             *  @return The set value.
+             */
             float y ( float newY );
+            /** @brief Set the Z coordinate.
+             *  @param newZ The new Z value.
+             *  @return The set value.
+             */
             float z ( float newZ );
+            /** @brief Set the W component.
+             *  @param newW The new W value.
+             *  @return The set value.
+             */
             float w ( float newW );
         };
     }

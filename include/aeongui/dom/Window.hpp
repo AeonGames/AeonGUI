@@ -1,5 +1,5 @@
 /*
-Copyright (C) 2019,2020,2023,2025 Rodrigo Jose Hernandez Cordoba
+Copyright (C) 2019,2020,2023,2025,2026 Rodrigo Jose Hernandez Cordoba
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -29,26 +29,50 @@ namespace AeonGUI
     namespace DOM
     {
         class Document;
-        /**
-         * Window class represents a window in the AeonGUI framework.
-         * It is used to display a Document and manage its rendering.
-         * The IDL for the Window interface is located at https://html.spec.whatwg.org/multipage/nav-history-apis.html#window
-         * This class is a partial implementation of that specification.
+        /** @brief Represents a display window in the AeonGUI framework.
+         *
+         *  Owns a Document, a CairoCanvas, and a Location.
+         *  Renders the document into a pixel buffer that can be blitted
+         *  to the screen.
+         *  @see https://html.spec.whatwg.org/multipage/nav-history-apis.html#window
          */
         class Window : public EventTarget
         {
         public:
+            /** @brief Default constructor. Creates an empty window. */
             DLL Window ();
+            /** @brief Construct a window with the given viewport size.
+             *  @param aWidth  Initial width in pixels.
+             *  @param aHeight Initial height in pixels.
+             */
             DLL Window ( uint32_t aWidth, uint32_t aHeight );
+            /** @brief Destructor. */
             DLL ~Window () override final;
+            /** @brief Resize the rendering viewport.
+             *  @param aWidth  New width in pixels.
+             *  @param aHeight New height in pixels.
+             */
             DLL void ResizeViewport ( uint32_t aWidth, uint32_t aHeight );
+            /** @brief Get a pointer to the rendered pixel data.
+             *  @return Pointer to BGRA pixel data.
+             */
             DLL const uint8_t* GetPixels() const;
+            /** @brief Get the window width in pixels. */
             DLL size_t GetWidth() const;
+            /** @brief Get the window height in pixels. */
             DLL size_t GetHeight() const;
+            /** @brief Get the stride (bytes per row) of the pixel buffer. */
             DLL size_t GetStride() const;
+            /** @brief Render the current document to the internal canvas. */
             DLL void Draw();
             /**DOM Properties and Methods @{*/
+            /** @brief Get the associated Document.
+             *  @return Pointer to the Document, or nullptr.
+             */
             DLL const Document* document() const;
+            /** @brief Get the Location object.
+             *  @return Reference to the window's Location.
+             */
             DLL Location& location() const;
             /**@}*/
         private:

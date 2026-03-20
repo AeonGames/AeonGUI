@@ -22,11 +22,21 @@ namespace AeonGUI
 {
     namespace DOM
     {
+        /** @brief Container for referenced SVG elements (not rendered directly).
+         *  @see https://www.w3.org/TR/SVG2/struct.html#InterfaceSVGDefsElement
+         */
         class SVGDefsElement : public SVGGraphicsElement
         {
         public:
+            /** @brief Construct an SVGDefsElement.
+             *  @param aTagName    Tag name.
+             *  @param aAttributes Element attributes.
+             *  @param aParent     Parent node.
+             */
             SVGDefsElement ( const DOMString& aTagName, AttributeMap&& aAttributes, Node* aParent );
+            /** @brief Destructor. */
             ~SVGDefsElement() final;
+            /** @brief Always returns false; defs children are not drawn directly. */
             bool IsDrawEnabled() const final;
         };
     }

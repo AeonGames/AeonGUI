@@ -21,11 +21,23 @@ namespace AeonGUI
 {
     namespace DOM
     {
+        /** @brief SVG text element for rendering text.
+         *  @see https://www.w3.org/TR/SVG2/text.html#InterfaceSVGTextElement
+         */
         class SVGTextElement : public SVGTextPositioningElement
         {
         public:
+            /** @brief Construct an SVGTextElement.
+             *  @param aTagName    Tag name.
+             *  @param aAttributes Element attributes.
+             *  @param aParent     Parent node.
+             */
             SVGTextElement ( const DOMString& aTagName, AttributeMap&& aAttributes, Node* aParent );
+            /** @brief Destructor. */
             ~SVGTextElement() override;
+            /** @brief Render text content onto the canvas.
+             *  @param aCanvas Target canvas.
+             */
             void DrawStart ( Canvas& aCanvas ) const override;
         private:
         };

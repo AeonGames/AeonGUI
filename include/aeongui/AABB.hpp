@@ -1,5 +1,5 @@
 /*
-Copyright (C) 2019,2025 Rodrigo Jose Hernandez Cordoba
+Copyright (C) 2019,2025,2026 Rodrigo Jose Hernandez Cordoba
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -19,16 +19,43 @@ limitations under the License.
 #include "aeongui/Vector2.hpp"
 namespace AeonGUI
 {
+    /** @brief Axis-Aligned Bounding Box.
+     *
+     *  Represents a 2D axis-aligned bounding box defined by a center point and radii (half-extents).
+     */
     class AABB
     {
     public:
+        /** @brief Default constructor. Initializes center and radii to zero. */
         DLL AABB();
+        /** @brief Construct an AABB from a center point and radii.
+         *  @param aCenter The center of the bounding box.
+         *  @param aRadii  The half-extents (radii) along each axis.
+         */
         DLL AABB ( const Vector2& aCenter, const Vector2& aRadii );
+        /** @brief Get the center of the bounding box.
+         *  @return Reference to the center vector.
+         */
         DLL const Vector2& GetCenter() const;
+        /** @brief Get the radii (half-extents) of the bounding box.
+         *  @return Reference to the radii vector.
+         */
         DLL const Vector2& GetRadii() const;
+        /** @brief Get the X coordinate of the top-left corner.
+         *  @return X position (center.x - radii.x).
+         */
         DLL double GetX() const;
+        /** @brief Get the Y coordinate of the top-left corner.
+         *  @return Y position (center.y - radii.y).
+         */
         DLL double GetY() const;
+        /** @brief Get the width of the bounding box.
+         *  @return Width (2 * radii.x).
+         */
         DLL double GetWidth() const;
+        /** @brief Get the height of the bounding box.
+         *  @return Height (2 * radii.y).
+         */
         DLL double GetHeight() const;
     private:
         Vector2 mCenter{};

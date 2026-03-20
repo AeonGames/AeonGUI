@@ -24,10 +24,19 @@ namespace AeonGUI
     namespace DOM
     {
 
+        /** @brief SVG use element for referencing other elements.
+         *  @see https://www.w3.org/TR/SVG2/struct.html#InterfaceSVGUseElement
+         */
         class SVGUseElement : public SVGGraphicsElement
         {
         public:
+            /** @brief Construct an SVGUseElement.
+             *  @param aTagName    Tag name.
+             *  @param aAttributes Element attributes.
+             *  @param aParent     Parent node.
+             */
             SVGUseElement ( const DOMString& aTagName, AttributeMap&& aAttributes, Node* aParent );
+            /** @brief Destructor. */
             ~SVGUseElement() final;
         };
     }

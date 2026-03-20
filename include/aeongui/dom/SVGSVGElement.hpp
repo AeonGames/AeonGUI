@@ -23,11 +23,23 @@ namespace AeonGUI
 {
     namespace DOM
     {
+        /** @brief Root SVG container element.
+         *  @see https://www.w3.org/TR/SVG2/struct.html#InterfaceSVGSVGElement
+         */
         class SVGSVGElement : public SVGGraphicsElement
         {
         public:
+            /** @brief Construct an SVGSVGElement.
+             *  @param aTagName    Tag name.
+             *  @param aAttributes Element attributes.
+             *  @param aParent     Parent node.
+             */
             SVGSVGElement ( const DOMString& aTagName, AttributeMap&& aAttributes, Node* aParent );
+            /** @brief Destructor. */
             ~SVGSVGElement() final;
+            /** @brief Set up viewport and viewBox, then draw children.
+             *  @param aCanvas Target canvas.
+             */
             void DrawStart ( Canvas& aCanvas ) const final;
         private:
             // Attributes

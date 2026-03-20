@@ -1,5 +1,5 @@
 /*
-Copyright (C) 2014,2019,2025 Rodrigo Jose Hernandez Cordoba
+Copyright (C) 2014,2019,2025,2026 Rodrigo Jose Hernandez Cordoba
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -14,8 +14,17 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
+/** @file Platform.hpp
+ *  @brief Platform-specific DLL import/export macros and compiler helpers.
+ */
 #ifndef AEONGUI_PLATFORM_H
 #define AEONGUI_PLATFORM_H
+/** @def DLL
+ *  @brief Marks a symbol for DLL export or import on Windows.
+ *
+ *  Expands to __declspec(dllexport) when building AeonGUI,
+ *  __declspec(dllimport) when consuming it, or nothing on non-Windows.
+ */
 #ifndef DLL
 #ifdef WIN32
 #ifdef AeonGUI_EXPORTS
@@ -29,6 +38,12 @@ limitations under the License.
 #endif
 #endif
 
+/** @def PRIVATE_TEMPLATE_MEMBERS_START
+ *  @brief Suppress MSVC C4251 warnings for private template data members.
+ */
+/** @def PRIVATE_TEMPLATE_MEMBERS_END
+ *  @brief Restore warnings after PRIVATE_TEMPLATE_MEMBERS_START.
+ */
 #ifdef _MSC_VER
 #define PRIVATE_TEMPLATE_MEMBERS_START \
 _Pragma("warning(push)") \

@@ -1,5 +1,5 @@
 /*
-Copyright (C) 2025 Rodrigo Jose Hernandez Cordoba
+Copyright (C) 2025,2026 Rodrigo Jose Hernandez Cordoba
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -23,10 +23,22 @@ namespace AeonGUI
 {
     namespace DOM
     {
+        /** @brief Mutable rectangle.
+         *
+         *  Extends DOMRectReadOnly with setters for all components.
+         *  @see https://drafts.fxtf.org/geometry/#domrect
+         */
         class DLL DOMRect : public DOMRectReadOnly
         {
         public:
+            /** @brief Construct a rectangle.
+             *  @param x      X coordinate.
+             *  @param y      Y coordinate.
+             *  @param width  Width.
+             *  @param height Height.
+             */
             DOMRect ( float x = 0.0f, float y = 0.0f, float width = 0.0f, float height = 0.0f );
+            /** @brief Destructor. */
             virtual ~DOMRect() final;
 
             using DOMRectReadOnly::x;
@@ -38,15 +50,26 @@ namespace AeonGUI
             using DOMRectReadOnly::bottom;
             using DOMRectReadOnly::left;
 
+            /** @brief Set the X coordinate. @return The set value. */
             float x ( float newX );
+            /** @brief Set the Y coordinate. @return The set value. */
             float y ( float newY );
+            /** @brief Set the width. @return The set value. */
             float width ( float newWidth );
+            /** @brief Set the height. @return The set value. */
             float height ( float newHeight );
+            /** @brief Set the top edge. @return The set value. */
             float top ( float newTop );
+            /** @brief Set the right edge. @return The set value. */
             float right ( float newRight );
+            /** @brief Set the bottom edge. @return The set value. */
             float bottom ( float newBottom );
+            /** @brief Set the left edge. @return The set value. */
             float left ( float newLeft );
 
+            /** @brief Create a DOMRect from any rect-like object.
+             *  @tparam T A type with x(), y(), width(), and height() accessors.
+             */
             template <typename T>
             static DOMRect fromRect ( const T& rect )
             {

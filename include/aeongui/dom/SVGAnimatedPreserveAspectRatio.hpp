@@ -23,15 +23,25 @@ namespace AeonGUI
 {
     namespace DOM
     {
+        /** @brief Animated preserveAspectRatio attribute (SVG).
+         *
+         *  Wraps base and animated PreserveAspectRatio values.
+         */
         class DLL SVGAnimatedPreserveAspectRatio
         {
         public:
+            /** @brief Default constructor. */
             SVGAnimatedPreserveAspectRatio();
+            /** @brief Destructor. */
             ~SVGAnimatedPreserveAspectRatio();
 
+            /** @brief Get the base value (mutable). */
             PreserveAspectRatio& baseVal();
+            /** @brief Get the base value (const). */
             const PreserveAspectRatio& baseVal() const;
+            /** @brief Get the animated value (mutable). */
             PreserveAspectRatio& animVal();
+            /** @brief Get the animated value (const). */
             const PreserveAspectRatio& animVal() const;
 
         private:

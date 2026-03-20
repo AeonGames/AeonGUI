@@ -22,10 +22,19 @@ namespace AeonGUI
 {
     namespace DOM
     {
+        /** @brief SVG line shape element.
+         *  @see https://www.w3.org/TR/SVG2/shapes.html#InterfaceSVGLineElement
+         */
         class SVGLineElement : public SVGGeometryElement
         {
         public:
+            /** @brief Construct an SVGLineElement.
+             *  @param aTagName    Tag name.
+             *  @param aAttributes Element attributes.
+             *  @param aParent     Parent node.
+             */
             SVGLineElement ( const DOMString& aTagName, AttributeMap&& aAttributes, Node* aParent );
+            /** @brief Destructor. */
             ~SVGLineElement() final;
         private:
             double mX1{};

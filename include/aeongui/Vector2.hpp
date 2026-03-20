@@ -1,5 +1,5 @@
 /*
-Copyright (C) 2019,2025 Rodrigo Jose Hernandez Cordoba
+Copyright (C) 2019,2025,2026 Rodrigo Jose Hernandez Cordoba
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -21,35 +21,76 @@ limitations under the License.
 namespace AeonGUI
 {
     class Matrix2x3;
+    /** @brief 2D vector of doubles.
+     *
+     *  Provides basic 2D vector arithmetic including addition, subtraction,
+     *  scalar and component-wise multiplication, division, and
+     *  transformation by a Matrix2x3.
+     */
     class Vector2
     {
     public:
+        /** @brief Default constructor. Initializes to (0, 0). */
         DLL Vector2();
+        /** @brief Construct from X and Y components.
+         *  @param aX The X component.
+         *  @param aY The Y component.
+         */
         DLL Vector2 ( double aX, double aY );
+        /** @brief Get the X component. */
         DLL double GetX() const;
+        /** @brief Get the Y component. */
         DLL double GetY() const;
+        /** @brief Set the X component.
+         *  @param aX The new X value.
+         */
         DLL void SetX ( double aX );
+        /** @brief Set the Y component.
+         *  @param aY The new Y value.
+         */
         DLL void SetY ( double aY );
+        /** @brief Get the length (magnitude) of the vector. */
         DLL double Length() const;
+        /** @brief Access a component by index (const).
+         *  @param aIndex 0 for X, 1 for Y.
+         */
         DLL const double& operator[] ( std::size_t aIndex ) const;
+        /** @brief Access a component by index.
+         *  @param aIndex 0 for X, 1 for Y.
+         */
         DLL double& operator[] ( std::size_t aIndex );
+        /** @brief Add another vector in-place. */
         DLL Vector2& operator+= ( const Vector2& aRight );
+        /** @brief Subtract another vector in-place. */
         DLL Vector2& operator-= ( const Vector2& aRight );
+        /** @brief Transform by a Matrix2x3 in-place. */
         DLL Vector2& operator*= ( const Matrix2x3& aRight );
+        /** @brief Component-wise multiply in-place. */
         DLL Vector2& operator*= ( const Vector2& aRight );
+        /** @brief Scalar multiply in-place. */
         DLL Vector2& operator*= ( double aRight );
+        /** @brief Scalar divide in-place. */
         DLL Vector2& operator/= ( double aRight );
     private:
         double mVector2[2];
     };
+    /** @brief Add two vectors. */
     DLL Vector2 operator+ ( const Vector2& aLeft, const Vector2& aRight );
+    /** @brief Subtract two vectors. */
     DLL Vector2 operator- ( const Vector2& aLeft, const Vector2& aRight );
+    /** @brief Transform a vector by a Matrix2x3. */
     DLL Vector2 operator* ( const Vector2& aLeft, const Matrix2x3& aRight );
+    /** @brief Component-wise multiply two vectors. */
     DLL Vector2 operator* ( const Vector2& aLeft, const Vector2& aRight );
+    /** @brief Divide a vector by a scalar. */
     DLL Vector2 operator/ ( const Vector2& aLeft, double aRight );
+    /** @brief Multiply a vector by a scalar. */
     DLL Vector2 operator* ( const Vector2& aLeft, double aRight );
+    /** @brief Component-wise absolute value. */
     DLL Vector2 Abs ( const Vector2& aVector2 );
+    /** @brief Dot product of two vectors. */
     DLL double Dot ( const Vector2& aLeft, const Vector2& aRight );
+    /** @brief Euclidean distance between two points. */
     DLL double Distance ( const Vector2& aLeft, const Vector2& aRight );
 }
 #endif

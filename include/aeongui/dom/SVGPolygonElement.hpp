@@ -22,10 +22,19 @@ namespace AeonGUI
 {
     namespace DOM
     {
+        /** @brief SVG polygon shape element.
+         *  @see https://www.w3.org/TR/SVG2/shapes.html#InterfaceSVGPolygonElement
+         */
         class SVGPolygonElement : public SVGGeometryElement
         {
         public:
+            /** @brief Construct an SVGPolygonElement.
+             *  @param aTagName    Tag name.
+             *  @param aAttributes Element attributes.
+             *  @param aParent     Parent node.
+             */
             SVGPolygonElement ( const DOMString& aTagName, AttributeMap&& aAttributes, Node* aParent );
+            /** @brief Destructor. */
             ~SVGPolygonElement() final;
         };
     }

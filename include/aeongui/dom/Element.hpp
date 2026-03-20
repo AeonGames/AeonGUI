@@ -36,16 +36,41 @@ namespace AeonGUI
     namespace DOM
     {
         class Document;
+        /** @brief Base class for DOM elements.
+         *
+         *  An Element has a tag name, attributes, CSS classes, and
+         *  computed styles. It extends Node with the DOM Element interface.
+         *  @see https://dom.spec.whatwg.org/#interface-element
+         */
         class Element : public Node
         {
         public:
+            /** @brief Construct an element.
+             *  @param aTagName      The tag name (e.g. "rect", "circle").
+             *  @param aAttributes   The element's attribute map.
+             *  @param aParent       The parent node.
+             */
             DLL Element ( const DOMString& aTagName, AttributeMap&& aAttributes, Node* aParent );
+            /** @brief Virtual destructor. */
             DLL virtual ~Element();
             /**DOM Properties and Methods @{*/
+            /** @brief Get the node type (always ELEMENT_NODE). */
             NodeType nodeType() const final;
+            /** @brief Get the tag name.
+             *  @return The element's tag name.
+             */
             const DOMString& tagName() const;
+            /** @brief Get the element's ID attribute value.
+             *  @return The ID string.
+             */
             const DOMString& id() const;
+            /** @brief Get the element's CSS class list.
+             *  @return Vector of interned lwc_string class names.
+             */
             const std::vector<lwc_string*>& classes() const;
+            /** @brief Get the element's attribute map.
+             *  @return Const reference to the AttributeMap.
+             */
             const AttributeMap& attributes() const;
             /**@}*/
         private:

@@ -1,5 +1,5 @@
 /*
-Copyright (C) 2025 Rodrigo Jose Hernandez Cordoba
+Copyright (C) 2025,2026 Rodrigo Jose Hernandez Cordoba
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -23,27 +23,53 @@ namespace AeonGUI
 {
     namespace DOM
     {
+        /** @brief Immutable rectangle.
+         *
+         *  Implements the DOM DOMRectReadOnly interface.
+         *  @see https://drafts.fxtf.org/geometry/#domrectreadonly
+         */
         class DLL DOMRectReadOnly
         {
         public:
+            /** @brief Construct a rectangle.
+             *  @param x      X coordinate of the origin.
+             *  @param y      Y coordinate of the origin.
+             *  @param width  Rectangle width.
+             *  @param height Rectangle height.
+             */
             DOMRectReadOnly ( float x = 0.0f, float y = 0.0f, float width = 0.0f, float height = 0.0f );
+            /** @brief Destructor. */
             virtual ~DOMRectReadOnly();
 
+            /** @brief Get the X coordinate. */
             float x() const;
+            /** @brief Get the Y coordinate. */
             float y() const;
+            /** @brief Get the width. */
             float width() const;
+            /** @brief Get the height. */
             float height() const;
+            /** @brief Get the top edge (min of y and y+height). */
             float top() const;
+            /** @brief Get the right edge (max of x and x+width). */
             float right() const;
+            /** @brief Get the bottom edge (max of y and y+height). */
             float bottom() const;
+            /** @brief Get the left edge (min of x and x+width). */
             float left() const;
 
+            /** @brief Create a DOMRectReadOnly from any rect-like object.
+             *  @tparam T A type with x(), y(), width(), and height() accessors.
+             */
             template <typename T>
             static DOMRectReadOnly fromRect ( const T& rect )
             {
                 return DOMRectReadOnly ( rect.x(), rect.y(), rect.width(), rect.height() );
             }
 
+            /** @brief Serialize to JSON.
+             *  @return A JSON string representation.
+             */
             DOMString toJSON() const;
 
         protected:

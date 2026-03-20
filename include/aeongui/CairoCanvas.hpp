@@ -26,11 +26,22 @@ typedef struct _cairo cairo_t;
 
 namespace AeonGUI
 {
+    /** @brief Cairo-backed Canvas implementation.
+     *
+     *  Provides software rasterization of paths, images, and text
+     *  using the Cairo 2D graphics library.
+     */
     class CairoCanvas : public Canvas
     {
     public:
+        /** @brief Default constructor. Creates an empty canvas. */
         DLL CairoCanvas ();
+        /** @brief Construct a canvas with the given viewport size.
+         *  @param aWidth  Initial width in pixels.
+         *  @param aHeight Initial height in pixels.
+         */
         DLL CairoCanvas ( uint32_t aWidth, uint32_t aHeight );
+        /** @brief Destructor. Releases Cairo resources. */
         DLL ~CairoCanvas() final;
         DLL void ResizeViewport ( uint32_t aWidth, uint32_t aHeight ) final;
         DLL const uint8_t* GetPixels() const final;

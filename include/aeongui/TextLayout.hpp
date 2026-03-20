@@ -26,20 +26,41 @@ limitations under the License.
 #include "aeongui/Matrix2x3.hpp"
 namespace AeonGUI
 {
-    /** Text layout interface
-     * This abstracts PangoLayout the same way Canvas abstracts Cairo surface in order to allow for multiple backends to be used interchangeably in the future.
-    */
+    /** @brief Abstract text layout interface.
+     *
+     *  Abstracts PangoLayout to allow multiple text‐layout back-ends
+     *  to be used interchangeably.
+     */
     class TextLayout
     {
     public:
+        /** @brief Virtual destructor. */
         DLL virtual ~TextLayout() = 0;
+        /** @brief Set the text content to lay out.
+         *  @param aText UTF-8 text string.
+         */
         virtual void SetText ( const std::string& aText ) = 0;
+        /** @brief Set the font family.
+         *  @param aFamily Font family name (e.g. "sans-serif").
+         */
         virtual void SetFontFamily ( const std::string& aFamily ) = 0;
+        /** @brief Set the font size.
+         *  @param aSize Font size in CSS pixels.
+         */
         virtual void SetFontSize ( double aSize ) = 0;
+        /** @brief Set the font weight.
+         *  @param aWeight CSS font weight (400 = normal, 700 = bold).
+         */
         virtual void SetFontWeight ( int aWeight ) = 0;
+        /** @brief Set the font style.
+         *  @param aStyle 0 = normal, 1 = italic, 2 = oblique.
+         */
         virtual void SetFontStyle ( int aStyle ) = 0;
+        /** @brief Get the logical width of the laid-out text. */
         virtual double GetTextWidth() const = 0;
+        /** @brief Get the logical height of the laid-out text. */
         virtual double GetTextHeight() const = 0;
+        /** @brief Get the baseline offset from the top. */
         virtual double GetBaseline() const = 0;
         /** Get the x-offset of the character at the given index.
          *  @param aIndex UTF-8 byte index.

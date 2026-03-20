@@ -24,10 +24,19 @@ namespace AeonGUI
 {
     namespace DOM
     {
+        /** @brief SVG path shape element.
+         *  @see https://www.w3.org/TR/SVG2/paths.html#InterfaceSVGPathElement
+         */
         class SVGPathElement : public SVGGeometryElement
         {
         public:
+            /** @brief Construct an SVGPathElement.
+             *  @param aTagName    Tag name.
+             *  @param aAttributes Element attributes.
+             *  @param aParent     Parent node.
+             */
             SVGPathElement ( const DOMString& aTagName, AttributeMap&& aAttributes, Node* aParent );
+            /** @brief Destructor. */
             ~SVGPathElement() final;
         };
     }

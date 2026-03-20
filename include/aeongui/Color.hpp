@@ -1,5 +1,5 @@
 /*
-Copyright (C) 2010-2012,2019,2020,2025 Rodrigo Jose Hernandez Cordoba
+Copyright (C) 2010-2012,2019,2020,2025,2026 Rodrigo Jose Hernandez Cordoba
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -205,10 +205,17 @@ namespace AeonGUI
             \param src Incomming source color.*/
         DLL void Blend ( Color src );
 
+        /** @brief Get red component as a double in [0.0, 1.0]. */
         DLL double R() const;
+        /** @brief Get green component as a double in [0.0, 1.0]. */
         DLL double G() const;
+        /** @brief Get blue component as a double in [0.0, 1.0]. */
         DLL double B() const;
+        /** @brief Get alpha component as a double in [0.0, 1.0]. */
         DLL double A() const;
+        /** @brief Convert the color to a CSS-style string representation.
+         *  @return A string such as "rgba(255,0,0,1)".
+         */
         DLL std::string ToString() const;
         uint32_t bgra; ///< 32 bit Unsigned integer color value.
         struct

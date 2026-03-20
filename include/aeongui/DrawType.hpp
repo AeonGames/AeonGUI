@@ -1,5 +1,5 @@
 /*
-Copyright (C) 2019,2020,2025 Rodrigo Jose Hernandez Cordoba
+Copyright (C) 2019,2020,2025,2026 Rodrigo Jose Hernandez Cordoba
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -26,6 +26,11 @@ limitations under the License.
 
 namespace AeonGUI
 {
+    /** @brief Variant type for path drawing commands.
+     *
+     *  Each element in a draw-command sequence is either a uint64_t opcode,
+     *  a double coordinate/parameter, or a bool flag.
+     */
     using DrawType = std::variant<uint64_t, double, bool>;
 }
 #endif

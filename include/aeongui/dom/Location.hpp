@@ -1,5 +1,5 @@
 /*
-Copyright (C) 2025 Rodrigo Jose Hernandez Cordoba
+Copyright (C) 2025,2026 Rodrigo Jose Hernandez Cordoba
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -23,29 +23,61 @@ namespace AeonGUI
 {
     namespace DOM
     {
+        /** @brief Represents the URL of the active document.
+         *
+         *  Provides access to the individual components of a URL (protocol,
+         *  hostname, port, pathname, etc.) and methods to navigate.
+         *  @see https://html.spec.whatwg.org/multipage/nav-history-apis.html#location
+         */
         class Location
         {
         public:
+            /** @brief Default constructor. URL is "about:blank". */
             DLL Location();
+            /** @brief Construct with a change callback.
+             *  @param callback Called whenever the location changes.
+             */
             DLL Location ( std::function<void ( const Location& ) > callback );
+            /** @brief Destructor. */
             DLL ~Location();
             /**DOM Properties and Methods @{*/
-            // Methods to manipulate the URL
+            /** @brief Navigate to the given URL.
+             *  @param url The URL to navigate to.
+             */
             DLL void assign ( const USVString& url );
+            /** @brief Replace the current URL without creating a history entry.
+             *  @param url The URL to navigate to.
+             */
             DLL void replace ( const USVString& url );
+            /** @brief Assign a URL using the = operator.
+             *  @param url The URL to navigate to.
+             *  @return Reference to this Location.
+             */
             DLL Location& operator= ( const USVString& url );
+            /** @brief Reload the current document. */
             DLL void reload();
-            // Attributes to access various parts of the URL
+            /** @brief Get the full URL. */
             DLL const USVString& href() const;
+            /** @brief Get the origin portion of the URL. */
             DLL const USVString& origin() const;
+            /** @brief Get the protocol (e.g. "https:"). */
             DLL const USVString& protocol() const;
+            /** @brief Get the host (hostname:port). */
             DLL const USVString& host() const;
+            /** @brief Get the hostname. */
             DLL const USVString& hostname() const;
+            /** @brief Get the port number. */
             DLL const USVString& port() const;
+            /** @brief Get the pathname. */
             DLL const USVString& pathname() const;
+            /** @brief Get the query string (including leading '?'). */
             DLL const USVString& search() const;
+            /** @brief Get the fragment (including leading '#'). */
             DLL const USVString& hash() const;
             /**@}*/
+            /** @brief Set or replace the change callback.
+             *  @param callback The new callback function.
+             */
             DLL void SetCallback ( std::function<void ( const Location& ) > callback );
         private:
             USVString m_href{"about:blank"};

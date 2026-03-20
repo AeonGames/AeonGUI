@@ -22,15 +22,25 @@ namespace AeonGUI
 {
     namespace DOM
     {
+        /** @brief Animated length attribute (SVG).
+         *
+         *  Wraps base and animated SVGLength values for SVG length attributes.
+         */
         class DLL SVGAnimatedLength
         {
         public:
+            /** @brief Default constructor. */
             SVGAnimatedLength();
+            /** @brief Destructor. */
             ~SVGAnimatedLength();
 
+            /** @brief Get the base value (mutable). */
             SVGLength& baseVal();
+            /** @brief Get the base value (const). */
             const SVGLength& baseVal() const;
+            /** @brief Get the animated value (mutable). */
             SVGLength& animVal();
+            /** @brief Get the animated value (const). */
             const SVGLength& animVal() const;
 
         private:

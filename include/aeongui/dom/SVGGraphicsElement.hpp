@@ -22,11 +22,23 @@ namespace AeonGUI
 {
     namespace DOM
     {
+        /** @brief Base class for SVG elements that can be rendered with transformations.
+         *  @see https://www.w3.org/TR/SVG2/types.html#InterfaceSVGGraphicsElement
+         */
         class SVGGraphicsElement : public SVGElement
         {
         public:
+            /** @brief Construct an SVGGraphicsElement.
+             *  @param aTagName    Tag name.
+             *  @param aAttributes Element attributes.
+             *  @param aParent     Parent node.
+             */
             SVGGraphicsElement ( const DOMString& aTagName, AttributeMap&& aAttributes, Node* aParent );
+            /** @brief Destructor. */
             ~SVGGraphicsElement() override;
+            /** @brief Apply the element's transform and begin drawing.
+             *  @param aCanvas Target canvas.
+             */
             void DrawStart ( Canvas& aCanvas ) const override;
         private:
             Matrix2x3 mTransform{};

@@ -29,15 +29,32 @@ namespace AeonGUI
     namespace DOM
     {
         //class Element; // Forward declaration
+        /** @brief Represents a DOM Document.
+         *
+         *  The Document is the root of the DOM tree. It owns the parsed
+         *  SVG node hierarchy and an associated CSS stylesheet.
+         */
         class Document : public Node
         {
         public:
+            /** @brief Default constructor. Creates an empty document. */
             DLL Document();
+            /** @brief Load a document from a file.
+             *  @param aFilename Path or URL of the SVG/XML file to load.
+             */
             DLL void Load ( const USVString& aFilename );
+            /** @brief Destructor. Unloads the document. */
             DLL ~Document();
+            /** @brief Draw the document onto a canvas.
+             *  @param aCanvas The rendering surface.
+             */
             DLL void Draw ( Canvas& aCanvas ) const;
+            /** @brief Get the document URL.
+             *  @return The URL from which the document was loaded.
+             */
             DLL const USVString& url() const;
             /**DOM Properties and Methods @{*/
+            /** @brief Get the node type (always DOCUMENT_NODE). */
             DLL NodeType nodeType() const final;
             /**@}*/
         private:

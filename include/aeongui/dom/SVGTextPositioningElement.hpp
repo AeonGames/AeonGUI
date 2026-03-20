@@ -23,18 +23,34 @@ namespace AeonGUI
 {
     namespace DOM
     {
+        /** @brief SVG element with positioning attributes (x, y, dx, dy, rotate).
+         *  @see https://www.w3.org/TR/SVG2/text.html#InterfaceSVGTextPositioningElement
+         */
         class SVGTextPositioningElement : public SVGTextContentElement
         {
         public:
+            /** @brief Construct an SVGTextPositioningElement.
+             *  @param aTagName    Tag name.
+             *  @param aAttributes Element attributes.
+             *  @param aParent     Parent node.
+             */
             SVGTextPositioningElement ( const DOMString& aTagName, AttributeMap&& aAttributes, Node* aParent );
+            /** @brief Destructor. */
             ~SVGTextPositioningElement() override;
 
-            // SVGTextPositioningElement interface
+            /** @name SVGTextPositioningElement interface
+             *  @{ */
+            /** @brief Get the animated x position list. */
             const SVGAnimatedLengthList& x() const;
+            /** @brief Get the animated y position list. */
             const SVGAnimatedLengthList& y() const;
+            /** @brief Get the animated dx offset list. */
             const SVGAnimatedLengthList& dx() const;
+            /** @brief Get the animated dy offset list. */
             const SVGAnimatedLengthList& dy() const;
+            /** @brief Get the animated rotation list. */
             const SVGAnimatedNumberList& rotate() const;
+            /** @} */
 
         private:
             /// Helper methods for parsing attribute values

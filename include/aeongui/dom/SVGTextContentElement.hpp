@@ -28,21 +28,59 @@ namespace AeonGUI
 {
     namespace DOM
     {
+        /** @brief Base class for SVG elements that render text.
+         *  @see https://www.w3.org/TR/SVG2/text.html#InterfaceSVGTextContentElement
+         */
         class SVGTextContentElement : public SVGGraphicsElement
         {
         public:
+            /** @brief Construct an SVGTextContentElement.
+             *  @param aTagName    Tag name.
+             *  @param aAttributes Element attributes.
+             *  @param aParent     Parent node.
+             */
             SVGTextContentElement ( const DOMString& aTagName, AttributeMap&& aAttributes, Node* aParent );
+            /** @brief Destructor. */
             ~SVGTextContentElement() override;
+            /** @brief Get the animated text length. */
             const SVGAnimatedLength& textLength() const;
+            /** @brief Get the animated length adjust enumeration. */
             const SVGAnimatedEnumeration& lengthAdjust() const;
 
+            /** @brief Get the total number of characters. */
             long getNumberOfChars() const;
+            /** @brief Get the computed total advance width of the text. */
             float getComputedTextLength() const;
+            /** @brief Get the advance width of a substring.
+             *  @param start Start character index.
+             *  @param end   End character index.
+             *  @return Advance width of the substring.
+             */
             float getSubStringLength ( long start, long end ) const;
+            /** @brief Get the start position of a character.
+             *  @param index Character index.
+             *  @return Start position as a DOMPoint.
+             */
             DOMPoint getStartPositionOfChar ( long index ) const;
+            /** @brief Get the end position of a character.
+             *  @param index Character index.
+             *  @return End position as a DOMPoint.
+             */
             DOMPoint getEndPositionOfChar ( long index ) const;
+            /** @brief Get the bounding box of a character.
+             *  @param index Character index.
+             *  @return Bounding rectangle.
+             */
             DOMRect getExtentOfChar ( long index ) const;
+            /** @brief Get the rotation of a character.
+             *  @param index Character index.
+             *  @return Rotation angle in degrees.
+             */
             float getRotationOfChar ( long index ) const;
+            /** @brief Get the character index at a point.
+             *  @param point Position to query.
+             *  @return Character index, or -1 if none.
+             */
             long getCharNumAtPosition ( const DOMPoint& point ) const;
         protected:
             /// Access the internal text layout for subclass use.

@@ -21,11 +21,23 @@ namespace AeonGUI
 {
     namespace DOM
     {
+        /** @brief SVG tspan element for inline text spans.
+         *  @see https://www.w3.org/TR/SVG2/text.html#InterfaceSVGTSpanElement
+         */
         class SVGTSpanElement : public SVGTextPositioningElement
         {
         public:
+            /** @brief Construct an SVGTSpanElement.
+             *  @param aTagName    Tag name.
+             *  @param aAttributes Element attributes.
+             *  @param aParent     Parent node.
+             */
             SVGTSpanElement ( const DOMString& aTagName, AttributeMap&& aAttributes, Node* aParent );
+            /** @brief Destructor. */
             ~SVGTSpanElement() override;
+            /** @brief Render the text span onto the canvas.
+             *  @param aCanvas Target canvas.
+             */
             void DrawStart ( Canvas& aCanvas ) const override;
         private:
         };

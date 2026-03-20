@@ -22,10 +22,19 @@ namespace AeonGUI
 {
     namespace DOM
     {
+        /** @brief Base class for SVG gradient elements.
+         *  @see https://www.w3.org/TR/SVG2/pservers.html#InterfaceSVGGradientElement
+         */
         class SVGGradientElement : public SVGElement
         {
         public:
+            /** @brief Construct an SVGGradientElement.
+             *  @param aTagName    Tag name.
+             *  @param aAttributes Element attributes.
+             *  @param aParent     Parent node.
+             */
             SVGGradientElement ( const DOMString& aTagName, AttributeMap&& aAttributes, Node* aParent );
+            /** @brief Destructor. */
             ~SVGGradientElement() override;
         };
     }

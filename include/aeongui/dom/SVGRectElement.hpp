@@ -22,10 +22,19 @@ namespace AeonGUI
 {
     namespace DOM
     {
+        /** @brief SVG rectangle shape element.
+         *  @see https://www.w3.org/TR/SVG2/shapes.html#InterfaceSVGRectElement
+         */
         class SVGRectElement : public SVGGeometryElement
         {
         public:
+            /** @brief Construct an SVGRectElement.
+             *  @param aTagName    Tag name.
+             *  @param aAttributes Element attributes.
+             *  @param aParent     Parent node.
+             */
             SVGRectElement ( const DOMString& aTagName, AttributeMap&& aAttributes, Node* aParent );
+            /** @brief Destructor. */
             ~SVGRectElement() final;
         private:
             double mWidth{};

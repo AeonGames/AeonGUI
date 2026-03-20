@@ -1,5 +1,5 @@
 /*
-Copyright (C) 2020,2024,2025 Rodrigo Jose Hernandez Cordoba
+Copyright (C) 2020,2024,2025,2026 Rodrigo Jose Hernandez Cordoba
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -23,13 +23,26 @@ namespace AeonGUI
 {
     namespace DOM
     {
+        /** @brief Represents a DOM Text node.
+         *
+         *  Contains character data as a child of an Element.
+         */
         class Text : public Node
         {
         public:
+            /** @brief Construct a Text node.
+             *  @param aText   The text content.
+             *  @param aParent The parent node.
+             */
             DLL Text ( const std::string& aText, Node* aParent );
+            /** @brief Destructor. */
             DLL ~Text() final;
             /**DOM Properties and Methods @{*/
+            /** @brief Get the node type (always TEXT_NODE). */
             NodeType nodeType() const final;
+            /** @brief Get the concatenated text of this and adjacent text nodes.
+             *  @return The whole text content.
+             */
             std::string wholeText() const;
             /**@}*/
         private:

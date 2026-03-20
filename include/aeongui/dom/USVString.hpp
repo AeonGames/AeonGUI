@@ -1,5 +1,5 @@
 /*
-Copyright (C) 2025 Rodrigo Jose Hernandez Cordoba
+Copyright (C) 2025,2026 Rodrigo Jose Hernandez Cordoba
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -22,6 +22,12 @@ namespace AeonGUI
 {
     namespace DOM
     {
+        /** @brief Alias for USVString (UTF-8 encoded string).
+         *
+         *  The DOM specification defines USVString as a sequence of
+         *  unicode scalar values. Here it is represented as std::string
+         *  with UTF-8 encoding.
+         */
         using USVString = std::string;
     }
 }

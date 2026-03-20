@@ -24,36 +24,68 @@ limitations under the License.
 
 namespace AeonGUI
 {
+    /** @brief Decoded raster image.
+     *
+     *  Loads PNG, JPEG, or PCX images from files or memory and
+     *  provides access to the decoded RGBA pixel data.
+     */
     class RasterImage
     {
     public:
+        /** @brief Supported encoded image formats. */
         enum class EncodedFormat
         {
-            Unknown,
-            PNG,
-            JPEG,
-            PCX
+            Unknown, ///< Format not recognized.
+            PNG,     ///< PNG format.
+            JPEG,    ///< JPEG format.
+            PCX      ///< PCX format.
         };
 
+        /** @brief Decoded pixel formats. */
         enum class PixelFormat
         {
-            Unknown,
-            RGBA8
+            Unknown, ///< No decoded data.
+            RGBA8    ///< 8 bits per channel, RGBA.
         };
 
+        /** @brief Default constructor. Creates an empty (unloaded) image. */
         DLL RasterImage();
 
+        /** @brief Load an image from a file.
+         *  @param aPath Path to the image file.
+         *  @return true if loading succeeded.
+         */
         DLL bool LoadFromFile ( const std::string& aPath );
+        /** @brief Load an image from a memory buffer.
+         *  @param aData Pointer to the encoded image data.
+         *  @param aSize Size of the data in bytes.
+         *  @return true if loading succeeded.
+         */
         DLL bool LoadFromMemory ( const void* aData, size_t aSize );
+        /** @brief Release the decoded pixel data. */
         DLL void Clear();
 
+        /** @brief Check whether an image has been loaded.
+         *  @return true if pixel data is available.
+         */
         [[nodiscard]] DLL bool IsLoaded() const;
+        /** @brief Get the original encoded format of the loaded image. */
         [[nodiscard]] DLL EncodedFormat GetEncodedFormat() const;
+        /** @brief Get the decoded pixel format. */
         [[nodiscard]] DLL PixelFormat GetPixelFormat() const;
+        /** @brief Get the image width in pixels. */
         [[nodiscard]] DLL uint32_t GetWidth() const;
+        /** @brief Get the image height in pixels. */
         [[nodiscard]] DLL uint32_t GetHeight() const;
+        /** @brief Get the stride (bytes per row) of the decoded image. */
         [[nodiscard]] DLL size_t GetStride() const;
+        /** @brief Get a pointer to the decoded pixel data.
+         *  @return Pointer to RGBA8 pixel data, or nullptr if not loaded.
+         */
         [[nodiscard]] DLL const uint8_t* GetPixels() const;
+        /** @brief Get a reference to the decoded pixel data vector.
+         *  @return Const reference to the internal pixel buffer.
+         */
         [[nodiscard]] DLL const std::vector<uint8_t>& GetPixelData() const;
 
     private:

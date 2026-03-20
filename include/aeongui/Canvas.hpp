@@ -29,28 +29,87 @@ limitations under the License.
 namespace AeonGUI
 {
     class Path;
+    /** @brief Abstract 2D rendering surface.
+     *
+     *  Provides a pure virtual interface for drawing paths, images, and text
+     *  onto a pixel buffer.  Concrete implementations (e.g. CairoCanvas)
+     *  supply the actual rendering back-end.
+     */
     class Canvas
     {
     public:
+        /** @brief Resize the rendering viewport.
+         *  @param aWidth  New width in pixels.
+         *  @param aHeight New height in pixels.
+         */
         virtual void ResizeViewport ( uint32_t aWidth, uint32_t aHeight ) = 0;
+        /** @brief Get a pointer to the raw pixel data.
+         *  @return Pointer to BGRA pixel data, or nullptr if empty.
+         */
         virtual const uint8_t* GetPixels() const = 0;
+        /** @brief Get the width of the canvas in pixels. */
         virtual size_t GetWidth() const = 0;
+        /** @brief Get the height of the canvas in pixels. */
         virtual size_t GetHeight() const = 0;
+        /** @brief Get the stride (bytes per row) of the pixel buffer. */
         virtual size_t GetStride() const = 0;
+        /** @brief Clear the canvas to transparent. */
         virtual void Clear() = 0;
+        /** @brief Set the fill color.
+         *  @param aColor The fill color to set.
+         */
         virtual void SetFillColor ( const ColorAttr& aColor ) = 0;
+        /** @brief Get the current fill color.
+         *  @return Reference to the current fill color.
+         */
         virtual const ColorAttr& GetFillColor() const = 0;
+        /** @brief Set the stroke color.
+         *  @param aColor The stroke color to set.
+         */
         virtual void SetStrokeColor ( const ColorAttr& aColor ) = 0;
+        /** @brief Get the current stroke color.
+         *  @return Reference to the current stroke color.
+         */
         virtual const ColorAttr& GetStrokeColor() const = 0;
+        /** @brief Set the stroke width.
+         *  @param aWidth The stroke width in user units.
+         */
         virtual void SetStrokeWidth ( double aWidth ) = 0;
+        /** @brief Get the current stroke width. */
         virtual double GetStrokeWidth () const = 0;
+        /** @brief Set the stroke opacity.
+         *  @param aWidth Opacity value in the range [0.0, 1.0].
+         */
         virtual void SetStrokeOpacity ( double aWidth ) = 0;
+        /** @brief Get the current stroke opacity. */
         virtual double GetStrokeOpacity () const = 0;
+        /** @brief Set the fill opacity.
+         *  @param aWidth Opacity value in the range [0.0, 1.0].
+         */
         virtual void SetFillOpacity ( double aWidth ) = 0;
+        /** @brief Get the current fill opacity. */
         virtual double GetFillOpacity () const = 0;
+        /** @brief Set the global opacity.
+         *  @param aWidth Opacity value in the range [0.0, 1.0].
+         */
         virtual void SetOpacity ( double aWidth ) = 0;
+        /** @brief Get the current global opacity. */
         virtual double GetOpacity () const = 0;
+        /** @brief Draw a path using the current fill and stroke settings.
+         *  @param aPath The path to draw.
+         */
         virtual void Draw ( const Path& ) = 0;
+        /** @brief Draw a raster image.
+         *  @param aPixels      Pointer to source BGRA pixel data.
+         *  @param aImageWidth  Width of the source image in pixels.
+         *  @param aImageHeight Height of the source image in pixels.
+         *  @param aImageStride Stride of the source image in bytes.
+         *  @param aX           Destination X coordinate.
+         *  @param aY           Destination Y coordinate.
+         *  @param aWidth       Destination width in user units.
+         *  @param aHeight      Destination height in user units.
+         *  @param aOpacity     Opacity for the image [0.0, 1.0].
+         */
         virtual void DrawImage ( const uint8_t* aPixels,
                                  size_t aImageWidth,
                                  size_t aImageHeight,
@@ -78,10 +137,24 @@ namespace AeonGUI
         virtual double MeasureText ( const std::string& aText,
                                      const std::string& aFontFamily, double aFontSize,
                                      int aFontWeight, int aFontStyle ) const = 0;
+        /** @brief Set the SVG viewBox and preserveAspectRatio.
+         *  @param aViewBox The viewBox rectangle.
+         *  @param aPreserveAspectRatio How to align and scale.
+         */
         virtual void SetViewBox ( const ViewBox& aViewBox, const PreserveAspectRatio& aPreserveAspectRatio ) = 0;
+        /** @brief Replace the current transformation matrix.
+         *  @param aMatrix The new 2x3 transformation matrix.
+         */
         virtual void SetTransform ( const Matrix2x3& aMatrix ) = 0;
+        /** @brief Pre-multiply the current transformation matrix.
+         *  @param aMatrix The matrix to concatenate.
+         */
         virtual void Transform ( const Matrix2x3& aMatrix ) = 0;
+        /** @brief Get the native rendering surface handle.
+         *  @return Pointer to the underlying surface (e.g. cairo_surface_t).
+         */
         virtual void* GetNativeSurface() const = 0;
+        /** @brief Virtual destructor. */
         virtual ~Canvas() = 0;
     };
 }

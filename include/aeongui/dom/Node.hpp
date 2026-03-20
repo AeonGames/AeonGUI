@@ -30,34 +30,71 @@ namespace AeonGUI
     class Document;
     namespace DOM
     {
+        /** @brief Base class for all nodes in the DOM tree.
+         *
+         *  Implements the DOM Node interface: parent/child relationships,
+         *  tree traversal, and draw hooks for rendering.
+         *  @see https://dom.spec.whatwg.org/#interface-node
+         */
         class Node : public EventTarget
         {
         public:
+            /** @brief DOM node type constants. */
             enum NodeType
             {
-                ELEMENT_NODE = 1,
-                ATTRIBUTE_NODE = 2,
-                TEXT_NODE = 3,
-                CDATA_SECTION_NODE = 4,
-                ENTITY_REFERENCE_NODE = 5,
-                ENTITY_NODE = 6,
-                PROCESSING_INSTRUCTION_NODE = 7,
-                COMMENT_NODE = 8,
-                DOCUMENT_NODE = 9,
-                DOCUMENT_TYPE_NODE = 10,
-                DOCUMENT_FRAGMENT_NODE = 11,
-                NOTATION_NODE = 12,
+                ELEMENT_NODE = 1,               ///< An Element node.
+                ATTRIBUTE_NODE = 2,             ///< An Attribute node (legacy).
+                TEXT_NODE = 3,                  ///< A Text node.
+                CDATA_SECTION_NODE = 4,         ///< A CDATASection node.
+                ENTITY_REFERENCE_NODE = 5,      ///< An EntityReference node (legacy).
+                ENTITY_NODE = 6,                ///< An Entity node (legacy).
+                PROCESSING_INSTRUCTION_NODE = 7,///< A ProcessingInstruction node.
+                COMMENT_NODE = 8,               ///< A Comment node.
+                DOCUMENT_NODE = 9,              ///< A Document node.
+                DOCUMENT_TYPE_NODE = 10,        ///< A DocumentType node.
+                DOCUMENT_FRAGMENT_NODE = 11,    ///< A DocumentFragment node.
+                NOTATION_NODE = 12,             ///< A Notation node (legacy).
             };
+            /** @brief Construct a node with an optional parent.
+             *  @param aParent The parent node, or nullptr.
+             */
             DLL Node ( Node* aParent = nullptr );
+            /** @brief Add a child node.
+             *  @param aNode The child to add (ownership transferred).
+             *  @return Raw pointer to the added node.
+             */
             DLL Node* AddNode ( std::unique_ptr<Node> aNode );
+            /** @brief Remove a child node.
+             *  @param aNode Raw pointer to the child to remove.
+             *  @return Ownership of the removed node.
+             */
             DLL std::unique_ptr<Node> RemoveNode ( const Node* aNode );
+            /** @brief Traverse the tree depth-first in pre-order.
+             *  @param aAction Action invoked for each node.
+             */
             DLL void TraverseDepthFirstPreOrder ( const std::function<void ( Node& ) >& aAction );
+            /** @overload Const version. */
             DLL void TraverseDepthFirstPreOrder ( const std::function<void ( const Node& ) >& aAction ) const;
+            /** @brief Traverse the tree depth-first in post-order.
+             *  @param aAction Action invoked for each node.
+             */
             DLL void TraverseDepthFirstPostOrder ( const std::function<void ( Node& ) >& aAction );
+            /** @overload Const version. */
             DLL void TraverseDepthFirstPostOrder ( const std::function<void ( const Node& ) >& aAction ) const;
+            /** @brief Traverse pre-order with separate pre and post callbacks.
+             *  @param aPreamble  Called before visiting children.
+             *  @param aPostamble Called after visiting children.
+             */
             DLL void TraverseDepthFirstPreOrder ( const std::function<void ( Node& ) >& aPreamble, const std::function<void ( Node& ) >& aPostamble );
+            /** @overload Const version. */
             DLL void TraverseDepthFirstPreOrder ( const std::function<void ( const Node& ) >& aPreamble, const std::function<void ( const Node& ) >& aPostamble ) const;
+            /** @brief Traverse pre-order with pre/post callbacks and a predicate filter.
+             *  @param aPreamble       Called before visiting children.
+             *  @param aPostamble      Called after visiting children.
+             *  @param aUnaryPredicate Only descend into children for which this returns true.
+             */
             DLL void TraverseDepthFirstPreOrder ( const std::function<void ( Node& ) >& aPreamble, const std::function<void ( Node& ) >& aPostamble, const std::function<bool ( Node& ) >& aUnaryPredicate );
+            /** @overload Const version. */
             DLL void TraverseDepthFirstPreOrder ( const std::function<void ( const Node& ) >& aPreamble, const std::function<void ( const Node& ) >& aPostamble, const std::function<bool ( const Node& ) >& aUnaryPredicate ) const;
 
             DLL virtual void DrawStart ( Canvas& aCanvas ) const;
@@ -83,9 +120,21 @@ namespace AeonGUI
             DLL virtual bool IsDrawEnabled() const;
             DLL virtual ~Node();
             /**DOM Properties and Methods @{*/
+            /** @brief Get the parent node.
+             *  @return Pointer to the parent, or nullptr if this is the root.
+             */
             DLL Node* parentNode() const;
+            /** @brief Get the parent element (same as parentNode for elements).
+             *  @return Pointer to the parent element, or nullptr.
+             */
             DLL Node* parentElement() const;
+            /** @brief Get the node type.
+             *  @return One of the NodeType constants.
+             */
             virtual NodeType nodeType() const = 0;
+            /** @brief Get the list of child nodes.
+             *  @return Const reference to the vector of children.
+             */
             const std::vector<std::unique_ptr<Node>>& childNodes() const;
             /**@}*/
         private:

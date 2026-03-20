@@ -30,19 +30,54 @@ typedef void* gpointer;
 
 namespace AeonGUI
 {
+    /** @brief Pango-backed text layout implementation.
+     *
+     *  Uses PangoLayout and PangoFontDescription to measure and layout
+     *  text for rendering by a Canvas.
+     */
     class PangoTextLayout : public TextLayout
     {
     public:
+        /** @brief Default constructor. Creates a layout with default font settings. */
         DLL PangoTextLayout();
+        /** @brief Destructor. Releases Pango resources. */
         DLL ~PangoTextLayout() override;
+        /** @brief Set the text content to lay out.
+         *  @param aText UTF-8 text string.
+         */
         DLL void SetText ( const std::string& aText ) override;
+        /** @brief Set the font family.
+         *  @param aFamily Font family name (e.g. "sans-serif").
+         */
         DLL void SetFontFamily ( const std::string& aFamily ) override;
+        /** @brief Set the font size.
+         *  @param aSize Font size in CSS pixels.
+         */
         DLL void SetFontSize ( double aSize ) override;
+        /** @brief Set the font weight.
+         *  @param aWeight CSS font weight (400 = normal, 700 = bold).
+         */
         DLL void SetFontWeight ( int aWeight ) override;
+        /** @brief Set the font style.
+         *  @param aStyle 0 = normal, 1 = italic, 2 = oblique.
+         */
         DLL void SetFontStyle ( int aStyle ) override;
+        /** @brief Get the logical width of the laid-out text.
+         *  @return Width in CSS pixels.
+         */
         DLL double GetTextWidth() const override;
+        /** @brief Get the logical height of the laid-out text.
+         *  @return Height in CSS pixels.
+         */
         DLL double GetTextHeight() const override;
+        /** @brief Get the baseline offset from the top of the layout.
+         *  @return Baseline position in CSS pixels.
+         */
         DLL double GetBaseline() const override;
+        /** @brief Get the x-offset of a character at the given byte index.
+         *  @param aIndex UTF-8 byte index.
+         *  @return X offset in CSS pixels.
+         */
         DLL double GetCharOffsetX ( long aIndex ) const override;
         /// Access the underlying PangoLayout for advanced use.
         PangoLayout* GetPangoLayout() const;

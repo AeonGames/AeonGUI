@@ -1,5 +1,5 @@
 /*
-Copyright (C) 2019,2020,2024,2025 Rodrigo Jose Hernandez Cordoba
+Copyright (C) 2019,2020,2024,2025,2026 Rodrigo Jose Hernandez Cordoba
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -19,6 +19,10 @@ limitations under the License.
 #include "aeongui/dom/DOMString.hpp"
 namespace AeonGUI
 {
+    /** @brief Map of attribute name-value pairs.
+     *
+     *  Used to store element attributes as DOMString key-value pairs.
+     */
     using AttributeMap = std::unordered_map<DOM::DOMString, DOM::DOMString>;
 }
 #endif

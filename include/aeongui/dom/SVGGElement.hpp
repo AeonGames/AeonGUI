@@ -24,10 +24,19 @@ namespace AeonGUI
     namespace DOM
     {
 
+        /** @brief SVG grouping element.
+         *  @see https://www.w3.org/TR/SVG2/struct.html#InterfaceSVGGElement
+         */
         class SVGGElement : public SVGGraphicsElement
         {
         public:
+            /** @brief Construct an SVGGElement.
+             *  @param aTagName    Tag name.
+             *  @param aAttributes Element attributes.
+             *  @param aParent     Parent node.
+             */
             SVGGElement ( const DOMString& aTagName, AttributeMap&& aAttributes, Node* aParent );
+            /** @brief Destructor. */
             ~SVGGElement() final;
         };
     }

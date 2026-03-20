@@ -23,10 +23,19 @@ namespace AeonGUI
     namespace DOM
     {
 
+        /** @brief SVG gradient stop element.
+         *  @see https://www.w3.org/TR/SVG2/pservers.html#InterfaceSVGStopElement
+         */
         class SVGStopElement : public SVGElement
         {
         public:
+            /** @brief Construct an SVGStopElement.
+             *  @param aTagName    Tag name.
+             *  @param aAttributes Element attributes.
+             *  @param aParent     Parent node.
+             */
             SVGStopElement ( const DOMString& aTagName, AttributeMap&& aAttributes, Node* aParent );
+            /** @brief Destructor. */
             ~SVGStopElement() final;
         };
     }

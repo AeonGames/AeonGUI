@@ -25,14 +25,26 @@ namespace AeonGUI
 {
     namespace DOM
     {
+        /** @brief Base class for SVG shape elements that describe geometry.
+         *  @see https://www.w3.org/TR/SVG2/types.html#InterfaceSVGGeometryElement
+         */
         class SVGGeometryElement : public SVGGraphicsElement
         {
         public:
+            /** @brief Construct an SVGGeometryElement.
+             *  @param aTagName    Tag name.
+             *  @param aAttributes Element attributes.
+             *  @param aParent     Parent node.
+             */
             SVGGeometryElement ( const DOMString& aTagName, AttributeMap&& aAttributes, Node* aParent );
+            /** @brief Destructor. */
             ~SVGGeometryElement() override;
+            /** @brief Draw the geometry path onto the canvas.
+             *  @param aCanvas Target canvas.
+             */
             void DrawStart ( Canvas& aCanvas ) const final;
         protected:
-            CairoPath mPath;
+            CairoPath mPath; ///< Cached Cairo path for this geometry.
         };
     }
 }
