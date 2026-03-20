@@ -33,6 +33,8 @@ jobs:
         install: >-
           git
           make
+          flex
+          bison
         pacboy: >-
           toolchain:p
           cmake:p
@@ -49,6 +51,9 @@ jobs:
           vulkan-devel:p
           vulkan-loader:p
           glslang:p
+          astyle:p
+          doxygen:p
+          graphviz:p
 
     - name: '🛠️ Configuring'
       run: cmake -G "MSYS Makefiles" -B ${{github.workspace}}/build -DCMAKE_BUILD_TYPE=Release
