@@ -56,23 +56,32 @@ namespace AeonGUI
             DLL Location& operator= ( const USVString& url );
             /** @brief Reload the current document. */
             DLL void reload();
-            /** @brief Get the full URL. */
+            /** @brief Get the full URL.
+             *  @return The href string. */
             DLL const USVString& href() const;
-            /** @brief Get the origin portion of the URL. */
+            /** @brief Get the origin portion of the URL.
+             *  @return The origin string. */
             DLL const USVString& origin() const;
-            /** @brief Get the protocol (e.g. "https:"). */
+            /** @brief Get the protocol (e.g. "https:").
+             *  @return The protocol string. */
             DLL const USVString& protocol() const;
-            /** @brief Get the host (hostname:port). */
+            /** @brief Get the host (hostname:port).
+             *  @return The host string. */
             DLL const USVString& host() const;
-            /** @brief Get the hostname. */
+            /** @brief Get the hostname.
+             *  @return The hostname string. */
             DLL const USVString& hostname() const;
-            /** @brief Get the port number. */
+            /** @brief Get the port number.
+             *  @return The port string. */
             DLL const USVString& port() const;
-            /** @brief Get the pathname. */
+            /** @brief Get the pathname.
+             *  @return The pathname string. */
             DLL const USVString& pathname() const;
-            /** @brief Get the query string (including leading '?'). */
+            /** @brief Get the query string (including leading '?').
+             *  @return The search string. */
             DLL const USVString& search() const;
-            /** @brief Get the fragment (including leading '#'). */
+            /** @brief Get the fragment (including leading '#').
+             *  @return The hash string. */
             DLL const USVString& hash() const;
             /**@}*/
             /** @brief Set or replace the change callback.

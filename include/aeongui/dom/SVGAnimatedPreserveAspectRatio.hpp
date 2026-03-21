@@ -35,13 +35,17 @@ namespace AeonGUI
             /** @brief Destructor. */
             ~SVGAnimatedPreserveAspectRatio();
 
-            /** @brief Get the base value (mutable). */
+            /** @brief Get the base value (mutable).
+             *  @return Reference to the base PreserveAspectRatio. */
             PreserveAspectRatio& baseVal();
-            /** @brief Get the base value (const). */
+            /** @brief Get the base value (const).
+             *  @return Const reference to the base PreserveAspectRatio. */
             const PreserveAspectRatio& baseVal() const;
-            /** @brief Get the animated value (mutable). */
+            /** @brief Get the animated value (mutable).
+             *  @return Reference to the animated PreserveAspectRatio. */
             PreserveAspectRatio& animVal();
-            /** @brief Get the animated value (const). */
+            /** @brief Get the animated value (const).
+             *  @return Const reference to the animated PreserveAspectRatio. */
             const PreserveAspectRatio& animVal() const;
 
         private:

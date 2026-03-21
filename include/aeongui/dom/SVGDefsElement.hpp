@@ -36,7 +36,8 @@ namespace AeonGUI
             SVGDefsElement ( const DOMString& aTagName, AttributeMap&& aAttributes, Node* aParent );
             /** @brief Destructor. */
             ~SVGDefsElement() final;
-            /** @brief Always returns false; defs children are not drawn directly. */
+            /** @brief Always returns false; defs children are not drawn directly.
+             *  @return false. */
             bool IsDrawEnabled() const final;
         };
     }

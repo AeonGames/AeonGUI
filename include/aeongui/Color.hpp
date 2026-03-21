@@ -182,7 +182,13 @@ namespace AeonGUI
     */
     union Color
     {
+        /** @brief Check whether a string represents a valid CSS color.
+         *  @param value The string to test.
+         *  @param color_value Optional output for the parsed color.
+         *  @return true if the string is a valid color.
+         */
         DLL static bool IsColor ( const std::string& value, uint32_t* color_value = nullptr );
+        /** @brief Regex used to parse CSS color strings. */
         DLL static const std::regex ColorRegex;
         DLL Color();
         /*! \brief 32 bit Unsigned integer constructor.
@@ -190,6 +196,9 @@ namespace AeonGUI
         */
         DLL explicit Color ( uint32_t value );
 
+        /** @brief Construct a Color from a CSS color string.
+         *  @param value A CSS color string (e.g. "#FF0000" or "red").
+         */
         DLL Color ( const std::string& value );
         /*! \brief 4 8 bit Unsigned integer component constructor.
             \param A Alpha color value.
@@ -205,13 +214,21 @@ namespace AeonGUI
             \param src Incomming source color.*/
         DLL void Blend ( Color src );
 
-        /** @brief Get red component as a double in [0.0, 1.0]. */
+        /** @brief Get red component as a double in [0.0, 1.0].
+         *  @return The red component.
+         */
         DLL double R() const;
-        /** @brief Get green component as a double in [0.0, 1.0]. */
+        /** @brief Get green component as a double in [0.0, 1.0].
+         *  @return The green component.
+         */
         DLL double G() const;
-        /** @brief Get blue component as a double in [0.0, 1.0]. */
+        /** @brief Get blue component as a double in [0.0, 1.0].
+         *  @return The blue component.
+         */
         DLL double B() const;
-        /** @brief Get alpha component as a double in [0.0, 1.0]. */
+        /** @brief Get alpha component as a double in [0.0, 1.0].
+         *  @return The alpha component.
+         */
         DLL double A() const;
         /** @brief Convert the color to a CSS-style string representation.
          *  @return A string such as "rgba(255,0,0,1)".

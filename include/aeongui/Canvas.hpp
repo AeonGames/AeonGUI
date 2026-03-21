@@ -47,11 +47,17 @@ namespace AeonGUI
          *  @return Pointer to BGRA pixel data, or nullptr if empty.
          */
         virtual const uint8_t* GetPixels() const = 0;
-        /** @brief Get the width of the canvas in pixels. */
+        /** @brief Get the width of the canvas in pixels.
+         *  @return Width in pixels.
+         */
         virtual size_t GetWidth() const = 0;
-        /** @brief Get the height of the canvas in pixels. */
+        /** @brief Get the height of the canvas in pixels.
+         *  @return Height in pixels.
+         */
         virtual size_t GetHeight() const = 0;
-        /** @brief Get the stride (bytes per row) of the pixel buffer. */
+        /** @brief Get the stride (bytes per row) of the pixel buffer.
+         *  @return Stride in bytes.
+         */
         virtual size_t GetStride() const = 0;
         /** @brief Clear the canvas to transparent. */
         virtual void Clear() = 0;
@@ -75,30 +81,38 @@ namespace AeonGUI
          *  @param aWidth The stroke width in user units.
          */
         virtual void SetStrokeWidth ( double aWidth ) = 0;
-        /** @brief Get the current stroke width. */
+        /** @brief Get the current stroke width.
+         *  @return Stroke width in user units.
+         */
         virtual double GetStrokeWidth () const = 0;
         /** @brief Set the stroke opacity.
          *  @param aWidth Opacity value in the range [0.0, 1.0].
          */
         virtual void SetStrokeOpacity ( double aWidth ) = 0;
-        /** @brief Get the current stroke opacity. */
+        /** @brief Get the current stroke opacity.
+         *  @return Opacity in [0.0, 1.0].
+         */
         virtual double GetStrokeOpacity () const = 0;
         /** @brief Set the fill opacity.
          *  @param aWidth Opacity value in the range [0.0, 1.0].
          */
         virtual void SetFillOpacity ( double aWidth ) = 0;
-        /** @brief Get the current fill opacity. */
+        /** @brief Get the current fill opacity.
+         *  @return Opacity in [0.0, 1.0].
+         */
         virtual double GetFillOpacity () const = 0;
         /** @brief Set the global opacity.
          *  @param aWidth Opacity value in the range [0.0, 1.0].
          */
         virtual void SetOpacity ( double aWidth ) = 0;
-        /** @brief Get the current global opacity. */
+        /** @brief Get the current global opacity.
+         *  @return Opacity in [0.0, 1.0].
+         */
         virtual double GetOpacity () const = 0;
         /** @brief Draw a path using the current fill and stroke settings.
          *  @param aPath The path to draw.
          */
-        virtual void Draw ( const Path& ) = 0;
+        virtual void Draw ( const Path& aPath ) = 0;
         /** @brief Draw a raster image.
          *  @param aPixels      Pointer to source BGRA pixel data.
          *  @param aImageWidth  Width of the source image in pixels.
@@ -132,6 +146,11 @@ namespace AeonGUI
                                 const std::string& aFontFamily, double aFontSize,
                                 int aFontWeight, int aFontStyle ) = 0;
         /** Measure the width of text with the given font parameters.
+         *  @param aText       The UTF-8 text string to measure.
+         *  @param aFontFamily Font family name.
+         *  @param aFontSize   Font size in CSS pixels.
+         *  @param aFontWeight CSS font weight.
+         *  @param aFontStyle  Font style (0=normal, 1=italic, 2=oblique).
          *  @return The logical width in CSS pixels.
          */
         virtual double MeasureText ( const std::string& aText,

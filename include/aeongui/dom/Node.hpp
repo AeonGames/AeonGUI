@@ -73,20 +73,27 @@ namespace AeonGUI
              *  @param aAction Action invoked for each node.
              */
             DLL void TraverseDepthFirstPreOrder ( const std::function<void ( Node& ) >& aAction );
-            /** @overload Const version. */
+            /** @brief Traverse the tree depth-first in pre-order (const).
+             *  @param aAction Action invoked for each node.
+             */
             DLL void TraverseDepthFirstPreOrder ( const std::function<void ( const Node& ) >& aAction ) const;
             /** @brief Traverse the tree depth-first in post-order.
              *  @param aAction Action invoked for each node.
              */
             DLL void TraverseDepthFirstPostOrder ( const std::function<void ( Node& ) >& aAction );
-            /** @overload Const version. */
+            /** @brief Traverse the tree depth-first in post-order (const).
+             *  @param aAction Action invoked for each node.
+             */
             DLL void TraverseDepthFirstPostOrder ( const std::function<void ( const Node& ) >& aAction ) const;
             /** @brief Traverse pre-order with separate pre and post callbacks.
              *  @param aPreamble  Called before visiting children.
              *  @param aPostamble Called after visiting children.
              */
             DLL void TraverseDepthFirstPreOrder ( const std::function<void ( Node& ) >& aPreamble, const std::function<void ( Node& ) >& aPostamble );
-            /** @overload Const version. */
+            /** @brief Traverse pre-order with pre/post callbacks (const).
+             *  @param aPreamble  Called before visiting children.
+             *  @param aPostamble Called after visiting children.
+             */
             DLL void TraverseDepthFirstPreOrder ( const std::function<void ( const Node& ) >& aPreamble, const std::function<void ( const Node& ) >& aPostamble ) const;
             /** @brief Traverse pre-order with pre/post callbacks and a predicate filter.
              *  @param aPreamble       Called before visiting children.
@@ -94,10 +101,20 @@ namespace AeonGUI
              *  @param aUnaryPredicate Only descend into children for which this returns true.
              */
             DLL void TraverseDepthFirstPreOrder ( const std::function<void ( Node& ) >& aPreamble, const std::function<void ( Node& ) >& aPostamble, const std::function<bool ( Node& ) >& aUnaryPredicate );
-            /** @overload Const version. */
+            /** @brief Traverse pre-order with pre/post callbacks and predicate (const).
+             *  @param aPreamble       Called before visiting children.
+             *  @param aPostamble      Called after visiting children.
+             *  @param aUnaryPredicate Only descend into children for which this returns true.
+             */
             DLL void TraverseDepthFirstPreOrder ( const std::function<void ( const Node& ) >& aPreamble, const std::function<void ( const Node& ) >& aPostamble, const std::function<bool ( const Node& ) >& aUnaryPredicate ) const;
 
+            /** @brief Begin drawing this node on the canvas.
+             *  @param aCanvas The target canvas.
+             */
             DLL virtual void DrawStart ( Canvas& aCanvas ) const;
+            /** @brief Finish drawing this node on the canvas.
+             *  @param aCanvas The target canvas.
+             */
             DLL virtual void DrawFinish ( Canvas& aCanvas ) const;
             /**
              * Use OnLoad to implement custom loading behavior in derived classes.

@@ -34,9 +34,11 @@ namespace AeonGUI
             SVGAnimatedEnumeration();
             /** @brief Destructor. */
             ~SVGAnimatedEnumeration();
-            /** @brief Get the base value. */
+            /** @brief Get the base value.
+             *  @return The base enumeration value. */
             int32_t baseVal() const;
-            /** @brief Get the animated value. */
+            /** @brief Get the animated value.
+             *  @return The animated enumeration value. */
             int32_t animVal() const;
         private:
             int32_t mBaseVal;

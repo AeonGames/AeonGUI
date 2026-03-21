@@ -41,21 +41,29 @@ namespace AeonGUI
             /** @brief Destructor. */
             DLL ~SVGImageElement() final;
 
-            /** @brief Get the animated x position. */
+            /** @brief Get the animated x position.
+             *  @return The animated x length. */
             DLL const SVGAnimatedLength& x() const;
-            /** @brief Get the animated y position. */
+            /** @brief Get the animated y position.
+             *  @return The animated y length. */
             DLL const SVGAnimatedLength& y() const;
-            /** @brief Get the animated width. */
+            /** @brief Get the animated width.
+             *  @return The animated width length. */
             DLL const SVGAnimatedLength& width() const;
-            /** @brief Get the animated height. */
+            /** @brief Get the animated height.
+             *  @return The animated height length. */
             DLL const SVGAnimatedLength& height() const;
-            /** @brief Get the animated href (image source URL). */
+            /** @brief Get the animated href (image source URL).
+             *  @return The animated href string. */
             DLL const SVGAnimatedString& href() const;
-            /** @brief Get the animated preserveAspectRatio. */
+            /** @brief Get the animated preserveAspectRatio.
+             *  @return The animated preserve aspect ratio. */
             DLL const SVGAnimatedPreserveAspectRatio& preserveAspectRatio() const;
-            /** @brief Get the crossOrigin attribute value. */
+            /** @brief Get the crossOrigin attribute value.
+             *  @return The cross-origin string. */
             DLL const DOMString& crossOrigin() const;
-            /** @brief Get the decoding hint ("auto", "sync", or "async"). */
+            /** @brief Get the decoding hint ("auto", "sync", or "async").
+             *  @return The decoding string. */
             DLL const DOMString& decoding() const;
 
             /** @brief Draw the embedded image onto the canvas.

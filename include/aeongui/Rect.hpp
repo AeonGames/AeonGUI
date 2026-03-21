@@ -1,5 +1,5 @@
 /*
-Copyright (C) 2010-2012,2019,2025 Rodrigo Jose Hernandez Cordoba
+Copyright (C) 2010-2012,2019,2025,2026 Rodrigo Jose Hernandez Cordoba
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -43,10 +43,14 @@ namespace AeonGUI
         */
         DLL int32_t GetY() const;
 
-        /// Get Width.
+        /** @brief Get Width.
+         *  @return The width of the rect.
+         */
         DLL uint32_t GetWidth() const;
 
-        /// Get Height.
+        /** @brief Get Height.
+         *  @return The height of the rect.
+         */
         DLL uint32_t GetHeight() const;
 
         /*! \brief Get rect position.
@@ -75,10 +79,14 @@ namespace AeonGUI
         */
         DLL void SetY ( int32_t Y );
 
-        /// Set Width.
+        /** @brief Set Width.
+         *  @param width The new width.
+         */
         DLL void SetWidth ( uint32_t width );
 
-        /// Set Height.
+        /** @brief Set Height.
+         *  @param height The new height.
+         */
         DLL void SetHeight ( uint32_t height );
 
         //void Set ( int32_t X1, int32_t Y1, int32_t X2, int32_t Y2 );

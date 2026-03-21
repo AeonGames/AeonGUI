@@ -49,7 +49,7 @@ namespace AeonGUI
         DLL size_t GetHeight() const final;
         DLL size_t GetStride() const final;
         DLL void Clear() final;
-        DLL void Draw ( const Path& ) final;
+        DLL void Draw ( const Path& aPath ) final;
         DLL void DrawImage ( const uint8_t* aPixels,
                              size_t aImageWidth,
                              size_t aImageHeight,

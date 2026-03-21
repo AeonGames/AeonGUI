@@ -41,13 +41,17 @@ namespace AeonGUI
             DOMPointReadOnly ( float x = 0.0f, float y = 0.0f, float z = 0.0f, float w = 1.0f );
             /** @brief Destructor. */
             virtual ~DOMPointReadOnly();
-            /** @brief Get the X coordinate. */
+            /** @brief Get the X coordinate.
+             *  @return The X value. */
             float x() const;
-            /** @brief Get the Y coordinate. */
+            /** @brief Get the Y coordinate.
+             *  @return The Y value. */
             float y() const;
-            /** @brief Get the Z coordinate. */
+            /** @brief Get the Z coordinate.
+             *  @return The Z value. */
             float z() const;
-            /** @brief Get the W (perspective) component. */
+            /** @brief Get the W (perspective) component.
+             *  @return The W value. */
             float w() const;
 
             /** @brief Create a DOMPointReadOnly from any point-like object.
@@ -70,10 +74,10 @@ namespace AeonGUI
              */
             DOMString toJSON() const;
         protected:
-            float mX{};
-            float mY{};
-            float mZ{};
-            float mW{};
+            float mX{}; ///< X coordinate.
+            float mY{}; ///< Y coordinate.
+            float mZ{}; ///< Z coordinate.
+            float mW{}; ///< W (perspective) component.
         };
     }
 }

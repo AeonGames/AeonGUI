@@ -37,9 +37,11 @@ namespace AeonGUI
             /** @brief Destructor. */
             ~SVGLengthList();
 
-            /** @brief Get the number of items. */
+            /** @brief Get the number of items.
+             *  @return The item count. */
             unsigned long length() const;
-            /** @brief Get the number of items (alias). */
+            /** @brief Get the number of items (alias).
+             *  @return The item count. */
             unsigned long numberOfItems() const;
 
             /** @brief Remove all items. */

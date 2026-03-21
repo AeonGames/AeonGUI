@@ -40,17 +40,29 @@ namespace AeonGUI
     class FontDatabase
     {
     public:
-        /// Initialize the font database. Call once at startup.
+        /** @brief Initialize the font database. Call once at startup.
+         *  @return true on success.
+         */
         DLL static bool Initialize();
         /// Finalize the font database. Call once at shutdown.
         DLL static void Finalize();
-        /// Add a directory of font files (.ttf, .otf, etc.) to the database.
+        /** @brief Add a directory of font files (.ttf, .otf, etc.) to the database.
+         *  @param aPath Path to the font directory.
+         *  @return true on success.
+         */
         DLL static bool AddFontDirectory ( const std::string& aPath );
-        /// Add a single font file to the database.
+        /** @brief Add a single font file to the database.
+         *  @param aPath Path to the font file.
+         *  @return true on success.
+         */
         DLL static bool AddFontFile ( const std::string& aPath );
-        /// Get the PangoFontMap backed by the local font database.
+        /** @brief Get the PangoFontMap backed by the local font database.
+         *  @return Pointer to the PangoFontMap.
+         */
         DLL static PangoFontMap* GetFontMap();
-        /// Create a new PangoContext from the local font map.
+        /** @brief Create a new PangoContext from the local font map.
+         *  @return Pointer to a new PangoContext.
+         */
         DLL static PangoContext* CreateContext();
     private:
         FontDatabase() = delete;

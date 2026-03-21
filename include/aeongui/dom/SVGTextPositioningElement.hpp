@@ -40,15 +40,20 @@ namespace AeonGUI
 
             /** @name SVGTextPositioningElement interface
              *  @{ */
-            /** @brief Get the animated x position list. */
+            /** @brief Get the animated x position list.
+             *  @return The animated x length list. */
             const SVGAnimatedLengthList& x() const;
-            /** @brief Get the animated y position list. */
+            /** @brief Get the animated y position list.
+             *  @return The animated y length list. */
             const SVGAnimatedLengthList& y() const;
-            /** @brief Get the animated dx offset list. */
+            /** @brief Get the animated dx offset list.
+             *  @return The animated dx length list. */
             const SVGAnimatedLengthList& dx() const;
-            /** @brief Get the animated dy offset list. */
+            /** @brief Get the animated dy offset list.
+             *  @return The animated dy length list. */
             const SVGAnimatedLengthList& dy() const;
-            /** @brief Get the animated rotation list. */
+            /** @brief Get the animated rotation list.
+             *  @return The animated rotation number list. */
             const SVGAnimatedNumberList& rotate() const;
             /** @} */
 

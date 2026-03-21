@@ -41,25 +41,35 @@ namespace AeonGUI
             /** @brief Destructor. */
             virtual ~DOMRectReadOnly();
 
-            /** @brief Get the X coordinate. */
+            /** @brief Get the X coordinate.
+             *  @return The X value. */
             float x() const;
-            /** @brief Get the Y coordinate. */
+            /** @brief Get the Y coordinate.
+             *  @return The Y value. */
             float y() const;
-            /** @brief Get the width. */
+            /** @brief Get the width.
+             *  @return The width value. */
             float width() const;
-            /** @brief Get the height. */
+            /** @brief Get the height.
+             *  @return The height value. */
             float height() const;
-            /** @brief Get the top edge (min of y and y+height). */
+            /** @brief Get the top edge (min of y and y+height).
+             *  @return The top edge. */
             float top() const;
-            /** @brief Get the right edge (max of x and x+width). */
+            /** @brief Get the right edge (max of x and x+width).
+             *  @return The right edge. */
             float right() const;
-            /** @brief Get the bottom edge (max of y and y+height). */
+            /** @brief Get the bottom edge (max of y and y+height).
+             *  @return The bottom edge. */
             float bottom() const;
-            /** @brief Get the left edge (min of x and x+width). */
+            /** @brief Get the left edge (min of x and x+width).
+             *  @return The left edge. */
             float left() const;
 
             /** @brief Create a DOMRectReadOnly from any rect-like object.
              *  @tparam T A type with x(), y(), width(), and height() accessors.
+             *  @param rect The source rectangle.
+             *  @return A new DOMRectReadOnly.
              */
             template <typename T>
             static DOMRectReadOnly fromRect ( const T& rect )
@@ -73,10 +83,10 @@ namespace AeonGUI
             DOMString toJSON() const;
 
         protected:
-            float mX{};
-            float mY{};
-            float mWidth{};
-            float mHeight{};
+            float mX{}; ///< X coordinate.
+            float mY{}; ///< Y coordinate.
+            float mWidth{}; ///< Rectangle width.
+            float mHeight{}; ///< Rectangle height.
         };
     }
 }

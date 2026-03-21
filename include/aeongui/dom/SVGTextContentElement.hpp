@@ -42,14 +42,18 @@ namespace AeonGUI
             SVGTextContentElement ( const DOMString& aTagName, AttributeMap&& aAttributes, Node* aParent );
             /** @brief Destructor. */
             ~SVGTextContentElement() override;
-            /** @brief Get the animated text length. */
+            /** @brief Get the animated text length.
+             *  @return The animated text length. */
             const SVGAnimatedLength& textLength() const;
-            /** @brief Get the animated length adjust enumeration. */
+            /** @brief Get the animated length adjust enumeration.
+             *  @return The animated length adjust value. */
             const SVGAnimatedEnumeration& lengthAdjust() const;
 
-            /** @brief Get the total number of characters. */
+            /** @brief Get the total number of characters.
+             *  @return The character count. */
             long getNumberOfChars() const;
-            /** @brief Get the computed total advance width of the text. */
+            /** @brief Get the computed total advance width of the text.
+             *  @return The text advance width. */
             float getComputedTextLength() const;
             /** @brief Get the advance width of a substring.
              *  @param start Start character index.
@@ -84,6 +88,7 @@ namespace AeonGUI
             long getCharNumAtPosition ( const DOMPoint& point ) const;
         protected:
             /// Access the internal text layout for subclass use.
+            /// @return Reference to the PangoTextLayout.
             PangoTextLayout& GetTextLayout() const;
         private:
             /// Helper function to get the text content from all child text nodes

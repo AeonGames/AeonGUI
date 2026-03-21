@@ -35,13 +35,17 @@ namespace AeonGUI
             /** @brief Destructor. */
             DLL ~SVGAnimatedString();
 
-            /** @brief Get the base value (mutable). */
+            /** @brief Get the base value (mutable).
+             *  @return Reference to the base DOMString. */
             DLL DOMString& baseVal();
-            /** @brief Get the base value (const). */
+            /** @brief Get the base value (const).
+             *  @return Const reference to the base DOMString. */
             DLL const DOMString& baseVal() const;
-            /** @brief Get the animated value (mutable). */
+            /** @brief Get the animated value (mutable).
+             *  @return Reference to the animated DOMString. */
             DLL DOMString& animVal();
-            /** @brief Get the animated value (const). */
+            /** @brief Get the animated value (const).
+             *  @return Const reference to the animated DOMString. */
             DLL const DOMString& animVal() const;
 
         private:

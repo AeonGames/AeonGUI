@@ -34,13 +34,17 @@ namespace AeonGUI
             /** @brief Destructor. */
             ~SVGAnimatedLength();
 
-            /** @brief Get the base value (mutable). */
+            /** @brief Get the base value (mutable).
+             *  @return Reference to the base SVGLength. */
             SVGLength& baseVal();
-            /** @brief Get the base value (const). */
+            /** @brief Get the base value (const).
+             *  @return Const reference to the base SVGLength. */
             const SVGLength& baseVal() const;
-            /** @brief Get the animated value (mutable). */
+            /** @brief Get the animated value (mutable).
+             *  @return Reference to the animated SVGLength. */
             SVGLength& animVal();
-            /** @brief Get the animated value (const). */
+            /** @brief Get the animated value (const).
+             *  @return Const reference to the animated SVGLength. */
             const SVGLength& animVal() const;
 
         private:

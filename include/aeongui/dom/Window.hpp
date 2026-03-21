@@ -57,11 +57,14 @@ namespace AeonGUI
              *  @return Pointer to BGRA pixel data.
              */
             DLL const uint8_t* GetPixels() const;
-            /** @brief Get the window width in pixels. */
+            /** @brief Get the window width in pixels.
+             *  @return The width. */
             DLL size_t GetWidth() const;
-            /** @brief Get the window height in pixels. */
+            /** @brief Get the window height in pixels.
+             *  @return The height. */
             DLL size_t GetHeight() const;
-            /** @brief Get the stride (bytes per row) of the pixel buffer. */
+            /** @brief Get the stride (bytes per row) of the pixel buffer.
+             *  @return The stride in bytes. */
             DLL size_t GetStride() const;
             /** @brief Render the current document to the internal canvas. */
             DLL void Draw();

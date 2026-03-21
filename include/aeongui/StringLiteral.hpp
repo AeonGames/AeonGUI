@@ -43,11 +43,17 @@ namespace AeonGUI
         constexpr StringLiteral() noexcept = default;
         /** @brief Copy constructor. */
         constexpr StringLiteral ( const StringLiteral& ) noexcept = default;
-        /** @brief Move constructor. */
+        /** @brief Move constructor.
+         *  @param aString The string literal to move from.
+         */
         constexpr StringLiteral ( StringLiteral&& aString ) noexcept = default;
-        /** @brief Copy assignment operator. */
+        /** @brief Copy assignment operator.
+         *  @return Reference to this.
+         */
         constexpr StringLiteral& operator= ( const StringLiteral& ) noexcept = default;
-        /** @brief Move assignment operator. */
+        /** @brief Move assignment operator.
+         *  @return Reference to this.
+         */
         constexpr StringLiteral& operator= ( StringLiteral&& ) noexcept = default;
 
         /** @brief Get the underlying C string.
@@ -64,12 +70,18 @@ namespace AeonGUI
         {
             return mStringSize;
         }
-        /** @brief Compare with another StringLiteral for equality. */
+        /** @brief Compare with another StringLiteral for equality.
+         *  @param b The other StringLiteral.
+         *  @return true if equal.
+         */
         constexpr bool operator == ( const StringLiteral& b ) const
         {
             return ( mString == b.mString || std::char_traits<char>::compare ( mString, b.mString, mStringSize ) == 0 );
         }
-        /** @brief Compare with a C string for equality. */
+        /** @brief Compare with a C string for equality.
+         *  @param b Null-terminated C string.
+         *  @return true if equal.
+         */
 #ifdef __GNUG__
         constexpr
 #endif
@@ -77,7 +89,10 @@ namespace AeonGUI
         {
             return ( mString == b ) || std::char_traits<char>::compare ( mString, b, mStringSize ) == 0;
         }
-        /** @brief Compare with a std::string for equality. */
+        /** @brief Compare with a std::string for equality.
+         *  @param b The string to compare.
+         *  @return true if equal.
+         */
         bool operator == ( const std::string &b ) const
         {
             return b == mString;
@@ -99,6 +114,10 @@ namespace AeonGUI
      */
     struct StringLiteralHash
     {
+        /** @brief Compute hash for a StringLiteral.
+         *  @param Key The key to hash.
+         *  @return Hash value.
+         */
         size_t operator() ( const StringLiteral& Key ) const noexcept
         {
             return std::hash<std::string> {} ( Key );

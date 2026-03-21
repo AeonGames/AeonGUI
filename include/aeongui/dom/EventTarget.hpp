@@ -105,9 +105,11 @@ namespace AeonGUI
              */
             static AbortSignal any ( std::vector<AbortSignal> signals );
 
-            /** @brief Check whether the signal has been aborted. */
+            /** @brief Check whether the signal has been aborted.
+             *  @return true if aborted. */
             bool aborted() const;
-            /** @brief Get the reason for the abort. */
+            /** @brief Get the reason for the abort.
+             *  @return The abort reason. */
             const AnyType & reason() const;
             /** @brief Throw if the signal has been aborted. */
             void throwIfAborted();

@@ -38,7 +38,8 @@ namespace AeonGUI
             /** @brief Destructor. */
             DLL ~Text() final;
             /**DOM Properties and Methods @{*/
-            /** @brief Get the node type (always TEXT_NODE). */
+            /** @brief Get the node type (always TEXT_NODE).
+             *  @return NodeType::TEXT_NODE. */
             NodeType nodeType() const final;
             /** @brief Get the concatenated text of this and adjacent text nodes.
              *  @return The whole text content.

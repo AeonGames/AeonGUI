@@ -19,12 +19,6 @@ limitations under the License.
  */
 #ifndef AEONGUI_PLATFORM_H
 #define AEONGUI_PLATFORM_H
-/** @def DLL
- *  @brief Marks a symbol for DLL export or import on Windows.
- *
- *  Expands to __declspec(dllexport) when building AeonGUI,
- *  __declspec(dllimport) when consuming it, or nothing on non-Windows.
- */
 #ifndef DLL
 #ifdef WIN32
 #ifdef AeonGUI_EXPORTS

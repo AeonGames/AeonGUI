@@ -65,55 +65,110 @@ namespace AeonGUI
 
             /** @name 2D Setters
              *  Set 2D matrix components (a-f aliases). @{ */
+            /** @brief Set element a. @param newA New value. @return The new value. */
             float a ( float newA );
+            /** @brief Set element b. @param newB New value. @return The new value. */
             float b ( float newB );
+            /** @brief Set element c. @param newC New value. @return The new value. */
             float c ( float newC );
+            /** @brief Set element d. @param newD New value. @return The new value. */
             float d ( float newD );
+            /** @brief Set element e. @param newE New value. @return The new value. */
             float e ( float newE );
+            /** @brief Set element f. @param newF New value. @return The new value. */
             float f ( float newF );
             /** @} */
 
             /** @name 4x4 Setters
              *  Set individual elements of the 4x4 matrix. @{ */
+            /** @brief Set m11. @param newM11 New value. @return The new value. */
             float m11 ( float newM11 );
+            /** @brief Set m12. @param newM12 New value. @return The new value. */
             float m12 ( float newM12 );
+            /** @brief Set m13. @param newM13 New value. @return The new value. */
             float m13 ( float newM13 );
+            /** @brief Set m14. @param newM14 New value. @return The new value. */
             float m14 ( float newM14 );
+            /** @brief Set m21. @param newM21 New value. @return The new value. */
             float m21 ( float newM21 );
+            /** @brief Set m22. @param newM22 New value. @return The new value. */
             float m22 ( float newM22 );
+            /** @brief Set m23. @param newM23 New value. @return The new value. */
             float m23 ( float newM23 );
+            /** @brief Set m24. @param newM24 New value. @return The new value. */
             float m24 ( float newM24 );
+            /** @brief Set m31. @param newM31 New value. @return The new value. */
             float m31 ( float newM31 );
+            /** @brief Set m32. @param newM32 New value. @return The new value. */
             float m32 ( float newM32 );
+            /** @brief Set m33. @param newM33 New value. @return The new value. */
             float m33 ( float newM33 );
+            /** @brief Set m34. @param newM34 New value. @return The new value. */
             float m34 ( float newM34 );
+            /** @brief Set m41. @param newM41 New value. @return The new value. */
             float m41 ( float newM41 );
+            /** @brief Set m42. @param newM42 New value. @return The new value. */
             float m42 ( float newM42 );
+            /** @brief Set m43. @param newM43 New value. @return The new value. */
             float m43 ( float newM43 );
+            /** @brief Set m44. @param newM44 New value. @return The new value. */
             float m44 ( float newM44 );
             /** @} */
 
-            /** @brief Invert this matrix in place. */
+            /** @brief Invert this matrix in place.
+             *  @return Reference to this matrix. */
             DOMMatrix& invertSelf();
-            /** @brief Post-multiply this matrix by another in place. */
+            /** @brief Post-multiply this matrix by another in place.
+             *  @param other The other matrix.
+             *  @return Reference to this matrix. */
             DOMMatrix& multiplySelf ( const DOMMatrixReadOnly& other );
-            /** @brief Pre-multiply this matrix by another in place. */
+            /** @brief Pre-multiply this matrix by another in place.
+             *  @param other The other matrix.
+             *  @return Reference to this matrix. */
             DOMMatrix& preMultiplySelf ( const DOMMatrixReadOnly& other );
-            /** @brief Translate in place. */
+            /** @brief Translate in place.
+             *  @param tx X translation.
+             *  @param ty Y translation.
+             *  @param tz Z translation.
+             *  @return Reference to this matrix. */
             DOMMatrix& translateSelf ( float tx, float ty = 0, float tz = 0 );
-            /** @brief Scale in place. */
+            /** @brief Scale in place.
+             *  @param sx X scale factor.
+             *  @param sy Y scale factor.
+             *  @param sz Z scale factor.
+             *  @return Reference to this matrix. */
             DOMMatrix& scaleSelf ( float sx, float sy = 1, float sz = 1 );
-            /** @brief Uniform 3D scale in place. */
+            /** @brief Uniform 3D scale in place.
+             *  @param sx X scale factor.
+             *  @param sy Y scale factor.
+             *  @param sz Z scale factor.
+             *  @return Reference to this matrix. */
             DOMMatrix& scale3dSelf ( float sx, float sy = 1, float sz = 1 );
-            /** @brief Rotate in place. */
+            /** @brief Rotate in place.
+             *  @param rx Rotation around X in degrees.
+             *  @param ry Rotation around Y in degrees.
+             *  @param rz Rotation around Z in degrees.
+             *  @return Reference to this matrix. */
             DOMMatrix& rotateSelf ( float rx, float ry = 0, float rz = 0 );
-            /** @brief Rotate around an axis in place. */
+            /** @brief Rotate around an axis in place.
+             *  @param x     X component of axis.
+             *  @param y     Y component of axis.
+             *  @param z     Z component of axis.
+             *  @param angle Rotation angle in degrees.
+             *  @return Reference to this matrix. */
             DOMMatrix& rotateAxisAngleSelf ( float x, float y, float z, float angle );
-            /** @brief Rotate from a direction vector in place. */
+            /** @brief Rotate from a direction vector in place.
+             *  @param rotX X component.
+             *  @param rotY Y component.
+             *  @return Reference to this matrix. */
             DOMMatrix& rotateFromVectorSelf ( float rotX, float rotY );
-            /** @brief Skew along X in place. */
+            /** @brief Skew along X in place.
+             *  @param angle Skew angle in degrees.
+             *  @return Reference to this matrix. */
             DOMMatrix& skewXSelf ( float angle );
-            /** @brief Skew along Y in place. */
+            /** @brief Skew along Y in place.
+             *  @param angle Skew angle in degrees.
+             *  @return Reference to this matrix. */
             DOMMatrix& skewYSelf ( float angle );
         private:
         };

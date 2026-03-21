@@ -50,25 +50,27 @@ namespace AeonGUI
             using DOMRectReadOnly::bottom;
             using DOMRectReadOnly::left;
 
-            /** @brief Set the X coordinate. @return The set value. */
+            /** @brief Set the X coordinate. @param newX New value. @return The set value. */
             float x ( float newX );
-            /** @brief Set the Y coordinate. @return The set value. */
+            /** @brief Set the Y coordinate. @param newY New value. @return The set value. */
             float y ( float newY );
-            /** @brief Set the width. @return The set value. */
+            /** @brief Set the width. @param newWidth New value. @return The set value. */
             float width ( float newWidth );
-            /** @brief Set the height. @return The set value. */
+            /** @brief Set the height. @param newHeight New value. @return The set value. */
             float height ( float newHeight );
-            /** @brief Set the top edge. @return The set value. */
+            /** @brief Set the top edge. @param newTop New value. @return The set value. */
             float top ( float newTop );
-            /** @brief Set the right edge. @return The set value. */
+            /** @brief Set the right edge. @param newRight New value. @return The set value. */
             float right ( float newRight );
-            /** @brief Set the bottom edge. @return The set value. */
+            /** @brief Set the bottom edge. @param newBottom New value. @return The set value. */
             float bottom ( float newBottom );
-            /** @brief Set the left edge. @return The set value. */
+            /** @brief Set the left edge. @param newLeft New value. @return The set value. */
             float left ( float newLeft );
 
             /** @brief Create a DOMRect from any rect-like object.
              *  @tparam T A type with x(), y(), width(), and height() accessors.
+             *  @param rect The source rectangle.
+             *  @return A new DOMRect.
              */
             template <typename T>
             static DOMRect fromRect ( const T& rect )

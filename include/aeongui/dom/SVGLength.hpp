@@ -52,24 +52,40 @@ namespace AeonGUI
             /** @brief Destructor. */
             ~SVGLength();
             /// @brief The type of the length. One of the SVGLengthType constants.
+            /// @return The unit type.
             SVGLengthType unitType() const;
 
             /// @brief The value as a floating point value, in user units.
+            /// @return The value in user units.
             float value() const;
+            /// @brief Set the value in user units.
+            /// @param value New value.
+            /// @return The new value.
             float value ( float value );
 
             /// @brief The value as a string value, in the units expressed by unitType.
+            /// @return The string representation.
             const DOMString& valueAsString() const;
+            /// @brief Set the value from a string.
+            /// @param value New string value.
+            /// @return The new string value.
             const DOMString& valueAsString ( const DOMString& value );
 
             /// @brief The value as a floating point value, in the units expressed by unitType.
+            /// @return The value in specified units.
             float valueInSpecifiedUnits() const;
+            /// @brief Set the value in specified units.
+            /// @param value New value.
+            /// @return The new value.
             float valueInSpecifiedUnits ( float value );
 
             /// @brief Preserve the same underlying stored value, but reset the stored unit identifier to the given unitType.
+            /// @param unitType The target unit type.
             void convertToSpecifiedUnits ( SVGLengthType unitType );
 
             /// @brief Reset the value as a number with an associated unitType, thereby replacing the values for all of the attributes on the object.
+            /// @param unitType The new unit type.
+            /// @param valueInSpecifiedUnits The new value in the specified units.
             void newValueSpecifiedUnits ( SVGLengthType unitType, float valueInSpecifiedUnits );
         private:
             void UpdateValueAsString();

@@ -35,11 +35,14 @@ namespace AeonGUI
             /** @brief Destructor. */
             ~SVGAnimatedNumberList();
 
-            /** @brief Get the base value (mutable). */
+            /** @brief Get the base value (mutable).
+             *  @return Reference to the base SVGNumberList. */
             SVGNumberList& baseVal();
-            /** @brief Get the base value (const). */
+            /** @brief Get the base value (const).
+             *  @return Const reference to the base SVGNumberList. */
             const SVGNumberList& baseVal() const;
-            /** @brief Get the animated value (const). */
+            /** @brief Get the animated value (const).
+             *  @return Const reference to the animated SVGNumberList. */
             const SVGNumberList& animVal() const;
 
         private:

@@ -43,92 +43,150 @@ namespace AeonGUI
             DOMMatrixReadOnly ( std::initializer_list<float> values = {1, 0, 0, 1, 0, 0} );
             /** @brief Destructor. */
             virtual ~DOMMatrixReadOnly();
-            /** @brief Check whether this is a 2D matrix. */
+            /** @brief Check whether this is a 2D matrix.
+             *  @return true if the matrix is 2D. */
             bool is2D() const;
-            /** @brief Check whether this is the identity matrix. */
+            /** @brief Check whether this is the identity matrix.
+             *  @return true if this is the identity matrix. */
             bool isIdentity() const;
-            /** @brief Get element a (alias m11). */
+            /** @brief Get element a (alias m11).
+             *  @return The a component. */
             float a() const;
-            /** @brief Get element b (alias m12). */
+            /** @brief Get element b (alias m12).
+             *  @return The b component. */
             float b() const;
-            /** @brief Get element c (alias m21). */
+            /** @brief Get element c (alias m21).
+             *  @return The c component. */
             float c() const;
-            /** @brief Get element d (alias m22). */
+            /** @brief Get element d (alias m22).
+             *  @return The d component. */
             float d() const;
-            /** @brief Get element e (alias m41 / translateX). */
+            /** @brief Get element e (alias m41 / translateX).
+             *  @return The e component. */
             float e() const;
-            /** @brief Get element f (alias m42 / translateY). */
+            /** @brief Get element f (alias m42 / translateY).
+             *  @return The f component. */
             float f() const;
 
-            float m11() const; ///< Row 1, column 1.
-            float m12() const; ///< Row 1, column 2.
-            float m13() const; ///< Row 1, column 3.
-            float m14() const; ///< Row 1, column 4.
-            float m21() const; ///< Row 2, column 1.
-            float m22() const; ///< Row 2, column 2.
-            float m23() const; ///< Row 2, column 3.
-            float m24() const; ///< Row 2, column 4.
-            float m31() const; ///< Row 3, column 1.
-            float m32() const; ///< Row 3, column 2.
-            float m33() const; ///< Row 3, column 3.
-            float m34() const; ///< Row 3, column 4.
-            float m41() const; ///< Row 4, column 1.
-            float m42() const; ///< Row 4, column 2.
-            float m43() const; ///< Row 4, column 3.
-            float m44() const; ///< Row 4, column 4.
+            /** @brief Get row 1, column 1. @return The m11 element. */
+            float m11() const;
+            /** @brief Get row 1, column 2. @return The m12 element. */
+            float m12() const;
+            /** @brief Get row 1, column 3. @return The m13 element. */
+            float m13() const;
+            /** @brief Get row 1, column 4. @return The m14 element. */
+            float m14() const;
+            /** @brief Get row 2, column 1. @return The m21 element. */
+            float m21() const;
+            /** @brief Get row 2, column 2. @return The m22 element. */
+            float m22() const;
+            /** @brief Get row 2, column 3. @return The m23 element. */
+            float m23() const;
+            /** @brief Get row 2, column 4. @return The m24 element. */
+            float m24() const;
+            /** @brief Get row 3, column 1. @return The m31 element. */
+            float m31() const;
+            /** @brief Get row 3, column 2. @return The m32 element. */
+            float m32() const;
+            /** @brief Get row 3, column 3. @return The m33 element. */
+            float m33() const;
+            /** @brief Get row 3, column 4. @return The m34 element. */
+            float m34() const;
+            /** @brief Get row 4, column 1. @return The m41 element. */
+            float m41() const;
+            /** @brief Get row 4, column 2. @return The m42 element. */
+            float m42() const;
+            /** @brief Get row 4, column 3. @return The m43 element. */
+            float m43() const;
+            /** @brief Get row 4, column 4. @return The m44 element. */
+            float m44() const;
 
-            /** @brief Flip around the X axis. */
+            /** @brief Flip around the X axis.
+             *  @return The flipped matrix. */
             DOMMatrixReadOnly flipX() const;
-            /** @brief Flip around the Y axis. */
+            /** @brief Flip around the Y axis.
+             *  @return The flipped matrix. */
             DOMMatrixReadOnly flipY() const;
-            /** @brief Compute the inverse. */
+            /** @brief Compute the inverse.
+             *  @return The inverted matrix. */
             DOMMatrixReadOnly inverse() const;
-            /** @brief Post-multiply with another matrix. */
+            /** @brief Post-multiply with another matrix.
+             *  @param other The matrix to multiply by.
+             *  @return The product matrix. */
             DOMMatrixReadOnly multiply ( const DOMMatrixReadOnly& other ) const;
             /** @brief Rotate around an arbitrary axis.
              *  @param x     X component of the axis.
              *  @param y     Y component of the axis.
              *  @param z     Z component of the axis.
              *  @param angle Rotation angle in degrees.
+             *  @return The rotated matrix.
              */
             DOMMatrixReadOnly rotateAxisAngle ( float x, float y, float z, float angle ) const;
             /** @brief Rotate around each axis.
              *  @param rotX Rotation around X axis in degrees.
              *  @param rotY Rotation around Y axis in degrees.
              *  @param rotZ Rotation around Z axis in degrees.
+             *  @return The rotated matrix.
              */
             DOMMatrixReadOnly rotate ( float rotX, float rotY, float rotZ ) const;
-            /** @brief Rotate from a direction vector. */
+            /** @brief Rotate from a direction vector.
+             *  @param x X component.
+             *  @param y Y component.
+             *  @return The rotated matrix. */
             DOMMatrixReadOnly rotateFromVector ( float x, float y ) const;
-            /** @brief Scale with separate factors and origin. */
+            /** @brief Scale with separate factors and origin.
+             *  @param scaleX  Scale factor along X.
+             *  @param scaleY  Scale factor along Y.
+             *  @param scaleZ  Scale factor along Z.
+             *  @param originX Origin X coordinate.
+             *  @param originY Origin Y coordinate.
+             *  @param originZ Origin Z coordinate.
+             *  @return The scaled matrix. */
             DOMMatrixReadOnly scale ( float scaleX, float scaleY, float scaleZ, float originX, float originY, float originZ ) const;
-            /** @brief Uniform 3D scale with origin. */
+            /** @brief Uniform 3D scale with origin.
+             *  @param scale   Uniform scale factor.
+             *  @param originX Origin X coordinate.
+             *  @param originY Origin Y coordinate.
+             *  @param originZ Origin Z coordinate.
+             *  @return The scaled matrix. */
             DOMMatrixReadOnly scale3d ( float scale, float originX, float originY, float originZ ) const;
             /** @brief Skew along the X axis.
              *  @param sx Skew angle in degrees.
+             *  @return The skewed matrix.
              */
             DOMMatrixReadOnly skewX ( float sx ) const;
             /** @brief Skew along the Y axis.
              *  @param sy Skew angle in degrees.
+             *  @return The skewed matrix.
              */
             DOMMatrixReadOnly skewY ( float sy ) const;
 
-            /** @brief Return the matrix as a 16-element float array. */
+            /** @brief Return the matrix as a 16-element float array.
+             *  @return Array of 16 floats. */
             std::array<float, 16> toFloat32Array() const;
-            /** @brief Return the matrix as a 16-element double array. */
+            /** @brief Return the matrix as a 16-element double array.
+             *  @return Array of 16 doubles. */
             std::array<double, 16> toFloat64Array() const;
-            /** @brief Serialize to JSON. */
+            /** @brief Serialize to JSON.
+             *  @return JSON string representation. */
             DOMString toJSON() const;
-            /** @brief Serialize to a CSS matrix/matrix3d string. */
+            /** @brief Serialize to a CSS matrix/matrix3d string.
+             *  @return CSS string representation. */
             DOMString toString() const;
-            /** @brief Transform a point by this matrix. */
+            /** @brief Transform a point by this matrix.
+             *  @param point The point to transform.
+             *  @return The transformed point. */
             DOMPoint transformPoint ( const DOMPoint& point ) const;
-            /** @brief Translate by (x, y, z). */
+            /** @brief Translate by (x, y, z).
+             *  @param x Translation along X.
+             *  @param y Translation along Y.
+             *  @param z Translation along Z.
+             *  @return The translated matrix. */
             DOMMatrixReadOnly translate ( float x, float y, float z ) const;
 
         protected:
-            std::array<float, 16> mValues{};
-            bool mIs2D{};
+            std::array<float, 16> mValues{}; ///< The 4x4 matrix values in column-major order.
+            bool mIs2D{}; ///< Whether the matrix represents a 2D transform.
         };
     }
 }

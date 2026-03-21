@@ -54,7 +54,8 @@ namespace AeonGUI
              */
             DLL const USVString& url() const;
             /**DOM Properties and Methods @{*/
-            /** @brief Get the node type (always DOCUMENT_NODE). */
+            /** @brief Get the node type (always DOCUMENT_NODE).
+             *  @return NodeType::DOCUMENT_NODE. */
             DLL NodeType nodeType() const final;
             /**@}*/
         private:

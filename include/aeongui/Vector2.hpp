@@ -37,9 +37,13 @@ namespace AeonGUI
          *  @param aY The Y component.
          */
         DLL Vector2 ( double aX, double aY );
-        /** @brief Get the X component. */
+        /** @brief Get the X component.
+         *  @return The X value.
+         */
         DLL double GetX() const;
-        /** @brief Get the Y component. */
+        /** @brief Get the Y component.
+         *  @return The Y value.
+         */
         DLL double GetY() const;
         /** @brief Set the X component.
          *  @param aX The new X value.
@@ -49,27 +53,49 @@ namespace AeonGUI
          *  @param aY The new Y value.
          */
         DLL void SetY ( double aY );
-        /** @brief Get the length (magnitude) of the vector. */
+        /** @brief Get the length (magnitude) of the vector.
+         *  @return The length.
+         */
         DLL double Length() const;
         /** @brief Access a component by index (const).
          *  @param aIndex 0 for X, 1 for Y.
+         *  @return Const reference to the component.
          */
         DLL const double& operator[] ( std::size_t aIndex ) const;
         /** @brief Access a component by index.
          *  @param aIndex 0 for X, 1 for Y.
+         *  @return Reference to the component.
          */
         DLL double& operator[] ( std::size_t aIndex );
-        /** @brief Add another vector in-place. */
+        /** @brief Add another vector in-place.
+         *  @param aRight The vector to add.
+         *  @return Reference to this.
+         */
         DLL Vector2& operator+= ( const Vector2& aRight );
-        /** @brief Subtract another vector in-place. */
+        /** @brief Subtract another vector in-place.
+         *  @param aRight The vector to subtract.
+         *  @return Reference to this.
+         */
         DLL Vector2& operator-= ( const Vector2& aRight );
-        /** @brief Transform by a Matrix2x3 in-place. */
+        /** @brief Transform by a Matrix2x3 in-place.
+         *  @param aRight The matrix to multiply by.
+         *  @return Reference to this.
+         */
         DLL Vector2& operator*= ( const Matrix2x3& aRight );
-        /** @brief Component-wise multiply in-place. */
+        /** @brief Component-wise multiply in-place.
+         *  @param aRight The vector to multiply by.
+         *  @return Reference to this.
+         */
         DLL Vector2& operator*= ( const Vector2& aRight );
-        /** @brief Scalar multiply in-place. */
+        /** @brief Scalar multiply in-place.
+         *  @param aRight The scalar to multiply by.
+         *  @return Reference to this.
+         */
         DLL Vector2& operator*= ( double aRight );
-        /** @brief Scalar divide in-place. */
+        /** @brief Scalar divide in-place.
+         *  @param aRight The scalar to divide by.
+         *  @return Reference to this.
+         */
         DLL Vector2& operator/= ( double aRight );
     private:
         double mVector2[2];

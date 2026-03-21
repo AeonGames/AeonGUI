@@ -31,24 +31,36 @@ namespace AeonGUI
     /** @brief Custom deleter for css_stylesheet. */
     struct css_stylesheet_deleter
     {
+        /** @brief Release a css_stylesheet.
+         *  @param p Pointer to the stylesheet.
+         */
         void operator() ( css_stylesheet* p );
     };
 
     /** @brief Custom deleter for css_select_ctx. */
     struct css_select_ctx_deleter
     {
+        /** @brief Release a css_select_ctx.
+         *  @param p Pointer to the selection context.
+         */
         void operator() ( css_select_ctx* p );
     };
 
     /** @brief Custom deleter for css_select_results. */
     struct css_select_results_deleter
     {
+        /** @brief Release css_select_results.
+         *  @param p Pointer to the selection results.
+         */
         void operator() ( css_select_results* p );
     };
 
     /** @brief Custom deleter for css_computed_style. */
     struct css_computed_style_deleter
     {
+        /** @brief Release a css_computed_style.
+         *  @param p Pointer to the computed style.
+         */
         void operator() ( css_computed_style* p );
     };
 

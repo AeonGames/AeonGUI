@@ -54,7 +54,8 @@ namespace AeonGUI
             /** @brief Virtual destructor. */
             DLL virtual ~Element();
             /**DOM Properties and Methods @{*/
-            /** @brief Get the node type (always ELEMENT_NODE). */
+            /** @brief Get the node type (always ELEMENT_NODE).
+             *  @return NodeType::ELEMENT_NODE. */
             NodeType nodeType() const final;
             /** @brief Get the tag name.
              *  @return The element's tag name.
@@ -79,10 +80,14 @@ namespace AeonGUI
             std::vector<lwc_string*> mClasses{};
             DLL void OnAncestorChanged() override;
         protected:
-            AttributeMap mAttributes{};
-            StyleSheetPtr mInlineStyleSheet{};
-            SelectResultsPtr mComputedStyles{};
+            AttributeMap mAttributes{}; ///< The element's attribute map.
+            StyleSheetPtr mInlineStyleSheet{}; ///< Inline style parsed from the style attribute.
+            SelectResultsPtr mComputedStyles{}; ///< Computed CSS styles for this element.
+            /** @brief Get computed styles from the parent element.
+             *  @return Pointer to parent's computed styles, or nullptr. */
             css_select_results* GetParentComputedStyles() const;
+            /** @brief Get this element's computed styles.
+             *  @return Pointer to computed styles, or nullptr. */
             css_select_results* GetComputedStyles() const;
         };
     }

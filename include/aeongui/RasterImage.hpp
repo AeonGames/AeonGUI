@@ -69,15 +69,25 @@ namespace AeonGUI
          *  @return true if pixel data is available.
          */
         [[nodiscard]] DLL bool IsLoaded() const;
-        /** @brief Get the original encoded format of the loaded image. */
+        /** @brief Get the original encoded format of the loaded image.
+         *  @return The encoded format.
+         */
         [[nodiscard]] DLL EncodedFormat GetEncodedFormat() const;
-        /** @brief Get the decoded pixel format. */
+        /** @brief Get the decoded pixel format.
+         *  @return The pixel format.
+         */
         [[nodiscard]] DLL PixelFormat GetPixelFormat() const;
-        /** @brief Get the image width in pixels. */
+        /** @brief Get the image width in pixels.
+         *  @return Width in pixels.
+         */
         [[nodiscard]] DLL uint32_t GetWidth() const;
-        /** @brief Get the image height in pixels. */
+        /** @brief Get the image height in pixels.
+         *  @return Height in pixels.
+         */
         [[nodiscard]] DLL uint32_t GetHeight() const;
-        /** @brief Get the stride (bytes per row) of the decoded image. */
+        /** @brief Get the stride (bytes per row) of the decoded image.
+         *  @return Stride in bytes.
+         */
         [[nodiscard]] DLL size_t GetStride() const;
         /** @brief Get a pointer to the decoded pixel data.
          *  @return Pointer to RGBA8 pixel data, or nullptr if not loaded.

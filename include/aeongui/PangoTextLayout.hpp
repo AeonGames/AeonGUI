@@ -79,7 +79,9 @@ namespace AeonGUI
          *  @return X offset in CSS pixels.
          */
         DLL double GetCharOffsetX ( long aIndex ) const override;
-        /// Access the underlying PangoLayout for advanced use.
+        /** @brief Access the underlying PangoLayout for advanced use.
+         *  @return Pointer to the PangoLayout.
+         */
         PangoLayout* GetPangoLayout() const;
     private:
         void UpdateFontDescription();

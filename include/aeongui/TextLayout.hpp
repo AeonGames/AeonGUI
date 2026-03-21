@@ -56,11 +56,17 @@ namespace AeonGUI
          *  @param aStyle 0 = normal, 1 = italic, 2 = oblique.
          */
         virtual void SetFontStyle ( int aStyle ) = 0;
-        /** @brief Get the logical width of the laid-out text. */
+        /** @brief Get the logical width of the laid-out text.
+         *  @return Width in CSS pixels.
+         */
         virtual double GetTextWidth() const = 0;
-        /** @brief Get the logical height of the laid-out text. */
+        /** @brief Get the logical height of the laid-out text.
+         *  @return Height in CSS pixels.
+         */
         virtual double GetTextHeight() const = 0;
-        /** @brief Get the baseline offset from the top. */
+        /** @brief Get the baseline offset from the top.
+         *  @return Baseline in CSS pixels.
+         */
         virtual double GetBaseline() const = 0;
         /** Get the x-offset of the character at the given index.
          *  @param aIndex UTF-8 byte index.
