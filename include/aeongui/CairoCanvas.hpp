@@ -65,6 +65,12 @@ namespace AeonGUI
         DLL double MeasureText ( const std::string& aText,
                                  const std::string& aFontFamily, double aFontSize,
                                  int aFontWeight, int aFontStyle ) const final;
+        DLL void DrawTextOnPath ( const std::string& aText,
+                                  const Path& aPath,
+                                  double aStartOffset,
+                                  const std::string& aFontFamily, double aFontSize,
+                                  int aFontWeight, int aFontStyle,
+                                  bool aReverse = false, bool aClosed = false ) final;
         DLL void SetFillColor ( const ColorAttr& aColor ) final;
         DLL const ColorAttr& GetFillColor() const final;
         DLL void SetStrokeColor ( const ColorAttr& aColor ) final;

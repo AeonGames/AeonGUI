@@ -38,6 +38,7 @@ set(TESTED_SRCS
   DOMRectReadOnlyTest.cpp
   DOMRectTest.cpp
   Location.cpp
+  NodeTest.cpp
   RasterImageTest.cpp
   SVGAnimatedTypesTest.cpp
   SVGImageElementTest.cpp

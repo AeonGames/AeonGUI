@@ -1,4 +1,5 @@
 {
+    "files.eol": "\n",
     "git.ignoreLimitWarning": true,
     "terminal.integrated.profiles.windows": {
         "MinGW GCC Bash": {

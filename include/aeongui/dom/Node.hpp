@@ -108,6 +108,45 @@ namespace AeonGUI
              */
             DLL void TraverseDepthFirstPreOrder ( const std::function<void ( const Node& ) >& aPreamble, const std::function<void ( const Node& ) >& aPostamble, const std::function<bool ( const Node& ) >& aUnaryPredicate ) const;
 
+            /** @brief Stack-based depth-first pre-order traversal (reentrant-safe).
+             *  @param aAction Action invoked for each node.
+             */
+            DLL void StackTraverseDepthFirstPreOrder ( const std::function<void ( Node& ) >& aAction );
+            /** @brief Stack-based depth-first pre-order traversal (const, reentrant-safe).
+             *  @param aAction Action invoked for each node.
+             */
+            DLL void StackTraverseDepthFirstPreOrder ( const std::function<void ( const Node& ) >& aAction ) const;
+            /** @brief Stack-based depth-first post-order traversal (reentrant-safe).
+             *  @param aAction Action invoked for each node.
+             */
+            DLL void StackTraverseDepthFirstPostOrder ( const std::function<void ( Node& ) >& aAction );
+            /** @brief Stack-based depth-first post-order traversal (const, reentrant-safe).
+             *  @param aAction Action invoked for each node.
+             */
+            DLL void StackTraverseDepthFirstPostOrder ( const std::function<void ( const Node& ) >& aAction ) const;
+            /** @brief Stack-based pre-order with pre/post callbacks (reentrant-safe).
+             *  @param aPreamble  Called before visiting children.
+             *  @param aPostamble Called after visiting children.
+             */
+            DLL void StackTraverseDepthFirstPreOrder ( const std::function<void ( Node& ) >& aPreamble, const std::function<void ( Node& ) >& aPostamble );
+            /** @brief Stack-based pre-order with pre/post callbacks (const, reentrant-safe).
+             *  @param aPreamble  Called before visiting children.
+             *  @param aPostamble Called after visiting children.
+             */
+            DLL void StackTraverseDepthFirstPreOrder ( const std::function<void ( const Node& ) >& aPreamble, const std::function<void ( const Node& ) >& aPostamble ) const;
+            /** @brief Stack-based pre-order with pre/post callbacks and predicate (reentrant-safe).
+             *  @param aPreamble       Called before visiting children.
+             *  @param aPostamble      Called after visiting children.
+             *  @param aUnaryPredicate Only descend into children for which this returns true.
+             */
+            DLL void StackTraverseDepthFirstPreOrder ( const std::function<void ( Node& ) >& aPreamble, const std::function<void ( Node& ) >& aPostamble, const std::function<bool ( Node& ) >& aUnaryPredicate );
+            /** @brief Stack-based pre-order with pre/post/predicate (const, reentrant-safe).
+             *  @param aPreamble       Called before visiting children.
+             *  @param aPostamble      Called after visiting children.
+             *  @param aUnaryPredicate Only descend into children for which this returns true.
+             */
+            DLL void StackTraverseDepthFirstPreOrder ( const std::function<void ( const Node& ) >& aPreamble, const std::function<void ( const Node& ) >& aPostamble, const std::function<bool ( const Node& ) >& aUnaryPredicate ) const;
+
             /** @brief Begin drawing this node on the canvas.
              *  @param aCanvas The target canvas.
              */

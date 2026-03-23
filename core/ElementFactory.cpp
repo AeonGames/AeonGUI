@@ -40,6 +40,7 @@ limitations under the License.
 #include "aeongui/dom/SVGImageElement.hpp"
 #include "aeongui/dom/SVGTextElement.hpp"
 #include "aeongui/dom/SVGTSpanElement.hpp"
+#include "aeongui/dom/SVGTextPathElement.hpp"
 
 namespace AeonGUI
 {
@@ -87,6 +88,7 @@ namespace AeonGUI
         MakeConstructor<DOM::SVGStopElement> ( "stop" ),
         MakeConstructor<DOM::SVGTextElement> ( "text" ),
         MakeConstructor<DOM::SVGTSpanElement> ( "tspan" ),
+        MakeConstructor<DOM::SVGTextPathElement> ( "textPath" ),
     };
 
     std::unique_ptr<DOM::Element> Construct ( const char* aIdentifier, AttributeMap&& aAttributeMap, DOM::Node* aParent )

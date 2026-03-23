@@ -38,6 +38,11 @@ namespace AeonGUI
             SVGUseElement ( const DOMString& aTagName, AttributeMap&& aAttributes, Node* aParent );
             /** @brief Destructor. */
             ~SVGUseElement() final;
+            void DrawStart ( Canvas& aCanvas ) const final;
+        private:
+            std::string mHref;
+            double mX{0.0};
+            double mY{0.0};
         };
     }
 }

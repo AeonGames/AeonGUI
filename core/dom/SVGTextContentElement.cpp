@@ -16,6 +16,7 @@ limitations under the License.
 #include "aeongui/dom/SVGTextContentElement.hpp"
 #include "aeongui/dom/Text.hpp"
 #include "aeongui/dom/DOMException.hpp"
+#include "aeongui/StyleSheet.hpp"
 #include <libcss/libcss.h>
 #include <algorithm>
 #include <cmath>
@@ -53,91 +54,10 @@ namespace AeonGUI
             if ( results && results->styles[CSS_PSEUDO_ELEMENT_NONE] )
             {
                 css_computed_style* style = results->styles[CSS_PSEUDO_ELEMENT_NONE];
-
-                // Font family
-                lwc_string** names = nullptr;
-                uint8_t family = css_computed_font_family ( style, &names );
-                if ( names && names[0] )
-                {
-                    mTextLayout.SetFontFamily ( std::string ( lwc_string_data ( names[0] ), lwc_string_length ( names[0] ) ) );
-                }
-                else
-                {
-                    switch ( family )
-                    {
-                    case CSS_FONT_FAMILY_SERIF:
-                        mTextLayout.SetFontFamily ( "serif" );
-                        break;
-                    case CSS_FONT_FAMILY_MONOSPACE:
-                        mTextLayout.SetFontFamily ( "monospace" );
-                        break;
-                    case CSS_FONT_FAMILY_CURSIVE:
-                        mTextLayout.SetFontFamily ( "cursive" );
-                        break;
-                    case CSS_FONT_FAMILY_FANTASY:
-                        mTextLayout.SetFontFamily ( "fantasy" );
-                        break;
-                    default:
-                        mTextLayout.SetFontFamily ( "sans-serif" );
-                        break;
-                    }
-                }
-
-                // Font size
-                css_fixed length{};
-                css_unit unit{};
-                if ( css_computed_font_size ( style, &length, &unit ) == CSS_FONT_SIZE_DIMENSION )
-                {
-                    mTextLayout.SetFontSize ( FIXTOFLT ( length ) );
-                }
-
-                // Font weight
-                uint8_t w = css_computed_font_weight ( style );
-                int weight = 400;
-                switch ( w )
-                {
-                case CSS_FONT_WEIGHT_100:
-                    weight = 100;
-                    break;
-                case CSS_FONT_WEIGHT_200:
-                    weight = 200;
-                    break;
-                case CSS_FONT_WEIGHT_300:
-                    weight = 300;
-                    break;
-                case CSS_FONT_WEIGHT_500:
-                    weight = 500;
-                    break;
-                case CSS_FONT_WEIGHT_600:
-                    weight = 600;
-                    break;
-                case CSS_FONT_WEIGHT_700:
-                case CSS_FONT_WEIGHT_BOLD:
-                    weight = 700;
-                    break;
-                case CSS_FONT_WEIGHT_800:
-                    weight = 800;
-                    break;
-                case CSS_FONT_WEIGHT_900:
-                    weight = 900;
-                    break;
-                default:
-                    break;
-                }
-                mTextLayout.SetFontWeight ( weight );
-
-                // Font style
-                uint8_t s = css_computed_font_style ( style );
-                int fontStyle = 0;
-                if ( s == CSS_FONT_STYLE_ITALIC )
-                {
-                    fontStyle = 1;
-                }
-                else if ( s == CSS_FONT_STYLE_OBLIQUE )
-                {
-                    fontStyle = 2;
-                }
-                mTextLayout.SetFontStyle ( fontStyle );
+                mTextLayout.SetFontFamily ( GetCSSFontFamily ( style ) );
+                mTextLayout.SetFontSize ( GetCSSFontSize ( style ) );
+                mTextLayout.SetFontWeight ( GetCSSFontWeight ( style ) );
+                mTextLayout.SetFontStyle ( GetCSSFontStyle ( style ) );
             }
         }
 

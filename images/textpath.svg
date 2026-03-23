@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg
+   width="800"
+   height="1200"
+   viewBox="0 0 800 1200"
+   version="1.1"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:xlink="http://www.w3.org/1999/xlink">
+  <defs>
+    <!-- Simple arc path for text to follow -->
+    <path id="arcPath"
+          d="M 100,300 C 100,100 700,100 700,300" />
+
+    <!-- Circular path -->
+    <path id="circlePath"
+          d="M 400,500 m -120,0 a 120,120 0 1,1 240,0 a 120,120 0 1,1 -240,0" />
+
+    <!-- Wavy path -->
+    <path id="wavyPath"
+          d="M 50,200 Q 200,50 350,200 Q 500,350 650,200" />
+
+    <!-- Arc path for side="right" demo -->
+    <path id="sideArc"
+          d="M 100,750 C 100,650 700,650 700,750" />
+
+    <!-- Path with pathLength for startOffset scaling demo -->
+    <path id="scaledPath"
+          d="M 50,900 C 150,830 650,830 750,900"
+          pathLength="100" />
+
+    <!-- Path for text-anchor demo -->
+    <path id="anchorPath"
+          d="M 100,1050 C 100,950 700,950 700,1050" />
+  </defs>
+
+  <!-- Show the paths as thin guides -->
+  <use xlink:href="#arcPath" fill="none" stroke="#cccccc" stroke-width="1" />
+  <use xlink:href="#circlePath" fill="none" stroke="#cccccc" stroke-width="1" />
+  <use xlink:href="#wavyPath" fill="none" stroke="#cccccc" stroke-width="1" />
+  <use xlink:href="#sideArc" fill="none" stroke="#cccccc" stroke-width="1" />
+  <use xlink:href="#scaledPath" fill="none" stroke="#cccccc" stroke-width="1" />
+  <use xlink:href="#anchorPath" fill="none" stroke="#cccccc" stroke-width="1" />
+
+  <!-- Text following an arc path -->
+  <text style="font-family:'Open Sans';font-size:32px;fill:#4448c1;">
+    <textPath href="#arcPath">AeonGames — Text on a Path!</textPath>
+  </text>
+
+  <!-- Text following a circle path -->
+  <text style="font-family:'Open Sans';font-size:20px;fill:#228b22;">
+    <textPath href="#circlePath">AeonGUI circular text path demo ★ </textPath>
+  </text>
+
+  <!-- Text following a wavy path with startOffset -->
+  <text style="font-family:'Open Sans';font-size:24px;fill:#c14444;font-weight:bold;">
+    <textPath href="#wavyPath" startOffset="10%">Wavy text is fun!</textPath>
+  </text>
+
+  <!-- ===== side="right" — text rendered on the underside of the arc ===== -->
+  <text style="font-family:'Open Sans';font-size:28px;fill:#8b008b;">
+    <textPath href="#sideArc" side="right">Text on the right side!</textPath>
+  </text>
+
+  <!-- ===== Closed path text wrapping — text wraps around the circle ===== -->
+  <text style="font-family:'Open Sans';font-size:20px;fill:#ff8c00;">
+    <textPath href="#circlePath">Closed path wrapping: this text should wrap continuously around the circle path ★ ★ ★ </textPath>
+  </text>
+
+  <!-- ===== pathLength scaling — startOffset=50 means halfway on a path with pathLength=100 ===== -->
+  <text style="font-family:'Open Sans';font-size:24px;fill:#006400;">
+    <textPath href="#scaledPath" startOffset="50">Halfway via pathLength</textPath>
+  </text>
+
+  <!-- ===== text-anchor="middle" — text centered on startOffset ===== -->
+  <text style="font-family:'Open Sans';font-size:24px;fill:#1e90ff;" text-anchor="middle">
+    <textPath href="#anchorPath" startOffset="50%">Centered text</textPath>
+  </text>
+
+  <!-- ===== text-anchor="end" — text ends at startOffset ===== -->
+  <text style="font-family:'Open Sans';font-size:20px;fill:#b22222;" text-anchor="end">
+    <textPath href="#anchorPath" startOffset="50%">End-anchored</textPath>
+  </text>
+</svg>

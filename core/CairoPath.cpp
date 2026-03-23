@@ -1,5 +1,5 @@
 /*
-Copyright (C) 2019,2020,2025 Rodrigo Jose Hernandez Cordoba
+Copyright (C) 2019,2020,2025,2026 Rodrigo Jose Hernandez Cordoba
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -407,7 +407,7 @@ namespace AeonGUI
                 {
                     path_arc ( mPathData,
                                last_point[0], last_point[1],
-                               last_point[0] + std::get<double> ( * ( i ) ), last_point[1] + std::get<double> ( * ( i + 1 ) ),
+                               std::get<double> ( * ( i ) ), std::get<double> ( * ( i + 1 ) ),
                                std::get<double> ( * ( i + 2 ) ),
                                std::get<bool> ( * ( i + 3 ) ), std::get<bool> ( * ( i + 4 ) ),
                                last_point[0] + std::get<double> ( * ( i + 5 ) ), last_point[1] + std::get<double> ( * ( i + 6 ) )
@@ -424,4 +424,196 @@ namespace AeonGUI
         mPath.num_data = static_cast<int> ( mPathData.size() );
     }
     CairoPath::~CairoPath() = default;
+
+    // Evaluate a cubic Bezier at parameter t.
+    static void CubicBezierPoint ( double t,
+                                   double x0, double y0,
+                                   double x1, double y1,
+                                   double x2, double y2,
+                                   double x3, double y3,
+                                   double& ox, double& oy )
+    {
+        double u = 1.0 - t;
+        double uu = u * u;
+        double tt = t * t;
+        ox = uu * u * x0 + 3.0 * uu * t * x1 + 3.0 * u * tt * x2 + tt * t * x3;
+        oy = uu * u * y0 + 3.0 * uu * t * y1 + 3.0 * u * tt * y2 + tt * t * y3;
+    }
+
+    // Evaluate the derivative of a cubic Bezier at parameter t.
+    static void CubicBezierTangent ( double t,
+                                     double x0, double y0,
+                                     double x1, double y1,
+                                     double x2, double y2,
+                                     double x3, double y3,
+                                     double& dx, double& dy )
+    {
+        double u = 1.0 - t;
+        dx = 3.0 * u * u * ( x1 - x0 ) + 6.0 * u * t * ( x2 - x1 ) + 3.0 * t * t * ( x3 - x2 );
+        dy = 3.0 * u * u * ( y1 - y0 ) + 6.0 * u * t * ( y2 - y1 ) + 3.0 * t * t * ( y3 - y2 );
+    }
+
+    // Approximate the arc length of a cubic Bezier using 16-point Gauss-Legendre quadrature.
+    static double CubicBezierLength ( double x0, double y0,
+                                      double x1, double y1,
+                                      double x2, double y2,
+                                      double x3, double y3 )
+    {
+        // 8-point Gauss-Legendre weights and abscissae on [0,1].
+        static const double weights[] = {0.1012285363, 0.2223810345, 0.3137066459, 0.3626837834,
+                                         0.3626837834, 0.3137066459, 0.2223810345, 0.1012285363
+                                        };
+        static const double abscissae[] = {0.0198550718, 0.1016667613, 0.2372337950, 0.4082826788,
+                                           0.5917173212, 0.7627662050, 0.8983332387, 0.9801449282
+                                          };
+        double length = 0.0;
+        for ( int j = 0; j < 8; ++j )
+        {
+            double dx, dy;
+            CubicBezierTangent ( abscissae[j], x0, y0, x1, y1, x2, y2, x3, y3, dx, dy );
+            length += weights[j] * std::sqrt ( dx * dx + dy * dy );
+        }
+        // Weights are for [-1,1]; multiply by 0.5 to scale to [0,1].
+        return length * 0.5;
+    }
+
+    double CairoPath::GetTotalLength() const
+    {
+        double totalLength = 0.0;
+        double curX = 0.0, curY = 0.0;
+        for ( int i = 0; i < mPath.num_data; i += mPath.data[i].header.length )
+        {
+            cairo_path_data_t* data = &mPath.data[i];
+            switch ( data->header.type )
+            {
+            case CAIRO_PATH_MOVE_TO:
+                curX = data[1].point.x;
+                curY = data[1].point.y;
+                break;
+            case CAIRO_PATH_LINE_TO:
+            {
+                double dx = data[1].point.x - curX;
+                double dy = data[1].point.y - curY;
+                totalLength += std::sqrt ( dx * dx + dy * dy );
+                curX = data[1].point.x;
+                curY = data[1].point.y;
+            }
+            break;
+            case CAIRO_PATH_CURVE_TO:
+                totalLength += CubicBezierLength ( curX, curY,
+                                                   data[1].point.x, data[1].point.y,
+                                                   data[2].point.x, data[2].point.y,
+                                                   data[3].point.x, data[3].point.y );
+                curX = data[3].point.x;
+                curY = data[3].point.y;
+                break;
+            case CAIRO_PATH_CLOSE_PATH:
+                break;
+            }
+        }
+        return totalLength;
+    }
+
+    PathPoint CairoPath::GetPointAtLength ( double aDistance ) const
+    {
+        double remaining = aDistance;
+        double curX = 0.0, curY = 0.0;
+        double startX = 0.0, startY = 0.0;
+
+        for ( int i = 0; i < mPath.num_data; i += mPath.data[i].header.length )
+        {
+            cairo_path_data_t* data = &mPath.data[i];
+            switch ( data->header.type )
+            {
+            case CAIRO_PATH_MOVE_TO:
+                curX = startX = data[1].point.x;
+                curY = startY = data[1].point.y;
+                break;
+            case CAIRO_PATH_LINE_TO:
+            {
+                double dx = data[1].point.x - curX;
+                double dy = data[1].point.y - curY;
+                double segLen = std::sqrt ( dx * dx + dy * dy );
+                if ( remaining <= segLen && segLen > 0.0 )
+                {
+                    double t = remaining / segLen;
+                    return PathPoint{curX + dx * t, curY + dy * t, std::atan2 ( dy, dx ) };
+                }
+                remaining -= segLen;
+                curX = data[1].point.x;
+                curY = data[1].point.y;
+            }
+            break;
+            case CAIRO_PATH_CURVE_TO:
+            {
+                double x0 = curX, y0 = curY;
+                double x1 = data[1].point.x, y1 = data[1].point.y;
+                double x2 = data[2].point.x, y2 = data[2].point.y;
+                double x3 = data[3].point.x, y3 = data[3].point.y;
+                double segLen = CubicBezierLength ( x0, y0, x1, y1, x2, y2, x3, y3 );
+                if ( remaining <= segLen && segLen > 0.0 )
+                {
+                    // Binary search for the parameter t where arc length == remaining.
+                    double lo = 0.0, hi = 1.0;
+                    for ( int iter = 0; iter < 30; ++iter )
+                    {
+                        double mid = ( lo + hi ) * 0.5;
+                        // Compute arc length from 0 to mid using Gauss-Legendre on [0, mid].
+                        double subLen = 0.0;
+                        {
+                            static const double w[] = {0.1012285363, 0.2223810345, 0.3137066459, 0.3626837834,
+                                                       0.3626837834, 0.3137066459, 0.2223810345, 0.1012285363
+                                                      };
+                            static const double a[] = {0.0198550718, 0.1016667613, 0.2372337950, 0.4082826788,
+                                                       0.5917173212, 0.7627662050, 0.8983332387, 0.9801449282
+                                                      };
+                            for ( int j = 0; j < 8; ++j )
+                            {
+                                double tt = a[j] * mid;
+                                double ddx, ddy;
+                                CubicBezierTangent ( tt, x0, y0, x1, y1, x2, y2, x3, y3, ddx, ddy );
+                                subLen += w[j] * std::sqrt ( ddx * ddx + ddy * ddy );
+                            }
+                            // Weights are for [-1,1]; multiply by 0.5 to scale to [0,1].
+                            subLen *= mid * 0.5;
+                        }
+                        if ( subLen < remaining )
+                        {
+                            lo = mid;
+                        }
+                        else
+                        {
+                            hi = mid;
+                        }
+                    }
+                    double t = ( lo + hi ) * 0.5;
+                    double ox, oy, ddx, ddy;
+                    CubicBezierPoint ( t, x0, y0, x1, y1, x2, y2, x3, y3, ox, oy );
+                    CubicBezierTangent ( t, x0, y0, x1, y1, x2, y2, x3, y3, ddx, ddy );
+                    return PathPoint{ox, oy, std::atan2 ( ddy, ddx ) };
+                }
+                remaining -= segLen;
+                curX = x3;
+                curY = y3;
+            }
+            break;
+            case CAIRO_PATH_CLOSE_PATH:
+                break;
+            }
+        }
+        // Past the end — return the last point with the last tangent.
+        return PathPoint{curX, curY, 0.0};
+    }
+
+    bool CairoPath::IsClosed() const
+    {
+        for ( int i = 0; i < mPath.num_data; i += mPath.data[i].header.length )
+        {
+            if ( mPath.data[i].header.type == CAIRO_PATH_CLOSE_PATH )
+            {
+                return true;
+            }
+        }
+        return false;
+    }
 }

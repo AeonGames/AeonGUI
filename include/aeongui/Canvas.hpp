@@ -156,6 +156,22 @@ namespace AeonGUI
         virtual double MeasureText ( const std::string& aText,
                                      const std::string& aFontFamily, double aFontSize,
                                      int aFontWeight, int aFontStyle ) const = 0;
+        /** Draw text along a path.
+         *  Each glyph is positioned and rotated to follow the path.
+         *  @param aText        The UTF-8 text string to render.
+         *  @param aPath        The path to follow.
+         *  @param aStartOffset Starting distance along the path in user units.
+         *  @param aFontFamily  Font family name.
+         *  @param aFontSize    Font size in CSS pixels.
+         *  @param aFontWeight  CSS font weight (400 = normal, 700 = bold).
+         *  @param aFontStyle   0 = normal, 1 = italic, 2 = oblique.
+         */
+        virtual void DrawTextOnPath ( const std::string& aText,
+                                      const Path& aPath,
+                                      double aStartOffset,
+                                      const std::string& aFontFamily, double aFontSize,
+                                      int aFontWeight, int aFontStyle,
+                                      bool aReverse = false, bool aClosed = false ) = 0;
         /** @brief Set the SVG viewBox and preserveAspectRatio.
          *  @param aViewBox The viewBox rectangle.
          *  @param aPreserveAspectRatio How to align and scale.

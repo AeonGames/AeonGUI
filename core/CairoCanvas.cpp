@@ -409,6 +409,147 @@ namespace AeonGUI
         return static_cast<double> ( width );
     }
 
+    void CairoCanvas::DrawTextOnPath ( const std::string& aText,
+                                       const Path& aPath,
+                                       double aStartOffset,
+                                       const std::string& aFontFamily, double aFontSize,
+                                       int aFontWeight, int aFontStyle,
+                                       bool aReverse, bool aClosed )
+    {
+        if ( aText.empty() || mCairoContext == nullptr )
+        {
+            return;
+        }
+
+        PangoContext* pangoContext = FontDatabase::GetFontMap()
+                                     ? FontDatabase::CreateContext()
+                                     : pango_cairo_create_context ( mCairoContext );
+        PangoLayout* layout = pango_layout_new ( pangoContext );
+        PangoFontDescription* desc = CreateFontDescription ( aFontFamily, aFontSize, aFontWeight, aFontStyle );
+        pango_layout_set_font_description ( layout, desc );
+
+        // Get the baseline offset for vertical centering.
+        pango_layout_set_text ( layout, aText.c_str(), -1 );
+        PangoLayoutIter* iter = pango_layout_get_iter ( layout );
+        int baseline = pango_layout_iter_get_baseline ( iter );
+        pango_layout_iter_free ( iter );
+        double baselineOffset = static_cast<double> ( baseline ) / PANGO_SCALE;
+
+        if ( mOpacity < 1.0 && mOpacity > 0.0 )
+        {
+            cairo_push_group ( mCairoContext );
+        }
+
+        // SVG2 §11.5 step 8.5.1.8: precompute path length for hidden-flag check.
+        double pathLength = aPath.GetTotalLength();
+
+        // Render character-by-character along the path.
+        double distance = aStartOffset;
+        size_t pos = 0;
+        while ( pos < aText.size() )
+        {
+            // Determine the length of the current UTF-8 character.
+            unsigned char lead = static_cast<unsigned char> ( aText[pos] );
+            int charLen = 1;
+            if ( lead >= 0xF0 )
+            {
+                charLen = 4;
+            }
+            else if ( lead >= 0xE0 )
+            {
+                charLen = 3;
+            }
+            else if ( lead >= 0xC0 )
+            {
+                charLen = 2;
+            }
+            if ( pos + static_cast<size_t> ( charLen ) > aText.size() )
+            {
+                break;
+            }
+            std::string oneChar = aText.substr ( pos, static_cast<size_t> ( charLen ) );
+
+            // Measure this character's advance width.
+            pango_layout_set_text ( layout, oneChar.c_str(), charLen );
+            int charWidth = 0, charHeight = 0;
+            pango_layout_get_pixel_size ( layout, &charWidth, &charHeight );
+            double advance = static_cast<double> ( charWidth );
+
+            // SVG2 §11.5 step 8.5.1: compute midpoint along path.
+            double mid = distance + advance * 0.5;
+
+            // For side="right", reverse the direction along the path.
+            double queryMid = aReverse ? ( pathLength - mid ) : mid;
+
+            // Closed path text wrapping: wrap around instead of hiding.
+            if ( aClosed && pathLength > 0.0 )
+            {
+                queryMid = std::fmod ( queryMid, pathLength );
+                if ( queryMid < 0.0 )
+                {
+                    queryMid += pathLength;
+                }
+            }
+            else
+            {
+                // SVG2 §11.5 step 8.5.1.8: hide characters whose midpoint is off the path.
+                if ( queryMid < 0.0 || queryMid > pathLength )
+                {
+                    distance += advance;
+                    pos += static_cast<size_t> ( charLen );
+                    continue;
+                }
+            }
+
+            PathPoint pt = aPath.GetPointAtLength ( queryMid );
+            double angle = aReverse ? ( pt.angle + M_PI ) : pt.angle;
+
+            cairo_save ( mCairoContext );
+            cairo_translate ( mCairoContext, pt.x, pt.y );
+            cairo_rotate ( mCairoContext, angle );
+            // Center the glyph horizontally and baseline-align vertically.
+            cairo_translate ( mCairoContext, -advance * 0.5, -baselineOffset );
+
+            // Render fill.
+            if ( std::holds_alternative<Color> ( mFillColor ) )
+            {
+                Color& fill = std::get<Color> ( mFillColor );
+                cairo_set_source_rgba ( mCairoContext, fill.R(), fill.G(), fill.B(),
+                                        ( mFillOpacity >= 1.0 ) ? fill.A() : mFillOpacity );
+                cairo_move_to ( mCairoContext, 0, 0 );
+                pango_cairo_update_layout ( mCairoContext, layout );
+                pango_cairo_show_layout ( mCairoContext, layout );
+            }
+
+            // Render stroke.
+            if ( std::holds_alternative<Color> ( mStrokeColor ) )
+            {
+                Color& stroke = std::get<Color> ( mStrokeColor );
+                cairo_set_line_width ( mCairoContext, mStrokeWidth );
+                cairo_set_source_rgba ( mCairoContext, stroke.R(), stroke.G(), stroke.B(),
+                                        ( mStrokeOpacity >= 1.0 ) ? stroke.A() : mStrokeOpacity );
+                cairo_move_to ( mCairoContext, 0, 0 );
+                pango_cairo_layout_path ( mCairoContext, layout );
+                cairo_stroke ( mCairoContext );
+            }
+
+            cairo_restore ( mCairoContext );
+
+            distance += advance;
+            pos += static_cast<size_t> ( charLen );
+        }
+
+        if ( mOpacity < 1.0 && mOpacity > 0.0 )
+        {
+            cairo_pop_group_to_source ( mCairoContext );
+            cairo_paint_with_alpha ( mCairoContext, mOpacity );
+        }
+
+        pango_font_description_free ( desc );
+        g_object_unref ( layout );
+        g_object_unref ( pangoContext );
+    }
+
     void CairoCanvas::SetViewBox ( const ViewBox& aViewBox, const PreserveAspectRatio& aPreserveAspectRatio )
     {
         // Follows https://www.w3.org/TR/SVG2/coords.html#ComputingAViewportsTransform

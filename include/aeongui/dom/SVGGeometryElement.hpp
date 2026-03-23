@@ -43,6 +43,13 @@ namespace AeonGUI
              *  @param aCanvas Target canvas.
              */
             void DrawStart ( Canvas& aCanvas ) const final;
+            /** @brief Get the path data for this geometry element.
+             *  @return Const reference to the CairoPath.
+             */
+            const CairoPath& GetPath() const
+            {
+                return mPath;
+            }
         protected:
             CairoPath mPath; ///< Cached Cairo path for this geometry.
         };

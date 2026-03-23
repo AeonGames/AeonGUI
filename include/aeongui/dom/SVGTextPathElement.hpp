@@ -1,0 +1,53 @@
+/*
+Copyright (C) 2026 Rodrigo Jose Hernandez Cordoba
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+*/
+#ifndef AEONGUI_SVGTEXTPATHELEMENT_H
+#define AEONGUI_SVGTEXTPATHELEMENT_H
+
+#include "SVGTextContentElement.hpp"
+#include "SVGAnimatedString.hpp"
+#include "SVGAnimatedLength.hpp"
+#include "SVGAnimatedEnumeration.hpp"
+
+namespace AeonGUI
+{
+    namespace DOM
+    {
+        /** @brief SVG textPath element for rendering text along a path.
+         *  @see https://www.w3.org/TR/SVG2/text.html#InterfaceSVGTextPathElement
+         */
+        class SVGTextPathElement : public SVGTextContentElement
+        {
+        public:
+            SVGTextPathElement ( const DOMString& aTagName, AttributeMap&& aAttributes, Node* aParent );
+            ~SVGTextPathElement() override;
+            void DrawStart ( Canvas& aCanvas ) const override;
+
+            const SVGAnimatedString& href() const;
+            const SVGAnimatedLength& startOffset() const;
+            const SVGAnimatedEnumeration& method() const;
+            const SVGAnimatedEnumeration& spacing() const;
+
+        private:
+            SVGAnimatedString mHref;
+            SVGAnimatedLength mStartOffset;
+            SVGAnimatedEnumeration mMethod;
+            SVGAnimatedEnumeration mSpacing;
+            bool mSideRight{false};  ///< true when side="right" (reverse path).
+            int mTextAnchor{0};      ///< 0=start, 1=middle, 2=end.
+        };
+    }
+}
+#endif

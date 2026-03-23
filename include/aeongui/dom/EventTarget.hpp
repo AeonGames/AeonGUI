@@ -54,7 +54,7 @@ namespace AeonGUI
          *  Implements the DOM EventTarget interface: addEventListener,
          *  removeEventListener, and dispatchEvent.
          */
-        class EventTarget
+        class DLL EventTarget
         {
         public:
             /** @brief Virtual destructor. */

@@ -23,12 +23,13 @@ limitations under the License.
 #include "aeongui/Canvas.hpp"
 #include "aeongui/StyleSheet.hpp"
 #include "aeongui/dom/Node.hpp"
+#include "aeongui/dom/DOMString.hpp"
 #include "aeongui/dom/USVString.hpp"
+#include "aeongui/dom/Element.hpp"
 namespace AeonGUI
 {
     namespace DOM
     {
-        //class Element; // Forward declaration
         /** @brief Represents a DOM Document.
          *
          *  The Document is the root of the DOM tree. It owns the parsed
@@ -57,6 +58,12 @@ namespace AeonGUI
             /** @brief Get the node type (always DOCUMENT_NODE).
              *  @return NodeType::DOCUMENT_NODE. */
             DLL NodeType nodeType() const final;
+            /** @brief Find an element by its ID attribute.
+             *  @param aElementId The ID to search for.
+             *  @return Pointer to the matching Element, or nullptr.
+             *  @see https://dom.spec.whatwg.org/#dom-document-getelementbyid
+             */
+            DLL Element* getElementById ( const DOMString& aElementId ) const;
             /**@}*/
         private:
             void Load ();

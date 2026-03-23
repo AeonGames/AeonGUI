@@ -17,6 +17,7 @@ limitations under the License.
 #define AEONGUI_STYLESHEET_H
 
 #include <memory>
+#include <string>
 
 extern "C"
 {
@@ -24,6 +25,11 @@ extern "C"
     struct css_select_ctx;
     struct css_select_results;
     struct css_computed_style;
+}
+
+namespace AeonGUI
+{
+    class Canvas;
 }
 
 namespace AeonGUI
@@ -72,5 +78,31 @@ namespace AeonGUI
     using SelectResultsPtr = std::unique_ptr<css_select_results, css_select_results_deleter>;
     /** @brief Owning pointer to a libcss computed style. */
     using ComputedStylePtr = std::unique_ptr<css_computed_style, css_computed_style_deleter>;
+
+    /** @brief Extract the CSS font-family from a computed style.
+     *  @param aStyle The computed CSS style.
+     *  @return The font family name.
+     */
+    std::string GetCSSFontFamily ( css_computed_style* aStyle );
+    /** @brief Extract the CSS font-size from a computed style.
+     *  @param aStyle The computed CSS style.
+     *  @return The font size in pixels.
+     */
+    double GetCSSFontSize ( css_computed_style* aStyle );
+    /** @brief Extract the CSS font-weight from a computed style.
+     *  @param aStyle The computed CSS style.
+     *  @return The font weight (100–900).
+     */
+    int GetCSSFontWeight ( css_computed_style* aStyle );
+    /** @brief Extract the CSS font-style from a computed style.
+     *  @param aStyle The computed CSS style.
+     *  @return 0 = normal, 1 = italic, 2 = oblique.
+     */
+    int GetCSSFontStyle ( css_computed_style* aStyle );
+    /** @brief Apply fill, stroke, and opacity CSS properties to a canvas.
+     *  @param aCanvas The canvas to configure.
+     *  @param aStyle The computed CSS style.
+     */
+    void ApplyCSSPaintProperties ( Canvas& aCanvas, css_computed_style* aStyle );
 }
 #endif

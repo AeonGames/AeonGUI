@@ -90,9 +90,9 @@ namespace AeonGUI
             /// Access the internal text layout for subclass use.
             /// @return Reference to the PangoTextLayout.
             PangoTextLayout& GetTextLayout() const;
-        private:
             /// Helper function to get the text content from all child text nodes
             std::string getTextContent() const;
+        private:
             /// Ensure the text layout is up to date with current text and font.
             void syncTextLayout() const;
 

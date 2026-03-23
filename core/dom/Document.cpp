@@ -19,10 +19,10 @@ limitations under the License.
 #include <libxml/tree.h>
 #include <libxml/parser.h>
 #include <libcss/libcss.h>
+#include <stack>
 #include "aeongui/ElementFactory.hpp"
 #include "aeongui/dom/Document.hpp"
 #include "aeongui/dom/Text.hpp"
-#include "aeongui/dom/Element.hpp"
 
 namespace AeonGUI
 {
@@ -165,6 +165,24 @@ namespace AeonGUI
             {
                 return aNode.IsDrawEnabled();
             } );
+        }
+
+        Element* Document::getElementById ( const DOMString& aElementId ) const
+        {
+            Element* result = nullptr;
+            StackTraverseDepthFirstPreOrder (
+                [&aElementId, &result] ( const Node & aNode )
+            {
+                if ( !result && aNode.nodeType() == Node::ELEMENT_NODE )
+                {
+                    Element* elem = const_cast<Element*> ( static_cast<const Element*> ( &aNode ) );
+                    if ( elem->id() == aElementId )
+                    {
+                        result = elem;
+                    }
+                }
+            } );
+            return result;
         }
     }
 }

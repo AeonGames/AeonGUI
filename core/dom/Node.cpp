@@ -15,6 +15,7 @@ Copyright (C) 2010-2013,2019,2020,2023-2026 Rodrigo Hernandez Cordoba
 ******************************************************************************/
 #include <iostream>
 #include <string>
+#include <stack>
 #include "aeongui/dom/Node.hpp"
 #include "aeongui/Color.hpp"
 
@@ -195,6 +196,128 @@ namespace AeonGUI
         TraverseDepthFirstPostOrder ( const )
         TraverseDepthFirstPostOrder( )
 #undef TraverseDepthFirstPostOrder
+
+        /* Stack-based traversal implementations - reentrant-safe alternatives
+           that use an explicit std::stack instead of the per-node mIterator. */
+
+#define StackTraverseDepthFirstPreOrder(...) \
+    void Node::StackTraverseDepthFirstPreOrder ( const std::function<void ( __VA_ARGS__ Node& ) >& aAction ) __VA_ARGS__ \
+    { \
+        struct Frame { __VA_ARGS__ Node* node; size_t childIndex; }; \
+        std::stack<Frame> stack; \
+        stack.push ( Frame{this, 0} ); \
+        aAction ( *this ); \
+        while ( !stack.empty() ) \
+        { \
+            auto& frame = stack.top(); \
+            if ( frame.childIndex < frame.node->mChildren.size() ) \
+            { \
+                __VA_ARGS__ Node* child = frame.node->mChildren[frame.childIndex].get(); \
+                ++frame.childIndex; \
+                stack.push ( Frame{child, 0} ); \
+                aAction ( *child ); \
+            } \
+            else \
+            { \
+                stack.pop(); \
+            } \
+        } \
+    }
+
+        StackTraverseDepthFirstPreOrder ( const )
+        StackTraverseDepthFirstPreOrder( )
+#undef StackTraverseDepthFirstPreOrder
+
+#define StackTraverseDepthFirstPostOrder(...) \
+    void Node::StackTraverseDepthFirstPostOrder ( const std::function<void ( __VA_ARGS__ Node& ) >& aAction ) __VA_ARGS__ \
+    { \
+        struct Frame { __VA_ARGS__ Node* node; size_t childIndex; }; \
+        std::stack<Frame> stack; \
+        stack.push ( Frame{this, 0} ); \
+        while ( !stack.empty() ) \
+        { \
+            auto& frame = stack.top(); \
+            if ( frame.childIndex < frame.node->mChildren.size() ) \
+            { \
+                __VA_ARGS__ Node* child = frame.node->mChildren[frame.childIndex].get(); \
+                ++frame.childIndex; \
+                stack.push ( Frame{child, 0} ); \
+            } \
+            else \
+            { \
+                aAction ( *frame.node ); \
+                stack.pop(); \
+            } \
+        } \
+    }
+
+        StackTraverseDepthFirstPostOrder ( const )
+        StackTraverseDepthFirstPostOrder( )
+#undef StackTraverseDepthFirstPostOrder
+
+#define StackTraverseDepthFirstPostOrder(...) \
+    void Node::StackTraverseDepthFirstPreOrder ( \
+        const std::function<void ( __VA_ARGS__ Node& ) >& aPreamble, \
+        const std::function<void ( __VA_ARGS__ Node& ) >& aPostamble ) __VA_ARGS__ \
+    { \
+        struct Frame { __VA_ARGS__ Node* node; size_t childIndex; }; \
+        std::stack<Frame> stack; \
+        stack.push ( Frame{this, 0} ); \
+        aPreamble ( *this ); \
+        while ( !stack.empty() ) \
+        { \
+            auto& frame = stack.top(); \
+            if ( frame.childIndex < frame.node->mChildren.size() ) \
+            { \
+                __VA_ARGS__ Node* child = frame.node->mChildren[frame.childIndex].get(); \
+                ++frame.childIndex; \
+                stack.push ( Frame{child, 0} ); \
+                aPreamble ( *child ); \
+            } \
+            else \
+            { \
+                aPostamble ( *frame.node ); \
+                stack.pop(); \
+            } \
+        } \
+    }
+
+        StackTraverseDepthFirstPostOrder ( const )
+        StackTraverseDepthFirstPostOrder( )
+#undef StackTraverseDepthFirstPostOrder
+
+#define StackTraverseDepthFirstPostOrder(...) \
+    void Node::StackTraverseDepthFirstPreOrder ( \
+        const std::function<void ( __VA_ARGS__ Node& ) >& aPreamble, \
+        const std::function<void ( __VA_ARGS__ Node& ) >& aPostamble, \
+        const std::function<bool ( __VA_ARGS__ Node& ) >& aUnaryPredicate ) __VA_ARGS__ \
+    { \
+        if ( !aUnaryPredicate ( *this ) ) { return; } \
+        struct Frame { __VA_ARGS__ Node* node; size_t childIndex; }; \
+        std::stack<Frame> stack; \
+        stack.push ( Frame{this, 0} ); \
+        aPreamble ( *this ); \
+        while ( !stack.empty() ) \
+        { \
+            auto& frame = stack.top(); \
+            if ( frame.childIndex < frame.node->mChildren.size() && aUnaryPredicate ( *frame.node ) ) \
+            { \
+                __VA_ARGS__ Node* child = frame.node->mChildren[frame.childIndex].get(); \
+                ++frame.childIndex; \
+                stack.push ( Frame{child, 0} ); \
+                aPreamble ( *child ); \
+            } \
+            else \
+            { \
+                aPostamble ( *frame.node ); \
+                stack.pop(); \
+            } \
+        } \
+    }
+
+        StackTraverseDepthFirstPostOrder ( const )
+        StackTraverseDepthFirstPostOrder( )
+#undef StackTraverseDepthFirstPostOrder
 
         void Node::OnAncestorChanged()
         {
