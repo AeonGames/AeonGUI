@@ -51,14 +51,17 @@ if(CMAKE_GENERATOR MATCHES "(MSYS|Unix) Makefiles")
           foreach(TARGET ${TARGETS})
               get_target_property(target_type ${TARGET} TYPE)
               if (${target_type} STREQUAL "EXECUTABLE")
-                  get_property(debug_arguments TARGET ${TARGET} PROPERTY VS_DEBUGGER_COMMAND_ARGUMENTS)
-                  message(STATUS "Generating debug launch configuration for ${TARGET}")
-                  set(DEBUG_CONFIGURATIONS "${DEBUG_CONFIGURATIONS}
+                  get_target_property(svg_files ${TARGET} AEONGUI_SVG_FILES)
+                  if(svg_files)
+                      foreach(SVG_FILE ${svg_files})
+                          get_filename_component(SVG_NAME "${SVG_FILE}" NAME_WE)
+                          message(STATUS "Generating debug launch configuration for ${TARGET} [${SVG_NAME}]")
+                          set(DEBUG_CONFIGURATIONS "${DEBUG_CONFIGURATIONS}
                   {
-                  \"name\": \"${TARGET}\",
+                  \"name\": \"${TARGET} [${SVG_NAME}]\",
                   \"type\": \"cppdbg\",
                   \"request\": \"launch\",
-                  \"args\": [\"${debug_arguments}\"],
+                  \"args\": [\"file:///${SVG_FILE}\"],
                   \"stopAtEntry\": false,
                   \"cwd\": \"${CMAKE_BINARY_DIR}\",
                   \"environment\": [
@@ -84,6 +87,41 @@ if(CMAKE_GENERATOR MATCHES "(MSYS|Unix) Makefiles")
                             }
                         ]
                     },\n")
+                      endforeach()
+                  else()
+                      message(STATUS "Generating debug launch configuration for ${TARGET}")
+                      set(DEBUG_CONFIGURATIONS "${DEBUG_CONFIGURATIONS}
+                  {
+                  \"name\": \"${TARGET}\",
+                  \"type\": \"cppdbg\",
+                  \"request\": \"launch\",
+                  \"args\": [],
+                  \"stopAtEntry\": false,
+                  \"cwd\": \"${CMAKE_BINARY_DIR}\",
+                  \"environment\": [
+                      {
+                          \"name\":\"PATH\",
+                          \"value\":\"${DEBUG_PATH}\"
+                      }                    
+                  ],
+                  \"externalConsole\": true,
+                        \"program\": \"${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/${TARGET}${CMAKE_EXECUTABLE_SUFFIX}\",
+                        \"miDebuggerPath\": \"${GDB_EXECUTABLE}\",
+                        \"MIMode\": \"gdb\",
+                        \"setupCommands\": [
+                            {
+                                \"description\": \"Enable pretty-printing for gdb\",
+                                \"text\": \"-enable-pretty-printing\",
+                                \"ignoreFailures\": true
+                            },
+                            {
+                                \"description\": \"Enable all-exceptions\",
+                                \"text\": \"catch throw\",
+                                \"ignoreFailures\": true
+                            }
+                        ]
+                    },\n")
+                  endif()
               endif()
           endforeach(TARGET)
       endif()
