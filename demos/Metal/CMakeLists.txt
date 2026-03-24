@@ -39,7 +39,7 @@ if(APPLE)
     set_source_files_properties(MacOSMetal.mm PROPERTIES COMPILE_FLAGS "-x objective-c++")
     set_target_properties(MetalDemo PROPERTIES DISABLE_PRECOMPILE_HEADERS ON)
     set_target_properties(MetalDemo PROPERTIES
-        AEONGUI_SVG_FILES "${CMAKE_SOURCE_DIR}/images/text.svg;${CMAKE_SOURCE_DIR}/images/textpath.svg;${CMAKE_SOURCE_DIR}/images/drawing.svg;${CMAKE_SOURCE_DIR}/images/tiger-style.svg;${CMAKE_SOURCE_DIR}/images/gradient.svg;${CMAKE_SOURCE_DIR}/images/curve.svg;${CMAKE_SOURCE_DIR}/images/arc.svg;${CMAKE_SOURCE_DIR}/images/line.svg"
+        AEONGUI_SVG_FILES "${CMAKE_SOURCE_DIR}/images/text.svg;${CMAKE_SOURCE_DIR}/images/textpath.svg;${CMAKE_SOURCE_DIR}/images/drawing.svg;${CMAKE_SOURCE_DIR}/images/tiger-style.svg;${CMAKE_SOURCE_DIR}/images/gradient.svg;${CMAKE_SOURCE_DIR}/images/curve.svg;${CMAKE_SOURCE_DIR}/images/arc.svg;${CMAKE_SOURCE_DIR}/images/line.svg;${CMAKE_SOURCE_DIR}/images/rasterimage.svg"
         COMPILE_FLAGS "-DNOMINMAX -D_CRT_SECURE_NO_WARNINGS"
     )
 

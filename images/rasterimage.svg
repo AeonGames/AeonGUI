@@ -1,0 +1,14 @@
+<svg viewBox="0 0 1080 566" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+  <title>Raster Image Test</title>
+
+  <!-- Background -->
+  <rect width="1080" height="566" fill="#f0f0f0"/>
+
+  <!-- PNG image (left) -->
+  <text x="270" y="30" text-anchor="middle" font-size="24" fill="#333">PNG</text>
+  <image href="test-card.png" x="14" y="40" width="512" height="512" preserveAspectRatio="xMidYMid meet"/>
+
+  <!-- JPEG image (right) -->
+  <text x="810" y="30" text-anchor="middle" font-size="24" fill="#333">JPEG</text>
+  <image href="test-card.jpg" x="554" y="40" width="512" height="512" preserveAspectRatio="xMidYMid meet"/>
+</svg>
