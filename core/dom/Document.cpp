@@ -22,6 +22,7 @@ limitations under the License.
 #include <stack>
 #include "aeongui/ElementFactory.hpp"
 #include "aeongui/dom/Document.hpp"
+#include "aeongui/dom/SVGGeometryElement.hpp"
 #include "aeongui/dom/Text.hpp"
 
 namespace AeonGUI
@@ -181,6 +182,34 @@ namespace AeonGUI
                         result = elem;
                     }
                 }
+            } );
+            return result;
+        }
+
+        Element* Document::elementFromPoint ( Canvas& aCanvas, double aX, double aY ) const
+        {
+            Element* result = nullptr;
+            TraverseDepthFirstPreOrder (
+                [&aCanvas, aX, aY, &result] ( const Node & aNode )
+            {
+                aCanvas.Save();
+                aNode.DrawStart ( aCanvas );
+                if ( aNode.nodeType() == Node::ELEMENT_NODE )
+                {
+                    const auto* geometry = dynamic_cast<const SVGGeometryElement*> ( &aNode );
+                    if ( geometry && aCanvas.PointInPath ( geometry->GetPath(), aX, aY ) )
+                    {
+                        result = const_cast<Element*> ( static_cast<const Element*> ( &aNode ) );
+                    }
+                }
+            },
+            [&aCanvas] ( const Node & aNode )
+            {
+                aCanvas.Restore();
+            },
+            [] ( const Node & aNode )
+            {
+                return aNode.IsDrawEnabled();
             } );
             return result;
         }

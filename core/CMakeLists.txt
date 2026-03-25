@@ -115,6 +115,7 @@ set(AEONGUI_DOM_SOURCES
     dom/Location.cpp
     dom/Document.cpp
     dom/Event.cpp
+    dom/EventListener.cpp
     dom/EventTarget.cpp
     dom/UIEvent.cpp
     dom/KeyboardEvent.cpp

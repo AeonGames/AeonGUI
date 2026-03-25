@@ -1,5 +1,5 @@
 /*
-Copyright (C) 2010-2012,2019-2021,2023,2025 Rodrigo Jose Hernandez Cordoba
+Copyright (C) 2010-2012,2019-2021,2023,2025,2026 Rodrigo Jose Hernandez Cordoba
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -486,16 +486,21 @@ LRESULT Window::OnPaint()
 
 LRESULT Window::OnMouseMove ( int32_t x, int32_t y )
 {
+    mWindow.HandleMouseMove ( static_cast<double> ( x ), static_cast<double> ( y ) );
     return 0;
 }
 
 LRESULT Window::OnMouseButtonDown ( uint8_t button, int32_t x, int32_t y )
 {
+    short domButton = ( button == 1 ) ? 0 : ( button == 2 ) ? 2 : ( button == 3 ) ? 1 : 0;
+    mWindow.HandleMouseDown ( static_cast<double> ( x ), static_cast<double> ( y ), domButton );
     return 0;
 }
 
 LRESULT Window::OnMouseButtonUp ( uint8_t button, int32_t x, int32_t y )
 {
+    short domButton = ( button == 1 ) ? 0 : ( button == 2 ) ? 2 : ( button == 3 ) ? 1 : 0;
+    mWindow.HandleMouseUp ( static_cast<double> ( x ), static_cast<double> ( y ), domButton );
     return 0;
 }
 

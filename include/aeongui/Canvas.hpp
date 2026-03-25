@@ -185,6 +185,19 @@ namespace AeonGUI
          *  @param aMatrix The matrix to concatenate.
          */
         virtual void Transform ( const Matrix2x3& aMatrix ) = 0;
+        /** @brief Save the current graphics state (transform, clipping, etc.).
+         */
+        virtual void Save() = 0;
+        /** @brief Restore the previously saved graphics state.
+         */
+        virtual void Restore() = 0;
+        /** @brief Test whether a point lies inside the fill or stroke of a path.
+         *  @param aPath  The path to test against (uses current CTM).
+         *  @param aX     The X coordinate in user space.
+         *  @param aY     The Y coordinate in user space.
+         *  @return true if the point is inside the fill or stroke area.
+         */
+        virtual bool PointInPath ( const Path& aPath, double aX, double aY ) const = 0;
         /** @brief Get the native rendering surface handle.
          *  @return Pointer to the underlying surface (e.g. cairo_surface_t).
          */

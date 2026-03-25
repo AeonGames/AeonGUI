@@ -166,6 +166,73 @@ LRESULT CALLBACK VulkanWindow::WindowProc ( HWND hwnd, UINT uMsg, WPARAM wParam,
         EndPaint ( hwnd, &ps );
         return 0;
     }
+    case WM_MOUSEMOVE:
+        if ( self )
+        {
+            self->mAeonWindow.HandleMouseMove (
+                static_cast<double> ( GET_X_LPARAM ( lParam ) ),
+                static_cast<double> ( GET_Y_LPARAM ( lParam ) ) );
+        }
+        return 0;
+    case WM_LBUTTONDOWN:
+        if ( self )
+        {
+            self->mAeonWindow.HandleMouseDown (
+                static_cast<double> ( GET_X_LPARAM ( lParam ) ),
+                static_cast<double> ( GET_Y_LPARAM ( lParam ) ), 0 );
+        }
+        return 0;
+    case WM_LBUTTONUP:
+        if ( self )
+        {
+            self->mAeonWindow.HandleMouseUp (
+                static_cast<double> ( GET_X_LPARAM ( lParam ) ),
+                static_cast<double> ( GET_Y_LPARAM ( lParam ) ), 0 );
+        }
+        return 0;
+    case WM_MBUTTONDOWN:
+        if ( self )
+        {
+            self->mAeonWindow.HandleMouseDown (
+                static_cast<double> ( GET_X_LPARAM ( lParam ) ),
+                static_cast<double> ( GET_Y_LPARAM ( lParam ) ), 1 );
+        }
+        return 0;
+    case WM_MBUTTONUP:
+        if ( self )
+        {
+            self->mAeonWindow.HandleMouseUp (
+                static_cast<double> ( GET_X_LPARAM ( lParam ) ),
+                static_cast<double> ( GET_Y_LPARAM ( lParam ) ), 1 );
+        }
+        return 0;
+    case WM_RBUTTONDOWN:
+        if ( self )
+        {
+            self->mAeonWindow.HandleMouseDown (
+                static_cast<double> ( GET_X_LPARAM ( lParam ) ),
+                static_cast<double> ( GET_Y_LPARAM ( lParam ) ), 2 );
+        }
+        return 0;
+    case WM_RBUTTONUP:
+        if ( self )
+        {
+            self->mAeonWindow.HandleMouseUp (
+                static_cast<double> ( GET_X_LPARAM ( lParam ) ),
+                static_cast<double> ( GET_Y_LPARAM ( lParam ) ), 2 );
+        }
+        return 0;
+    case WM_MOUSEWHEEL:
+        if ( self )
+        {
+            POINT pt = { GET_X_LPARAM ( lParam ), GET_Y_LPARAM ( lParam ) };
+            ScreenToClient ( hwnd, &pt );
+            self->mAeonWindow.HandleWheel (
+                static_cast<double> ( pt.x ),
+                static_cast<double> ( pt.y ),
+                0.0, static_cast<double> ( -GET_WHEEL_DELTA_WPARAM ( wParam ) ) );
+        }
+        return 0;
     default:
         return DefWindowProc ( hwnd, uMsg, wParam, lParam );
     }

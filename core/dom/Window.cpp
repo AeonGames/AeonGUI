@@ -1,5 +1,5 @@
 /*
-Copyright (C) 2019,2020,2023,2025 Rodrigo Jose Hernandez Cordoba
+Copyright (C) 2019,2020,2023,2025,2026 Rodrigo Jose Hernandez Cordoba
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -23,6 +23,10 @@ limitations under the License.
 #include "aeongui/dom/Element.hpp"
 #include "aeongui/dom/Window.hpp"
 #include "aeongui/dom/Document.hpp"
+#include "aeongui/dom/MouseEvent.hpp"
+#include "aeongui/dom/KeyboardEvent.hpp"
+#include "aeongui/dom/WheelEvent.hpp"
+#include "aeongui/dom/FocusEvent.hpp"
 
 namespace AeonGUI
 {
@@ -78,6 +82,116 @@ namespace AeonGUI
         {
             mCanvas.Clear();
             mDocument.Draw ( mCanvas );
+        }
+
+        void Window::HandleMouseMove ( double aX, double aY, unsigned short aButtons,
+                                       bool aCtrlKey, bool aShiftKey,
+                                       bool aAltKey, bool aMetaKey )
+        {
+            Element* target = mDocument.elementFromPoint ( mCanvas, aX, aY );
+            // Handle mouseenter/mouseleave when the hovered element changes
+            if ( target != mHoverElement )
+            {
+                if ( mHoverElement )
+                {
+                    MouseEvent leaveEvent ( "mouseleave", MouseEventInit{EventModifierInit{UIEventInit{EventInit{false, false, false}, this, 0}, aCtrlKey, aShiftKey, aAltKey, aMetaKey}, aX, aY, aX, aY, 0, aButtons, target} );
+                    mHoverElement->dispatchEvent ( leaveEvent );
+                }
+                if ( target )
+                {
+                    MouseEvent enterEvent ( "mouseenter", MouseEventInit{EventModifierInit{UIEventInit{EventInit{false, false, false}, this, 0}, aCtrlKey, aShiftKey, aAltKey, aMetaKey}, aX, aY, aX, aY, 0, aButtons, mHoverElement} );
+                    target->dispatchEvent ( enterEvent );
+                }
+                mHoverElement = target;
+            }
+            if ( target )
+            {
+                MouseEvent moveEvent ( "mousemove", MouseEventInit{EventModifierInit{UIEventInit{EventInit{true, true, false}, this, 0}, aCtrlKey, aShiftKey, aAltKey, aMetaKey}, aX, aY, aX, aY, 0, aButtons, nullptr} );
+                target->dispatchEvent ( moveEvent );
+            }
+        }
+
+        void Window::HandleMouseDown ( double aX, double aY, short aButton,
+                                       unsigned short aButtons,
+                                       bool aCtrlKey, bool aShiftKey,
+                                       bool aAltKey, bool aMetaKey )
+        {
+            Element* target = mDocument.elementFromPoint ( mCanvas, aX, aY );
+            // Update focus on mousedown
+            if ( target != mFocusedElement )
+            {
+                if ( mFocusedElement )
+                {
+                    FocusEvent blurEvent ( "blur", FocusEventInit{UIEventInit{EventInit{false, false, false}, this, 0}, target} );
+                    mFocusedElement->dispatchEvent ( blurEvent );
+                    FocusEvent focusOutEvent ( "focusout", FocusEventInit{UIEventInit{EventInit{true, false, false}, this, 0}, target} );
+                    mFocusedElement->dispatchEvent ( focusOutEvent );
+                }
+                mFocusedElement = target;
+                if ( mFocusedElement )
+                {
+                    FocusEvent focusInEvent ( "focusin", FocusEventInit{UIEventInit{EventInit{true, false, false}, this, 0}, nullptr} );
+                    mFocusedElement->dispatchEvent ( focusInEvent );
+                    FocusEvent focusEvent ( "focus", FocusEventInit{UIEventInit{EventInit{false, false, false}, this, 0}, nullptr} );
+                    mFocusedElement->dispatchEvent ( focusEvent );
+                }
+            }
+            if ( target )
+            {
+                MouseEvent downEvent ( "mousedown", MouseEventInit{EventModifierInit{UIEventInit{EventInit{true, true, false}, this, 0}, aCtrlKey, aShiftKey, aAltKey, aMetaKey}, aX, aY, aX, aY, aButton, aButtons, nullptr} );
+                target->dispatchEvent ( downEvent );
+            }
+        }
+
+        void Window::HandleMouseUp ( double aX, double aY, short aButton,
+                                     unsigned short aButtons,
+                                     bool aCtrlKey, bool aShiftKey,
+                                     bool aAltKey, bool aMetaKey )
+        {
+            Element* target = mDocument.elementFromPoint ( mCanvas, aX, aY );
+            if ( target )
+            {
+                MouseEvent upEvent ( "mouseup", MouseEventInit{EventModifierInit{UIEventInit{EventInit{true, true, false}, this, 0}, aCtrlKey, aShiftKey, aAltKey, aMetaKey}, aX, aY, aX, aY, aButton, aButtons, nullptr} );
+                target->dispatchEvent ( upEvent );
+                // Fire click after mouseup on the same element
+                MouseEvent clickEvent ( "click", MouseEventInit{EventModifierInit{UIEventInit{EventInit{true, true, false}, this, 1}, aCtrlKey, aShiftKey, aAltKey, aMetaKey}, aX, aY, aX, aY, aButton, aButtons, nullptr} );
+                target->dispatchEvent ( clickEvent );
+            }
+        }
+
+        void Window::HandleKeyDown ( const DOMString& aKey, const DOMString& aCode,
+                                     unsigned long aLocation, bool aRepeat,
+                                     bool aCtrlKey, bool aShiftKey,
+                                     bool aAltKey, bool aMetaKey )
+        {
+            EventTarget* target = mFocusedElement ? static_cast<EventTarget*> ( mFocusedElement ) : static_cast<EventTarget*> ( this );
+            KeyboardEvent keyDownEvent ( "keydown", KeyboardEventInit{EventModifierInit{UIEventInit{EventInit{true, true, false}, this, 0}, aCtrlKey, aShiftKey, aAltKey, aMetaKey}, aKey, aCode, aLocation, aRepeat, false} );
+            target->dispatchEvent ( keyDownEvent );
+        }
+
+        void Window::HandleKeyUp ( const DOMString& aKey, const DOMString& aCode,
+                                   unsigned long aLocation,
+                                   bool aCtrlKey, bool aShiftKey,
+                                   bool aAltKey, bool aMetaKey )
+        {
+            EventTarget* target = mFocusedElement ? static_cast<EventTarget*> ( mFocusedElement ) : static_cast<EventTarget*> ( this );
+            KeyboardEvent keyUpEvent ( "keyup", KeyboardEventInit{EventModifierInit{UIEventInit{EventInit{true, true, false}, this, 0}, aCtrlKey, aShiftKey, aAltKey, aMetaKey}, aKey, aCode, aLocation, false, false} );
+            target->dispatchEvent ( keyUpEvent );
+        }
+
+        void Window::HandleWheel ( double aX, double aY,
+                                   double aDeltaX, double aDeltaY,
+                                   unsigned long aDeltaMode,
+                                   unsigned short aButtons,
+                                   bool aCtrlKey, bool aShiftKey,
+                                   bool aAltKey, bool aMetaKey )
+        {
+            Element* target = mDocument.elementFromPoint ( mCanvas, aX, aY );
+            if ( target )
+            {
+                WheelEvent wheelEvent ( "wheel", WheelEventInit{MouseEventInit{EventModifierInit{UIEventInit{EventInit{true, true, false}, this, 0}, aCtrlKey, aShiftKey, aAltKey, aMetaKey}, aX, aY, aX, aY, 0, aButtons, nullptr}, aDeltaX, aDeltaY, 0.0, aDeltaMode} );
+                target->dispatchEvent ( wheelEvent );
+            }
         }
     }
 }

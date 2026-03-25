@@ -621,6 +621,22 @@ namespace AeonGUI
         };
         cairo_transform ( mCairoContext, &transform );
     }
+    void CairoCanvas::Save()
+    {
+        cairo_save ( mCairoContext );
+    }
+    void CairoCanvas::Restore()
+    {
+        cairo_restore ( mCairoContext );
+    }
+    bool CairoCanvas::PointInPath ( const Path& aPath, double aX, double aY ) const
+    {
+        const CairoPath& path = reinterpret_cast<const CairoPath&> ( aPath );
+        cairo_append_path ( mCairoContext, path.GetCairoPath() );
+        bool result = cairo_in_fill ( mCairoContext, aX, aY ) || cairo_in_stroke ( mCairoContext, aX, aY );
+        cairo_new_path ( mCairoContext );
+        return result;
+    }
     void* CairoCanvas::GetNativeSurface() const
     {
         return mCairoSurface;

@@ -43,6 +43,7 @@ set(TESTED_SRCS
   SVGAnimatedTypesTest.cpp
   SVGImageElementTest.cpp
   SVGLengthTest.cpp
+  UIEventsTest.cpp
 )
 
 set(TEST_SRCS

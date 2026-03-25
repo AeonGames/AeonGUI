@@ -21,6 +21,7 @@ limitations under the License.
 #include "aeongui/CairoCanvas.hpp"
 #include "aeongui/dom/EventTarget.hpp"
 #include "aeongui/dom/USVString.hpp"
+#include "aeongui/dom/DOMString.hpp"
 #include "aeongui/dom/Location.hpp"
 #include "aeongui/dom/Document.hpp"
 
@@ -78,8 +79,97 @@ namespace AeonGUI
              */
             DLL Location& location() const;
             /**@}*/
+            /**Input Handling @{*/
+            /** @brief Handle a mouse move event from the platform.
+             *  @param aX       X coordinate in viewport pixels.
+             *  @param aY       Y coordinate in viewport pixels.
+             *  @param aButtons Bitmask of currently pressed buttons.
+             *  @param aCtrlKey  Control key held.
+             *  @param aShiftKey Shift key held.
+             *  @param aAltKey   Alt key held.
+             *  @param aMetaKey  Meta key held.
+             */
+            DLL void HandleMouseMove ( double aX, double aY, unsigned short aButtons = 0,
+                                       bool aCtrlKey = false, bool aShiftKey = false,
+                                       bool aAltKey = false, bool aMetaKey = false );
+            /** @brief Handle a mouse button press event from the platform.
+             *  @param aX       X coordinate in viewport pixels.
+             *  @param aY       Y coordinate in viewport pixels.
+             *  @param aButton  Button number (0=primary, 1=middle, 2=secondary).
+             *  @param aButtons Bitmask of currently pressed buttons.
+             *  @param aCtrlKey  Control key held.
+             *  @param aShiftKey Shift key held.
+             *  @param aAltKey   Alt key held.
+             *  @param aMetaKey  Meta key held.
+             */
+            DLL void HandleMouseDown ( double aX, double aY, short aButton = 0,
+                                       unsigned short aButtons = 0,
+                                       bool aCtrlKey = false, bool aShiftKey = false,
+                                       bool aAltKey = false, bool aMetaKey = false );
+            /** @brief Handle a mouse button release event from the platform.
+             *  @param aX       X coordinate in viewport pixels.
+             *  @param aY       Y coordinate in viewport pixels.
+             *  @param aButton  Button number (0=primary, 1=middle, 2=secondary).
+             *  @param aButtons Bitmask of currently pressed buttons.
+             *  @param aCtrlKey  Control key held.
+             *  @param aShiftKey Shift key held.
+             *  @param aAltKey   Alt key held.
+             *  @param aMetaKey  Meta key held.
+             */
+            DLL void HandleMouseUp ( double aX, double aY, short aButton = 0,
+                                     unsigned short aButtons = 0,
+                                     bool aCtrlKey = false, bool aShiftKey = false,
+                                     bool aAltKey = false, bool aMetaKey = false );
+            /** @brief Handle a keyboard key down event from the platform.
+             *  @param aKey      The key value string.
+             *  @param aCode     The physical key code string.
+             *  @param aLocation Key location (DOM_KEY_LOCATION_*).
+             *  @param aRepeat   True if this is a key repeat.
+             *  @param aCtrlKey  Control key held.
+             *  @param aShiftKey Shift key held.
+             *  @param aAltKey   Alt key held.
+             *  @param aMetaKey  Meta key held.
+             */
+            DLL void HandleKeyDown ( const DOMString& aKey, const DOMString& aCode,
+                                     unsigned long aLocation = 0, bool aRepeat = false,
+                                     bool aCtrlKey = false, bool aShiftKey = false,
+                                     bool aAltKey = false, bool aMetaKey = false );
+            /** @brief Handle a keyboard key up event from the platform.
+             *  @param aKey      The key value string.
+             *  @param aCode     The physical key code string.
+             *  @param aLocation Key location (DOM_KEY_LOCATION_*).
+             *  @param aCtrlKey  Control key held.
+             *  @param aShiftKey Shift key held.
+             *  @param aAltKey   Alt key held.
+             *  @param aMetaKey  Meta key held.
+             */
+            DLL void HandleKeyUp ( const DOMString& aKey, const DOMString& aCode,
+                                   unsigned long aLocation = 0,
+                                   bool aCtrlKey = false, bool aShiftKey = false,
+                                   bool aAltKey = false, bool aMetaKey = false );
+            /** @brief Handle a wheel/scroll event from the platform.
+             *  @param aX       X coordinate in viewport pixels.
+             *  @param aY       Y coordinate in viewport pixels.
+             *  @param aDeltaX  Horizontal scroll amount.
+             *  @param aDeltaY  Vertical scroll amount.
+             *  @param aDeltaMode Unit indicator (DOM_DELTA_PIXEL, etc.).
+             *  @param aButtons Bitmask of currently pressed buttons.
+             *  @param aCtrlKey  Control key held.
+             *  @param aShiftKey Shift key held.
+             *  @param aAltKey   Alt key held.
+             *  @param aMetaKey  Meta key held.
+             */
+            DLL void HandleWheel ( double aX, double aY,
+                                   double aDeltaX, double aDeltaY,
+                                   unsigned long aDeltaMode = 0,
+                                   unsigned short aButtons = 0,
+                                   bool aCtrlKey = false, bool aShiftKey = false,
+                                   bool aAltKey = false, bool aMetaKey = false );
+            /**@}*/
         private:
             void OnLocationChanged ( const Location& location );
+            Element* mFocusedElement{nullptr}; ///< The currently focused element.
+            Element* mHoverElement{nullptr};   ///< The element currently under the pointer.
             Location mLocation{std::bind ( &Window::OnLocationChanged, this, std::placeholders::_1 ) };
             Document mDocument{};
             CairoCanvas mCanvas{};

@@ -64,6 +64,14 @@ namespace AeonGUI
              *  @see https://dom.spec.whatwg.org/#dom-document-getelementbyid
              */
             DLL Element* getElementById ( const DOMString& aElementId ) const;
+            /** @brief Find the topmost element at the given viewport coordinates.
+             *  @param aCanvas Canvas with the current rendering state (transforms).
+             *  @param aX The X coordinate in viewport space.
+             *  @param aY The Y coordinate in viewport space.
+             *  @return Pointer to the topmost Element at (x, y), or nullptr.
+             *  @see https://drafts.csswg.org/cssom-view/#dom-document-elementfrompoint
+             */
+            DLL Element* elementFromPoint ( Canvas& aCanvas, double aX, double aY ) const;
             /**@}*/
         private:
             void Load ();

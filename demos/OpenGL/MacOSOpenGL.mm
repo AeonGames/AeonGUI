@@ -351,32 +351,99 @@ limitations under the License.
 - (void)mouseDown:(NSEvent*)event
 {
     NSPoint location = [self convertPoint:[event locationInWindow] fromView:nil];
-    (void)location;
-    // Handle mouse down event
+    location.y = [self bounds].size.height - location.y;
+    short button = ([event buttonNumber] == 0) ? 0 : ([event buttonNumber] == 1) ? 2 : 1;
+    mWindow->HandleMouseDown(static_cast<double>(location.x),
+                             static_cast<double>(location.y), button);
 }
 
 - (void)mouseUp:(NSEvent*)event
 {
     NSPoint location = [self convertPoint:[event locationInWindow] fromView:nil];
-    (void)location;
-    // Handle mouse up event
+    location.y = [self bounds].size.height - location.y;
+    short button = ([event buttonNumber] == 0) ? 0 : ([event buttonNumber] == 1) ? 2 : 1;
+    mWindow->HandleMouseUp(static_cast<double>(location.x),
+                           static_cast<double>(location.y), button);
+}
+
+- (void)rightMouseDown:(NSEvent*)event
+{
+    NSPoint location = [self convertPoint:[event locationInWindow] fromView:nil];
+    location.y = [self bounds].size.height - location.y;
+    mWindow->HandleMouseDown(static_cast<double>(location.x),
+                             static_cast<double>(location.y), 2);
+}
+
+- (void)rightMouseUp:(NSEvent*)event
+{
+    NSPoint location = [self convertPoint:[event locationInWindow] fromView:nil];
+    location.y = [self bounds].size.height - location.y;
+    mWindow->HandleMouseUp(static_cast<double>(location.x),
+                           static_cast<double>(location.y), 2);
+}
+
+- (void)otherMouseDown:(NSEvent*)event
+{
+    NSPoint location = [self convertPoint:[event locationInWindow] fromView:nil];
+    location.y = [self bounds].size.height - location.y;
+    mWindow->HandleMouseDown(static_cast<double>(location.x),
+                             static_cast<double>(location.y), 1);
+}
+
+- (void)otherMouseUp:(NSEvent*)event
+{
+    NSPoint location = [self convertPoint:[event locationInWindow] fromView:nil];
+    location.y = [self bounds].size.height - location.y;
+    mWindow->HandleMouseUp(static_cast<double>(location.x),
+                           static_cast<double>(location.y), 1);
 }
 
 - (void)mouseMoved:(NSEvent*)event
 {
     NSPoint location = [self convertPoint:[event locationInWindow] fromView:nil];
-    (void)location;
-    // Handle mouse move event
+    location.y = [self bounds].size.height - location.y;
+    mWindow->HandleMouseMove(static_cast<double>(location.x),
+                             static_cast<double>(location.y));
+}
+
+- (void)mouseDragged:(NSEvent*)event
+{
+    [self mouseMoved:event];
+}
+
+- (void)rightMouseDragged:(NSEvent*)event
+{
+    [self mouseMoved:event];
+}
+
+- (void)otherMouseDragged:(NSEvent*)event
+{
+    [self mouseMoved:event];
+}
+
+- (void)scrollWheel:(NSEvent*)event
+{
+    NSPoint location = [self convertPoint:[event locationInWindow] fromView:nil];
+    location.y = [self bounds].size.height - location.y;
+    mWindow->HandleWheel(static_cast<double>(location.x),
+                         static_cast<double>(location.y),
+                         static_cast<double>([event deltaX]),
+                         static_cast<double>([event deltaY]));
 }
 
 - (void)keyDown:(NSEvent*)event
 {
-    // Handle key down event
+    (void)event;
 }
 
 - (void)keyUp:(NSEvent*)event
 {
-    // Handle key up event
+    (void)event;
+}
+
+- (BOOL)acceptsFirstResponder
+{
+    return YES;
 }
 
 @end

@@ -86,6 +86,9 @@ namespace AeonGUI
         DLL void SetViewBox ( const ViewBox& aViewBox, const PreserveAspectRatio& aPreserveAspectRatio ) final;
         DLL void SetTransform ( const Matrix2x3& aMatrix ) final;
         DLL void Transform ( const Matrix2x3& aMatrix ) final;
+        DLL void Save() final;
+        DLL void Restore() final;
+        DLL bool PointInPath ( const Path& aPath, double aX, double aY ) const final;
         DLL void* GetNativeSurface() const final;
     private:
         cairo_surface_t* mCairoSurface{};

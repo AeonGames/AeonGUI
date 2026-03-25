@@ -1,5 +1,5 @@
 /*
-Copyright (C) 2013,2019-2021,2023,2025 Rodrigo Jose Hernandez Cordoba
+Copyright (C) 2013,2019-2021,2023,2025,2026 Rodrigo Jose Hernandez Cordoba
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -248,10 +248,54 @@ bool GLWindow::Create ( Display* dpy )
             case KeyRelease:
                 break;
             case ButtonPress:
+                if ( xEvent.xbutton.button == Button1 )
+                {
+                    mWindow.HandleMouseDown ( static_cast<double> ( xEvent.xbutton.x ),
+                                              static_cast<double> ( xEvent.xbutton.y ), 0 );
+                }
+                else if ( xEvent.xbutton.button == Button2 )
+                {
+                    mWindow.HandleMouseDown ( static_cast<double> ( xEvent.xbutton.x ),
+                                              static_cast<double> ( xEvent.xbutton.y ), 1 );
+                }
+                else if ( xEvent.xbutton.button == Button3 )
+                {
+                    mWindow.HandleMouseDown ( static_cast<double> ( xEvent.xbutton.x ),
+                                              static_cast<double> ( xEvent.xbutton.y ), 2 );
+                }
+                else if ( xEvent.xbutton.button == Button4 )
+                {
+                    mWindow.HandleWheel ( static_cast<double> ( xEvent.xbutton.x ),
+                                          static_cast<double> ( xEvent.xbutton.y ),
+                                          0.0, -120.0 );
+                }
+                else if ( xEvent.xbutton.button == Button5 )
+                {
+                    mWindow.HandleWheel ( static_cast<double> ( xEvent.xbutton.x ),
+                                          static_cast<double> ( xEvent.xbutton.y ),
+                                          0.0, 120.0 );
+                }
                 break;
             case ButtonRelease:
+                if ( xEvent.xbutton.button == Button1 )
+                {
+                    mWindow.HandleMouseUp ( static_cast<double> ( xEvent.xbutton.x ),
+                                            static_cast<double> ( xEvent.xbutton.y ), 0 );
+                }
+                else if ( xEvent.xbutton.button == Button2 )
+                {
+                    mWindow.HandleMouseUp ( static_cast<double> ( xEvent.xbutton.x ),
+                                            static_cast<double> ( xEvent.xbutton.y ), 1 );
+                }
+                else if ( xEvent.xbutton.button == Button3 )
+                {
+                    mWindow.HandleMouseUp ( static_cast<double> ( xEvent.xbutton.x ),
+                                            static_cast<double> ( xEvent.xbutton.y ), 2 );
+                }
                 break;
             case MotionNotify:
+                mWindow.HandleMouseMove ( static_cast<double> ( xEvent.xmotion.x ),
+                                          static_cast<double> ( xEvent.xmotion.y ) );
                 break;
             case ConfigureNotify:
                 mWidth = xEvent.xconfigure.width;

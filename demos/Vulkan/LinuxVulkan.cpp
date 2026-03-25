@@ -112,9 +112,56 @@ int main ( int argc, char** argv )
                     break;
                 case KeyPress:
                 case KeyRelease:
+                    break;
                 case ButtonPress:
+                    if ( xEvent.xbutton.button == Button1 )
+                    {
+                        aeonWindow.HandleMouseDown ( static_cast<double> ( xEvent.xbutton.x ),
+                                                     static_cast<double> ( xEvent.xbutton.y ), 0 );
+                    }
+                    else if ( xEvent.xbutton.button == Button2 )
+                    {
+                        aeonWindow.HandleMouseDown ( static_cast<double> ( xEvent.xbutton.x ),
+                                                     static_cast<double> ( xEvent.xbutton.y ), 1 );
+                    }
+                    else if ( xEvent.xbutton.button == Button3 )
+                    {
+                        aeonWindow.HandleMouseDown ( static_cast<double> ( xEvent.xbutton.x ),
+                                                     static_cast<double> ( xEvent.xbutton.y ), 2 );
+                    }
+                    else if ( xEvent.xbutton.button == Button4 )
+                    {
+                        aeonWindow.HandleWheel ( static_cast<double> ( xEvent.xbutton.x ),
+                                                 static_cast<double> ( xEvent.xbutton.y ),
+                                                 0.0, -120.0 );
+                    }
+                    else if ( xEvent.xbutton.button == Button5 )
+                    {
+                        aeonWindow.HandleWheel ( static_cast<double> ( xEvent.xbutton.x ),
+                                                 static_cast<double> ( xEvent.xbutton.y ),
+                                                 0.0, 120.0 );
+                    }
+                    break;
                 case ButtonRelease:
+                    if ( xEvent.xbutton.button == Button1 )
+                    {
+                        aeonWindow.HandleMouseUp ( static_cast<double> ( xEvent.xbutton.x ),
+                                                   static_cast<double> ( xEvent.xbutton.y ), 0 );
+                    }
+                    else if ( xEvent.xbutton.button == Button2 )
+                    {
+                        aeonWindow.HandleMouseUp ( static_cast<double> ( xEvent.xbutton.x ),
+                                                   static_cast<double> ( xEvent.xbutton.y ), 1 );
+                    }
+                    else if ( xEvent.xbutton.button == Button3 )
+                    {
+                        aeonWindow.HandleMouseUp ( static_cast<double> ( xEvent.xbutton.x ),
+                                                   static_cast<double> ( xEvent.xbutton.y ), 2 );
+                    }
+                    break;
                 case MotionNotify:
+                    aeonWindow.HandleMouseMove ( static_cast<double> ( xEvent.xmotion.x ),
+                                                 static_cast<double> ( xEvent.xmotion.y ) );
                     break;
                 default:
                     break;
