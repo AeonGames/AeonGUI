@@ -50,18 +50,18 @@ namespace AeonGUI
              *  @param type The event type name.
              *  @param eventInitDict Optional initialization dictionary.
              */
-            Event ( const DOMString& type, const std::optional<EventInit>& eventInitDict = {} );
+            DLL Event ( const DOMString& type, const std::optional<EventInit>& eventInitDict = {} );
             /** @brief Virtual destructor for proper polymorphic cleanup. */
             virtual ~Event() = default;
             /** @brief Build the composed path for this event.
              *  @return Vector of EventTarget pointers in the event's propagation path. */
-            const std::vector<EventTarget*>& composedPath() const;
+            DLL const std::vector<EventTarget*>& composedPath() const;
             /** @brief Stop the event from propagating further. */
-            void stopPropagation();
+            DLL void stopPropagation();
             /** @brief Stop the event from propagating and prevent other listeners on the same target. */
-            void stopImmediatePropagation();
+            DLL void stopImmediatePropagation();
             /** @brief Cancel the event's default action, if cancelable. */
-            void preventDefault();
+            DLL void preventDefault();
 
             const uint16_t NONE{0};            ///< No phase.
             const uint16_t CAPTURING_PHASE{1}; ///< Capture phase.
@@ -131,7 +131,7 @@ namespace AeonGUI
 
         protected:
             /** @brief Set the trusted flag (for user-agent generated events). */
-            void setTrusted ( bool trusted );
+            DLL void setTrusted ( bool trusted );
         private:
             friend class EventTarget;
             DOMString m_type;

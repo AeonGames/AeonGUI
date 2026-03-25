@@ -52,39 +52,39 @@ namespace AeonGUI
              *  @param type The event type name (e.g., "keydown", "keyup").
              *  @param eventInitDict Optional initialization dictionary.
              */
-            KeyboardEvent ( const DOMString& type, const KeyboardEventInit& eventInitDict = {} );
+            DLL KeyboardEvent ( const DOMString& type, const KeyboardEventInit& eventInitDict = {} );
 
             /** @brief Get the key value.
              *  @return The key value string. */
-            const DOMString& key() const;
+            DLL const DOMString& key() const;
             /** @brief Get the physical key code.
              *  @return The code value string. */
-            const DOMString& code() const;
+            DLL const DOMString& code() const;
             /** @brief Get the key location.
              *  @return One of the DOM_KEY_LOCATION constants. */
-            unsigned long location() const;
+            DLL unsigned long location() const;
             /** @brief Check if Control modifier was active.
              *  @return true if active. */
-            bool ctrlKey() const;
+            DLL bool ctrlKey() const;
             /** @brief Check if Shift modifier was active.
              *  @return true if active. */
-            bool shiftKey() const;
+            DLL bool shiftKey() const;
             /** @brief Check if Alt modifier was active.
              *  @return true if active. */
-            bool altKey() const;
+            DLL bool altKey() const;
             /** @brief Check if Meta modifier was active.
              *  @return true if active. */
-            bool metaKey() const;
+            DLL bool metaKey() const;
             /** @brief Check if the key is repeating.
              *  @return true if repeating. */
-            bool repeat() const;
+            DLL bool repeat() const;
             /** @brief Check if part of a composition session.
              *  @return true if composing. */
-            bool isComposing() const;
+            DLL bool isComposing() const;
             /** @brief Query the state of a modifier key.
              *  @param keyArg The modifier key name (e.g., "Control", "Shift", "CapsLock").
              *  @return true if the modifier is active. */
-            bool getModifierState ( const DOMString& keyArg ) const;
+            DLL bool getModifierState ( const DOMString& keyArg ) const;
 
         private:
             DOMString m_key;

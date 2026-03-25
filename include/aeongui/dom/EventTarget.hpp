@@ -54,28 +54,28 @@ namespace AeonGUI
          *  Implements the DOM EventTarget interface: addEventListener,
          *  removeEventListener, and dispatchEvent.
          */
-        class DLL EventTarget
+        class EventTarget
         {
         public:
             /** @brief Virtual destructor. */
-            virtual ~EventTarget() = 0;
+            DLL virtual ~EventTarget() = 0;
             /** @brief Register an event listener.
              *  @param type     The event type to listen for.
              *  @param callback The EventListener to invoke.
              *  @param options  Listener options (capture, once, etc.).
              */
-            void addEventListener ( const DOMString& type, EventListener* callback, const std::variant<std::monostate, AddEventListenerOptions, bool>& options = {} );
+            DLL void addEventListener ( const DOMString& type, EventListener* callback, const std::variant<std::monostate, AddEventListenerOptions, bool>& options = {} );
             /** @brief Unregister an event listener.
              *  @param type     The event type.
              *  @param callback The EventListener to remove.
              *  @param options  Matching options used during registration.
              */
-            void removeEventListener ( const DOMString& type, EventListener* callback, const std::variant<std::monostate, EventListenerOptions, bool>& options = {} );
+            DLL void removeEventListener ( const DOMString& type, EventListener* callback, const std::variant<std::monostate, EventListenerOptions, bool>& options = {} );
             /** @brief Dispatch an event to this target.
              *  @param event The event to dispatch.
              *  @return true if the event was not cancelled.
              */
-            virtual bool dispatchEvent ( Event& event );
+            DLL virtual bool dispatchEvent ( Event& event );
         private:
             /** @brief Internal record of a registered listener with its options. */
             struct RegisteredListener

@@ -32,7 +32,7 @@ namespace AeonGUI
         {
         public:
             /** @brief Virtual destructor. */
-            virtual ~EventListener() = 0;
+            virtual DLL ~EventListener() = 0;
             /** @brief Called when an event is dispatched to this listener.
              *  @param event The dispatched event.
              */

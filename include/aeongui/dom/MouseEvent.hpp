@@ -51,45 +51,45 @@ namespace AeonGUI
              *  @param type The event type name (e.g., "click", "mousedown", "mouseup", "mousemove").
              *  @param eventInitDict Optional initialization dictionary.
              */
-            MouseEvent ( const DOMString& type, const MouseEventInit& eventInitDict = {} );
+            DLL MouseEvent ( const DOMString& type, const MouseEventInit& eventInitDict = {} );
 
             /** @brief Horizontal coordinate relative to screen origin, as a double.
              *  @return Screen X coordinate. */
-            double screenX() const;
+            DLL double screenX() const;
             /** @brief Vertical coordinate relative to screen origin, as a double.
              *  @return Screen Y coordinate. */
-            double screenY() const;
+            DLL double screenY() const;
             /** @brief Horizontal coordinate relative to viewport, as a double.
              *  @return Client X coordinate. */
-            double clientX() const;
+            DLL double clientX() const;
             /** @brief Vertical coordinate relative to viewport, as a double.
              *  @return Client Y coordinate. */
-            double clientY() const;
+            DLL double clientY() const;
             /** @brief Check if Control modifier was active.
              *  @return true if active. */
-            bool ctrlKey() const;
+            DLL bool ctrlKey() const;
             /** @brief Check if Shift modifier was active.
              *  @return true if active. */
-            bool shiftKey() const;
+            DLL bool shiftKey() const;
             /** @brief Check if Alt modifier was active.
              *  @return true if active. */
-            bool altKey() const;
+            DLL bool altKey() const;
             /** @brief Check if Meta modifier was active.
              *  @return true if active. */
-            bool metaKey() const;
+            DLL bool metaKey() const;
             /** @brief Get the button number that changed state.
              *  @return The button number (0=primary, 1=auxiliary, 2=secondary). */
-            short button() const;
+            DLL short button() const;
             /** @brief Get the bitmask of currently pressed buttons.
              *  @return The buttons bitmask. */
-            unsigned short buttons() const;
+            DLL unsigned short buttons() const;
             /** @brief Get the related target.
              *  @return Pointer to the related EventTarget, or nullptr. */
-            EventTarget* relatedTarget() const;
+            DLL EventTarget* relatedTarget() const;
             /** @brief Query the state of a modifier key.
              *  @param keyArg The modifier key name (e.g., "Control", "Shift").
              *  @return true if the modifier is active. */
-            bool getModifierState ( const DOMString& keyArg ) const;
+            DLL bool getModifierState ( const DOMString& keyArg ) const;
 
         protected:
             double m_screenX{0.0};
