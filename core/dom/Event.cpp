@@ -1,5 +1,5 @@
 /*
-Copyright (C) 2025 Rodrigo Jose Hernandez Cordoba
+Copyright (C) 2025,2026 Rodrigo Jose Hernandez Cordoba
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -26,21 +26,29 @@ namespace AeonGUI
             m_timeStamp ( std::chrono::high_resolution_clock::now() )
         {
         }
-        std::vector<EventTarget> Event::composedPath() const
+        const std::vector<EventTarget*>& Event::composedPath() const
         {
-            return std::vector<EventTarget>();
+            return m_composedPath;
         }
         void Event::stopPropagation()
         {
-
+            m_stopPropagation = true;
         }
         void Event::stopImmediatePropagation()
         {
-
+            m_stopPropagation = true;
+            m_stopImmediatePropagation = true;
         }
         void Event::preventDefault()
         {
-            m_defaultPrevented = true;
+            if ( m_cancelable )
+            {
+                m_defaultPrevented = true;
+            }
+        }
+        void Event::setTrusted ( bool trusted )
+        {
+            m_isTrusted = trusted;
         }
     }
 }

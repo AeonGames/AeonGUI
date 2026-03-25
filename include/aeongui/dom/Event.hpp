@@ -51,9 +51,11 @@ namespace AeonGUI
              *  @param eventInitDict Optional initialization dictionary.
              */
             Event ( const DOMString& type, const std::optional<EventInit>& eventInitDict = {} );
+            /** @brief Virtual destructor for proper polymorphic cleanup. */
+            virtual ~Event() = default;
             /** @brief Build the composed path for this event.
-             *  @return Vector of EventTargets in the event's propagation path. */
-            std::vector<EventTarget> composedPath() const;
+             *  @return Vector of EventTarget pointers in the event's propagation path. */
+            const std::vector<EventTarget*>& composedPath() const;
             /** @brief Stop the event from propagating further. */
             void stopPropagation();
             /** @brief Stop the event from propagating and prevent other listeners on the same target. */
@@ -127,16 +129,23 @@ namespace AeonGUI
                 return m_timeStamp;
             }
 
+        protected:
+            /** @brief Set the trusted flag (for user-agent generated events). */
+            void setTrusted ( bool trusted );
         private:
+            friend class EventTarget;
             DOMString m_type;
             EventTarget* m_target{};
             EventTarget* m_currentTarget{};
+            std::vector<EventTarget*> m_composedPath{};
             uint16_t m_eventPhase{NONE};
             bool m_bubbles{};
             bool m_cancelable{};
             bool m_defaultPrevented{};
             bool m_composed{};
             bool m_isTrusted{};
+            bool m_stopPropagation{false};
+            bool m_stopImmediatePropagation{false};
             DOMHighResTimeStamp m_timeStamp{};
         };
     }

@@ -77,7 +77,20 @@ namespace AeonGUI
              */
             virtual bool dispatchEvent ( Event& event );
         private:
-            std::unordered_map<DOMString, std::vector<EventListener* >> mEventListeners{};
+            /** @brief Internal record of a registered listener with its options. */
+            struct RegisteredListener
+            {
+                EventListener* callback{nullptr};
+                bool capture{false};
+                bool once{false};
+                bool passive{false};
+            };
+            /** @brief Invoke listeners on this target for the given event and phase.
+             *  @param event The event being dispatched.
+             *  @param phase The current event phase.
+             */
+            void invokeListeners ( Event& event, uint16_t phase );
+            std::unordered_map<DOMString, std::vector<RegisteredListener>> mEventListeners{};
         };
 
         /** @brief Signal that can abort an asynchronous operation.

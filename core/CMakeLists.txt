@@ -39,6 +39,12 @@ set(AEONGUI_DOM_HEADERS
     ../include/aeongui/dom/Event.hpp
     ../include/aeongui/dom/EventTarget.hpp
     ../include/aeongui/dom/EventListener.hpp
+    ../include/aeongui/dom/UIEvent.hpp
+    ../include/aeongui/dom/EventModifierInit.hpp
+    ../include/aeongui/dom/KeyboardEvent.hpp
+    ../include/aeongui/dom/MouseEvent.hpp
+    ../include/aeongui/dom/WheelEvent.hpp
+    ../include/aeongui/dom/FocusEvent.hpp
     ../include/aeongui/dom/Node.hpp
     ../include/aeongui/dom/Element.hpp
     ../include/aeongui/dom/SVGGElement.hpp
@@ -110,6 +116,11 @@ set(AEONGUI_DOM_SOURCES
     dom/Document.cpp
     dom/Event.cpp
     dom/EventTarget.cpp
+    dom/UIEvent.cpp
+    dom/KeyboardEvent.cpp
+    dom/MouseEvent.cpp
+    dom/WheelEvent.cpp
+    dom/FocusEvent.cpp
     dom/Node.cpp
     dom/Element.cpp
     dom/SVGElement.cpp
