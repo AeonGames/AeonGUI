@@ -478,7 +478,7 @@ limitations under the License.
                  backing:NSBackingStoreBuffered
                  defer:NO];
         
-        [window setTitle:@"AeonGUI"];
+        [window setTitle:@"AeonGUI - OpenGL"];
         [window center];
         
         openGLView = [[OpenGLView alloc] initWithFrame:frame window:aeonWindow];

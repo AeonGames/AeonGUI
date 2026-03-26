@@ -118,7 +118,7 @@ void Window::Initialize ( HINSTANCE hInstance, LPSTR aFilename, LONG aWidth, LON
     }
     AdjustWindowRectEx ( &rect, WS_OVERLAPPEDWINDOW | WS_CLIPSIBLINGS | WS_CLIPCHILDREN, FALSE, WS_EX_APPWINDOW | WS_EX_WINDOWEDGE );
     hWnd = CreateWindowEx ( WS_EX_APPWINDOW | WS_EX_WINDOWEDGE,
-                            "AeonGUI", "AeonGUI",
+                            "AeonGUI", "AeonGUI - OpenGL",
                             WS_OVERLAPPEDWINDOW | WS_CLIPSIBLINGS | WS_CLIPCHILDREN,
                             0, 0, // Location
                             rect.right - rect.left, rect.bottom - rect.top, // dimensions

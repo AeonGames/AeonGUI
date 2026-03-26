@@ -274,7 +274,7 @@ limitations under the License.
                   backing:NSBackingStoreBuffered
                   defer:NO];
 
-        [window setTitle:@"AeonGUI \xe2\x80\x93 Vulkan"];
+        [window setTitle:@"AeonGUI - Vulkan"];
         [window center];
 
         vulkanView = [[VulkanView alloc] initWithFrame:frame

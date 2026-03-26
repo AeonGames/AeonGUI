@@ -93,7 +93,7 @@ VulkanWindow::VulkanWindow ( HINSTANCE hInstance, const char* filename, LONG aWi
 
     mHWnd = CreateWindowEx (
                 WS_EX_APPWINDOW | WS_EX_WINDOWEDGE,
-                "AeonGUIVulkan", "AeonGUI \xe2\x80\x93 Vulkan",
+                "AeonGUIVulkan", "AeonGUI - Vulkan",
                 WS_OVERLAPPEDWINDOW | WS_CLIPSIBLINGS | WS_CLIPCHILDREN,
                 CW_USEDEFAULT, CW_USEDEFAULT,
                 rect.right - rect.left, rect.bottom - rect.top,

@@ -57,7 +57,7 @@ int main ( int argc, char** argv )
                            BlackPixel ( display, screen ),
                            WhitePixel ( display, screen ) );
 
-        XStoreName ( display, xWindow, "AeonGUI \xe2\x80\x93 Vulkan" );
+        XStoreName ( display, xWindow, "AeonGUI - Vulkan" );
         XSelectInput ( display, xWindow,
                        KeyPressMask | KeyReleaseMask |
                        ButtonPressMask | ButtonReleaseMask |

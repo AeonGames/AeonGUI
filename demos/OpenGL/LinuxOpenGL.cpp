@@ -164,7 +164,7 @@ bool GLWindow::Create ( Display* dpy )
         return false;
     }
 
-    XStoreName ( display, window, "AeonGUI" );
+    XStoreName ( display, window, "AeonGUI - OpenGL" );
 
     XSelectInput ( display, window,
                    KeyPressMask |

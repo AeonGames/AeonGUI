@@ -390,7 +390,7 @@ static const uint16_t indices[] = { 0, 1, 2, 0, 2, 3 };
                   backing:NSBackingStoreBuffered
                   defer:NO];
 
-        [window setTitle:@"AeonGUI – Metal"];
+        [window setTitle:@"AeonGUI - Metal"];
         [window center];
 
         metalView = [[MetalView alloc] initWithFrame:frame device:device window:aeonWindow];

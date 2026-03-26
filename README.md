@@ -5,6 +5,13 @@
 [![Ubuntu Build](https://github.com/AeonGames/AeonGUI/actions/workflows/build-ubuntu.yml/badge.svg)](https://github.com/AeonGames/AeonGUI/actions/workflows/build-ubuntu.yml)
 [![macOS Build](https://github.com/AeonGames/AeonGUI/actions/workflows/build-macos.yml/badge.svg)](https://github.com/AeonGames/AeonGUI/actions/workflows/build-macos.yml)
 
+| AeonGames                                    |
+|:--------------------------------------------:|
+| [![AeonGames][aeon-logo]][aeon-site]         |
+
+[aeon-logo]: https://www.aeongames.com/AeonBlack.svg
+[aeon-site]: https://aeongames.com
+
 AeonGUI is a cross-platform C++ GUI and SVG rendering library focused on game UI and interactive applications.
 It implements a subset of the SVG DOM and CSS styling pipeline, with a backend designed to remain rendering-API agnostic.
 
@@ -74,26 +81,32 @@ AeonGUI is under active development and still evolving. APIs and behavior may ch
   `libpng` / `libjpeg-turbo`).
 - DOM geometry interfaces: `DOMMatrix`, `DOMPoint`, `DOMRect` with full read-only and mutable variants.
 - DOM event system: `EventTarget`, `Event`, `AbortSignal`.
-- Demo applications for OpenGL, Vulkan, and Metal.
+- Demo applications for OpenGL, Vulkan, Metal, and Direct3D12.
 - Unit tests with GoogleTest/GoogleMock.
 
 ## Architecture Overview
 
-```
- SVG file ──▶ libxml2 parser ──▶ DOM tree (Node / Element / Text)
-                                       │
-                                       ▼
-                              CSS resolution (libcss)
-                                       │
-                                       ▼
-                              Text layout (Pango / Fontconfig)
-                                       │
-                                       ▼
-                              Rasterisation (Cairo) ──▶ Pixel buffer
-                                                            │
-                                                            ▼
-                                                   Your engine composites
-                                                   the buffer as a texture
+```plantuml
+@startuml
+top to bottom direction
+
+rectangle "SVG file" as svg
+rectangle "libxml2 parser" as parser
+rectangle "DOM tree\n(Node / Element / Text)" as dom
+rectangle "CSS resolution\n(libcss)" as css
+rectangle "Text layout\n(Pango / Fontconfig)" as text
+rectangle "Rasterisation\n(Cairo)" as raster
+rectangle "Pixel buffer" as pixels
+rectangle "Your engine composites\nthe buffer as a texture" as engine
+
+svg --> parser
+parser --> dom
+dom --> css
+css --> text
+text --> raster
+raster --> pixels
+pixels --> engine
+@enduml
 ```
 
 The `Window` class ties these stages together: it owns a `Document` (the DOM
@@ -167,13 +180,14 @@ ctest --test-dir build --output-on-failure
 ### 4) Run the demo
 
 Demo executables are produced under `build/bin/` (platform naming may vary).
-Three rendering backends are included:
+Four rendering backends are included:
 
 | Demo            | Backend | Notes                                     |
 |-----------------|---------|-------------------------------------------|
 | `OpenGLDemo`    | OpenGL  | Cross-platform, easiest to get started.   |
 | `VulkanDemo`    | Vulkan  | Requires the Vulkan SDK.                  |
 | `MetalDemo`     | Metal   | macOS only.                               |
+| `Direct3D12Demo` | Direct3D12 | Windows only.                         |
 
 ## Common CMake Options
 
@@ -203,6 +217,7 @@ cmake -B build -DCMAKE_BUILD_TYPE=Debug -DUSE_PNG=ON -DUSE_JPEG=ON
 | `demos/OpenGL/`       | OpenGL demo application.                            |
 | `demos/Vulkan/`       | Vulkan demo application.                            |
 | `demos/Metal/`        | Metal demo application (macOS).                     |
+| `demos/Direct3D12/`   | Direct3D12 demo application (Windows).              |
 | `tests/`              | Unit tests (GoogleTest / GoogleMock).                |
 | `tools/`              | Developer utilities (code generation scripts).      |
 | `cmake/`              | CMake helper modules and templates.                 |
@@ -260,7 +275,7 @@ No. Historical experiments existed, but the current codebase is C++ focused and 
 Yes. AeonGUI renders into a CPU-side pixel buffer (BGRA). You can upload
 that buffer as a texture in OpenGL, Vulkan, Metal, DirectX, or any other API
 and composite it however you like. The demo applications show how to do
-this for OpenGL, Vulkan, and Metal.
+this for OpenGL, Vulkan, Metal, and Direct3D12.
 
 ### Which parts of SVG are supported?
 
