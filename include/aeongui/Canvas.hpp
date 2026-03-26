@@ -165,6 +165,8 @@ namespace AeonGUI
          *  @param aFontSize    Font size in CSS pixels.
          *  @param aFontWeight  CSS font weight (400 = normal, 700 = bold).
          *  @param aFontStyle   0 = normal, 1 = italic, 2 = oblique.
+         *  @param aReverse     If true, render glyph order against the path direction.
+         *  @param aClosed      If true, treat the path as closed for offset wrapping.
          */
         virtual void DrawTextOnPath ( const std::string& aText,
                                       const Path& aPath,

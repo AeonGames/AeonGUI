@@ -43,9 +43,10 @@ mingw32
 mingw64
 clang32
 clang64
+msys64
 .vscode
 include/GL
-build
+build*
 gcc64
 vcpkg_installed
 node_modules

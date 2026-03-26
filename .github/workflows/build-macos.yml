@@ -19,11 +19,34 @@ jobs:
       with:
         fetch-depth: 0
 
+    - name: '🔎 Detect compiled-file changes'
+      id: changes
+      uses: dorny/paths-filter@v3
+      with:
+        filters: |
+          compiled:
+            - 'CMakeLists.txt'
+            - 'cmake/**'
+            - 'vcpkg.json'
+            - 'vcpkg-configuration.json'
+            - 'core/**'
+            - 'include/**'
+            - 'tests/**'
+            - 'demos/**'
+            - 'css/**'
+            - '**/*.c'
+            - '**/*.cc'
+            - '**/*.cpp'
+            - '**/*.cxx'
+            - '**/*.h'
+            - '**/*.hpp'
+            - '**/*.cu'
+
     - name: '📦 Install dependencies'
       run: |
         brew update
         brew install cmake pkg-config cairo pango libxml2 googletest gsed bison zlib libpng libjpeg-turbo
-      if: matrix.compiler == 'clang'
+      if: matrix.compiler == 'clang' && steps.changes.outputs.compiled == 'true'
 
     - name: '🌋 Install Vulkan SDK'
       uses: jakoch/install-vulkan-sdk-action@v1.4.0
@@ -31,16 +54,23 @@ jobs:
         vulkan_version: latest
         install_runtime: true
         cache: true
+      if: steps.changes.outputs.compiled == 'true'
 
     - name: '🛠️ Configuring'
       run: |
         export PATH="/opt/homebrew/opt/bison/bin:$PATH"
         export PKG_CONFIG_PATH="/opt/homebrew/lib/pkgconfig:$PKG_CONFIG_PATH"
         cmake -B ${{github.workspace}}/build -DCMAKE_BUILD_TYPE=${{env.BUILD_TYPE}}
-      if: matrix.compiler == 'clang'
+      if: matrix.compiler == 'clang' && steps.changes.outputs.compiled == 'true'
 
     - name: '🏗️ Building'
       run: cmake --build ${{github.workspace}}/build
+      if: steps.changes.outputs.compiled == 'true'
 
     - name: '🧪 Running Tests'
       run: ctest --test-dir ${{github.workspace}}/build
+      if: steps.changes.outputs.compiled == 'true'
+
+    - name: '✅ Skip build (no compiled changes)'
+      if: steps.changes.outputs.compiled != 'true'
+      run: echo "No compiled-relevant files changed. Skipping build and tests."

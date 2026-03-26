@@ -1,0 +1,46 @@
+name: Update Documentation
+
+on:
+  workflow_dispatch:
+
+jobs:
+  docs:
+    runs-on: windows-latest
+    defaults:
+      run:
+        shell: msys2 {0}
+
+    steps:
+      - name: '🧰 Checkout'
+        uses: actions/checkout@v6
+
+      - name: '🟦 Setup MSYS2'
+        uses: msys2/setup-msys2@v2
+        with:
+          msystem: msys
+          update: true
+          install: >-
+            git
+            make
+            cmake
+            doxygen
+            clang
+            mingw-w64-x86_64-graphviz
+
+      - name: '🛠️ Configure'
+        run: |
+          rm -rf build
+          PATH="/mingw64/bin:$PATH" cmake -S . -B build -G "Unix Makefiles" -DDOCS_ONLY=ON
+
+      - name: '📚 Build docs target'
+        run: PATH="/mingw64/bin:$PATH" cmake --build build --target docs --parallel
+
+      - name: '🚀 Upload docs via FTP'
+        uses: SamKirkland/FTP-Deploy-Action@v4.3.5
+        with:
+          server: ${{ secrets.FTP_SERVER }}
+          username: ${{ secrets.FTP_USERNAME }}
+          password: ${{ secrets.FTP_PASSWORD }}
+          protocol: ftp
+          local-dir: ./build/docs/AeonGUI/
+          server-dir: /AeonGUI/

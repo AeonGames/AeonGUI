@@ -92,27 +92,27 @@ namespace AeonGUI
             DLL bool getModifierState ( const DOMString& keyArg ) const;
 
         protected:
-            double m_screenX{0.0};
-            double m_screenY{0.0};
-            double m_clientX{0.0};
-            double m_clientY{0.0};
-            bool m_ctrlKey{false};
-            bool m_shiftKey{false};
-            bool m_altKey{false};
-            bool m_metaKey{false};
-            short m_button{0};
-            unsigned short m_buttons{0};
-            EventTarget* m_relatedTarget{nullptr};
-            bool m_modifierAltGraph{false};
-            bool m_modifierCapsLock{false};
-            bool m_modifierFn{false};
-            bool m_modifierFnLock{false};
-            bool m_modifierHyper{false};
-            bool m_modifierNumLock{false};
-            bool m_modifierScrollLock{false};
-            bool m_modifierSuper{false};
-            bool m_modifierSymbol{false};
-            bool m_modifierSymbolLock{false};
+            double m_screenX{0.0}; ///< Horizontal coordinate in screen space.
+            double m_screenY{0.0}; ///< Vertical coordinate in screen space.
+            double m_clientX{0.0}; ///< Horizontal coordinate in viewport space.
+            double m_clientY{0.0}; ///< Vertical coordinate in viewport space.
+            bool m_ctrlKey{false}; ///< State of Control modifier.
+            bool m_shiftKey{false}; ///< State of Shift modifier.
+            bool m_altKey{false}; ///< State of Alt modifier.
+            bool m_metaKey{false}; ///< State of Meta modifier.
+            short m_button{0}; ///< Button that changed state.
+            unsigned short m_buttons{0}; ///< Bitmask of currently pressed buttons.
+            EventTarget* m_relatedTarget{nullptr}; ///< Related target for enter/leave style events.
+            bool m_modifierAltGraph{false}; ///< State of AltGraph modifier.
+            bool m_modifierCapsLock{false}; ///< State of CapsLock modifier.
+            bool m_modifierFn{false}; ///< State of Fn modifier.
+            bool m_modifierFnLock{false}; ///< State of FnLock modifier.
+            bool m_modifierHyper{false}; ///< State of Hyper modifier.
+            bool m_modifierNumLock{false}; ///< State of NumLock modifier.
+            bool m_modifierScrollLock{false}; ///< State of ScrollLock modifier.
+            bool m_modifierSuper{false}; ///< State of Super modifier.
+            bool m_modifierSymbol{false}; ///< State of Symbol modifier.
+            bool m_modifierSymbolLock{false}; ///< State of SymbolLock modifier.
         };
     }
 }

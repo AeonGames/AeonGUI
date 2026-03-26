@@ -1,5 +1,29 @@
 cmake_minimum_required(VERSION 3.10)
-project(AeonGUI CXX C)
+project(AeonGUI NONE)
+
+function(add_docs_target)
+  find_package(Doxygen)
+  if(DOXYGEN_FOUND)
+    set(DOXYGEN_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/docs")
+    configure_file(${CMAKE_SOURCE_DIR}/cmake/Doxyfile.in ${CMAKE_BINARY_DIR}/Doxyfile @ONLY)
+    add_custom_target(docs
+      COMMAND ${DOXYGEN_EXECUTABLE} ${CMAKE_BINARY_DIR}/Doxyfile
+      WORKING_DIRECTORY ${CMAKE_BINARY_DIR}
+      COMMENT "Generating API documentation with Doxygen"
+      VERBATIM
+    )
+  endif()
+endfunction()
+
+option(DOCS_ONLY "Configure only the docs target" OFF)
+if(DOCS_ONLY)
+  message(STATUS "DOCS_ONLY is ON: skipping full project dependencies and targets")
+  add_docs_target()
+  return()
+endif()
+
+enable_language(CXX C)
+
 enable_testing()
 
 if(COMMAND cmake_policy)
@@ -229,17 +253,7 @@ if(WIN32)
 endif()
 configure_vscode(${DEMO_DIRS})
 
-find_package(Doxygen)
-if(DOXYGEN_FOUND)
-  set(DOXYGEN_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/docs")
-  configure_file(${CMAKE_SOURCE_DIR}/Doxyfile ${CMAKE_BINARY_DIR}/Doxyfile @ONLY)
-  add_custom_target(doc
-    COMMAND ${DOXYGEN_EXECUTABLE} ${CMAKE_BINARY_DIR}/Doxyfile
-    WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
-    COMMENT "Generating API documentation with Doxygen"
-    VERBATIM
-  )
-endif()
+add_docs_target()
 
 install(TARGETS AeonGUI
     EXPORT aeongui

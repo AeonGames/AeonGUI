@@ -25,6 +25,29 @@ jobs:
         fetch-depth: 0
         persist-credentials: false
 
+    - name: '🔎 Detect compiled-file changes'
+      id: changes
+      uses: dorny/paths-filter@v3
+      with:
+        filters: |
+          compiled:
+            - 'CMakeLists.txt'
+            - 'cmake/**'
+            - 'vcpkg.json'
+            - 'vcpkg-configuration.json'
+            - 'core/**'
+            - 'include/**'
+            - 'tests/**'
+            - 'demos/**'
+            - 'css/**'
+            - '**/*.c'
+            - '**/*.cc'
+            - '**/*.cpp'
+            - '**/*.cxx'
+            - '**/*.h'
+            - '**/*.hpp'
+            - '**/*.cu'
+
     - name: '${{ matrix.icon }} Setup MSYS2'
       uses: msys2/setup-msys2@v2
       with:
@@ -54,12 +77,21 @@ jobs:
           astyle:p
           doxygen:p
           graphviz:p
+      if: steps.changes.outputs.compiled == 'true'
 
     - name: '🛠️ Configuring'
       run: cmake -G "MSYS Makefiles" -B ${{github.workspace}}/build -DCMAKE_BUILD_TYPE=Release
+      if: steps.changes.outputs.compiled == 'true'
 
     - name: '🏗️ Building'
       run: cmake --build ${{github.workspace}}/build
+      if: steps.changes.outputs.compiled == 'true'
 
     - name: '🧪 Running Tests'
       run: ctest --test-dir ${{github.workspace}}/build
+      if: steps.changes.outputs.compiled == 'true'
+
+    - name: '✅ Skip build (no compiled changes)'
+      if: steps.changes.outputs.compiled != 'true'
+      shell: bash
+      run: echo "No compiled-relevant files changed. Skipping build and tests."

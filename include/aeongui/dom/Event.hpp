@@ -130,7 +130,9 @@ namespace AeonGUI
             }
 
         protected:
-            /** @brief Set the trusted flag (for user-agent generated events). */
+            /** @brief Set the trusted flag (for user-agent generated events).
+             *  @param trusted true if the event is user-agent generated.
+             */
             DLL void setTrusted ( bool trusted );
         private:
             friend class EventTarget;

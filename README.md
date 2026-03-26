@@ -5,9 +5,7 @@
 [![Ubuntu Build](https://github.com/AeonGames/AeonGUI/actions/workflows/build-ubuntu.yml/badge.svg)](https://github.com/AeonGames/AeonGUI/actions/workflows/build-ubuntu.yml)
 [![macOS Build](https://github.com/AeonGames/AeonGUI/actions/workflows/build-macos.yml/badge.svg)](https://github.com/AeonGames/AeonGUI/actions/workflows/build-macos.yml)
 
-
-[![Aeon Games](https://www.aeongames.com/AeonBlack.svg)]([https://github.com/AeonGames/AeonGUI/actions/workflows/build-macos.yml](https://aeongames.com))
-
+[![Aeon Games](https://www.aeongames.com/AeonBlack.svg)](https://aeongames.com)
 
 AeonGUI is a cross-platform C++ GUI and SVG rendering library focused on game UI and interactive applications.
 It implements a subset of the SVG DOM and CSS styling pipeline, with a backend designed to remain rendering-API agnostic.

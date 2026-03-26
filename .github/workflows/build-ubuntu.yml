@@ -23,18 +23,47 @@ jobs:
     - name: '🧰 Checkout'
       uses: actions/checkout@v6
 
+    - name: '🔎 Detect compiled-file changes'
+      id: changes
+      uses: dorny/paths-filter@v3
+      with:
+        filters: |
+          compiled:
+            - 'CMakeLists.txt'
+            - 'cmake/**'
+            - 'vcpkg.json'
+            - 'vcpkg-configuration.json'
+            - 'core/**'
+            - 'include/**'
+            - 'tests/**'
+            - 'demos/**'
+            - 'css/**'
+            - '**/*.c'
+            - '**/*.cc'
+            - '**/*.cpp'
+            - '**/*.cxx'
+            - '**/*.h'
+            - '**/*.hpp'
+            - '**/*.cu'
+
     - name: Install dependencies
       run: |
         sudo apt-get update
         sudo apt-get install -y build-essential software-properties-common gcc g++ sed python3 tar wget cmake autoconf automake libtool curl make unzip zlib1g-dev libpng-dev vim-common git libgtest-dev google-mock libglu1-mesa-dev freeglut3-dev mesa-common-dev libcairo-dev libpango1.0-dev libxml2-dev libjpeg-dev libvulkan-dev vulkan-validationlayers glslang-tools
-      if: matrix.compiler == 'gcc'
+      if: matrix.compiler == 'gcc' && steps.changes.outputs.compiled == 'true'
 
     - name: '🛠️ Configuring'
       run: cmake -B ${{github.workspace}}/build -DCMAKE_DISABLE_PRECOMPILE_HEADERS=${{ matrix.precompile_headers == 'OFF' && 'ON' || 'OFF' }} -DCMAKE_BUILD_TYPE=${{env.BUILD_TYPE}}
-      if: matrix.compiler == 'gcc'
+      if: matrix.compiler == 'gcc' && steps.changes.outputs.compiled == 'true'
 
     - name: '🏗️ Building'
       run: cmake --build ${{github.workspace}}/build
+      if: steps.changes.outputs.compiled == 'true'
 
     - name: '🧪 Running Tests'
       run: ctest --test-dir ${{github.workspace}}/build
+      if: steps.changes.outputs.compiled == 'true'
+
+    - name: '✅ Skip build (no compiled changes)'
+      if: steps.changes.outputs.compiled != 'true'
+      run: echo "No compiled-relevant files changed. Skipping build and tests."

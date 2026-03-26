@@ -31,13 +31,30 @@ namespace AeonGUI
         class SVGTextPathElement : public SVGTextContentElement
         {
         public:
+            /** @brief Construct an SVG textPath element.
+             *  @param aTagName Element tag name.
+             *  @param aAttributes Initial attribute map.
+             *  @param aParent Parent node.
+             */
             SVGTextPathElement ( const DOMString& aTagName, AttributeMap&& aAttributes, Node* aParent );
             ~SVGTextPathElement() override;
             void DrawStart ( Canvas& aCanvas ) const override;
 
+            /** @brief Get the path reference attribute.
+             *  @return Animated href attribute.
+             */
             const SVGAnimatedString& href() const;
+            /** @brief Get the start offset along the referenced path.
+             *  @return Animated startOffset attribute.
+             */
             const SVGAnimatedLength& startOffset() const;
+            /** @brief Get text path placement method.
+             *  @return Animated method attribute.
+             */
             const SVGAnimatedEnumeration& method() const;
+            /** @brief Get text path spacing mode.
+             *  @return Animated spacing attribute.
+             */
             const SVGAnimatedEnumeration& spacing() const;
 
         private:
