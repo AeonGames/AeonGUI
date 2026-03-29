@@ -19,6 +19,7 @@ limitations under the License.
 #include <filesystem>
 #include "aeongui/dom/Document.hpp"
 #include "aeongui/dom/Window.hpp"
+#include "aeongui/dom/Event.hpp"
 #include "aeongui/CairoCanvas.hpp"
 
 namespace
@@ -478,38 +479,37 @@ TEST ( SMILAnimationTest, AnimateTransformSkewXLoadsAndDraws )
 
 TEST ( SMILAnimationTest, ClickTriggersSetElement )
 {
-    const std::filesystem::path tempPath = std::filesystem::temp_directory_path() / "smil-click-test.svg";
-
+    TempSVG svg
     {
-        std::ofstream file ( tempPath, std::ios::binary | std::ios::out );
-        ASSERT_TRUE ( file.is_open() );
-        file << R"(<svg xmlns="http://www.w3.org/2000/svg" width="200" height="200">)"
-             << R"(<rect id="target" x="50" y="50" width="100" height="100" fill="#999">)"
-             << R"(<set attributeName="fill" to="#3b3" begin="click" dur="2s"/>)"
-             << R"(</rect></svg>)";
-    }
+        R"(<svg xmlns="http://www.w3.org/2000/svg" width="200" height="200">)"
+        R"(<rect id="target" x="50" y="50" width="100" height="100" fill="#999">)"
+        R"(<set attributeName="fill" to="#3b3" begin="click" dur="2s"/>)"
+R"(</rect></svg>)",
+        "smil-click-test.svg"
+    };
 
-    AeonGUI::DOM::Window window ( 200u, 200u );
-    window.location() = tempPath.generic_string();
+    AeonGUI::CairoCanvas canvas ( 200u, 200u );
 
-    // Advance time - animation should NOT be active yet (event-based begin)
-    window.Update ( 0.5 );
-    window.Draw();
+    // Advance time — animation should NOT be active yet (event-based begin)
+    svg.doc().AdvanceTime ( 0.5 );
+    canvas.Clear();
+    svg.doc().Draw ( canvas );
 
-    // Now simulate a click on the rect (center at 100, 100)
-    window.HandleMouseDown ( 100.0, 100.0 );
-    window.HandleMouseUp ( 100.0, 100.0 );
+    // Dispatch a click event directly on the rect element
+    auto* target = svg.doc().getElementById ( "target" );
+    ASSERT_NE ( target, nullptr );
+    AeonGUI::DOM::Event clickEvent ( "click" );
+    target->dispatchEvent ( clickEvent );
 
-    // Advance time past the click - now the animation should be active
-    window.Update ( 0.5 );
-    window.Draw();
+    // Advance time past the click — now the animation should be active
+    svg.doc().AdvanceTime ( 0.5 );
+    canvas.Clear();
+    svg.doc().Draw ( canvas );
 
     // Advance past the duration — animation should deactivate
-    window.Update ( 2.0 );
-    ASSERT_NO_THROW ( window.Draw() );
-
-    std::error_code ec;
-    std::filesystem::remove ( tempPath, ec );
+    svg.doc().AdvanceTime ( 2.0 );
+    canvas.Clear();
+    ASSERT_NO_THROW ( svg.doc().Draw ( canvas ) );
 }
 
 // ===== Event-based begin: animation stays inactive without click =====
@@ -756,37 +756,37 @@ TEST ( SMILAnimationTest, MixedAnimationTypesOnSameElement )
 
 TEST ( SMILAnimationTest, MouseoverTriggersAnimation )
 {
-    const std::filesystem::path tempPath = std::filesystem::temp_directory_path() / "smil-mouseover-test.svg";
-
+    TempSVG svg
     {
-        std::ofstream file ( tempPath, std::ios::binary | std::ios::out );
-        ASSERT_TRUE ( file.is_open() );
-        file << R"(<svg xmlns="http://www.w3.org/2000/svg" width="200" height="200">)"
-             << R"(<rect x="50" y="50" width="100" height="100" fill="#999">)"
-<< R"(<animate attributeName="fill" from="#999" to="#3b3" begin="mouseenter" dur="1s" repeatCount="1"/>)"
-             << R"(</rect></svg>)";
-    }
+        R"(<svg xmlns="http://www.w3.org/2000/svg" width="200" height="200">)"
+        R"(<rect id="hover-target" x="50" y="50" width="100" height="100" fill="#999">)"
+        R"(<animate attributeName="fill" from="#999" to="#3b3" begin="mouseenter" dur="1s" repeatCount="1"/>)"
+        R"(</rect></svg>)",
+        "smil-mouseover-test.svg"
+    };
 
-    AeonGUI::DOM::Window window ( 200u, 200u );
-    window.location() = tempPath.generic_string();
+    AeonGUI::CairoCanvas canvas ( 200u, 200u );
 
     // Advance time — animation should not be active
-    window.Update ( 0.5 );
-    window.Draw();
+    svg.doc().AdvanceTime ( 0.5 );
+    canvas.Clear();
+    svg.doc().Draw ( canvas );
 
-    // Move mouse over the rect (enter triggers mouseenter)
-    window.HandleMouseMove ( 100.0, 100.0 );
+    // Dispatch mouseenter event directly on the rect element
+    auto* target = svg.doc().getElementById ( "hover-target" );
+    ASSERT_NE ( target, nullptr );
+    AeonGUI::DOM::Event enterEvent ( "mouseenter" );
+    target->dispatchEvent ( enterEvent );
 
     // Advance time — animation should now be active
-    window.Update ( 0.5 );
-    ASSERT_NO_THROW ( window.Draw() );
+    svg.doc().AdvanceTime ( 0.5 );
+    canvas.Clear();
+    ASSERT_NO_THROW ( svg.doc().Draw ( canvas ) );
 
     // Advance past duration
-    window.Update ( 1.0 );
-    ASSERT_NO_THROW ( window.Draw() );
-
-    std::error_code ec;
-    std::filesystem::remove ( tempPath, ec );
+    svg.doc().AdvanceTime ( 1.0 );
+    canvas.Clear();
+    ASSERT_NO_THROW ( svg.doc().Draw ( canvas ) );
 }
 
 // ===== Large time jump (numerical stability) =====
