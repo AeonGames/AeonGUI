@@ -36,7 +36,7 @@ and the build integrates cleanly with vcpkg on Windows.
   engine composites however it sees fit.
 - **Minimal footprint.** Only the parts of the SVG and DOM specifications
   that are useful for game and application UI are implemented&mdash;no
-  animation timeline, no scripting engine, no full browser layout model.
+  scripting engine, no full browser layout model.
 - **Embeddable.** The library is designed to be integrated into existing
   game engines and applications, not to be a standalone toolkit.
 - **Cross-platform from day one.** CI tests run on Windows (MSVC and
@@ -52,8 +52,8 @@ and the build integrates cleanly with vcpkg on Windows.
   primitives you can use to build those things.
 - **Not a complete SVG implementation.** Only the subset of SVG 2 that is
   useful for UI rendering is supported (basic shapes, paths, text, images,
-  gradients, transforms, groups, defs).  Filters, animations, and advanced
-  text features are out of scope for now.
+  gradients, transforms, groups, defs, SMIL animations).  Filters and
+  advanced text features are out of scope for now.
 - **Not API-stable yet.** The library is under active development, and
   public interfaces may change between releases.
 
@@ -67,7 +67,9 @@ AeonGUI is under active development and still evolving. APIs and behavior may ch
 ## What It Includes
 
 - SVG DOM subset with scene graph traversal and element factory architecture.
-- CSS-based styling through `libcss`.
+- CSS-based styling through `libcss`, including `:hover`, `:active`, and `:focus` pseudo-classes.
+- SMIL animation engine: `<animate>`, `<set>`, `<animateTransform>`, and `<animateMotion>` elements
+  with time-based and event-based (`click`, `mouseenter`, …) activation.
 - Text layout and font shaping via `Pango` and `Fontconfig`.
 - XML parsing via `libxml2`.
 - Raster image support with magic-based format detection. PCX decoding is
@@ -75,7 +77,8 @@ AeonGUI is under active development and still evolving. APIs and behavior may ch
   optional and enabled via `USE_PNG` and `USE_JPEG` respectively (requires
   `libpng` / `libjpeg-turbo`).
 - DOM geometry interfaces: `DOMMatrix`, `DOMPoint`, `DOMRect` with full read-only and mutable variants.
-- DOM event system: `EventTarget`, `Event`, `AbortSignal`.
+- DOM event system: `EventTarget`, `Event`, `EventListener`, `AbortSignal`.
+- Mouse input handling: hit-testing via `elementFromPoint`, hover tracking, click and mouseenter/mouseleave dispatch.
 - Demo applications for OpenGL, Vulkan, Metal, and Direct3D12.
 - Unit tests with GoogleTest/GoogleMock.
 
@@ -107,8 +110,11 @@ pixels --> engine
 The `Window` class ties these stages together: it owns a `Document` (the DOM
 tree), a `CairoCanvas` (the rendering surface), and a `Location` (the URL
 of the loaded SVG).  Your application creates a `Window`, points its
-`Location` at an SVG file, calls `Draw()`, and reads back pixels via
-`GetPixels()`.
+`Location` at an SVG file, calls `Update()` each frame to advance
+animations, calls `Draw()`, and reads back pixels via `GetPixels()`.
+Mouse input is forwarded through `HandleMouseMove()`, `HandleMouseDown()`,
+and `HandleMouseUp()`, which drive CSS pseudo-class state, hit-testing,
+and DOM event dispatch for SMIL event-based triggers.
 
 ## Platform Support
 
@@ -204,7 +210,7 @@ cmake -B build -DCMAKE_BUILD_TYPE=Debug -DUSE_PNG=ON -DUSE_JPEG=ON
 | Directory             | Contents                                            |
 |-----------------------|-----------------------------------------------------|
 | `core/`               | Main library implementation (Canvas, Color, Path…). |
-| `core/dom/`           | SVG and DOM element classes.                        |
+| `core/dom/`           | SVG and DOM element classes, SMIL animation elements. |
 | `core/parsers/`       | Internal data-type parsers.                         |
 | `include/aeongui/`    | Public C++ headers.                                 |
 | `include/aeongui/dom/`| Public DOM / SVG header files.                      |
@@ -213,6 +219,7 @@ cmake -B build -DCMAKE_BUILD_TYPE=Debug -DUSE_PNG=ON -DUSE_JPEG=ON
 | `demos/Vulkan/`       | Vulkan demo application.                            |
 | `demos/Metal/`        | Metal demo application (macOS).                     |
 | `demos/Direct3D12/`   | Direct3D12 demo application (Windows).              |
+| `images/`             | Sample SVG files and demo assets.                   |
 | `tests/`              | Unit tests (GoogleTest / GoogleMock).                |
 | `tools/`              | Developer utilities (code generation scripts).      |
 | `cmake/`              | CMake helper modules and templates.                 |
@@ -220,7 +227,7 @@ cmake -B build -DCMAKE_BUILD_TYPE=Debug -DUSE_PNG=ON -DUSE_JPEG=ON
 ## Notes For New Contributors
 
 - Use CMake out-of-source builds (`-B build`).
-- A pre-commit hook is configured by CMake; it validates style and notices.
+- A pre-commit hook is configured by CMake; it validates style and copyright notices.
 - If iteration speed matters, disable PCH with `-DCMAKE_DISABLE_PRECOMPILE_HEADERS=ON`.
 - CI workflows in `.github/workflows/` are the best reference for known-good dependency sets.
 
@@ -277,19 +284,30 @@ this for OpenGL, Vulkan, Metal, and Direct3D12.
 Basic shapes (`rect`, `circle`, `ellipse`, `line`, `polyline`, `polygon`,
 `path`), `text` and `tspan`, `image`, `g`, `defs`, `use`, `linearGradient`,
 `radialGradient`, and `svg` root elements. Transforms, CSS styling, and
-`viewBox` / `preserveAspectRatio` are supported. Filters, animations,
-`clip-path`, `mask`, and advanced text features (text-on-a-path, `textPath`)
+`viewBox` / `preserveAspectRatio` are supported.
+
+SMIL animation elements are supported: `<animate>` (paint properties,
+geometry attributes, and corner-radius path animations), `<set>` (discrete
+value changes), `<animateTransform>` (rotate, scale, translate, skewX,
+skewY), and `<animateMotion>` (path-based motion with arc-length
+interpolation). Animations can be triggered by time or by DOM events such
+as `click` and `mouseenter`.
+
+CSS pseudo-classes `:hover`, `:active`, and `:focus` are resolved
+dynamically based on mouse input.
+
+Filters, `clip-path`, `mask`, and advanced text features (text-on-a-path)
 are not yet implemented.
 
 ### How do I generate the API documentation?
 
-Build the `doc` target:
+Build the `docs` target:
 
 ```bash
-cmake --build build --target doc
+cmake --build build --target docs
 ```
 
-The HTML documentation is generated in `build/docs/html/`.
+The HTML documentation is generated in `build/docs/AeonGUI/`.
 
 ## Links
 
@@ -318,7 +336,7 @@ See the License for the specific language governing permissions and
 limitations under the License.
 ```
 
-The Aeon Games logo is **not** covered by Apache 2.0 and may not be used without permission.
+The Aeon Games logo is a trademark and is **not** covered by Apache 2.0, it may not be used without express permission.
 
 ## Authors
 

@@ -23,11 +23,26 @@ namespace AeonGUI
 {
     namespace DOM
     {
+        /** @brief SMIL \<set\> element for discrete attribute changes.
+         *
+         *  Sets an attribute to a fixed value for the duration of the
+         *  active interval.  Supports time-based and event-based begin.
+         *  @see https://www.w3.org/TR/SVG11/animate.html#SetElement
+         */
         class SVGSetElement : public SVGAnimationElement
         {
         public:
+            /** @brief Construct an SVGSetElement.
+             *  @param aTagName    Tag name.
+             *  @param aAttributes Element attributes.
+             *  @param aParent     Parent node.
+             */
             SVGSetElement ( const DOMString& aTagName, AttributeMap&& aAttributes, Node* aParent );
+            /** @brief Destructor. */
             ~SVGSetElement() override;
+            /** @brief Apply the discrete value change to the canvas.
+             *  @param aCanvas The target canvas.
+             */
             void ApplyToCanvas ( Canvas& aCanvas ) const override;
         private:
             std::string mToValue;

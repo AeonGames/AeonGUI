@@ -37,6 +37,7 @@ namespace AeonGUI
             /** @brief Destructor. */
             ~SVGRectElement() final;
         protected:
+            /** @copydoc SVGGeometryElement::RebuildAnimatedPath */
             void RebuildAnimatedPath() const override;
         private:
             double mWidth{};

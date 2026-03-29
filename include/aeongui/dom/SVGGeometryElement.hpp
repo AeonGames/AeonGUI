@@ -51,6 +51,11 @@ namespace AeonGUI
                 return mPath;
             }
         protected:
+            /** @brief Rebuild the cached path with animated attribute values.
+             *
+             *  Derived classes override this to reconstruct the path when
+             *  child path-modifying animations (e.g. rx/ry on rect) are active.
+             */
             virtual void RebuildAnimatedPath() const {}
             mutable CairoPath mPath; ///< Cached Cairo path for this geometry.
         };

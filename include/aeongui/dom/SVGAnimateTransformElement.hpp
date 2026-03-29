@@ -24,13 +24,29 @@ namespace AeonGUI
 {
     namespace DOM
     {
+        /** @brief SMIL \<animateTransform\> element.
+         *
+         *  Animates rotate, scale, translate, skewX, or skewY transforms
+         *  with keyframe interpolation.
+         *  @see https://www.w3.org/TR/SVG11/animate.html#AnimateTransformElement
+         */
         class SVGAnimateTransformElement : public SVGAnimationElement
         {
         public:
+            /** @brief The kind of transform being animated. */
             enum class TransformType { Translate, Scale, Rotate, SkewX, SkewY };
 
+            /** @brief Construct an SVGAnimateTransformElement.
+             *  @param aTagName    Tag name.
+             *  @param aAttributes Element attributes.
+             *  @param aParent     Parent node.
+             */
             SVGAnimateTransformElement ( const DOMString& aTagName, AttributeMap&& aAttributes, Node* aParent );
+            /** @brief Destructor. */
             ~SVGAnimateTransformElement() override;
+            /** @brief Apply the animated transform to the canvas.
+             *  @param aCanvas The target canvas.
+             */
             void ApplyToCanvas ( Canvas& aCanvas ) const override;
         private:
             static std::vector<double> ParseNumbers ( const std::string& aStr );

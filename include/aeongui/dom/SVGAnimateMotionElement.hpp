@@ -23,11 +23,25 @@ namespace AeonGUI
 {
     namespace DOM
     {
+        /** @brief SMIL \<animateMotion\> element.
+         *
+         *  Moves an element along an SVG path using arc-length interpolation.
+         *  @see https://www.w3.org/TR/SVG11/animate.html#AnimateMotionElement
+         */
         class SVGAnimateMotionElement : public SVGAnimationElement
         {
         public:
+            /** @brief Construct an SVGAnimateMotionElement.
+             *  @param aTagName    Tag name.
+             *  @param aAttributes Element attributes.
+             *  @param aParent     Parent node.
+             */
             SVGAnimateMotionElement ( const DOMString& aTagName, AttributeMap&& aAttributes, Node* aParent );
+            /** @brief Destructor. */
             ~SVGAnimateMotionElement() override;
+            /** @brief Apply the motion translation to the canvas.
+             *  @param aCanvas The target canvas.
+             */
             void ApplyToCanvas ( Canvas& aCanvas ) const override;
         private:
             struct PathPoint
