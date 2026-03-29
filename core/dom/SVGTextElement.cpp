@@ -60,6 +60,33 @@ namespace AeonGUI
                 posY = static_cast<double> ( y().baseVal().getItem ( 0 ).value() );
             }
 
+            // text-anchor adjustment: measure total text width and offset posX.
+            auto anchorIt = mAttributes.find ( "text-anchor" );
+            if ( anchorIt != mAttributes.end() && anchorIt->second != "start" )
+            {
+                double totalWidth = 0.0;
+                for ( const auto& child : childNodes() )
+                {
+                    if ( child->nodeType() == Node::TEXT_NODE )
+                    {
+                        const Text* textNode = static_cast<const Text*> ( child.get() );
+                        std::string text = textNode->wholeText();
+                        if ( !text.empty() )
+                        {
+                            totalWidth += aCanvas.MeasureText ( text, fontFamily, fontSize, fontWeight, fontStyle );
+                        }
+                    }
+                }
+                if ( anchorIt->second == "middle" )
+                {
+                    posX -= totalWidth / 2.0;
+                }
+                else if ( anchorIt->second == "end" )
+                {
+                    posX -= totalWidth;
+                }
+            }
+
             // Render direct text children.  For tspan children the
             // recursive DrawStart call will handle them.
             for ( const auto& child : childNodes() )

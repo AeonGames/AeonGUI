@@ -48,6 +48,15 @@ namespace AeonGUI
             {
                 mRy = std::stod ( mAttributes.at ( "ry" ) );
             }
+            // SVG spec: if only rx or ry is specified, the other defaults to the same value.
+            if ( mRx > 0.0 && mRy == 0.0 )
+            {
+                mRy = mRx;
+            }
+            else if ( mRy > 0.0 && mRx == 0.0 )
+            {
+                mRx = mRy;
+            }
             /**
              * https://www.w3.org/TR/SVG/shapes.html#RectElement
              * The width and height properties define the overall width and height of the rectangle.

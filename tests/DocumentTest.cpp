@@ -68,6 +68,39 @@ TEST ( DocumentTest, StoresLoadedUrl )
     std::filesystem::remove ( tempPath, ec );
 }
 
+TEST ( DocumentTest, LoadSvgWithStyleAndClasses )
+{
+    const std::filesystem::path tempPath = std::filesystem::temp_directory_path() / "aeongui-class-test.svg";
+
+    {
+        std::ofstream file ( tempPath, std::ios::binary | std::ios::out );
+        ASSERT_TRUE ( file.is_open() );
+        file << R"(<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100">)"
+             << R"(<style>.btn { fill: #39f; } .btn:hover { fill: #5bf; }</style>)"
+             << R"(<rect class="btn" x="10" y="10" width="80" height="80"/>)"
+             << R"(</svg>)";
+    }
+
+    AeonGUI::DOM::Document document;
+    EXPECT_NO_THROW ( document.Load ( tempPath.string() ) );
+
+    std::error_code ec;
+    std::filesystem::remove ( tempPath, ec );
+}
+
+TEST ( DocumentTest, LoadHoverDemoSvg )
+{
+    const std::filesystem::path svgPath = std::filesystem::path ( SOURCE_PATH ) / "images" / "hover-demo.svg";
+    ASSERT_TRUE ( std::filesystem::exists ( svgPath ) ) << "hover-demo.svg not found at " << svgPath;
+
+    AeonGUI::DOM::Document document;
+    ASSERT_NO_THROW ( document.Load ( svgPath.string() ) );
+
+    AeonGUI::CairoCanvas canvas ( 800u, 600u );
+    canvas.Clear();
+    ASSERT_NO_THROW ( document.Draw ( canvas ) );
+}
+
 TEST ( DocumentTest, DrawResolvesImageHrefWithFragment )
 {
     const std::filesystem::path tempDir = std::filesystem::temp_directory_path() / "aeongui-document-image-test";

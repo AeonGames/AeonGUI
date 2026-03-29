@@ -72,6 +72,10 @@ namespace AeonGUI
              *  @see https://drafts.csswg.org/cssom-view/#dom-document-elementfrompoint
              */
             DLL Element* elementFromPoint ( Canvas& aCanvas, double aX, double aY ) const;
+            /** @brief Get the document-level CSS stylesheet.
+             *  @return Raw pointer to the stylesheet, or nullptr.
+             */
+            DLL css_stylesheet* GetStyleSheet() const;
             /**@}*/
         private:
             void Load ();

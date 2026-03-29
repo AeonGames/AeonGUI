@@ -91,7 +91,7 @@ namespace AeonGUI
             css_error code{};
             css_stylesheet_params params{};
             params.params_version = CSS_STYLESHEET_PARAMS_VERSION_1;
-            params.level = CSS_LEVEL_21;
+            params.level = CSS_LEVEL_3;
             params.charset = "UTF-8";
             params.url = reinterpret_cast<const char*> ( aFilename.c_str() );
             params.title = reinterpret_cast<const char*> ( aFilename.c_str() );
@@ -120,12 +120,53 @@ namespace AeonGUI
             xmlElementPtr root_element = reinterpret_cast<xmlElementPtr> ( xmlDocGetRootElement ( document ) );
             AddNodes ( AddNode ( Construct ( reinterpret_cast<const char*> ( root_element->name ), ExtractElementAttributes ( root_element ), this ) ), root_element->children );
             xmlFreeDoc ( document );
+
+            // Parse <style> element content into the document stylesheet
+            TraverseDepthFirstPreOrder (
+                [this] ( Node & aNode )
+            {
+                if ( aNode.nodeType() == Node::ELEMENT_NODE )
+                {
+                    Element* elem = static_cast<Element*> ( &aNode );
+                    if ( elem->tagName() == "style" )
+                    {
+                        for ( auto& child : aNode.childNodes() )
+                        {
+                            if ( child->nodeType() == Node::TEXT_NODE )
+                            {
+                                Text* text = static_cast<Text*> ( child.get() );
+                                std::string cssText = text->wholeText();
+                                css_stylesheet_append_data ( mStyleSheet.get(),
+                                                             reinterpret_cast<const uint8_t*> ( cssText.data() ),
+                                                             cssText.size() );
+                            }
+                        }
+                    }
+                }
+            } );
+            css_stylesheet_data_done ( mStyleSheet.get() );
+
+            // Re-select CSS for all elements using the document stylesheet
+            TraverseDepthFirstPreOrder (
+                [this] ( Node & aNode )
+            {
+                if ( aNode.nodeType() == Node::ELEMENT_NODE )
+                {
+                    static_cast<Element*> ( &aNode )->ReselectCSS ( mStyleSheet.get() );
+                }
+            } );
+
             Load();
         }
 
         const USVString& Document::url() const
         {
             return mUrl;
+        }
+
+        css_stylesheet* Document::GetStyleSheet() const
+        {
+            return mStyleSheet.get();
         }
 
         void Document::Load()

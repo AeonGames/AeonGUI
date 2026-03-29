@@ -14,7 +14,6 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-#include <iostream>
 #include <string>
 #include <cstdio>
 #include <cstdlib>
@@ -118,6 +117,8 @@ namespace AeonGUI
             .measure           = nullptr, /* We're not implementing measure callback */
         };
 
+        static css_media screen_media = { .type = CSS_MEDIA_SCREEN };
+
         static css_select_handler select_handler =
         {
             CSS_SELECT_HANDLER_VERSION_1,
@@ -218,8 +219,6 @@ namespace AeonGUI
             // Parse inline style
             auto style = mAttributes.find ( "style" );
             const std::string& css{ style != mAttributes.end() ? style->second : "" };
-            std::cerr << tagName() << std::endl;
-            std::cerr << "css: " << css << std::endl << std::endl;
             code = css_stylesheet_append_data ( mInlineStyleSheet.get(), reinterpret_cast<const uint8_t*> ( css.data() ), css.size() );
             if ( code != CSS_OK  && code != CSS_NEEDDATA )
             {
@@ -239,7 +238,7 @@ namespace AeonGUI
             }
 
             css_select_results* results {};
-            err = css_select_style ( css_select_ctx, this, &unit_len_ctx, nullptr, mInlineStyleSheet.get(), &select_handler, nullptr, &results );
+            err = css_select_style ( css_select_ctx, this, &unit_len_ctx, &screen_media, mInlineStyleSheet.get(), &select_handler, nullptr, &results );
             if ( err != CSS_OK )
             {
                 throw std::runtime_error ( css_error_to_string ( code ) );
@@ -329,6 +328,77 @@ namespace AeonGUI
             return mAttributes;
         }
 
+        bool Element::isHover() const
+        {
+            return mIsHover;
+        }
+
+        bool Element::isActive() const
+        {
+            return mIsActive;
+        }
+
+        bool Element::isFocus() const
+        {
+            return mIsFocus;
+        }
+
+        void Element::setHover ( bool aHover )
+        {
+            mIsHover = aHover;
+        }
+
+        void Element::setActive ( bool aActive )
+        {
+            mIsActive = aActive;
+        }
+
+        void Element::setFocus ( bool aFocus )
+        {
+            mIsFocus = aFocus;
+        }
+
+        void Element::ReselectCSS ( css_stylesheet* aDocumentStyleSheet )
+        {
+            if ( aDocumentStyleSheet )
+            {
+                mDocumentStyleSheet = aDocumentStyleSheet;
+            }
+            css_select_ctx* ctx{};
+            css_error err{css_select_ctx_create ( &ctx ) };
+            if ( err != CSS_OK )
+            {
+                return;
+            }
+            if ( mDocumentStyleSheet )
+            {
+                err = css_select_ctx_append_sheet ( ctx, mDocumentStyleSheet, CSS_ORIGIN_AUTHOR, nullptr );
+            }
+            css_select_results* results {};
+            err = css_select_style ( ctx, this, &unit_len_ctx, &screen_media, mInlineStyleSheet.get(), &select_handler, nullptr, &results );
+            css_select_ctx_destroy ( ctx );
+            if ( err != CSS_OK )
+            {
+                return;
+            }
+            mComputedStyles.reset ( results );
+            css_select_results* parentResults {GetParentComputedStyles() };
+            if ( parentResults != nullptr &&
+                 parentResults->styles[CSS_PSEUDO_ELEMENT_NONE] != nullptr &&
+                 mComputedStyles->styles[CSS_PSEUDO_ELEMENT_NONE] != nullptr )
+            {
+                css_computed_style* composed{};
+                err = css_computed_style_compose ( parentResults->styles[CSS_PSEUDO_ELEMENT_NONE],
+                                                   mComputedStyles->styles[CSS_PSEUDO_ELEMENT_NONE],
+                                                   &unit_len_ctx, &composed );
+                if ( err == CSS_OK )
+                {
+                    css_computed_style_destroy ( mComputedStyles->styles[CSS_PSEUDO_ELEMENT_NONE] );
+                    mComputedStyles->styles[CSS_PSEUDO_ELEMENT_NONE] = composed;
+                }
+            }
+        }
+
         css_error node_name ( void *pw, void *node, css_qname *qname )
         {
             DOM::Element *element {reinterpret_cast<DOM::Element*> ( node ) };
@@ -342,8 +412,13 @@ namespace AeonGUI
         {
             DOM::Element *element {reinterpret_cast<DOM::Element*> ( node ) };
             ( void ) ( pw );
-            *classes = const_cast<lwc_string**> ( element->classes().data() );
-            *n_classes = static_cast<uint32_t> ( element->classes().size() );
+            const auto& cls = element->classes();
+            *n_classes = static_cast<uint32_t> ( cls.size() );
+            *classes = const_cast<lwc_string**> ( cls.data() );
+            for ( auto& c : cls )
+            {
+                lwc_string_ref ( c );
+            }
             return CSS_OK;
         }
 
@@ -450,9 +525,18 @@ namespace AeonGUI
                                    bool *match )
         {
             ( void ) ( pw );
-            ( void ) ( n );
-            ( void ) ( name );
+            DOM::Element *element {reinterpret_cast<DOM::Element*> ( n ) };
             *match = false;
+            for ( auto& cls : element->classes() )
+            {
+                bool equal{false};
+                lwc_string_caseless_isequal ( cls, name, &equal );
+                if ( equal )
+                {
+                    *match = true;
+                    break;
+                }
+            }
             return CSS_OK;
         }
 
@@ -613,24 +697,24 @@ namespace AeonGUI
         css_error node_is_hover ( void *pw, void *n, bool *match )
         {
             ( void ) ( pw );
-            ( void ) ( n );
-            *match = false;
+            Element *element {reinterpret_cast<Element*> ( n ) };
+            *match = element->isHover();
             return CSS_OK;
         }
 
         css_error node_is_active ( void *pw, void *n, bool *match )
         {
             ( void ) ( pw );
-            ( void ) ( n );
-            *match = false;
+            Element *element {reinterpret_cast<Element*> ( n ) };
+            *match = element->isActive();
             return CSS_OK;
         }
 
         css_error node_is_focus ( void *pw, void *n, bool *match )
         {
             ( void ) ( pw );
-            ( void ) ( n );
-            *match = false;
+            Element *element {reinterpret_cast<Element*> ( n ) };
+            *match = element->isFocus();
             return CSS_OK;
         }
 

@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="800" height="600" viewBox="0 0 800 600">
+  <style>
+    .btn-bg {
+      fill: #39f;
+      stroke: #29e;
+      stroke-width: 2;
+    }
+    .btn-bg:hover {
+      fill: #5bf;
+    }
+    .btn-bg:active {
+      fill: #17c;
+    }
+
+    .btn-green {
+      fill: #3b3;
+      stroke: #2a2;
+      stroke-width: 2;
+    }
+    .btn-green:hover {
+      fill: #5d5;
+    }
+    .btn-green:active {
+      fill: #191;
+    }
+
+    .btn-red {
+      fill: #d33;
+      stroke: #b22;
+      stroke-width: 2;
+    }
+    .btn-red:hover {
+      fill: #e55;
+    }
+    .btn-red:active {
+      fill: #911;
+    }
+
+    .btn-orange {
+      fill: #e90;
+      stroke: #c70;
+      stroke-width: 2;
+    }
+    .btn-orange:hover {
+      fill: #fb2;
+    }
+    .btn-orange:active {
+      fill: #a60;
+    }
+
+    .focus-ring {
+      fill: #eee;
+      stroke: #999;
+      stroke-width: 2;
+    }
+    .focus-ring:focus {
+      stroke: #39f;
+      stroke-width: 3;
+    }
+    .focus-ring:hover {
+      fill: #ddf;
+    }
+  </style>
+
+  <rect width="800" height="600" fill="#f0f0f0"/>
+  <text x="400" y="50" text-anchor="middle" font-family="sans-serif" font-size="28" fill="#333">CSS Pseudo-Class Demo</text>
+  <text x="400" y="80" text-anchor="middle" font-family="sans-serif" font-size="14" fill="#888">:hover, :active, and :focus — no JavaScript</text>
+
+  <!-- Blue Button -->
+  <rect class="btn-bg" x="100" y="120" width="200" height="60" rx="10"/>
+  <text x="200" y="158" text-anchor="middle" font-family="sans-serif" font-size="20" fill="#fff" style="pointer-events:none">Blue Button</text>
+
+  <!-- Green Button -->
+  <rect class="btn-green" x="500" y="120" width="200" height="60" rx="10"/>
+  <text x="600" y="158" text-anchor="middle" font-family="sans-serif" font-size="20" fill="#fff" style="pointer-events:none">Green Button</text>
+
+  <!-- Red Button -->
+  <rect class="btn-red" x="100" y="240" width="200" height="60" rx="10"/>
+  <text x="200" y="278" text-anchor="middle" font-family="sans-serif" font-size="20" fill="#fff" style="pointer-events:none">Red Button</text>
+
+  <!-- Orange Button -->
+  <rect class="btn-orange" x="500" y="240" width="200" height="60" rx="10"/>
+  <text x="600" y="278" text-anchor="middle" font-family="sans-serif" font-size="20" fill="#fff" style="pointer-events:none">Orange Button</text>
+
+  <!-- Focus Ring Demo -->
+  <text x="400" y="380" text-anchor="middle" font-family="sans-serif" font-size="16" fill="#555">Click to focus (blue border):</text>
+  <rect class="focus-ring" x="200" y="400" width="160" height="60" rx="8"/>
+  <text x="280" y="438" text-anchor="middle" font-family="sans-serif" font-size="16" fill="#333" style="pointer-events:none">Panel A</text>
+
+  <rect class="focus-ring" x="440" y="400" width="160" height="60" rx="8"/>
+  <text x="520" y="438" text-anchor="middle" font-family="sans-serif" font-size="16" fill="#333" style="pointer-events:none">Panel B</text>
+</svg>

@@ -73,12 +73,41 @@ namespace AeonGUI
              *  @return Const reference to the AttributeMap.
              */
             const AttributeMap& attributes() const;
+            /** @brief Check the :hover pseudo-class state.
+             *  @return true if this element is hovered.
+             */
+            bool isHover() const;
+            /** @brief Check the :active pseudo-class state.
+             *  @return true if this element is active (mouse held down).
+             */
+            bool isActive() const;
+            /** @brief Check the :focus pseudo-class state.
+             *  @return true if this element has focus.
+             */
+            bool isFocus() const;
+            /** @brief Set the :hover pseudo-class state.
+             *  @param aHover true if the element is hovered. */
+            void setHover ( bool aHover );
+            /** @brief Set the :active pseudo-class state.
+             *  @param aActive true if the element is active. */
+            void setActive ( bool aActive );
+            /** @brief Set the :focus pseudo-class state.
+             *  @param aFocus true if the element has focus. */
+            void setFocus ( bool aFocus );
+            /** @brief Re-run CSS selection and compose with parent styles.
+             *  @param aDocumentStyleSheet Optional document-level stylesheet.
+             *  If provided, it is stored for future re-selections. */
+            DLL void ReselectCSS ( css_stylesheet* aDocumentStyleSheet = nullptr );
             /**@}*/
         private:
             DOMString mTagName{};
             DOMString mId{};
             std::vector<lwc_string*> mClasses{};
             DLL void OnAncestorChanged() override;
+            bool mIsHover{false};     ///< :hover pseudo-class state.
+            bool mIsActive{false};    ///< :active pseudo-class state.
+            bool mIsFocus{false};     ///< :focus pseudo-class state.
+            css_stylesheet* mDocumentStyleSheet{nullptr}; ///< Non-owning pointer to document stylesheet.
         protected:
             AttributeMap mAttributes{}; ///< The element's attribute map.
             StyleSheetPtr mInlineStyleSheet{}; ///< Inline style parsed from the style attribute.

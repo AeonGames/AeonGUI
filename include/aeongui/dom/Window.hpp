@@ -170,6 +170,7 @@ namespace AeonGUI
             void OnLocationChanged ( const Location& location );
             Element* mFocusedElement{nullptr}; ///< The currently focused element.
             Element* mHoverElement{nullptr};   ///< The element currently under the pointer.
+            Element* mActiveElement{nullptr};  ///< The element currently being clicked (mousedown).
             Location mLocation{std::bind ( &Window::OnLocationChanged, this, std::placeholders::_1 ) };
             Document mDocument{};
             CairoCanvas mCanvas{};

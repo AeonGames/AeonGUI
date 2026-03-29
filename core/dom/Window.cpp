@@ -94,11 +94,15 @@ namespace AeonGUI
             {
                 if ( mHoverElement )
                 {
+                    mHoverElement->setHover ( false );
+                    mHoverElement->ReselectCSS();
                     MouseEvent leaveEvent ( "mouseleave", MouseEventInit{EventModifierInit{UIEventInit{EventInit{false, false, false}, this, 0}, aCtrlKey, aShiftKey, aAltKey, aMetaKey}, aX, aY, aX, aY, 0, aButtons, target} );
                     mHoverElement->dispatchEvent ( leaveEvent );
                 }
                 if ( target )
                 {
+                    target->setHover ( true );
+                    target->ReselectCSS();
                     MouseEvent enterEvent ( "mouseenter", MouseEventInit{EventModifierInit{UIEventInit{EventInit{false, false, false}, this, 0}, aCtrlKey, aShiftKey, aAltKey, aMetaKey}, aX, aY, aX, aY, 0, aButtons, mHoverElement} );
                     target->dispatchEvent ( enterEvent );
                 }
@@ -122,6 +126,8 @@ namespace AeonGUI
             {
                 if ( mFocusedElement )
                 {
+                    mFocusedElement->setFocus ( false );
+                    mFocusedElement->ReselectCSS();
                     FocusEvent blurEvent ( "blur", FocusEventInit{UIEventInit{EventInit{false, false, false}, this, 0}, target} );
                     mFocusedElement->dispatchEvent ( blurEvent );
                     FocusEvent focusOutEvent ( "focusout", FocusEventInit{UIEventInit{EventInit{true, false, false}, this, 0}, target} );
@@ -130,11 +136,25 @@ namespace AeonGUI
                 mFocusedElement = target;
                 if ( mFocusedElement )
                 {
+                    mFocusedElement->setFocus ( true );
+                    mFocusedElement->ReselectCSS();
                     FocusEvent focusInEvent ( "focusin", FocusEventInit{UIEventInit{EventInit{true, false, false}, this, 0}, nullptr} );
                     mFocusedElement->dispatchEvent ( focusInEvent );
                     FocusEvent focusEvent ( "focus", FocusEventInit{UIEventInit{EventInit{false, false, false}, this, 0}, nullptr} );
                     mFocusedElement->dispatchEvent ( focusEvent );
                 }
+            }
+            // Set :active state
+            if ( mActiveElement && mActiveElement != target )
+            {
+                mActiveElement->setActive ( false );
+                mActiveElement->ReselectCSS();
+            }
+            mActiveElement = target;
+            if ( mActiveElement )
+            {
+                mActiveElement->setActive ( true );
+                mActiveElement->ReselectCSS();
             }
             if ( target )
             {
@@ -148,6 +168,13 @@ namespace AeonGUI
                                      bool aCtrlKey, bool aShiftKey,
                                      bool aAltKey, bool aMetaKey )
         {
+            // Clear :active state
+            if ( mActiveElement )
+            {
+                mActiveElement->setActive ( false );
+                mActiveElement->ReselectCSS();
+                mActiveElement = nullptr;
+            }
             Element* target = mDocument.elementFromPoint ( mCanvas, aX, aY );
             if ( target )
             {
