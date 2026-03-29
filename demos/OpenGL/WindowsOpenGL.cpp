@@ -358,6 +358,7 @@ void Window::RenderLoop()
     glUseProgram ( mProgram );
     glBindVertexArray ( mVAO );
     glDisable ( GL_DEPTH_TEST );
+    mWindow.Update ( static_cast<double> ( delta ) );
     mWindow.Draw();
     glBindTexture ( GL_TEXTURE_2D, mScreenTexture );
     glTexImage2D ( GL_TEXTURE_2D,

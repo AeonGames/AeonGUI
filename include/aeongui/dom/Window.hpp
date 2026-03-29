@@ -69,6 +69,10 @@ namespace AeonGUI
             DLL size_t GetStride() const;
             /** @brief Render the current document to the internal canvas. */
             DLL void Draw();
+            /** @brief Advance animation time and update all animations.
+             *  @param aDeltaTime Time elapsed since last frame, in seconds.
+             */
+            DLL void Update ( double aDeltaTime );
             /**DOM Properties and Methods @{*/
             /** @brief Get the associated Document.
              *  @return Pointer to the Document, or nullptr.

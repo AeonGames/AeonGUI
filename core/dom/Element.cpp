@@ -20,6 +20,11 @@ limitations under the License.
 #include "aeongui/Color.hpp"
 #include "aeongui/Matrix2x3.hpp"
 #include "aeongui/dom/Element.hpp"
+#include "aeongui/dom/SVGAnimateElement.hpp"
+#include "aeongui/dom/SVGSetElement.hpp"
+#include "aeongui/dom/SVGAnimateTransformElement.hpp"
+#include "aeongui/dom/SVGAnimateMotionElement.hpp"
+#include "aeongui/Canvas.hpp"
 #include <libcss/libcss.h>
 namespace AeonGUI
 {
@@ -277,6 +282,55 @@ namespace AeonGUI
                 return mComputedStyles.get();
             }
             return GetParentComputedStyles();
+        }
+
+        void Element::ApplyChildTransformAnimations ( Canvas& aCanvas ) const
+        {
+            for ( const auto& child : childNodes() )
+            {
+                if ( auto * anim = dynamic_cast<const SVGAnimateTransformElement * > ( child.get() ) )
+                {
+                    if ( anim->IsActive() )
+                    {
+                        anim->ApplyToCanvas ( aCanvas );
+                    }
+                }
+                else if ( auto * motion = dynamic_cast<const SVGAnimateMotionElement * > ( child.get() ) )
+                {
+                    if ( motion->IsActive() )
+                    {
+                        motion->ApplyToCanvas ( aCanvas );
+                    }
+                }
+                else if ( auto * animate = dynamic_cast<const SVGAnimateElement * > ( child.get() ) )
+                {
+                    if ( animate->IsActive() && animate->IsGeometryAnimation() )
+                    {
+                        animate->ApplyToCanvas ( aCanvas );
+                    }
+                }
+            }
+        }
+
+        void Element::ApplyChildPaintAnimations ( Canvas& aCanvas ) const
+        {
+            for ( const auto& child : childNodes() )
+            {
+                if ( auto * anim = dynamic_cast<const SVGAnimateElement * > ( child.get() ) )
+                {
+                    if ( anim->IsActive() && !anim->IsGeometryAnimation() )
+                    {
+                        anim->ApplyToCanvas ( aCanvas );
+                    }
+                }
+                else if ( auto * set = dynamic_cast<const SVGSetElement * > ( child.get() ) )
+                {
+                    if ( set->IsActive() )
+                    {
+                        set->ApplyToCanvas ( aCanvas );
+                    }
+                }
+            }
         }
 
         void Element::OnAncestorChanged()

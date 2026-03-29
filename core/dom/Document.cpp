@@ -192,16 +192,28 @@ namespace AeonGUI
             Unload();
         }
 
+        void Document::AdvanceTime ( double aDeltaTime )
+        {
+            mDocumentTime += aDeltaTime;
+            TraverseDepthFirstPreOrder (
+                [docTime = mDocumentTime] ( Node & aNode )
+            {
+                aNode.Update ( docTime );
+            } );
+        }
+
         void Document::Draw ( Canvas& aCanvas ) const
         {
             TraverseDepthFirstPreOrder (
                 [&aCanvas] ( const Node & aNode )
             {
+                aCanvas.Save();
                 aNode.DrawStart ( aCanvas );
             },
             [&aCanvas] ( const Node & aNode )
             {
                 aNode.DrawFinish ( aCanvas );
+                aCanvas.Restore();
             },
             [] ( const Node & aNode )
             {

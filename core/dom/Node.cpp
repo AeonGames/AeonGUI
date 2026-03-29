@@ -36,6 +36,11 @@ namespace AeonGUI
             return true;
         }
 
+        void Node::Update ( double aDocumentTime )
+        {
+            ( void ) aDocumentTime;
+        }
+
         void Node::DrawStart ( Canvas& aCanvas ) const
         {
             // Do nothing by default

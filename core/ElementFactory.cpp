@@ -41,6 +41,10 @@ limitations under the License.
 #include "aeongui/dom/SVGTextElement.hpp"
 #include "aeongui/dom/SVGTSpanElement.hpp"
 #include "aeongui/dom/SVGTextPathElement.hpp"
+#include "aeongui/dom/SVGAnimateElement.hpp"
+#include "aeongui/dom/SVGSetElement.hpp"
+#include "aeongui/dom/SVGAnimateTransformElement.hpp"
+#include "aeongui/dom/SVGAnimateMotionElement.hpp"
 
 namespace AeonGUI
 {
@@ -89,6 +93,10 @@ namespace AeonGUI
         MakeConstructor<DOM::SVGTextElement> ( "text" ),
         MakeConstructor<DOM::SVGTSpanElement> ( "tspan" ),
         MakeConstructor<DOM::SVGTextPathElement> ( "textPath" ),
+        MakeConstructor<DOM::SVGAnimateElement> ( "animate" ),
+        MakeConstructor<DOM::SVGSetElement> ( "set" ),
+        MakeConstructor<DOM::SVGAnimateTransformElement> ( "animateTransform" ),
+        MakeConstructor<DOM::SVGAnimateMotionElement> ( "animateMotion" ),
     };
 
     std::unique_ptr<DOM::Element> Construct ( const char* aIdentifier, AttributeMap&& aAttributeMap, DOM::Node* aParent )

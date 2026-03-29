@@ -50,6 +50,10 @@ namespace AeonGUI
              *  @param aCanvas The rendering surface.
              */
             DLL void Draw ( Canvas& aCanvas ) const;
+            /** @brief Advance animation time and update all animations.
+             *  @param aDeltaTime Time elapsed since last update, in seconds.
+             */
+            DLL void AdvanceTime ( double aDeltaTime );
             /** @brief Get the document URL.
              *  @return The URL from which the document was loaded.
              */
@@ -83,6 +87,7 @@ namespace AeonGUI
             //Element* mDocumentElement{};
             StyleSheetPtr mStyleSheet{};
             USVString mUrl{};
+            double mDocumentTime{0.0};
         };
     }
 }

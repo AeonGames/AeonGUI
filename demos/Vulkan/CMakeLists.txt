@@ -71,7 +71,7 @@ else()
 endif()
 
 set_target_properties(VulkanDemo PROPERTIES
-    AEONGUI_SVG_FILES "${CMAKE_SOURCE_DIR}/images/text.svg;${CMAKE_SOURCE_DIR}/images/textpath.svg;${CMAKE_SOURCE_DIR}/images/drawing.svg;${CMAKE_SOURCE_DIR}/images/tiger-style.svg;${CMAKE_SOURCE_DIR}/images/gradient.svg;${CMAKE_SOURCE_DIR}/images/curve.svg;${CMAKE_SOURCE_DIR}/images/arc.svg;${CMAKE_SOURCE_DIR}/images/line.svg;${CMAKE_SOURCE_DIR}/images/rasterimage.svg;${CMAKE_SOURCE_DIR}/images/button.svg;${CMAKE_SOURCE_DIR}/images/hover-demo.svg"
+    AEONGUI_SVG_FILES "${CMAKE_SOURCE_DIR}/images/text.svg;${CMAKE_SOURCE_DIR}/images/textpath.svg;${CMAKE_SOURCE_DIR}/images/drawing.svg;${CMAKE_SOURCE_DIR}/images/tiger-style.svg;${CMAKE_SOURCE_DIR}/images/gradient.svg;${CMAKE_SOURCE_DIR}/images/curve.svg;${CMAKE_SOURCE_DIR}/images/arc.svg;${CMAKE_SOURCE_DIR}/images/line.svg;${CMAKE_SOURCE_DIR}/images/rasterimage.svg;${CMAKE_SOURCE_DIR}/images/button.svg;${CMAKE_SOURCE_DIR}/images/hover-demo.svg;${CMAKE_SOURCE_DIR}/images/smil-demo.svg"
     COMPILE_FLAGS "-DNOMINMAX -D_CRT_SECURE_NO_WARNINGS"
 )
 

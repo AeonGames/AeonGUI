@@ -639,6 +639,7 @@ public:
             return;
         }
 
+        window.Update ( 1.0 / 60.0 );
         window.Draw();
 
         // Upload pixels into staging buffer, then copy to image

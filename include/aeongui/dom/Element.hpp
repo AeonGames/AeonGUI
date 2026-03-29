@@ -118,6 +118,12 @@ namespace AeonGUI
             /** @brief Get this element's computed styles.
              *  @return Pointer to computed styles, or nullptr. */
             css_select_results* GetComputedStyles() const;
+            /** @brief Apply child transform animation overrides to the canvas.
+             *  @param aCanvas The target canvas. */
+            void ApplyChildTransformAnimations ( Canvas& aCanvas ) const;
+            /** @brief Apply child paint animation overrides to the canvas.
+             *  @param aCanvas The target canvas. */
+            void ApplyChildPaintAnimations ( Canvas& aCanvas ) const;
         };
     }
 }

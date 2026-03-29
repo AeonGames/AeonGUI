@@ -16,6 +16,7 @@ limitations under the License.
 #include <iostream>
 #include <array>
 #include "aeongui/dom/SVGRectElement.hpp"
+#include "aeongui/dom/SVGAnimateElement.hpp"
 
 namespace AeonGUI
 {
@@ -139,5 +140,95 @@ namespace AeonGUI
         }
 
         SVGRectElement::~SVGRectElement() = default;
+
+        void SVGRectElement::RebuildAnimatedPath() const
+        {
+            double rx = mRx;
+            double ry = mRy;
+            bool needsRebuild = false;
+            for ( const auto& child : childNodes() )
+            {
+                if ( auto * anim = dynamic_cast<const SVGAnimateElement * > ( child.get() ) )
+                {
+                    if ( anim->IsActive() && anim->IsPathAnimation() )
+                    {
+                        const auto& name = anim->GetAttributeName();
+                        if ( name == "rx" )
+                        {
+                            rx = anim->GetInterpolatedValue();
+                            needsRebuild = true;
+                        }
+                        else if ( name == "ry" )
+                        {
+                            ry = anim->GetInterpolatedValue();
+                            needsRebuild = true;
+                        }
+                    }
+                }
+            }
+            if ( !needsRebuild || mWidth <= 0.0 || mHeight <= 0.0 )
+            {
+                return;
+            }
+            std::array<DrawType, 44> path{};
+            size_t i = 0;
+            path[i++] = static_cast<uint64_t> ( 'M' );
+            path[i++] = rx + mX;
+            path[i++] = mY;
+            path[i++] = static_cast<uint64_t> ( 'H' );
+            path[i++] = mX + mWidth - rx;
+            if ( rx > 0.0 && ry > 0.0 )
+            {
+                path[i++] = static_cast<uint64_t> ( 'A' );
+                path[i++] = rx;
+                path[i++] = ry;
+                path[i++] = 0.0;
+                path[i++] = false;
+                path[i++] = true;
+                path[i++] = mX + mWidth;
+                path[i++] = mY + ry;
+            }
+            path[i++] = static_cast<uint64_t> ( 'V' );
+            path[i++] = mY + mHeight - ry;
+            if ( rx > 0.0 && ry > 0.0 )
+            {
+                path[i++] = static_cast<uint64_t> ( 'A' );
+                path[i++] = rx;
+                path[i++] = ry;
+                path[i++] = 0.0;
+                path[i++] = false;
+                path[i++] = true;
+                path[i++] = mX + mWidth - rx;
+                path[i++] = mY + mHeight;
+            }
+            path[i++] = static_cast<uint64_t> ( 'H' );
+            path[i++] = mX + rx;
+            if ( rx > 0.0 && ry > 0.0 )
+            {
+                path[i++] = static_cast<uint64_t> ( 'A' );
+                path[i++] = rx;
+                path[i++] = ry;
+                path[i++] = 0.0;
+                path[i++] = false;
+                path[i++] = true;
+                path[i++] = mX;
+                path[i++] = mY + mHeight - ry;
+            }
+            path[i++] = static_cast<uint64_t> ( 'V' );
+            path[i++] = mY + ry;
+            if ( rx > 0.0 && ry > 0.0 )
+            {
+                path[i++] = static_cast<uint64_t> ( 'A' );
+                path[i++] = rx;
+                path[i++] = ry;
+                path[i++] = 0.0;
+                path[i++] = false;
+                path[i++] = true;
+                path[i++] = rx + mX;
+                path[i++] = mY;
+            }
+            path[i++] = static_cast<uint64_t> ( 'Z' );
+            mPath.Construct ( path.data(), i );
+        }
     }
 }

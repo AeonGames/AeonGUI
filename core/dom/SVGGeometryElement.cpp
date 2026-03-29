@@ -33,6 +33,8 @@ namespace AeonGUI
             {
                 ApplyCSSPaintProperties ( aCanvas, results->styles[CSS_PSEUDO_ELEMENT_NONE] );
             }
+            ApplyChildPaintAnimations ( aCanvas );
+            RebuildAnimatedPath();
             aCanvas.Draw ( mPath );
         }
     }

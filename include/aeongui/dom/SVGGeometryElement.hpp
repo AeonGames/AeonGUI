@@ -51,7 +51,8 @@ namespace AeonGUI
                 return mPath;
             }
         protected:
-            CairoPath mPath; ///< Cached Cairo path for this geometry.
+            virtual void RebuildAnimatedPath() const {}
+            mutable CairoPath mPath; ///< Cached Cairo path for this geometry.
         };
     }
 }

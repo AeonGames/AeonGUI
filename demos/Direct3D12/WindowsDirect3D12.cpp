@@ -673,6 +673,7 @@ private:
             mCommandList->Reset(mCommandAllocators[mFrameIndex].Get(), mPipelineState.Get()),
             "Failed to reset command list.");
 
+        mAeonWindow.Update ( 1.0 / 60.0 );
         mAeonWindow.Draw();
         UploadAeonTexture();
 

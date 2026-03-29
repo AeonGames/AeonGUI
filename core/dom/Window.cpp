@@ -84,6 +84,11 @@ namespace AeonGUI
             mDocument.Draw ( mCanvas );
         }
 
+        void Window::Update ( double aDeltaTime )
+        {
+            mDocument.AdvanceTime ( aDeltaTime );
+        }
+
         void Window::HandleMouseMove ( double aX, double aY, unsigned short aButtons,
                                        bool aCtrlKey, bool aShiftKey,
                                        bool aAltKey, bool aMetaKey )

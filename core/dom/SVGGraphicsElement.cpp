@@ -41,6 +41,7 @@ namespace AeonGUI
         void SVGGraphicsElement::DrawStart ( Canvas& aCanvas ) const
         {
             aCanvas.Transform ( mTransform );
+            ApplyChildTransformAnimations ( aCanvas );
         }
     }
 }

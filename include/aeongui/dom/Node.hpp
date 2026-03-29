@@ -147,6 +147,10 @@ namespace AeonGUI
              */
             DLL void StackTraverseDepthFirstPreOrder ( const std::function<void ( const Node& ) >& aPreamble, const std::function<void ( const Node& ) >& aPostamble, const std::function<bool ( const Node& ) >& aUnaryPredicate ) const;
 
+            /** @brief Update animation state for this node.
+             *  @param aDocumentTime The current document time in seconds.
+             */
+            DLL virtual void Update ( double aDocumentTime );
             /** @brief Begin drawing this node on the canvas.
              *  @param aCanvas The target canvas.
              */

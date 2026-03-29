@@ -70,6 +70,11 @@ set(AEONGUI_DOM_HEADERS
     ../include/aeongui/dom/SVGTextPathElement.hpp
     ../include/aeongui/dom/SVGTextPositioningElement.hpp
     ../include/aeongui/dom/SVGTextContentElement.hpp
+    ../include/aeongui/dom/SVGAnimationElement.hpp
+    ../include/aeongui/dom/SVGAnimateElement.hpp
+    ../include/aeongui/dom/SVGSetElement.hpp
+    ../include/aeongui/dom/SVGAnimateTransformElement.hpp
+    ../include/aeongui/dom/SVGAnimateMotionElement.hpp
     ../include/aeongui/dom/SVGLength.hpp
     ../include/aeongui/dom/SVGLengthList.hpp
     ../include/aeongui/dom/SVGAnimatedLength.hpp
@@ -147,6 +152,11 @@ set(AEONGUI_DOM_SOURCES
     dom/SVGTextElement.cpp
     dom/SVGTSpanElement.cpp
     dom/SVGTextPathElement.cpp
+    dom/SVGAnimationElement.cpp
+    dom/SVGAnimateElement.cpp
+    dom/SVGSetElement.cpp
+    dom/SVGAnimateTransformElement.cpp
+    dom/SVGAnimateMotionElement.cpp
     dom/SVGLength.cpp
     dom/SVGLengthList.cpp
     dom/SVGAnimatedLength.cpp

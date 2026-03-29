@@ -36,6 +36,8 @@ namespace AeonGUI
             SVGRectElement ( const DOMString& aTagName, AttributeMap&& aAttributes, Node* aParent );
             /** @brief Destructor. */
             ~SVGRectElement() final;
+        protected:
+            void RebuildAnimatedPath() const override;
         private:
             double mWidth{};
             double mHeight{};

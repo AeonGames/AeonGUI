@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="800" height="600" viewBox="0 0 800 600">
+  <style>
+    .label { font-family: sans-serif; font-size: 14; fill: #555; }
+    .btn-combined:hover { fill: #5bf; stroke: #3ae; }
+  </style>
+
+  <rect width="800" height="600" fill="#f0f0f0"/>
+  <text x="400" y="40" text-anchor="middle" font-family="sans-serif" font-size="28" fill="#333">SMIL Animation Demo</text>
+
+  <!-- 1. Color animation: fill cycles between colors -->
+  <text class="label" x="120" y="90" text-anchor="middle">animate fill</text>
+  <rect x="70" y="100" width="100" height="60" rx="8" ry="8" fill="#39f">
+    <animate attributeName="fill" values="#39f;#f93;#3c6;#39f" dur="3s" repeatCount="indefinite"/>
+  </rect>
+
+  <!-- 2. Position animation: circle moves horizontally -->
+  <text class="label" x="350" y="90" text-anchor="middle">animate cx</text>
+  <circle cx="280" cy="130" r="25" fill="#e44">
+    <animate attributeName="cx" from="280" to="420" dur="2s" repeatCount="indefinite" fill="freeze"/>
+  </circle>
+
+  <!-- 3. Size animation: rect grows and shrinks -->
+  <text class="label" x="600" y="90" text-anchor="middle">animate width</text>
+  <rect x="540" y="100" width="60" height="60" rx="5" ry="5" fill="#3b3">
+    <animate attributeName="width" values="60;120;60" dur="2s" repeatCount="indefinite"/>
+  </rect>
+
+  <!-- 4. Opacity animation: fade in and out -->
+  <text class="label" x="120" y="220" text-anchor="middle">animate opacity</text>
+  <rect x="70" y="230" width="100" height="60" rx="8" ry="8" fill="#e90">
+    <animate attributeName="opacity" values="1;0.2;1" dur="2s" repeatCount="indefinite"/>
+  </rect>
+
+  <!-- 5. Transform animation: rotation -->
+  <text class="label" x="350" y="220" text-anchor="middle">animateTransform rotate</text>
+  <rect x="325" y="240" width="50" height="50" fill="#c4e">
+    <animateTransform attributeName="transform" type="rotate" from="0 350 265" to="360 350 265" dur="3s" repeatCount="indefinite"/>
+  </rect>
+
+  <!-- 6. Transform animation: scale pulse -->
+  <text class="label" x="600" y="220" text-anchor="middle">animateTransform scale</text>
+  <circle cx="600" cy="265" r="25" fill="#48d">
+    <animateTransform attributeName="transform" type="scale" values="1;1.4;1" dur="1.5s" repeatCount="indefinite" additive="sum"/>
+  </circle>
+
+  <!-- 7. Stroke animation -->
+  <text class="label" x="120" y="350" text-anchor="middle">animate stroke-width</text>
+  <rect x="70" y="360" width="100" height="60" rx="8" ry="8" fill="none" stroke="#333" stroke-width="1">
+    <animate attributeName="stroke-width" values="1;6;1" dur="2s" repeatCount="indefinite"/>
+    <animate attributeName="stroke" values="#333;#e22;#333" dur="2s" repeatCount="indefinite"/>
+  </rect>
+
+  <!-- 8. Set element: discrete state change -->
+  <text class="label" x="350" y="350" text-anchor="middle">set (click to toggle)</text>
+  <rect x="300" y="360" width="100" height="60" rx="8" ry="8" fill="#999">
+    <set attributeName="fill" to="#3b3" begin="click" dur="1s"/>
+  </rect>
+
+  <!-- 9. Motion along a path -->
+  <text class="label" x="600" y="350" text-anchor="middle">animateMotion</text>
+  <path d="M540,420 Q600,360 660,420 Q600,480 540,420" fill="none" stroke="#ccc" stroke-width="1" stroke-dasharray="4"/>
+  <circle cx="0" cy="0" r="10" fill="#f57">
+    <animateMotion path="M540,420 Q600,360 660,420 Q600,480 540,420" dur="3s" repeatCount="indefinite"/>
+  </circle>
+
+  <!-- 10. Combined: button with hover + animation -->
+  <text class="label" x="400" y="520" text-anchor="middle">combined hover + animate</text>
+  <rect class="btn-combined" x="300" y="535" width="200" height="50" rx="10" ry="10" fill="#39f" stroke="#29e" stroke-width="2">
+    <animate attributeName="rx" values="10;25;10" dur="4s" repeatCount="indefinite"/>
+    <animate attributeName="ry" values="10;25;10" dur="4s" repeatCount="indefinite"/>
+  </rect>
+  <text x="400" y="567" text-anchor="middle" font-family="sans-serif" font-size="18" fill="#fff" style="pointer-events:none">Animated Button</text>
+</svg>
