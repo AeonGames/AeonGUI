@@ -57,6 +57,9 @@ namespace AeonGUI
             const SVGAnimatedNumberList& rotate() const;
             /** @} */
 
+        protected:
+            void onAttributeChanged ( const DOMString& aName, const DOMString& aValue ) override;
+
         private:
             /// Helper methods for parsing attribute values
             void parsePositioningAttributes ( const AttributeMap& aAttributes );

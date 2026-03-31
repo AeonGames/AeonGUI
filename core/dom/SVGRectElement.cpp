@@ -58,6 +58,13 @@ namespace AeonGUI
             {
                 mRx = mRy;
             }
+            BuildPath();
+        }
+
+        SVGRectElement::~SVGRectElement() = default;
+
+        void SVGRectElement::BuildPath()
+        {
             /**
              * https://www.w3.org/TR/SVG/shapes.html#RectElement
              * The width and height properties define the overall width and height of the rectangle.
@@ -134,12 +141,51 @@ namespace AeonGUI
                 }
                 // 10. close path.
                 path[i++] = static_cast<uint64_t> ( 'Z' );
-                std::cout << i << std::endl;
                 mPath.Construct ( path.data(), i );
             }
         }
 
-        SVGRectElement::~SVGRectElement() = default;
+        void SVGRectElement::onAttributeChanged ( const DOMString& aName, const DOMString& aValue )
+        {
+            Element::onAttributeChanged ( aName, aValue );
+            if ( aName == "width" )
+            {
+                mWidth = std::stod ( aValue );
+            }
+            else if ( aName == "height" )
+            {
+                mHeight = std::stod ( aValue );
+            }
+            else if ( aName == "x" )
+            {
+                mX = std::stod ( aValue );
+            }
+            else if ( aName == "y" )
+            {
+                mY = std::stod ( aValue );
+            }
+            else if ( aName == "rx" )
+            {
+                mRx = std::stod ( aValue );
+                if ( mRy == 0.0 )
+                {
+                    mRy = mRx;
+                }
+            }
+            else if ( aName == "ry" )
+            {
+                mRy = std::stod ( aValue );
+                if ( mRx == 0.0 )
+                {
+                    mRx = mRy;
+                }
+            }
+            else
+            {
+                return;
+            }
+            BuildPath();
+        }
 
         void SVGRectElement::RebuildAnimatedPath() const
         {

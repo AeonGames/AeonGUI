@@ -2,10 +2,12 @@
 ###############################
 *.orig
 
-# Windows Executables         #
+# Executables         #
 ###############################
 *.exe
 *.dll
+*.so
+*.dylib
 
 # Compressed Files            #
 ###############################

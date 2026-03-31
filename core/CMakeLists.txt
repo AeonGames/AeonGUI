@@ -22,6 +22,7 @@ set(AEONGUI_HEADERS
     ../include/aeongui/TextLayout.hpp
     ../include/aeongui/PangoTextLayout.hpp
     ../include/aeongui/FontDatabase.hpp
+    ../include/aeongui/PluginAPI.h
 )
 set(AEONGUI_DOM_HEADERS
     ../include/aeongui/dom/DOMException.hpp
@@ -75,6 +76,7 @@ set(AEONGUI_DOM_HEADERS
     ../include/aeongui/dom/SVGSetElement.hpp
     ../include/aeongui/dom/SVGAnimateTransformElement.hpp
     ../include/aeongui/dom/SVGAnimateMotionElement.hpp
+    ../include/aeongui/dom/SVGScriptElement.hpp
     ../include/aeongui/dom/SVGLength.hpp
     ../include/aeongui/dom/SVGLengthList.hpp
     ../include/aeongui/dom/SVGAnimatedLength.hpp
@@ -157,6 +159,7 @@ set(AEONGUI_DOM_SOURCES
     dom/SVGSetElement.cpp
     dom/SVGAnimateTransformElement.cpp
     dom/SVGAnimateMotionElement.cpp
+    dom/SVGScriptElement.cpp
     dom/SVGLength.cpp
     dom/SVGLengthList.cpp
     dom/SVGAnimatedLength.cpp

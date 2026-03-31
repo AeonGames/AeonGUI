@@ -36,7 +36,10 @@ namespace AeonGUI
             SVGLineElement ( const DOMString& aTagName, AttributeMap&& aAttributes, Node* aParent );
             /** @brief Destructor. */
             ~SVGLineElement() final;
+        protected:
+            void onAttributeChanged ( const DOMString& aName, const DOMString& aValue ) override;
         private:
+            void BuildPath();
             double mX1{};
             double mY1{};
             double mX2{};

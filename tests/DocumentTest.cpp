@@ -20,6 +20,7 @@ limitations under the License.
 #include <vector>
 #include <cstdint>
 #include "aeongui/dom/Document.hpp"
+#include "aeongui/dom/SVGGeometryElement.hpp"
 #include "aeongui/CairoCanvas.hpp"
 
 namespace
@@ -136,4 +137,122 @@ TEST ( DocumentTest, DrawResolvesImageHrefWithFragment )
     std::filesystem::remove ( svgPath, ec );
     std::filesystem::remove ( imagePath, ec );
     std::filesystem::remove ( tempDir, ec );
+}
+
+TEST ( DocumentTest, SetAttributeUpdatesRectPath )
+{
+    const std::filesystem::path tempPath = std::filesystem::temp_directory_path() / "aeongui-setattr-rect.svg";
+    {
+        std::ofstream file ( tempPath, std::ios::binary | std::ios::out );
+        ASSERT_TRUE ( file.is_open() );
+        file << R"(<svg xmlns="http://www.w3.org/2000/svg" width="200" height="200">)"
+             << R"(<rect id="r" x="10" y="10" width="80" height="40"/>)"
+             << R"(</svg>)";
+    }
+
+    AeonGUI::DOM::Document document;
+    ASSERT_NO_THROW ( document.Load ( tempPath.string() ) );
+
+    AeonGUI::DOM::Element* elem = document.getElementById ( "r" );
+    ASSERT_NE ( elem, nullptr );
+    auto* geom = dynamic_cast<AeonGUI::DOM::SVGGeometryElement*> ( elem );
+    ASSERT_NE ( geom, nullptr );
+
+    double lengthBefore = geom->GetPath().GetTotalLength();
+    EXPECT_GT ( lengthBefore, 0.0 );
+
+    elem->setAttribute ( "width", "160" );
+    double lengthAfter = geom->GetPath().GetTotalLength();
+    EXPECT_GT ( lengthAfter, lengthBefore );
+
+    // getAttribute should reflect the new value.
+    const auto* widthAttr = elem->getAttribute ( "width" );
+    ASSERT_NE ( widthAttr, nullptr );
+    EXPECT_EQ ( *widthAttr, "160" );
+
+    std::error_code ec;
+    std::filesystem::remove ( tempPath, ec );
+}
+
+TEST ( DocumentTest, SetAttributeUpdatesCirclePath )
+{
+    const std::filesystem::path tempPath = std::filesystem::temp_directory_path() / "aeongui-setattr-circle.svg";
+    {
+        std::ofstream file ( tempPath, std::ios::binary | std::ios::out );
+        ASSERT_TRUE ( file.is_open() );
+        file << R"(<svg xmlns="http://www.w3.org/2000/svg" width="200" height="200">)"
+             << R"(<circle id="c" cx="100" cy="100" r="40"/>)"
+<< R"(</svg>)";
+    }
+
+    AeonGUI::DOM::Document document;
+    ASSERT_NO_THROW ( document.Load ( tempPath.string() ) );
+
+    AeonGUI::DOM::Element* elem = document.getElementById ( "c" );
+    ASSERT_NE ( elem, nullptr );
+    auto* geom = dynamic_cast<AeonGUI::DOM::SVGGeometryElement*> ( elem );
+    ASSERT_NE ( geom, nullptr );
+
+    double lengthBefore = geom->GetPath().GetTotalLength();
+    elem->setAttribute ( "r", "80" );
+    double lengthAfter = geom->GetPath().GetTotalLength();
+    EXPECT_GT ( lengthAfter, lengthBefore );
+
+    std::error_code ec;
+    std::filesystem::remove ( tempPath, ec );
+}
+
+TEST ( DocumentTest, SetAttributeUpdatesPathData )
+{
+    const std::filesystem::path tempPath = std::filesystem::temp_directory_path() / "aeongui-setattr-path.svg";
+    {
+        std::ofstream file ( tempPath, std::ios::binary | std::ios::out );
+        ASSERT_TRUE ( file.is_open() );
+        file << R"(<svg xmlns="http://www.w3.org/2000/svg" width="200" height="200">)"
+             << R"(<path id="p" d="M 0 0 L 100 0"/>)"
+             << R"(</svg>)";
+    }
+
+    AeonGUI::DOM::Document document;
+    ASSERT_NO_THROW ( document.Load ( tempPath.string() ) );
+
+    AeonGUI::DOM::Element* elem = document.getElementById ( "p" );
+    ASSERT_NE ( elem, nullptr );
+    auto* geom = dynamic_cast<AeonGUI::DOM::SVGGeometryElement*> ( elem );
+    ASSERT_NE ( geom, nullptr );
+
+    double lengthBefore = geom->GetPath().GetTotalLength();
+    EXPECT_NEAR ( lengthBefore, 100.0, 0.5 );
+
+    elem->setAttribute ( "d", "M 0 0 L 200 0" );
+    double lengthAfter = geom->GetPath().GetTotalLength();
+    EXPECT_NEAR ( lengthAfter, 200.0, 0.5 );
+
+    std::error_code ec;
+    std::filesystem::remove ( tempPath, ec );
+}
+
+TEST ( DocumentTest, SetAttributeUpdatesIdLookup )
+{
+    const std::filesystem::path tempPath = std::filesystem::temp_directory_path() / "aeongui-setattr-id.svg";
+    {
+        std::ofstream file ( tempPath, std::ios::binary | std::ios::out );
+        ASSERT_TRUE ( file.is_open() );
+        file << R"(<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100">)"
+             << R"(<rect id="oldid" x="0" y="0" width="50" height="50"/>)"
+             << R"(</svg>)";
+    }
+
+    AeonGUI::DOM::Document document;
+    ASSERT_NO_THROW ( document.Load ( tempPath.string() ) );
+
+    AeonGUI::DOM::Element* elem = document.getElementById ( "oldid" );
+    ASSERT_NE ( elem, nullptr );
+
+    // After setAttribute("id", "newid"), the id() accessor should reflect it.
+    elem->setAttribute ( "id", "newid" );
+    EXPECT_EQ ( elem->id(), "newid" );
+
+    std::error_code ec;
+    std::filesystem::remove ( tempPath, ec );
 }

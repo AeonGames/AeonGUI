@@ -39,7 +39,9 @@ namespace AeonGUI
         protected:
             /** @copydoc SVGGeometryElement::RebuildAnimatedPath */
             void RebuildAnimatedPath() const override;
+            void onAttributeChanged ( const DOMString& aName, const DOMString& aValue ) override;
         private:
+            void BuildPath();
             double mWidth{};
             double mHeight{};
             double mX{};

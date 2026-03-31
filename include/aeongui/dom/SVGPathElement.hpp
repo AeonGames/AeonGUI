@@ -38,6 +38,8 @@ namespace AeonGUI
             SVGPathElement ( const DOMString& aTagName, AttributeMap&& aAttributes, Node* aParent );
             /** @brief Destructor. */
             ~SVGPathElement() final;
+        protected:
+            void onAttributeChanged ( const DOMString& aName, const DOMString& aValue ) override;
         };
     }
 }

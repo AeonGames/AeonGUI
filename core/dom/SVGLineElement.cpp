@@ -42,6 +42,15 @@ namespace AeonGUI
             {
                 mY2 = std::stod ( mAttributes.at ( "y2" ) );
             }
+            BuildPath();
+        }
+
+        SVGLineElement::~SVGLineElement()
+        {
+        }
+
+        void SVGLineElement::BuildPath()
+        {
             std::vector<DrawType> path
             {
                 /// 1. perform an absolute moveto operation to absolute location (x1,y1)
@@ -51,8 +60,31 @@ namespace AeonGUI
             };
             mPath.Construct ( path );
         }
-        SVGLineElement::~SVGLineElement()
+
+        void SVGLineElement::onAttributeChanged ( const DOMString& aName, const DOMString& aValue )
         {
+            Element::onAttributeChanged ( aName, aValue );
+            if ( aName == "x1" )
+            {
+                mX1 = std::stod ( aValue );
+            }
+            else if ( aName == "y1" )
+            {
+                mY1 = std::stod ( aValue );
+            }
+            else if ( aName == "x2" )
+            {
+                mX2 = std::stod ( aValue );
+            }
+            else if ( aName == "y2" )
+            {
+                mY2 = std::stod ( aValue );
+            }
+            else
+            {
+                return;
+            }
+            BuildPath();
         }
     }
 }

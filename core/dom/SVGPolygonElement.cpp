@@ -24,6 +24,15 @@ namespace AeonGUI
         SVGPolygonElement::SVGPolygonElement ( const std::string& aTagName, AttributeMap&& aAttributes, Node* aParent ) : SVGGeometryElement { aTagName, std::move ( aAttributes ), aParent }
         {
             std::cout << "Polygon" << std::endl;
+            BuildPath();
+        }
+
+        SVGPolygonElement::~SVGPolygonElement()
+        {
+        }
+
+        void SVGPolygonElement::BuildPath()
+        {
             /// https://www.w3.org/TR/SVG/shapes.html#PolygonElement
             if ( mAttributes.find ( "points" ) != mAttributes.end() )
             {
@@ -46,8 +55,14 @@ namespace AeonGUI
                 mPath.Construct ( path );
             }
         }
-        SVGPolygonElement::~SVGPolygonElement()
+
+        void SVGPolygonElement::onAttributeChanged ( const DOMString& aName, const DOMString& aValue )
         {
+            Element::onAttributeChanged ( aName, aValue );
+            if ( aName == "points" )
+            {
+                BuildPath();
+            }
         }
     }
 }

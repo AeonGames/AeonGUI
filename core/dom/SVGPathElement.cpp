@@ -43,5 +43,16 @@ namespace AeonGUI
         }
 
         SVGPathElement::~SVGPathElement() = default;
+
+        void SVGPathElement::onAttributeChanged ( const DOMString& aName, const DOMString& aValue )
+        {
+            Element::onAttributeChanged ( aName, aValue );
+            if ( aName == "d" )
+            {
+                std::vector<DrawType> path;
+                ParsePathData ( path, aValue.c_str() );
+                mPath.Construct ( path );
+            }
+        }
     }
 }

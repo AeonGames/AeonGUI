@@ -234,6 +234,20 @@ include_directories(include common demos/common core)
 add_subdirectory(css)
 add_subdirectory(core)
 add_subdirectory(tests)
+
+# Demo native plugin for button.svg
+add_library(button_plugin SHARED images/button.c)
+target_include_directories(button_plugin PRIVATE include)
+set_target_properties(button_plugin PROPERTIES
+  OUTPUT_NAME "button"
+  PREFIX ""
+  DEBUG_POSTFIX ""
+  RUNTIME_OUTPUT_DIRECTORY "${CMAKE_SOURCE_DIR}/images"
+  RUNTIME_OUTPUT_DIRECTORY_DEBUG "${CMAKE_SOURCE_DIR}/images"
+  RUNTIME_OUTPUT_DIRECTORY_RELEASE "${CMAKE_SOURCE_DIR}/images"
+  LIBRARY_OUTPUT_DIRECTORY "${CMAKE_SOURCE_DIR}/images"
+)
+
 add_subdirectory(demos/OpenGL)
 if(APPLE)
     add_subdirectory(demos/Metal)

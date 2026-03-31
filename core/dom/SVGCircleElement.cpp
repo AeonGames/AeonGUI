@@ -23,6 +23,15 @@ namespace AeonGUI
         SVGCircleElement::SVGCircleElement ( const std::string& aTagName, AttributeMap&& aAttributes, Node* aParent ) : SVGGeometryElement { aTagName, std::move ( aAttributes ), aParent }
         {
             std::cout << "Circle" << std::endl;
+            BuildPath();
+        }
+
+        SVGCircleElement::~SVGCircleElement()
+        {
+        }
+
+        void SVGCircleElement::BuildPath()
+        {
             double cx{mAttributes.find ( "cx" ) != mAttributes.end() ? std::stod ( mAttributes.at ( "cx" ) ) : 0.0};
             double cy{mAttributes.find ( "cy" ) != mAttributes.end() ? std::stod ( mAttributes.at ( "cy" ) ) : 0.0};
             double r{mAttributes.find ( "r" ) != mAttributes.end() ? std::stod ( mAttributes.at ( "r" ) ) : 0.0};
@@ -51,8 +60,14 @@ namespace AeonGUI
                 mPath.Construct ( path );
             }
         }
-        SVGCircleElement::~SVGCircleElement()
+
+        void SVGCircleElement::onAttributeChanged ( const DOMString& aName, const DOMString& aValue )
         {
+            Element::onAttributeChanged ( aName, aValue );
+            if ( aName == "cx" || aName == "cy" || aName == "r" )
+            {
+                BuildPath();
+            }
         }
     }
 }

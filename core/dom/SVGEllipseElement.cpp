@@ -23,6 +23,15 @@ namespace AeonGUI
         SVGEllipseElement::SVGEllipseElement ( const std::string& aTagName, AttributeMap&& aAttributes, Node* aParent ) : SVGGeometryElement { aTagName, std::move ( aAttributes ), aParent }
         {
             std::cout << "Ellipse" << std::endl;
+            BuildPath();
+        }
+
+        SVGEllipseElement::~SVGEllipseElement()
+        {
+        }
+
+        void SVGEllipseElement::BuildPath()
+        {
             double cx{mAttributes.find ( "cx" ) != mAttributes.end() ? std::stod ( mAttributes.at ( "cx" ) ) : 0.0};
             double cy{mAttributes.find ( "cy" ) != mAttributes.end() ? std::stod ( mAttributes.at ( "cy" ) ) : 0.0};
             double rx{mAttributes.find ( "rx" ) != mAttributes.end() ? std::stod ( mAttributes.at ( "rx" ) ) : 0.0};
@@ -54,8 +63,14 @@ namespace AeonGUI
                 mPath.Construct ( path );
             }
         }
-        SVGEllipseElement::~SVGEllipseElement()
+
+        void SVGEllipseElement::onAttributeChanged ( const DOMString& aName, const DOMString& aValue )
         {
+            Element::onAttributeChanged ( aName, aValue );
+            if ( aName == "cx" || aName == "cy" || aName == "rx" || aName == "ry" )
+            {
+                BuildPath();
+            }
         }
     }
 }

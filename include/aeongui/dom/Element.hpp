@@ -73,6 +73,16 @@ namespace AeonGUI
              *  @return Const reference to the AttributeMap.
              */
             const AttributeMap& attributes() const;
+            /** @brief Get the value of a named attribute.
+             *  @param aName Attribute name.
+             *  @return Pointer to the value string, or nullptr if not found.
+             */
+            DLL const DOMString* getAttribute ( const DOMString& aName ) const;
+            /** @brief Set (or add) a named attribute.
+             *  @param aName  Attribute name.
+             *  @param aValue New value.
+             */
+            DLL void setAttribute ( const DOMString& aName, const DOMString& aValue );
             /** @brief Check the :hover pseudo-class state.
              *  @return true if this element is hovered.
              */
@@ -124,6 +134,15 @@ namespace AeonGUI
             /** @brief Apply child paint animation overrides to the canvas.
              *  @param aCanvas The target canvas. */
             void ApplyChildPaintAnimations ( Canvas& aCanvas ) const;
+            /** @brief Called after an attribute is changed via setAttribute.
+             *
+             *  The base implementation handles id, class, and style.
+             *  Subclasses override to re-parse element-specific attributes
+             *  (e.g. path data, rect dimensions) and rebuild internal state.
+             *  @param aName  Attribute name that changed.
+             *  @param aValue New attribute value.
+             */
+            virtual void onAttributeChanged ( const DOMString& aName, const DOMString& aValue );
         };
     }
 }

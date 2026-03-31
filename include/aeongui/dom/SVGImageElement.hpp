@@ -71,6 +71,9 @@ namespace AeonGUI
              */
             DLL void DrawStart ( Canvas& aCanvas ) const final;
 
+        protected:
+            void onAttributeChanged ( const DOMString& aName, const DOMString& aValue ) override;
+
         private:
             void ParseAttributes ( const AttributeMap& aAttributes );
             bool EnsureImageLoaded() const;

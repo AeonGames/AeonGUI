@@ -57,7 +57,11 @@ namespace AeonGUI
              */
             const SVGAnimatedEnumeration& spacing() const;
 
+        protected:
+            void onAttributeChanged ( const DOMString& aName, const DOMString& aValue ) override;
+
         private:
+            void ParseAttributes();
             SVGAnimatedString mHref;
             SVGAnimatedLength mStartOffset;
             SVGAnimatedEnumeration mMethod;

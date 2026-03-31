@@ -25,6 +25,13 @@ namespace AeonGUI
         SVGPolylineElement::SVGPolylineElement ( const std::string& aTagName, AttributeMap&& aAttributes, Node* aParent ) : SVGGeometryElement { aTagName, std::move ( aAttributes ), aParent }
         {
             std::cout << "Polyline" << std::endl;
+            BuildPath();
+        }
+
+        SVGPolylineElement::~SVGPolylineElement() = default;
+
+        void SVGPolylineElement::BuildPath()
+        {
             /// https://www.w3.org/TR/SVG/shapes.html#PolylineElement
             if ( mAttributes.find ( "points" ) != mAttributes.end() )
             {
@@ -46,6 +53,14 @@ namespace AeonGUI
                 mPath.Construct ( path );
             }
         }
-        SVGPolylineElement::~SVGPolylineElement() = default;
+
+        void SVGPolylineElement::onAttributeChanged ( const DOMString& aName, const DOMString& aValue )
+        {
+            Element::onAttributeChanged ( aName, aValue );
+            if ( aName == "points" )
+            {
+                BuildPath();
+            }
+        }
     }
 }

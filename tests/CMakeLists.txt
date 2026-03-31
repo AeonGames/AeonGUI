@@ -44,6 +44,7 @@ set(TESTED_SRCS
   SVGAnimatedTypesTest.cpp
   SVGImageElementTest.cpp
   SVGLengthTest.cpp
+  SVGScriptElementTest.cpp
   UIEventsTest.cpp
 )
 
@@ -71,4 +72,15 @@ else()
     PROPERTIES COMPILE_FLAGS "-DSOURCE_PATH=\"\\\"${CMAKE_SOURCE_DIR}\\\"\"")
 endif()
 add_test(NAME unit-tests COMMAND unit-tests)
+
+# Test plugin shared library for SVGScriptElement tests
+add_library(test_plugin SHARED test_plugin.c)
+target_include_directories(test_plugin PRIVATE ${CMAKE_SOURCE_DIR}/include)
+set_target_properties(test_plugin PROPERTIES
+  PREFIX ""
+  DEBUG_POSTFIX ""
+  RUNTIME_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/bin"
+  LIBRARY_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/bin"
+)
+
 configure_vscode(${CMAKE_SOURCE_DIR}/tests)

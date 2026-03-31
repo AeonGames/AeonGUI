@@ -17,6 +17,7 @@ Copyright (C) 2010-2013,2019,2020,2023-2026 Rodrigo Hernandez Cordoba
 #include <string>
 #include <stack>
 #include "aeongui/dom/Node.hpp"
+#include "aeongui/dom/Document.hpp"
 #include "aeongui/Color.hpp"
 
 namespace AeonGUI
@@ -29,6 +30,20 @@ namespace AeonGUI
         const std::vector<std::unique_ptr<Node>>& Node::childNodes() const
         {
             return mChildren;
+        }
+
+        Document* Node::ownerDocument() const
+        {
+            Node* node = mParent;
+            while ( node )
+            {
+                if ( node->nodeType() == NodeType::DOCUMENT_NODE )
+                {
+                    return static_cast<Document*> ( node );
+                }
+                node = node->parentNode();
+            }
+            return nullptr;
         }
 
         bool Node::IsDrawEnabled() const

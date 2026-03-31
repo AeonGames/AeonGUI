@@ -26,6 +26,13 @@ namespace AeonGUI
             SVGGraphicsElement { aTagName, std::move ( aAttributes ), aParent }
         {
             std::cout << "This is a specialized implementation for the svg element." << std::endl;
+            ParseAttributes();
+        }
+
+        SVGSVGElement::~SVGSVGElement() = default;
+
+        void SVGSVGElement::ParseAttributes()
+        {
             if ( mAttributes.find ( "viewBox" ) != mAttributes.end() )
             {
                 static const std::regex viewBoxRegex{R"((-?(?:[0-9]*\.[0-9]+(?:[eE][-+]?[0-9]+)?|[0-9]+))[[:space:]]+(-?(?:[0-9]*\.[0-9]+(?:[eE][-+]?[0-9]+)?|[0-9]+))[[:space:]]+(-?(?:[0-9]*\.[0-9]+(?:[eE][-+]?[0-9]+)?|[0-9]+))[[:space:]]+(-?(?:[0-9]*\.[0-9]+(?:[eE][-+]?[0-9]+)?|[0-9]+)))"};
@@ -54,7 +61,14 @@ namespace AeonGUI
             }
         }
 
-        SVGSVGElement::~SVGSVGElement() = default;
+        void SVGSVGElement::onAttributeChanged ( const DOMString& aName, const DOMString& aValue )
+        {
+            Element::onAttributeChanged ( aName, aValue );
+            if ( aName == "width" || aName == "height" || aName == "viewBox" || aName == "preserveAspectRatio" )
+            {
+                ParseAttributes();
+            }
+        }
 
         void SVGSVGElement::DrawStart ( Canvas& aCanvas ) const
         {

@@ -41,7 +41,10 @@ namespace AeonGUI
              *  @param aCanvas Target canvas.
              */
             void DrawStart ( Canvas& aCanvas ) const final;
+        protected:
+            void onAttributeChanged ( const DOMString& aName, const DOMString& aValue ) override;
         private:
+            void ParseAttributes();
             // Attributes
             double mWidth{};
             double mHeight{};

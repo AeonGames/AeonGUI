@@ -28,6 +28,12 @@ namespace AeonGUI
     {
         SVGUseElement::SVGUseElement ( const std::string& aTagName, AttributeMap&& aAttributes, Node* aParent ) : SVGGraphicsElement {aTagName, std::move ( aAttributes ), aParent}
         {
+            ParseAttributes();
+        }
+        SVGUseElement::~SVGUseElement() = default;
+
+        void SVGUseElement::ParseAttributes()
+        {
             auto it = mAttributes.find ( "href" );
             if ( it == mAttributes.end() )
             {
@@ -46,7 +52,15 @@ namespace AeonGUI
                 mY = std::stod ( mAttributes.at ( "y" ) );
             }
         }
-        SVGUseElement::~SVGUseElement() = default;
+
+        void SVGUseElement::onAttributeChanged ( const DOMString& aName, const DOMString& aValue )
+        {
+            Element::onAttributeChanged ( aName, aValue );
+            if ( aName == "href" || aName == "xlink:href" || aName == "x" || aName == "y" )
+            {
+                ParseAttributes();
+            }
+        }
 
         void SVGUseElement::DrawStart ( Canvas& aCanvas ) const
         {

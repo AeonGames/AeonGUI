@@ -28,6 +28,13 @@ namespace AeonGUI
         SVGTextPathElement::SVGTextPathElement ( const std::string& aTagName, AttributeMap&& aAttributes, Node* aParent ) :
             SVGTextContentElement { aTagName, std::move ( aAttributes ), aParent }
         {
+            ParseAttributes();
+        }
+
+        SVGTextPathElement::~SVGTextPathElement() = default;
+
+        void SVGTextPathElement::ParseAttributes()
+        {
             // Parse href or xlink:href attribute.
             auto hrefIt = mAttributes.find ( "href" );
             if ( hrefIt == mAttributes.end() )
@@ -63,12 +70,10 @@ namespace AeonGUI
 
             // Parse side attribute (SVG2 §11.5.6.2).
             auto sideIt = mAttributes.find ( "side" );
-            if ( sideIt != mAttributes.end() && sideIt->second == "right" )
-            {
-                mSideRight = true;
-            }
+            mSideRight = ( sideIt != mAttributes.end() && sideIt->second == "right" );
 
             // Parse text-anchor (SVG presentation attribute, not in libcss).
+            mTextAnchor = 0;
             auto anchorIt = mAttributes.find ( "text-anchor" );
             if ( anchorIt != mAttributes.end() )
             {
@@ -83,7 +88,15 @@ namespace AeonGUI
             }
         }
 
-        SVGTextPathElement::~SVGTextPathElement() = default;
+        void SVGTextPathElement::onAttributeChanged ( const DOMString& aName, const DOMString& aValue )
+        {
+            Element::onAttributeChanged ( aName, aValue );
+            if ( aName == "href" || aName == "xlink:href" || aName == "startOffset" ||
+                 aName == "side" || aName == "text-anchor" )
+            {
+                ParseAttributes();
+            }
+        }
 
         const SVGAnimatedString& SVGTextPathElement::href() const
         {

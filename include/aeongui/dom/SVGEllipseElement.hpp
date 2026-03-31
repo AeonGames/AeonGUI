@@ -36,6 +36,10 @@ namespace AeonGUI
             SVGEllipseElement ( const DOMString& aTagName, AttributeMap&& aAttributes, Node* aParent );
             /** @brief Destructor. */
             ~SVGEllipseElement() final;
+        protected:
+            void onAttributeChanged ( const DOMString& aName, const DOMString& aValue ) override;
+        private:
+            void BuildPath();
         };
     }
 }

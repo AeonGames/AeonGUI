@@ -382,6 +382,87 @@ namespace AeonGUI
             return mAttributes;
         }
 
+        const DOMString* Element::getAttribute ( const DOMString& aName ) const
+        {
+            auto it = mAttributes.find ( aName );
+            if ( it != mAttributes.end() )
+            {
+                return &it->second;
+            }
+            return nullptr;
+        }
+
+        void Element::setAttribute ( const DOMString& aName, const DOMString& aValue )
+        {
+            mAttributes[aName] = aValue;
+            onAttributeChanged ( aName, aValue );
+        }
+
+        void Element::onAttributeChanged ( const DOMString& aName, const DOMString& aValue )
+        {
+            if ( aName == "id" )
+            {
+                mId = aValue;
+            }
+            else if ( aName == "class" )
+            {
+                for ( auto& c : mClasses )
+                {
+                    if ( c )
+                    {
+                        lwc_string_unref ( c );
+                    }
+                }
+                mClasses.clear();
+                if ( !aValue.empty() )
+                {
+                    std::regex class_regex {R"(\s+)"};
+                    std::sregex_token_iterator class_begin {aValue.begin(), aValue.end(), class_regex, -1};
+                    std::sregex_token_iterator class_end {};
+                    mClasses.reserve ( std::distance ( class_begin, class_end ) );
+                    for ( auto& m = class_begin; m != class_end; ++m )
+                    {
+                        mClasses.push_back ( nullptr );
+                        lwc_intern_string ( m->str().c_str(), m->str().size(), &mClasses.back() );
+                    }
+                }
+                ReselectCSS();
+            }
+            else if ( aName == "style" )
+            {
+                css_stylesheet_params params{};
+                params.params_version = CSS_STYLESHEET_PARAMS_VERSION_1;
+                params.level = CSS_LEVEL_3;
+                params.charset = "UTF-8";
+                params.url = "";
+                params.title = "Inline Style Sheet";
+                params.allow_quirks = true;
+                params.inline_style = true;
+                params.resolve =
+                    [] ( void *pw,
+                         const char *base, lwc_string * rel, lwc_string **abs ) -> css_error
+                {
+                    ( void ) pw;
+                    ( void ) base;
+                    *abs = lwc_string_ref ( rel );
+                    return CSS_OK;
+                };
+                css_stylesheet* stylesheet{};
+                css_error code = css_stylesheet_create ( &params, &stylesheet );
+                if ( code == CSS_OK )
+                {
+                    mInlineStyleSheet.reset ( stylesheet );
+                    code = css_stylesheet_append_data ( mInlineStyleSheet.get(),
+                                                        reinterpret_cast<const uint8_t*> ( aValue.data() ), aValue.size() );
+                    if ( code == CSS_OK || code == CSS_NEEDDATA )
+                    {
+                        css_stylesheet_data_done ( mInlineStyleSheet.get() );
+                    }
+                    ReselectCSS();
+                }
+            }
+        }
+
         bool Element::isHover() const
         {
             return mIsHover;

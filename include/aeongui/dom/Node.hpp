@@ -27,9 +27,9 @@ limitations under the License.
 namespace AeonGUI
 {
     class Canvas;
-    class Document;
     namespace DOM
     {
+        class Document;
         /** @brief Base class for all nodes in the DOM tree.
          *
          *  Implements the DOM Node interface: parent/child relationships,
@@ -196,6 +196,13 @@ namespace AeonGUI
              *  @return Const reference to the vector of children.
              */
             const std::vector<std::unique_ptr<Node>>& childNodes() const;
+            /** @brief Get the owning Document for this node.
+             *
+             *  Walks the parent chain until a DOCUMENT_NODE is found.
+             *  @return Pointer to the Document, or nullptr if detached.
+             *  @see https://dom.spec.whatwg.org/#dom-node-ownerdocument
+             */
+            DLL Document* ownerDocument() const;
             /**@}*/
         private:
             DLL virtual void OnAncestorChanged();

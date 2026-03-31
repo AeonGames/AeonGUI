@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<svg xmlns="http://www.w3.org/2000/svg" width="800" height="600" viewBox="0 0 800 600">
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="800" height="600" viewBox="0 0 800 600">
   <defs>
     <linearGradient id="btnGrad" x1="0" y1="0" x2="0" y2="1">
       <stop offset="0%" stop-color="#6cf"/>
@@ -45,6 +45,9 @@
     </filter>
   </defs>
 
+  <script href="button.js"/>
+  <script type="native" href="button"/>
+
   <rect width="800" height="600" fill="#f0f0f0"/>
   <text x="400" y="50" text-anchor="middle" font-family="sans-serif" font-size="28" fill="#333">SVG Button Mouse Events</text>
 
@@ -54,106 +57,38 @@
 
   <!-- Blue Button -->
   <g id="blueBtn" cursor="pointer" filter="url(#shadow)"
-     onmouseover="
-       this.querySelector('rect').setAttribute('fill','url(#btnGradHover)');
-       document.getElementById('status').textContent='Mouse over: Blue Button';
-     "
-     onmouseout="
-       this.querySelector('rect').setAttribute('fill','url(#btnGrad)');
-       this.setAttribute('filter','url(#shadow)');
-       this.setAttribute('transform','');
-       document.getElementById('status').textContent='Mouse left: Blue Button';
-     "
-     onmousedown="
-       this.querySelector('rect').setAttribute('fill','url(#btnGradActive)');
-       this.setAttribute('filter','url(#shadowPressed)');
-       this.setAttribute('transform','translate(1,1)');
-       document.getElementById('status').textContent='Mouse down: Blue Button';
-     "
-     onmouseup="
-       this.querySelector('rect').setAttribute('fill','url(#btnGradHover)');
-       this.setAttribute('filter','url(#shadow)');
-       this.setAttribute('transform','');
-       document.getElementById('status').textContent='Clicked: Blue Button!';
-     ">
-    <rect x="100" y="100" width="200" height="60" rx="10" fill="url(#btnGrad)" stroke="#29e" stroke-width="2"/>
+     onmouseover="btnMouseOver(this, 'url(#btnGradHover)', 'Blue Button')"
+     onmouseout="btnMouseOut(this, 'url(#btnGrad)', 'Blue Button')"
+     onmousedown="btnMouseDown(this, 'url(#btnGradActive)', 'Blue Button')"
+     onmouseup="btnMouseUp(this, 'url(#btnGradHover)', 'Blue Button')">
+    <rect id="blueBtnRect" x="100" y="100" width="200" height="60" rx="10" fill="url(#btnGrad)" stroke="#29e" stroke-width="2"/>
     <text x="200" y="138" text-anchor="middle" font-family="sans-serif" font-size="20" fill="#fff" pointer-events="none">Blue Button</text>
   </g>
 
   <!-- Green Button -->
   <g id="greenBtn" cursor="pointer" filter="url(#shadow)"
-     onmouseover="
-       this.querySelector('rect').setAttribute('fill','url(#btnGradGreenHover)');
-       document.getElementById('status').textContent='Mouse over: Green Button';
-     "
-     onmouseout="
-       this.querySelector('rect').setAttribute('fill','url(#btnGradGreen)');
-       this.setAttribute('filter','url(#shadow)');
-       this.setAttribute('transform','');
-       document.getElementById('status').textContent='Mouse left: Green Button';
-     "
-     onmousedown="
-       this.querySelector('rect').setAttribute('fill','url(#btnGradGreenActive)');
-       this.setAttribute('filter','url(#shadowPressed)');
-       this.setAttribute('transform','translate(1,1)');
-       document.getElementById('status').textContent='Mouse down: Green Button';
-     "
-     onmouseup="
-       this.querySelector('rect').setAttribute('fill','url(#btnGradGreenHover)');
-       this.setAttribute('filter','url(#shadow)');
-       this.setAttribute('transform','');
-       document.getElementById('status').textContent='Clicked: Green Button!';
-     ">
-    <rect x="500" y="100" width="200" height="60" rx="10" fill="url(#btnGradGreen)" stroke="#2a2" stroke-width="2"/>
+     onmouseover="btnMouseOver(this, 'url(#btnGradGreenHover)', 'Green Button')"
+     onmouseout="btnMouseOut(this, 'url(#btnGradGreen)', 'Green Button')"
+     onmousedown="btnMouseDown(this, 'url(#btnGradGreenActive)', 'Green Button')"
+     onmouseup="btnMouseUp(this, 'url(#btnGradGreenHover)', 'Green Button')">
+    <rect id="greenBtnRect" x="500" y="100" width="200" height="60" rx="10" fill="url(#btnGradGreen)" stroke="#2a2" stroke-width="2"/>
     <text x="600" y="138" text-anchor="middle" font-family="sans-serif" font-size="20" fill="#fff" pointer-events="none">Green Button</text>
   </g>
 
   <!-- Red Button -->
   <g id="redBtn" cursor="pointer" filter="url(#shadow)"
-     onmouseover="
-       this.querySelector('rect').setAttribute('fill','url(#btnGradRedHover)');
-       document.getElementById('status').textContent='Mouse over: Red Button';
-     "
-     onmouseout="
-       this.querySelector('rect').setAttribute('fill','url(#btnGradRed)');
-       this.setAttribute('filter','url(#shadow)');
-       this.setAttribute('transform','');
-       document.getElementById('status').textContent='Mouse left: Red Button';
-     "
-     onmousedown="
-       this.querySelector('rect').setAttribute('fill','url(#btnGradRedActive)');
-       this.setAttribute('filter','url(#shadowPressed)');
-       this.setAttribute('transform','translate(1,1)');
-       document.getElementById('status').textContent='Mouse down: Red Button';
-     "
-     onmouseup="
-       this.querySelector('rect').setAttribute('fill','url(#btnGradRedHover)');
-       this.setAttribute('filter','url(#shadow)');
-       this.setAttribute('transform','');
-       document.getElementById('status').textContent='Clicked: Red Button!';
-     ">
-    <rect x="300" y="250" width="200" height="60" rx="10" fill="url(#btnGradRed)" stroke="#b22" stroke-width="2"/>
+     onmouseover="btnMouseOver(this, 'url(#btnGradRedHover)', 'Red Button')"
+     onmouseout="btnMouseOut(this, 'url(#btnGradRed)', 'Red Button')"
+     onmousedown="btnMouseDown(this, 'url(#btnGradRedActive)', 'Red Button')"
+     onmouseup="btnMouseUp(this, 'url(#btnGradRedHover)', 'Red Button')">
+    <rect id="redBtnRect" x="300" y="250" width="200" height="60" rx="10" fill="url(#btnGradRed)" stroke="#b22" stroke-width="2"/>
     <text x="400" y="288" text-anchor="middle" font-family="sans-serif" font-size="20" fill="#fff" pointer-events="none">Red Button</text>
   </g>
 
   <!-- Toggle Button -->
   <g id="toggleBtn" cursor="pointer" filter="url(#shadow)"
-     onmousedown="
-       var r = this.querySelector('rect');
-       var t = this.querySelector('text');
-       if(r.getAttribute('fill') === '#888') {
-         r.setAttribute('fill','#4a4');
-         r.setAttribute('stroke','#2a2');
-         t.textContent='ON';
-         document.getElementById('status').textContent='Toggle: ON';
-       } else {
-         r.setAttribute('fill','#888');
-         r.setAttribute('stroke','#666');
-         t.textContent='OFF';
-         document.getElementById('status').textContent='Toggle: OFF';
-       }
-     ">
-    <rect x="300" y="380" width="200" height="60" rx="30" fill="#888" stroke="#666" stroke-width="2"/>
-    <text x="400" y="418" text-anchor="middle" font-family="sans-serif" font-size="22" font-weight="bold" fill="#fff" pointer-events="none">OFF</text>
+     onmousedown="toggleMouseDown(this)">
+    <rect id="toggleBtnRect" x="300" y="380" width="200" height="60" rx="30" fill="#888" stroke="#666" stroke-width="2"/>
+    <text id="toggleBtnText" x="400" y="418" text-anchor="middle" font-family="sans-serif" font-size="22" font-weight="bold" fill="#fff" pointer-events="none">OFF</text>
   </g>
 </svg>

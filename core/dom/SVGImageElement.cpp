@@ -89,6 +89,17 @@ namespace AeonGUI
 
         SVGImageElement::~SVGImageElement() = default;
 
+        void SVGImageElement::onAttributeChanged ( const DOMString& aName, const DOMString& aValue )
+        {
+            Element::onAttributeChanged ( aName, aValue );
+            ParseAttributes ( mAttributes );
+            if ( aName == "href" || aName == "xlink:href" )
+            {
+                mImageLoadAttempted = false;
+                mRasterImage = RasterImage{};
+            }
+        }
+
         void SVGImageElement::ParseAttributes ( const AttributeMap& aAttributes )
         {
             ParseLengthAttribute ( aAttributes, "x", mX, 0.0f );
@@ -150,14 +161,9 @@ namespace AeonGUI
                 std::filesystem::path hrefPath{resolvedPath};
                 if ( !hrefPath.is_absolute() )
                 {
-                    const Node* node = this;
-                    while ( node != nullptr && node->nodeType() != Node::DOCUMENT_NODE )
+                    const auto* document = ownerDocument();
+                    if ( document != nullptr )
                     {
-                        node = node->parentNode();
-                    }
-                    if ( node != nullptr )
-                    {
-                        const auto* document = static_cast<const Document*> ( node );
                         const std::filesystem::path documentPath = DocumentPathFromUrl ( document->url() );
                         if ( !documentPath.empty() )
                         {

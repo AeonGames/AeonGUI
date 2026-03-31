@@ -30,6 +30,12 @@ namespace AeonGUI
 
         SVGTextPositioningElement::~SVGTextPositioningElement() = default;
 
+        void SVGTextPositioningElement::onAttributeChanged ( const DOMString& aName, const DOMString& aValue )
+        {
+            Element::onAttributeChanged ( aName, aValue );
+            parsePositioningAttributes ( mAttributes );
+        }
+
         const SVGAnimatedLengthList& SVGTextPositioningElement::x() const
         {
             return mX;

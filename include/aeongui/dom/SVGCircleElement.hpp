@@ -36,6 +36,10 @@ namespace AeonGUI
             SVGCircleElement ( const DOMString& aTagName, AttributeMap&& aAttributes, Node* aParent );
             /** @brief Destructor. */
             ~SVGCircleElement() final;
+        protected:
+            void onAttributeChanged ( const DOMString& aName, const DOMString& aValue ) override;
+        private:
+            void BuildPath();
         };
     }
 }

@@ -36,6 +36,10 @@ namespace AeonGUI
             SVGPolylineElement ( const DOMString& aTagName, AttributeMap&& aAttributes, Node* aParent );
             /** @brief Destructor. */
             ~SVGPolylineElement() final;
+        protected:
+            void onAttributeChanged ( const DOMString& aName, const DOMString& aValue ) override;
+        private:
+            void BuildPath();
         };
     }
 }
