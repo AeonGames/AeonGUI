@@ -63,7 +63,14 @@ TEST ( DocumentTest, StoresLoadedUrl )
 
     AeonGUI::DOM::Document document;
     EXPECT_NO_THROW ( document.Load ( tempPath.string() ) );
-    EXPECT_EQ ( document.url(), tempPath.string() );
+
+    // Document::Load normalizes system paths to file:// URLs
+    std::string generic = std::filesystem::absolute ( tempPath ).generic_string();
+    if ( !generic.empty() && generic[0] != '/' )
+    {
+        generic = "/" + generic;
+    }
+    EXPECT_EQ ( document.url(), "file://" + generic );
 
     std::error_code ec;
     std::filesystem::remove ( tempPath, ec );

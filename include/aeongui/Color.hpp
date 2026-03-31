@@ -19,6 +19,7 @@ limitations under the License.
 #include <cstdint>
 #include <regex>
 #include <variant>
+#include <vector>
 #include "aeongui/Platform.hpp"
 namespace AeonGUI
 {
@@ -252,7 +253,23 @@ namespace AeonGUI
     };
     /// Alias monostate to none.
     using none = std::monostate;
-    /// A special color type that distinguishes when no color is set.
-    using ColorAttr = std::variant<none, Color>;
+
+    /** @brief A single color stop in a gradient. */
+    struct GradientStop
+    {
+        double offset;  ///< Position along the gradient [0.0, 1.0].
+        Color color;    ///< Stop color.
+    };
+
+    /** @brief A linear gradient paint. */
+    struct LinearGradient
+    {
+        double x1{0}, y1{0}, x2{1}, y2{0}; ///< Gradient vector.
+        std::vector<GradientStop> stops;    ///< Color stops.
+        bool objectBoundingBox{true};       ///< True if coords are relative to the element bounding box.
+    };
+
+    /// A special color type that distinguishes between no color, solid color, and gradient.
+    using ColorAttr = std::variant<none, Color, LinearGradient>;
 }
 #endif

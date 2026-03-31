@@ -30,6 +30,10 @@ extern "C"
 namespace AeonGUI
 {
     class Canvas;
+    namespace DOM
+    {
+        class Element;
+    }
 }
 
 namespace AeonGUI
@@ -101,8 +105,9 @@ namespace AeonGUI
     int GetCSSFontStyle ( css_computed_style* aStyle );
     /** @brief Apply fill, stroke, and opacity CSS properties to a canvas.
      *  @param aCanvas The canvas to configure.
+     *  @param aElement The element to resolve paint server URIs against.
      *  @param aStyle The computed CSS style.
      */
-    void ApplyCSSPaintProperties ( Canvas& aCanvas, css_computed_style* aStyle );
+    void ApplyCSSPaintProperties ( Canvas& aCanvas, const DOM::Element& aElement, css_computed_style* aStyle );
 }
 #endif

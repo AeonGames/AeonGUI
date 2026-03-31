@@ -26,12 +26,6 @@ limitations under the License.
 #include "SVGElement.hpp"
 #include "aeongui/PluginAPI.h"
 
-#ifdef _WIN32
-#include <windows.h>
-#else
-#include <dlfcn.h>
-#endif
-
 namespace AeonGUI
 {
     namespace DOM
@@ -49,9 +43,9 @@ namespace AeonGUI
          *  <script type="native" href="button"/>
          *  @endcode
          *
-         *  This loads @c button.dll (Windows), @c libbutton.so (Linux),
-         *  or @c libbutton.dylib (macOS) and calls its @c AeonGUI_OnLoad entry
-         *  point with a context that exposes the DOM API.
+         *  This loads @c button.dll (Windows), and on Unix-like platforms tries
+         *  both @c libbutton.so/@c libbutton.dylib and @c button.so/@c button.dylib.
+         *  It then calls @c AeonGUI_OnLoad with a context that exposes the DOM API.
          *
          *  @see PluginAPI.h
          */
@@ -82,7 +76,7 @@ namespace AeonGUI
              *  @param aHref The library base name.
              *  @return Platform-specific library path.
              */
-            std::string BuildLibraryPath ( const std::string& aHref ) const;
+            std::vector<std::string> BuildLibraryPaths ( const std::string& aHref ) const;
 
             /** @brief Load a shared library by path.
              *  @param aPath Full path to the library.
@@ -100,11 +94,7 @@ namespace AeonGUI
             static void API_setAttribute ( AeonGUI_Element* element, const char* name, const char* value );
             static const char* API_getEventType ( AeonGUI_Event* event );
 
-#ifdef _WIN32
-            HMODULE mLibHandle {nullptr};
-#else
             void* mLibHandle {nullptr};
-#endif
             AeonGUI_OnLoadFunc mOnLoadFunc {nullptr};
             AeonGUI_OnUnloadFunc mOnUnloadFunc{nullptr};
             AeonGUI_PluginContext mContext{};

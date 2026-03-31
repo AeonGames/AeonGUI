@@ -908,6 +908,16 @@ namespace AeonGUI
             static const size_t MAX_HINTS = 8;
             static thread_local css_hint hint_buf[MAX_HINTS];
             static thread_local css_matrix transform_matrix;
+            static thread_local uint32_t prev_n = 0;
+            // Release any URI strings from the previous call
+            for ( uint32_t i = 0; i < prev_n; i++ )
+            {
+                if ( hint_buf[i].status == CSS_PAINT_URI && hint_buf[i].data.string != nullptr )
+                {
+                    lwc_string_unref ( hint_buf[i].data.string );
+                    hint_buf[i].data.string = nullptr;
+                }
+            }
             uint32_t n = 0;
 
             // fill → CSS_PROP_FILL
@@ -918,6 +928,16 @@ namespace AeonGUI
                 {
                     hint_buf[n].prop = CSS_PROP_FILL;
                     hint_buf[n].status = CSS_PAINT_NONE;
+                    n++;
+                }
+                else if ( it->second.compare ( 0, 5, "url(#" ) == 0 && it->second.back() == ')' )
+                {
+                    std::string fragment = "#" + it->second.substr ( 5, it->second.size() - 6 );
+                    lwc_string *uri_str = nullptr;
+                    lwc_intern_string ( fragment.c_str(), fragment.size(), &uri_str );
+                    hint_buf[n].data.string = uri_str;
+                    hint_buf[n].prop = CSS_PROP_FILL;
+                    hint_buf[n].status = CSS_PAINT_URI;
                     n++;
                 }
                 else
@@ -941,6 +961,16 @@ namespace AeonGUI
                 {
                     hint_buf[n].prop = CSS_PROP_STROKE;
                     hint_buf[n].status = CSS_PAINT_NONE;
+                    n++;
+                }
+                else if ( it->second.compare ( 0, 5, "url(#" ) == 0 && it->second.back() == ')' )
+                {
+                    std::string fragment = "#" + it->second.substr ( 5, it->second.size() - 6 );
+                    lwc_string *uri_str = nullptr;
+                    lwc_intern_string ( fragment.c_str(), fragment.size(), &uri_str );
+                    hint_buf[n].data.string = uri_str;
+                    hint_buf[n].prop = CSS_PROP_STROKE;
+                    hint_buf[n].status = CSS_PAINT_URI;
                     n++;
                 }
                 else
@@ -1036,6 +1066,7 @@ namespace AeonGUI
 
             *nhints = n;
             *hints = n > 0 ? hint_buf : nullptr;
+            prev_n = n;
             return CSS_OK;
         }
 

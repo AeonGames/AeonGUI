@@ -104,7 +104,7 @@ namespace AeonGUI
             css_select_results* results{ GetComputedStyles() };
             if ( results && results->styles[CSS_PSEUDO_ELEMENT_NONE] )
             {
-                ApplyCSSPaintProperties ( aCanvas, results->styles[CSS_PSEUDO_ELEMENT_NONE] );
+                ApplyCSSPaintProperties ( aCanvas, *this, results->styles[CSS_PSEUDO_ELEMENT_NONE] );
             }
 
             aCanvas.Draw ( geomElement->GetPath() );

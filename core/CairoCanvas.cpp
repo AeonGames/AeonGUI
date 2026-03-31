@@ -167,6 +167,32 @@ namespace AeonGUI
             cairo_set_source_rgba ( mCairoContext, fill.R(), fill.G(), fill.B(), ( mFillOpacity >= 1.0 ) ? fill.A() : mFillOpacity );
             cairo_fill_preserve ( mCairoContext );
         }
+        else if ( std::holds_alternative<LinearGradient> ( mFillColor ) )
+        {
+            const LinearGradient& grad = std::get<LinearGradient> ( mFillColor );
+            double gx1 = grad.x1, gy1 = grad.y1, gx2 = grad.x2, gy2 = grad.y2;
+            if ( grad.objectBoundingBox )
+            {
+                double bx1, by1, bx2, by2;
+                cairo_path_extents ( mCairoContext, &bx1, &by1, &bx2, &by2 );
+                double bw = bx2 - bx1;
+                double bh = by2 - by1;
+                gx1 = bx1 + grad.x1 * bw;
+                gy1 = by1 + grad.y1 * bh;
+                gx2 = bx1 + grad.x2 * bw;
+                gy2 = by1 + grad.y2 * bh;
+            }
+            cairo_pattern_t* pattern = cairo_pattern_create_linear ( gx1, gy1, gx2, gy2 );
+            for ( const auto& stop : grad.stops )
+            {
+                cairo_pattern_add_color_stop_rgba ( pattern, stop.offset,
+                                                    stop.color.R(), stop.color.G(), stop.color.B(),
+                                                    ( mFillOpacity >= 1.0 ) ? stop.color.A() : mFillOpacity );
+            }
+            cairo_set_source ( mCairoContext, pattern );
+            cairo_fill_preserve ( mCairoContext );
+            cairo_pattern_destroy ( pattern );
+        }
         if ( std::holds_alternative<Color> ( mStrokeColor ) )
         {
             Color& stroke = std::get<Color> ( mStrokeColor );

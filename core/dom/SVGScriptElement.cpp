@@ -15,6 +15,14 @@ limitations under the License.
 */
 #include <iostream>
 #include <algorithm>
+#include <filesystem>
+#ifdef _WIN32
+#define WIN32_LEAN_AND_MEAN
+#include <windows.h>
+#undef LoadLibrary
+#else
+#include <dlfcn.h>
+#endif
 #include "aeongui/dom/SVGScriptElement.hpp"
 #include "aeongui/dom/Document.hpp"
 #include "aeongui/dom/Event.hpp"
@@ -57,6 +65,30 @@ namespace AeonGUI
         static constexpr const char* LibPrefix = "lib";
 #endif
 
+        static std::string FileURLToPath ( const std::string& url )
+        {
+            const std::string prefix = "file://";
+            if ( url.compare ( 0, prefix.size(), prefix ) != 0 )
+            {
+                return url;
+            }
+            std::string path = url.substr ( prefix.size() );
+#ifdef _WIN32
+            // Strip leading slash before drive letter: /C:/path -> C:/path
+            if ( path.size() >= 3 && path[0] == '/' && std::isalpha ( static_cast<unsigned char> ( path[1] ) ) && path[2] == ':' )
+            {
+                path = path.substr ( 1 );
+            }
+#else
+            // Collapse extra leading slashes from file:////... into a normal absolute path.
+            while ( path.size() > 1 && path[0] == '/' && path[1] == '/' )
+            {
+                path.erase ( path.begin() );
+            }
+#endif
+            return path;
+        }
+
         // ---- Thread-local active script element for static callbacks ----
 
         thread_local SVGScriptElement* SVGScriptElement::sActiveScriptElement = nullptr;
@@ -80,21 +112,29 @@ namespace AeonGUI
 
         // ---- Library path construction ----
 
-        std::string SVGScriptElement::BuildLibraryPath ( const std::string& aHref ) const
+        std::vector<std::string> SVGScriptElement::BuildLibraryPaths ( const std::string& aHref ) const
         {
-            // Extract directory from the document URL
+            // Extract directory from the document URL and convert to a system path
             std::string directory;
             Document* doc = ownerDocument();
             if ( doc )
             {
-                const auto& url = doc->url();
-                auto lastSep = url.find_last_of ( "/\\" );
+                std::string path = FileURLToPath ( doc->url() );
+                auto lastSep = path.find_last_of ( "/\\" );
                 if ( lastSep != std::string::npos )
                 {
-                    directory = url.substr ( 0, lastSep + 1 );
+                    directory = path.substr ( 0, lastSep + 1 );
                 }
             }
-            return directory + LibPrefix + aHref + LibExtension;
+            std::vector<std::string> candidates;
+            candidates.push_back ( directory + LibPrefix + aHref + LibExtension );
+#ifndef _WIN32
+            if ( std::string ( LibPrefix ).size() )
+            {
+                candidates.push_back ( directory + aHref + LibExtension );
+            }
+#endif
+            return candidates;
         }
 
         // ---- Shared library loading ----
@@ -102,7 +142,7 @@ namespace AeonGUI
         void SVGScriptElement::LoadLibrary ( const std::string& aPath )
         {
 #ifdef _WIN32
-            mLibHandle = ::LoadLibraryA ( aPath.c_str() );
+            mLibHandle = static_cast<void*> ( ::LoadLibraryA ( aPath.c_str() ) );
             if ( !mLibHandle )
             {
                 std::cerr << "SVGScriptElement: Failed to load library: " << aPath
@@ -110,9 +150,9 @@ namespace AeonGUI
                 return;
             }
             mOnLoadFunc = reinterpret_cast<AeonGUI_OnLoadFunc> (
-                              ::GetProcAddress ( mLibHandle, "AeonGUI_OnLoad" ) );
+                              ::GetProcAddress ( static_cast<HMODULE> ( mLibHandle ), "AeonGUI_OnLoad" ) );
             mOnUnloadFunc = reinterpret_cast<AeonGUI_OnUnloadFunc> (
-                                ::GetProcAddress ( mLibHandle, "AeonGUI_OnUnload" ) );
+                                ::GetProcAddress ( static_cast<HMODULE> ( mLibHandle ), "AeonGUI_OnUnload" ) );
 #else
             mLibHandle = dlopen ( aPath.c_str(), RTLD_LAZY );
             if ( !mLibHandle )
@@ -150,7 +190,7 @@ namespace AeonGUI
             if ( mLibHandle )
             {
 #ifdef _WIN32
-                ::FreeLibrary ( mLibHandle );
+                ::FreeLibrary ( static_cast<HMODULE> ( mLibHandle ) );
 #else
                 dlclose ( mLibHandle );
 #endif
@@ -177,10 +217,37 @@ namespace AeonGUI
                 return;
             }
 
-            std::string libPath = BuildLibraryPath ( hrefIt->second );
-            std::cout << "SVGScriptElement: Loading native plugin: " << libPath << std::endl;
+            auto candidates = BuildLibraryPaths ( hrefIt->second );
+            std::string libPath = candidates.front();
 
+            for ( const auto& candidate : candidates )
+            {
+                if ( std::filesystem::exists ( candidate ) )
+                {
+                    libPath = candidate;
+                    break;
+                }
+            }
+
+            std::cout << "SVGScriptElement: Loading native plugin: " << libPath << std::endl;
             LoadLibrary ( libPath );
+
+            if ( !mLibHandle )
+            {
+                for ( const auto& candidate : candidates )
+                {
+                    if ( candidate == libPath )
+                    {
+                        continue;
+                    }
+                    std::cout << "SVGScriptElement: Retrying native plugin: " << candidate << std::endl;
+                    LoadLibrary ( candidate );
+                    if ( mLibHandle )
+                    {
+                        break;
+                    }
+                }
+            }
 
             if ( mOnLoadFunc )
             {

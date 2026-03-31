@@ -168,6 +168,7 @@ if(PKG_CONFIG_FOUND)
     endif()
     pkg_check_modules(CAIRO cairo)
     pkg_check_modules(PANGO pango pangocairo pangofc)
+    pkg_check_modules(HARFBUZZ harfbuzz)
     pkg_check_modules(FONTCONFIG fontconfig)
 endif()
 

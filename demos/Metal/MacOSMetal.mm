@@ -428,6 +428,9 @@ int main(int argc, char** argv)
 
     @autoreleasepool {
         NSApplication* app = [NSApplication sharedApplication];
+        if ( [NSWindow respondsToSelector:@selector ( setAllowsAutomaticWindowTabbing: )] ) {
+            [NSWindow setAllowsAutomaticWindowTabbing:NO];
+        }
         [app setActivationPolicy:NSApplicationActivationPolicyRegular];
 
         AppDelegate* delegate = [[AppDelegate alloc]

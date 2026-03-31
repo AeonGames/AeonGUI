@@ -25,6 +25,10 @@ limitations under the License.
 #include <windows.h>
 #else
 #include <dlfcn.h>
+#include <climits>
+#ifdef __APPLE__
+#include <mach-o/dyld.h>
+#endif
 #endif
 
 namespace
@@ -88,11 +92,14 @@ namespace
             auto dir = std::filesystem::path ( buf ).parent_path();
             return dir / "test_plugin.dll";
 #elif __APPLE__
-            auto dir = std::filesystem::canonical ( "/proc/self/exe" ).parent_path();
-            return dir / "libtest_plugin.dylib";
+            char buf[PATH_MAX] {};
+            uint32_t size = sizeof ( buf );
+            _NSGetExecutablePath ( buf, &size );
+            auto dir = std::filesystem::canonical ( buf ).parent_path();
+            return dir / "test_plugin.dylib";
 #else
             auto dir = std::filesystem::canonical ( "/proc/self/exe" ).parent_path();
-            return dir / "libtest_plugin.so";
+            return dir / "test_plugin.so";
 #endif
         }
 
@@ -153,6 +160,11 @@ TEST ( SVGScriptElementTest, NativePluginLoadsAndCallsOnLoad )
     char buf[MAX_PATH];
     GetModuleFileNameA ( nullptr, buf, MAX_PATH );
     auto binDir = std::filesystem::path ( buf ).parent_path();
+#elif __APPLE__
+    char buf[PATH_MAX] {};
+    uint32_t size = sizeof ( buf );
+    _NSGetExecutablePath ( buf, &size );
+    auto binDir = std::filesystem::canonical ( buf ).parent_path();
 #else
     auto binDir = std::filesystem::canonical ( "/proc/self/exe" ).parent_path();
 #endif
@@ -187,6 +199,11 @@ TEST ( SVGScriptElementTest, PluginReceivesClickEvents )
     char buf[MAX_PATH];
     GetModuleFileNameA ( nullptr, buf, MAX_PATH );
     auto binDir = std::filesystem::path ( buf ).parent_path();
+#elif __APPLE__
+    char buf[PATH_MAX] {};
+    uint32_t size = sizeof ( buf );
+    _NSGetExecutablePath ( buf, &size );
+    auto binDir = std::filesystem::canonical ( buf ).parent_path();
 #else
     auto binDir = std::filesystem::canonical ( "/proc/self/exe" ).parent_path();
 #endif
@@ -232,6 +249,11 @@ TEST ( SVGScriptElementTest, OnUnloadCalledOnDocumentDestruction )
     char buf[MAX_PATH];
     GetModuleFileNameA ( nullptr, buf, MAX_PATH );
     auto binDir = std::filesystem::path ( buf ).parent_path();
+#elif __APPLE__
+    char buf[PATH_MAX] {};
+    uint32_t size = sizeof ( buf );
+    _NSGetExecutablePath ( buf, &size );
+    auto binDir = std::filesystem::canonical ( buf ).parent_path();
 #else
     auto binDir = std::filesystem::canonical ( "/proc/self/exe" ).parent_path();
 #endif
@@ -290,6 +312,11 @@ TEST ( SVGScriptElementTest, GetAttributeReturnsParsedAttributes )
     char buf[MAX_PATH];
     GetModuleFileNameA ( nullptr, buf, MAX_PATH );
     auto binDir = std::filesystem::path ( buf ).parent_path();
+#elif __APPLE__
+    char buf[PATH_MAX] {};
+    uint32_t size = sizeof ( buf );
+    _NSGetExecutablePath ( buf, &size );
+    auto binDir = std::filesystem::canonical ( buf ).parent_path();
 #else
     auto binDir = std::filesystem::canonical ( "/proc/self/exe" ).parent_path();
 #endif

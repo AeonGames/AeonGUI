@@ -40,7 +40,7 @@ namespace AeonGUI
             }
             css_computed_style* style = results->styles[CSS_PSEUDO_ELEMENT_NONE];
 
-            ApplyCSSPaintProperties ( aCanvas, style );
+            ApplyCSSPaintProperties ( aCanvas, *this, style );
             ApplyChildPaintAnimations ( aCanvas );
 
             // Font properties from CSS.

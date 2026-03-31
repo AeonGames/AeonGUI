@@ -64,7 +64,7 @@ namespace AeonGUI
             /** @brief Get the element's ID attribute value.
              *  @return The ID string.
              */
-            const DOMString& id() const;
+            DLL const DOMString& id() const;
             /** @brief Get the element's CSS class list.
              *  @return Vector of interned lwc_string class names.
              */
@@ -72,7 +72,7 @@ namespace AeonGUI
             /** @brief Get the element's attribute map.
              *  @return Const reference to the AttributeMap.
              */
-            const AttributeMap& attributes() const;
+            DLL const AttributeMap& attributes() const;
             /** @brief Get the value of a named attribute.
              *  @param aName Attribute name.
              *  @return Pointer to the value string, or nullptr if not found.

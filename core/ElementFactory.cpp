@@ -46,6 +46,8 @@ limitations under the License.
 #include "aeongui/dom/SVGAnimateTransformElement.hpp"
 #include "aeongui/dom/SVGAnimateMotionElement.hpp"
 #include "aeongui/dom/SVGScriptElement.hpp"
+#include "aeongui/dom/SVGFilterElement.hpp"
+#include "aeongui/dom/SVGFEDropShadowElement.hpp"
 
 namespace AeonGUI
 {
@@ -99,6 +101,8 @@ namespace AeonGUI
         MakeConstructor<DOM::SVGAnimateTransformElement> ( "animateTransform" ),
         MakeConstructor<DOM::SVGAnimateMotionElement> ( "animateMotion" ),
         MakeConstructor<DOM::SVGScriptElement> ( "script" ),
+        MakeConstructor<DOM::SVGFilterElement> ( "filter" ),
+        MakeConstructor<DOM::SVGFEDropShadowElement> ( "feDropShadow" ),
     };
 
     std::unique_ptr<DOM::Element> Construct ( const char* aIdentifier, AttributeMap&& aAttributeMap, DOM::Node* aParent )

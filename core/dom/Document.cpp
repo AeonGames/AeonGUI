@@ -15,7 +15,9 @@ limitations under the License.
 */
 #include <algorithm>
 #include <cmath>
+#include <filesystem>
 #include <iostream>
+#include <regex>
 #include <libxml/tree.h>
 #include <libxml/parser.h>
 #include <libcss/libcss.h>
@@ -30,6 +32,24 @@ namespace AeonGUI
     namespace DOM
     {
         static const std::regex number{"-?([0-9]+|[0-9]*\\.[0-9]+([eE][-+]?[0-9]+)?)"};
+
+        static bool HasScheme ( const USVString& url )
+        {
+            static const std::regex scheme_regex ( R"(^[a-zA-Z][a-zA-Z0-9+\-.]+:)" );
+            return std::regex_search ( url, scheme_regex );
+        }
+
+        static USVString PathToFileURL ( const USVString& path )
+        {
+            std::filesystem::path abs = std::filesystem::absolute ( path );
+            std::string generic = abs.generic_string();
+            if ( !generic.empty() && generic[0] != '/' )
+            {
+                generic = "/" + generic;
+            }
+            return "file://" + generic;
+        }
+
         static AttributeMap ExtractElementAttributes ( xmlElementPtr aXmlElementPtr )
         {
             AttributeMap attribute_map{};
@@ -81,11 +101,11 @@ namespace AeonGUI
 
         void Document::Load ( const USVString& aFilename )
         {
-            mUrl = aFilename;
-            xmlDocPtr document{xmlReadFile ( reinterpret_cast<const char*> ( aFilename.c_str() ), nullptr, 0 ) };
+            mUrl = HasScheme ( aFilename ) ? aFilename : PathToFileURL ( aFilename );
+            xmlDocPtr document{xmlReadFile ( reinterpret_cast<const char*> ( mUrl.c_str() ), nullptr, 0 ) };
             if ( document == nullptr )
             {
-                throw std::runtime_error ( "Could not open file: " + aFilename );
+                throw std::runtime_error ( "Could not open file: " + mUrl );
             }
 
             css_error code{};
@@ -93,8 +113,8 @@ namespace AeonGUI
             params.params_version = CSS_STYLESHEET_PARAMS_VERSION_1;
             params.level = CSS_LEVEL_3;
             params.charset = "UTF-8";
-            params.url = reinterpret_cast<const char*> ( aFilename.c_str() );
-            params.title = reinterpret_cast<const char*> ( aFilename.c_str() );
+            params.url = reinterpret_cast<const char*> ( mUrl.c_str() );
+            params.title = reinterpret_cast<const char*> ( mUrl.c_str() );
             params.allow_quirks = false;
             params.inline_style = false;
             params.resolve = resolve_url;

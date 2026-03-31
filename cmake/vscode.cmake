@@ -18,7 +18,31 @@
 function(configure_vscode)
 if(CMAKE_GENERATOR MATCHES "(MSYS|Unix) Makefiles")
   set(CODE_ZOOMLEVEL "0" CACHE STRING "window.zoomLevel for VS Code.")
-  find_program(GDB_EXECUTABLE gdb HINTS ENV MINGW_PREFIX MSYS2_PATH)
+  if(APPLE)
+    set(DEBUGGER_TYPE "lldb")
+    set(DEBUGGER_LAUNCH_EXTRA "")
+  else()
+    find_program(GDB_EXECUTABLE gdb HINTS ENV MINGW_PREFIX MSYS2_PATH)
+    set(DEBUGGER_TYPE "cppdbg")
+    set(DEBUGGER_EXECUTABLE "${GDB_EXECUTABLE}")
+    set(DEBUGGER_MODE "gdb")
+    set(DEBUGGER_SETUP_COMMANDS "[
+                            {
+                                \"description\": \"Enable pretty-printing for gdb\",
+                                \"text\": \"-enable-pretty-printing\",
+                                \"ignoreFailures\": true
+                            },
+                            {
+                                \"description\": \"Enable all-exceptions\",
+                                \"text\": \"catch throw\",
+                                \"ignoreFailures\": true
+                            }
+                        ]")
+                set(DEBUGGER_LAUNCH_EXTRA ",
+                          \"miDebuggerPath\": \"${DEBUGGER_EXECUTABLE}\",
+                          \"MIMode\": \"${DEBUGGER_MODE}\",
+                          \"setupCommands\": ${DEBUGGER_SETUP_COMMANDS}")
+  endif()
   set(DEBUG_PATH "${CMAKE_BINARY_DIR}/bin")
   if(CMAKE_GENERATOR MATCHES "MSYS Makefiles")
     set(DEBUG_PATH "${DEBUG_PATH};$ENV{MINGW_PREFIX}/bin")
@@ -59,7 +83,7 @@ if(CMAKE_GENERATOR MATCHES "(MSYS|Unix) Makefiles")
                           set(DEBUG_CONFIGURATIONS "${DEBUG_CONFIGURATIONS}
                   {
                   \"name\": \"${TARGET} [${SVG_NAME}]\",
-                  \"type\": \"cppdbg\",
+                  \"type\": \"${DEBUGGER_TYPE}\",
                   \"request\": \"launch\",
                   \"args\": [\"file:///${SVG_FILE}\"],
                   \"stopAtEntry\": false,
@@ -70,22 +94,8 @@ if(CMAKE_GENERATOR MATCHES "(MSYS|Unix) Makefiles")
                           \"value\":\"${DEBUG_PATH}\"
                       }                    
                   ],
-                  \"externalConsole\": true,
-                        \"program\": \"${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/${TARGET}${CMAKE_EXECUTABLE_SUFFIX}\",
-                        \"miDebuggerPath\": \"${GDB_EXECUTABLE}\",
-                        \"MIMode\": \"gdb\",
-                        \"setupCommands\": [
-                            {
-                                \"description\": \"Enable pretty-printing for gdb\",
-                                \"text\": \"-enable-pretty-printing\",
-                                \"ignoreFailures\": true
-                            },
-                            {
-                                \"description\": \"Enable all-exceptions\",
-                                \"text\": \"catch throw\",
-                                \"ignoreFailures\": true
-                            }
-                        ]
+                  \"externalConsole\": ${USE_EXTERNAL_CONSOLE},
+                        \"program\": \"${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/${TARGET}${CMAKE_EXECUTABLE_SUFFIX}\"${DEBUGGER_LAUNCH_EXTRA}
                     },\n")
                       endforeach()
                   else()
@@ -93,7 +103,7 @@ if(CMAKE_GENERATOR MATCHES "(MSYS|Unix) Makefiles")
                       set(DEBUG_CONFIGURATIONS "${DEBUG_CONFIGURATIONS}
                   {
                   \"name\": \"${TARGET}\",
-                  \"type\": \"cppdbg\",
+                  \"type\": \"${DEBUGGER_TYPE}\",
                   \"request\": \"launch\",
                   \"args\": [],
                   \"stopAtEntry\": false,
@@ -104,22 +114,8 @@ if(CMAKE_GENERATOR MATCHES "(MSYS|Unix) Makefiles")
                           \"value\":\"${DEBUG_PATH}\"
                       }                    
                   ],
-                  \"externalConsole\": true,
-                        \"program\": \"${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/${TARGET}${CMAKE_EXECUTABLE_SUFFIX}\",
-                        \"miDebuggerPath\": \"${GDB_EXECUTABLE}\",
-                        \"MIMode\": \"gdb\",
-                        \"setupCommands\": [
-                            {
-                                \"description\": \"Enable pretty-printing for gdb\",
-                                \"text\": \"-enable-pretty-printing\",
-                                \"ignoreFailures\": true
-                            },
-                            {
-                                \"description\": \"Enable all-exceptions\",
-                                \"text\": \"catch throw\",
-                                \"ignoreFailures\": true
-                            }
-                        ]
+                  \"externalConsole\": ${USE_EXTERNAL_CONSOLE},
+                        \"program\": \"${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/${TARGET}${CMAKE_EXECUTABLE_SUFFIX}\"${DEBUGGER_LAUNCH_EXTRA}
                     },\n")
                   endif()
               endif()

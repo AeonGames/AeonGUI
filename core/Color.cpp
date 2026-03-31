@@ -1,5 +1,5 @@
 /******************************************************************************
-Copyright (C) 2010-2012,2019,2020,2023,2025 Rodrigo Hernandez Cordoba
+Copyright (C) 2010-2012,2019,2020,2023,2025,2026 Rodrigo Hernandez Cordoba
 
    Licensed under the Apache License, Version 2.0 (the "License");
    you may not use this file except in compliance with the License.
@@ -211,9 +211,9 @@ namespace AeonGUI
         }
         else if ( std::regex_search ( value, color_match, color_regex3 ) )
         {
-            reinterpret_cast<uint8_t*> ( color_value ) [0] = static_cast<uint8_t> ( std::stoul ( color_match[3].str() + color_match[1].str(), nullptr, 16 ) );
+            reinterpret_cast<uint8_t*> ( color_value ) [0] = static_cast<uint8_t> ( std::stoul ( color_match[3].str() + color_match[3].str(), nullptr, 16 ) );
             reinterpret_cast<uint8_t*> ( color_value ) [1] = static_cast<uint8_t> ( std::stoul ( color_match[2].str() + color_match[2].str(), nullptr, 16 ) );
-            reinterpret_cast<uint8_t*> ( color_value ) [2] = static_cast<uint8_t> ( std::stoul ( color_match[1].str() + color_match[3].str(), nullptr, 16 ) );
+            reinterpret_cast<uint8_t*> ( color_value ) [2] = static_cast<uint8_t> ( std::stoul ( color_match[1].str() + color_match[1].str(), nullptr, 16 ) );
             reinterpret_cast<uint8_t*> ( color_value ) [3] = 0xff;
             return true;
         }
