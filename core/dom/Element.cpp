@@ -469,6 +469,16 @@ namespace AeonGUI
             {
                 ReselectCSS();
             }
+            else
+            {
+                // For any other attribute change (textContent, filter, etc.)
+                // mark the document dirty so the change is rendered.
+                Document* doc = ownerDocument();
+                if ( doc )
+                {
+                    doc->MarkDirty();
+                }
+            }
         }
 
         bool Element::isHover() const
@@ -543,7 +553,7 @@ namespace AeonGUI
             Document* doc = ownerDocument();
             if ( doc )
             {
-                doc->MarkDirty();
+                doc->MarkElementDirty ( this );
             }
         }
 

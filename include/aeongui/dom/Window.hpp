@@ -17,6 +17,7 @@ limitations under the License.
 #define AEONGUI_WINDOW_H
 #include <cstdint>
 #include <array>
+#include <unordered_map>
 #include <string>
 #include "aeongui/Platform.hpp"
 #include "aeongui/CairoCanvas.hpp"
@@ -176,6 +177,10 @@ namespace AeonGUI
         private:
             void OnLocationChanged ( const Location& location );
             Element* elementFromPoint ( double aX, double aY ) const;
+            void FullDraw();
+            void PartialDraw();
+            void AssignPickIds();
+            void CacheBounds();
             Element* mFocusedElement{nullptr}; ///< The currently focused element.
             Element* mHoverElement{nullptr};   ///< The element currently under the pointer.
             Element* mActiveElement{nullptr};  ///< The element currently being clicked (mousedown).
@@ -184,6 +189,8 @@ namespace AeonGUI
             CairoCanvas mCanvas{};
             std::array<Element*, 256> mPickElements{}; ///< Pick ID → Element* map (0 = none).
             uint8_t mPickIdCounter{0}; ///< Number of pick IDs assigned this frame.
+            /// Cached device-space bounds per element for dirty rect computation.
+            std::unordered_map<const Element*, Canvas::PickBounds> mCachedBounds{};
         };
     }
 }

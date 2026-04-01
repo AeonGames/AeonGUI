@@ -361,6 +361,11 @@ namespace AeonGUI
                     elem->RemoveNode ( elem->childNodes().front().get() );
                 }
                 elem->AddNode ( std::make_unique<Text> ( value, elem ) );
+                Document* doc = elem->ownerDocument();
+                if ( doc )
+                {
+                    doc->MarkDirty();
+                }
             }
             else
             {

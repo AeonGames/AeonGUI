@@ -82,26 +82,51 @@ namespace AeonGUI
              *  @return Raw pointer to the stylesheet, or nullptr.
              */
             DLL css_stylesheet* GetStyleSheet() const;
-            /** @brief Mark the document as needing a redraw.
+            /** @brief Mark the entire document as needing a full redraw.
              *
-             *  Called automatically when element styles or attributes change.
-             *  The Window will perform a full redraw on the next Draw() call.
+             *  Used for global changes like viewport resize or document load.
              */
             void MarkDirty()
             {
-                mDirty = true;
+                mFullDirty = true;
+            }
+            /** @brief Mark a specific element as needing redraw.
+             *
+             *  Called automatically when element styles or attributes change.
+             *  The Window uses element-level dirty tracking to compute
+             *  the minimal dirty rectangle for partial redraws.
+             *  @param aElement The element whose appearance changed.
+             */
+            void MarkElementDirty ( Element* aElement )
+            {
+                mDirtyElements.push_back ( aElement );
             }
             /** @brief Check whether the document needs redrawing.
              *  @return true if the document has been modified since the last draw.
              */
             bool IsDirty() const
             {
-                return mDirty;
+                return mFullDirty || !mDirtyElements.empty();
+            }
+            /** @brief Check whether a full (non-partial) redraw is needed.
+             *  @return true if the entire scene must be redrawn.
+             */
+            bool IsFullDirty() const
+            {
+                return mFullDirty;
+            }
+            /** @brief Get the list of elements dirtied since the last draw.
+             *  @return Reference to the dirty elements vector.
+             */
+            const std::vector<Element*>& GetDirtyElements() const
+            {
+                return mDirtyElements;
             }
             /** @brief Clear the dirty flag after a redraw. */
             void ClearDirty()
             {
-                mDirty = false;
+                mFullDirty = false;
+                mDirtyElements.clear();
             }
             /**@}*/
         private:
@@ -111,7 +136,8 @@ namespace AeonGUI
             StyleSheetPtr mStyleSheet{};
             USVString mUrl{};
             double mDocumentTime{0.0};
-            bool mDirty{true};
+            bool mFullDirty{true};
+            std::vector<Element*> mDirtyElements{};
         };
     }
 }

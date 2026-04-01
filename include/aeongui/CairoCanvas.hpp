@@ -96,6 +96,15 @@ namespace AeonGUI
                                    const Color& aFloodColor, double aFloodOpacity ) final;
         DLL uint8_t PickAtPoint ( double aX, double aY ) const final;
         DLL void ResetPick() final;
+        /** @brief Set a device-space clip rectangle on both render and pick surfaces.
+         *
+         *  Must be called between Save() and Restore().
+         *  @param aX X of clip rect (device pixels).
+         *  @param aY Y of clip rect (device pixels).
+         *  @param aWidth  Width (device pixels).
+         *  @param aHeight Height (device pixels).
+         */
+        DLL void SetClipRect ( double aX, double aY, double aWidth, double aHeight );
     private:
         void InitPickSurface ( uint32_t aWidth, uint32_t aHeight );
         void DestroyPickSurface();

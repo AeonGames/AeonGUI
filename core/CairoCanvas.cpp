@@ -211,6 +211,44 @@ namespace AeonGUI
             cairo_pop_group_to_source ( mCairoContext );
             cairo_paint_with_alpha ( mCairoContext, mOpacity );
         }
+        // Compute device-space bounding box for this pick ID.
+        if ( mPickId > 0 )
+        {
+            double ux1, uy1, ux2, uy2;
+            if ( std::holds_alternative<Color> ( mStrokeColor ) )
+            {
+                cairo_stroke_extents ( mCairoContext, &ux1, &uy1, &ux2, &uy2 );
+            }
+            else
+            {
+                cairo_path_extents ( mCairoContext, &ux1, &uy1, &ux2, &uy2 );
+            }
+            // Transform all four corners to device space for correct AABB under rotation.
+            double cx[4] = { ux1, ux2, ux2, ux1 };
+            double cy[4] = { uy1, uy1, uy2, uy2 };
+            double dx1 = 1e30, dy1 = 1e30, dx2 = -1e30, dy2 = -1e30;
+            for ( int i = 0; i < 4; ++i )
+            {
+                cairo_user_to_device ( mCairoContext, &cx[i], &cy[i] );
+                if ( cx[i] < dx1 )
+                {
+                    dx1 = cx[i];
+                }
+                if ( cy[i] < dy1 )
+                {
+                    dy1 = cy[i];
+                }
+                if ( cx[i] > dx2 )
+                {
+                    dx2 = cx[i];
+                }
+                if ( cy[i] > dy2 )
+                {
+                    dy2 = cy[i];
+                }
+            }
+            mPickBounds[mPickId] = { dx1, dy1, dx2, dy2 };
+        }
         cairo_new_path ( mCairoContext );
         // Fill path on pick surface for hit testing
         if ( mPickId > 0 && mPickContext )
@@ -704,95 +742,103 @@ namespace AeonGUI
         cairo_paint ( mCairoContext );
     }
 
-    // 3-pass box blur approximation of Gaussian blur (applied per-axis).
-    // Each pass uses a sliding-window accumulator for O(n) per row/column.
-    static void BoxBlurH ( uint8_t* aData, int aWidth, int aHeight, int aStride, int aRadius )
-    {
-        if ( aRadius <= 0 )
-        {
-            return;
-        }
-        std::vector<uint8_t> tmp ( static_cast<size_t> ( aStride ) * static_cast<size_t> ( aHeight ) );
-        const double invDiam = 1.0 / ( 2 * aRadius + 1 );
-        for ( int y = 0; y < aHeight; y++ )
-        {
-            const uint8_t* src = aData + y * aStride;
-            uint8_t* dst = tmp.data() + y * aStride;
-            double sumB = 0, sumG = 0, sumR = 0, sumA = 0;
-            for ( int k = -aRadius; k <= aRadius; k++ )
-            {
-                int idx = std::clamp ( k, 0, aWidth - 1 ) * 4;
-                sumB += src[idx + 0];
-                sumG += src[idx + 1];
-                sumR += src[idx + 2];
-                sumA += src[idx + 3];
-            }
-            for ( int x = 0; x < aWidth; x++ )
-            {
-                dst[x * 4 + 0] = static_cast<uint8_t> ( std::clamp ( sumB * invDiam, 0.0, 255.0 ) );
-                dst[x * 4 + 1] = static_cast<uint8_t> ( std::clamp ( sumG * invDiam, 0.0, 255.0 ) );
-                dst[x * 4 + 2] = static_cast<uint8_t> ( std::clamp ( sumR * invDiam, 0.0, 255.0 ) );
-                dst[x * 4 + 3] = static_cast<uint8_t> ( std::clamp ( sumA * invDiam, 0.0, 255.0 ) );
-                int addIdx = std::clamp ( x + aRadius + 1, 0, aWidth - 1 ) * 4;
-                int subIdx = std::clamp ( x - aRadius, 0, aWidth - 1 ) * 4;
-                sumB += src[addIdx + 0] - src[subIdx + 0];
-                sumG += src[addIdx + 1] - src[subIdx + 1];
-                sumR += src[addIdx + 2] - src[subIdx + 2];
-                sumA += src[addIdx + 3] - src[subIdx + 3];
-            }
-        }
-        std::memcpy ( aData, tmp.data(), static_cast<size_t> ( aStride ) * static_cast<size_t> ( aHeight ) );
-    }
+    // IIR exponential blur — in-place, zero allocations, integer fixed-point.
+    // Forward+backward pass per axis approximates Gaussian blur.
+    // O(1) per pixel regardless of sigma, vs O(radius) for box blur.
 
-    static void BoxBlurV ( uint8_t* aData, int aWidth, int aHeight, int aStride, int aRadius )
-    {
-        if ( aRadius <= 0 )
-        {
-            return;
-        }
-        std::vector<uint8_t> tmp ( static_cast<size_t> ( aStride ) * static_cast<size_t> ( aHeight ) );
-        const double invDiam = 1.0 / ( 2 * aRadius + 1 );
-        for ( int x = 0; x < aWidth; x++ )
-        {
-            double sumB = 0, sumG = 0, sumR = 0, sumA = 0;
-            for ( int k = -aRadius; k <= aRadius; k++ )
-            {
-                int iy = std::clamp ( k, 0, aHeight - 1 );
-                const uint8_t* src = aData + iy * aStride + x * 4;
-                sumB += src[0];
-                sumG += src[1];
-                sumR += src[2];
-                sumA += src[3];
-            }
-            for ( int y = 0; y < aHeight; y++ )
-            {
-                uint8_t* dst = tmp.data() + y * aStride + x * 4;
-                dst[0] = static_cast<uint8_t> ( std::clamp ( sumB * invDiam, 0.0, 255.0 ) );
-                dst[1] = static_cast<uint8_t> ( std::clamp ( sumG * invDiam, 0.0, 255.0 ) );
-                dst[2] = static_cast<uint8_t> ( std::clamp ( sumR * invDiam, 0.0, 255.0 ) );
-                dst[3] = static_cast<uint8_t> ( std::clamp ( sumA * invDiam, 0.0, 255.0 ) );
-                int addY = std::clamp ( y + aRadius + 1, 0, aHeight - 1 );
-                int subY = std::clamp ( y - aRadius, 0, aHeight - 1 );
-                const uint8_t* addP = aData + addY * aStride + x * 4;
-                const uint8_t* subP = aData + subY * aStride + x * 4;
-                sumB += addP[0] - subP[0];
-                sumG += addP[1] - subP[1];
-                sumR += addP[2] - subP[2];
-                sumA += addP[3] - subP[3];
-            }
-        }
-        std::memcpy ( aData, tmp.data(), static_cast<size_t> ( aStride ) * static_cast<size_t> ( aHeight ) );
-    }
-
-    static int StdDevToBoxRadius ( double aSigma )
+    // Convert Gaussian sigma to IIR alpha parameter (0..256 fixed-point).
+    // For the bidirectional exponential filter, the exact relationship is:
+    //   sigma^2 = 2(1-alpha)/alpha^2
+    //   alpha   = (sqrt(2*sigma^2 + 1) - 1) / sigma^2
+    static int SigmaToAlpha256 ( double aSigma )
     {
         if ( aSigma <= 0.0 )
         {
-            return 0;
+            return 256;    // alpha=1 means no smoothing
         }
-        double d = std::floor ( aSigma * 3.0 * std::sqrt ( 2.0 * M_PI ) / 4.0 + 0.5 );
-        int r = static_cast<int> ( d ) / 2;
-        return ( r < 1 ) ? 1 : r;
+        double s2 = aSigma * aSigma;
+        double alpha = ( std::sqrt ( 2.0 * s2 + 1.0 ) - 1.0 ) / s2;
+        return std::clamp ( static_cast<int> ( alpha * 256.0 + 0.5 ), 1, 255 );
+    }
+
+    static void ExpBlurH ( uint8_t* aData, int aWidth, int aHeight, int aStride, int aAlpha )
+    {
+        for ( int y = 0; y < aHeight; y++ )
+        {
+            uint8_t* row = aData + y * aStride;
+            // Forward pass (left to right)
+            int zB = row[0], zG = row[1], zR = row[2], zA = row[3];
+            for ( int x = 1; x < aWidth; x++ )
+            {
+                uint8_t* p = row + x * 4;
+                zB += ( ( static_cast<int> ( p[0] ) - zB ) * aAlpha ) >> 8;
+                zG += ( ( static_cast<int> ( p[1] ) - zG ) * aAlpha ) >> 8;
+                zR += ( ( static_cast<int> ( p[2] ) - zR ) * aAlpha ) >> 8;
+                zA += ( ( static_cast<int> ( p[3] ) - zA ) * aAlpha ) >> 8;
+                p[0] = static_cast<uint8_t> ( zB );
+                p[1] = static_cast<uint8_t> ( zG );
+                p[2] = static_cast<uint8_t> ( zR );
+                p[3] = static_cast<uint8_t> ( zA );
+            }
+            // Backward pass (right to left)
+            uint8_t* last = row + ( aWidth - 1 ) * 4;
+            zB = last[0];
+            zG = last[1];
+            zR = last[2];
+            zA = last[3];
+            for ( int x = aWidth - 2; x >= 0; x-- )
+            {
+                uint8_t* p = row + x * 4;
+                zB += ( ( static_cast<int> ( p[0] ) - zB ) * aAlpha ) >> 8;
+                zG += ( ( static_cast<int> ( p[1] ) - zG ) * aAlpha ) >> 8;
+                zR += ( ( static_cast<int> ( p[2] ) - zR ) * aAlpha ) >> 8;
+                zA += ( ( static_cast<int> ( p[3] ) - zA ) * aAlpha ) >> 8;
+                p[0] = static_cast<uint8_t> ( zB );
+                p[1] = static_cast<uint8_t> ( zG );
+                p[2] = static_cast<uint8_t> ( zR );
+                p[3] = static_cast<uint8_t> ( zA );
+            }
+        }
+    }
+
+    static void ExpBlurV ( uint8_t* aData, int aWidth, int aHeight, int aStride, int aAlpha )
+    {
+        for ( int x = 0; x < aWidth; x++ )
+        {
+            uint8_t* col = aData + x * 4;
+            // Forward pass (top to bottom)
+            int zB = col[0], zG = col[1], zR = col[2], zA = col[3];
+            for ( int y = 1; y < aHeight; y++ )
+            {
+                uint8_t* p = col + y * aStride;
+                zB += ( ( static_cast<int> ( p[0] ) - zB ) * aAlpha ) >> 8;
+                zG += ( ( static_cast<int> ( p[1] ) - zG ) * aAlpha ) >> 8;
+                zR += ( ( static_cast<int> ( p[2] ) - zR ) * aAlpha ) >> 8;
+                zA += ( ( static_cast<int> ( p[3] ) - zA ) * aAlpha ) >> 8;
+                p[0] = static_cast<uint8_t> ( zB );
+                p[1] = static_cast<uint8_t> ( zG );
+                p[2] = static_cast<uint8_t> ( zR );
+                p[3] = static_cast<uint8_t> ( zA );
+            }
+            // Backward pass (bottom to top)
+            uint8_t* last = col + ( aHeight - 1 ) * aStride;
+            zB = last[0];
+            zG = last[1];
+            zR = last[2];
+            zA = last[3];
+            for ( int y = aHeight - 2; y >= 0; y-- )
+            {
+                uint8_t* p = col + y * aStride;
+                zB += ( ( static_cast<int> ( p[0] ) - zB ) * aAlpha ) >> 8;
+                zG += ( ( static_cast<int> ( p[1] ) - zG ) * aAlpha ) >> 8;
+                zR += ( ( static_cast<int> ( p[2] ) - zR ) * aAlpha ) >> 8;
+                zA += ( ( static_cast<int> ( p[3] ) - zA ) * aAlpha ) >> 8;
+                p[0] = static_cast<uint8_t> ( zB );
+                p[1] = static_cast<uint8_t> ( zG );
+                p[2] = static_cast<uint8_t> ( zR );
+                p[3] = static_cast<uint8_t> ( zA );
+            }
+        }
     }
 
     void CairoCanvas::ApplyDropShadow ( double aDx, double aDy,
@@ -803,8 +849,6 @@ namespace AeonGUI
         cairo_pattern_t* contentPattern = cairo_pop_group ( mCairoContext );
 
         // -- Step 1: Render the shadow into its own group so we can blur it. --
-        // Push a shadow group, paint the flood color masked by the content alpha,
-        // then pop to get blurrable pixels.
         cairo_push_group ( mCairoContext );
 
         // Offset by (dx, dy) in user-space for the shadow position.
@@ -822,10 +866,10 @@ namespace AeonGUI
         // Pop the shadow group — we now have a shadow pattern to blur.
         cairo_pattern_t* shadowPattern = cairo_pop_group ( mCairoContext );
 
-        // -- Step 2: Blur the shadow surface if stdDeviation > 0. --
-        int radiusX = StdDevToBoxRadius ( aStdDeviationX );
-        int radiusY = StdDevToBoxRadius ( aStdDeviationY );
-        if ( radiusX > 0 || radiusY > 0 )
+        // -- Step 2: Blur the shadow surface using IIR exponential blur. --
+        int alphaX = SigmaToAlpha256 ( aStdDeviationX );
+        int alphaY = SigmaToAlpha256 ( aStdDeviationY );
+        if ( alphaX < 256 || alphaY < 256 )
         {
             cairo_surface_t* shadowSurface = nullptr;
             if ( cairo_pattern_get_surface ( shadowPattern, &shadowSurface ) == CAIRO_STATUS_SUCCESS
@@ -838,10 +882,13 @@ namespace AeonGUI
                 {
                     uint8_t* data = cairo_image_surface_get_data ( shadowSurface );
                     int stride = cairo_image_surface_get_stride ( shadowSurface );
-                    for ( int pass = 0; pass < 3; pass++ )
+                    if ( alphaX < 256 )
                     {
-                        BoxBlurH ( data, w, h, stride, radiusX );
-                        BoxBlurV ( data, w, h, stride, radiusY );
+                        ExpBlurH ( data, w, h, stride, alphaX );
+                    }
+                    if ( alphaY < 256 )
+                    {
+                        ExpBlurV ( data, w, h, stride, alphaY );
                     }
                     cairo_surface_mark_dirty ( shadowSurface );
                 }
@@ -915,5 +962,26 @@ namespace AeonGUI
         const uint8_t* data = cairo_image_surface_get_data ( mPickSurface );
         int stride = cairo_image_surface_get_stride ( mPickSurface );
         return data[iy * stride + ix];
+    }
+
+    void CairoCanvas::SetClipRect ( double aX, double aY, double aWidth, double aHeight )
+    {
+        // Set clip in device (pixel) coordinates on the render context.
+        cairo_matrix_t saved;
+        cairo_get_matrix ( mCairoContext, &saved );
+        cairo_identity_matrix ( mCairoContext );
+        cairo_rectangle ( mCairoContext, aX, aY, aWidth, aHeight );
+        cairo_clip ( mCairoContext );
+        cairo_set_matrix ( mCairoContext, &saved );
+
+        // Mirror the clip on the pick context.
+        if ( mPickContext )
+        {
+            cairo_get_matrix ( mPickContext, &saved );
+            cairo_identity_matrix ( mPickContext );
+            cairo_rectangle ( mPickContext, aX, aY, aWidth, aHeight );
+            cairo_clip ( mPickContext );
+            cairo_set_matrix ( mPickContext, &saved );
+        }
     }
 }

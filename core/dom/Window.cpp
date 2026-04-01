@@ -24,12 +24,15 @@ limitations under the License.
 #include "aeongui/dom/Window.hpp"
 #include "aeongui/dom/Document.hpp"
 #include "aeongui/dom/SVGGeometryElement.hpp"
+#include "aeongui/dom/SVGFilterElement.hpp"
+#include "aeongui/dom/SVGFEDropShadowElement.hpp"
 #include "aeongui/dom/MouseEvent.hpp"
 #include "aeongui/dom/KeyboardEvent.hpp"
 #include "aeongui/dom/WheelEvent.hpp"
 #include "aeongui/dom/FocusEvent.hpp"
 #include <vector>
 #include <algorithm>
+#include <cmath>
 
 namespace AeonGUI
 {
@@ -88,8 +91,20 @@ namespace AeonGUI
             {
                 return false;
             }
-            mCanvas.Clear();
-            mCanvas.ResetPick();
+            if ( mDocument.IsFullDirty() )
+            {
+                FullDraw();
+            }
+            else
+            {
+                PartialDraw();
+            }
+            mDocument.ClearDirty();
+            return true;
+        }
+
+        void Window::AssignPickIds()
+        {
             mPickIdCounter = 0;
             mPickElements.fill ( nullptr );
             mDocument.Draw ( mCanvas, [this] ( const Node & aNode )
@@ -108,8 +123,104 @@ namespace AeonGUI
                 }
             } );
             mCanvas.SetPickId ( 0 );
-            mDocument.ClearDirty();
-            return true;
+        }
+
+        void Window::CacheBounds()
+        {
+            mCachedBounds.clear();
+            for ( uint8_t i = 1; i <= mPickIdCounter; ++i )
+            {
+                if ( mPickElements[i] )
+                {
+                    Canvas::PickBounds bounds = mCanvas.GetPickBounds ( i );
+                    // Expand bounds for drop-shadow filter effects.
+                    const DOMString* filterAttr = mPickElements[i]->getAttribute ( "filter" );
+                    if ( filterAttr && filterAttr->compare ( 0, 5, "url(#" ) == 0 && filterAttr->back() == ')' )
+                    {
+                        std::string filterId = filterAttr->substr ( 5, filterAttr->size() - 6 );
+                        Element* filterElem = mDocument.getElementById ( filterId );
+                        if ( filterElem && filterElem->tagName() == "filter" )
+                        {
+                            for ( const auto& child : filterElem->childNodes() )
+                            {
+                                if ( child->nodeType() == Node::ELEMENT_NODE &&
+                                     static_cast<Element * > ( child.get() )->tagName() == "feDropShadow" )
+                                {
+                                    const auto* ds = static_cast<const SVGFEDropShadowElement*> ( child.get() );
+                                    double expandX = std::abs ( ds->dx() ) + 3.0 * ds->stdDeviationX();
+                                    double expandY = std::abs ( ds->dy() ) + 3.0 * ds->stdDeviationY();
+                                    bounds.x1 -= expandX;
+                                    bounds.y1 -= expandY;
+                                    bounds.x2 += expandX;
+                                    bounds.y2 += expandY;
+                                    break;
+                                }
+                            }
+                        }
+                    }
+                    mCachedBounds[mPickElements[i]] = bounds;
+                }
+            }
+        }
+
+        void Window::FullDraw()
+        {
+            mCanvas.Clear();
+            mCanvas.ResetPick();
+            AssignPickIds();
+            CacheBounds();
+        }
+
+        void Window::PartialDraw()
+        {
+            // Compute the union of dirty element AABBs in device space.
+            double dx1 = 1e30, dy1 = 1e30, dx2 = -1e30, dy2 = -1e30;
+            bool hasBounds = false;
+            size_t dirtyCount = mDocument.GetDirtyElements().size();
+            size_t foundCount = 0;
+            for ( const Element * e : mDocument.GetDirtyElements() )
+            {
+                auto it = mCachedBounds.find ( e );
+                if ( it != mCachedBounds.end() )
+                {
+                    dx1 = std::min ( dx1, it->second.x1 );
+                    dy1 = std::min ( dy1, it->second.y1 );
+                    dx2 = std::max ( dx2, it->second.x2 );
+                    dy2 = std::max ( dy2, it->second.y2 );
+                    hasBounds = true;
+                    ++foundCount;
+                }
+            }
+            if ( !hasBounds || dirtyCount > foundCount )
+            {
+                // Some dirty elements lack cached bounds (e.g. text nodes)
+                // — fall back to full draw.
+                mCanvas.Clear();
+                mCanvas.ResetPick();
+                AssignPickIds();
+                CacheBounds();
+                return;
+            }
+            // Clamp to viewport.
+            double vw = static_cast<double> ( mCanvas.GetWidth() );
+            double vh = static_cast<double> ( mCanvas.GetHeight() );
+            dx1 = std::max ( std::floor ( dx1 ), 0.0 );
+            dy1 = std::max ( std::floor ( dy1 ), 0.0 );
+            dx2 = std::min ( std::ceil ( dx2 ), vw );
+            dy2 = std::min ( std::ceil ( dy2 ), vh );
+            if ( dx1 >= dx2 || dy1 >= dy2 )
+            {
+                // Degenerate dirty rect — nothing to redraw.
+                return;
+            }
+            // Clip both surfaces to the dirty rectangle, clear, and redraw.
+            mCanvas.Save();
+            mCanvas.SetClipRect ( dx1, dy1, dx2 - dx1, dy2 - dy1 );
+            mCanvas.Clear();
+            mCanvas.ResetPick();
+            AssignPickIds();
+            mCanvas.Restore();
+            CacheBounds();
         }
 
         void Window::Update ( double aDeltaTime )

@@ -15,6 +15,7 @@ limitations under the License.
 */
 #ifndef AEONGUI_CANVAS_H
 #define AEONGUI_CANVAS_H
+#include <array>
 #include <cstdint>
 #include <cstddef>
 #include <vector>
@@ -259,9 +260,24 @@ namespace AeonGUI
         virtual void ResetPick() = 0;
         /** @brief Virtual destructor. */
         virtual ~Canvas() = 0;
+
+        /** @brief Device-space bounding box for a pick-tracked element. */
+        struct PickBounds
+        {
+            double x1{0}, y1{0}, x2{0}, y2{0};
+        };
+        /** @brief Get the cached device-space bounds for a pick ID.
+         *  @param aId Pick ID (1-255).
+         *  @return Reference to the cached bounds.
+         */
+        const PickBounds& GetPickBounds ( uint8_t aId ) const
+        {
+            return mPickBounds[aId];
+        }
     protected:
         bool mHitTesting{false};
         uint8_t mPickId{0};
+        std::array<PickBounds, 256> mPickBounds{};
     };
 }
 #endif
