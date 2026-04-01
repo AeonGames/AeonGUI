@@ -16,6 +16,7 @@ limitations under the License.
 #ifndef AEONGUI_WINDOW_H
 #define AEONGUI_WINDOW_H
 #include <cstdint>
+#include <array>
 #include <string>
 #include "aeongui/Platform.hpp"
 #include "aeongui/CairoCanvas.hpp"
@@ -67,8 +68,10 @@ namespace AeonGUI
             /** @brief Get the stride (bytes per row) of the pixel buffer.
              *  @return The stride in bytes. */
             DLL size_t GetStride() const;
-            /** @brief Render the current document to the internal canvas. */
-            DLL void Draw();
+            /** @brief Render the current document to the internal canvas.
+             *  @return true if a redraw was performed, false if the scene was clean.
+             */
+            DLL bool Draw();
             /** @brief Advance animation time and update all animations.
              *  @param aDeltaTime Time elapsed since last frame, in seconds.
              */
@@ -172,12 +175,15 @@ namespace AeonGUI
             /**@}*/
         private:
             void OnLocationChanged ( const Location& location );
+            Element* elementFromPoint ( double aX, double aY ) const;
             Element* mFocusedElement{nullptr}; ///< The currently focused element.
             Element* mHoverElement{nullptr};   ///< The element currently under the pointer.
             Element* mActiveElement{nullptr};  ///< The element currently being clicked (mousedown).
             Location mLocation{std::bind ( &Window::OnLocationChanged, this, std::placeholders::_1 ) };
             Document mDocument{};
             CairoCanvas mCanvas{};
+            std::array<Element*, 256> mPickElements{}; ///< Pick ID → Element* map (0 = none).
+            uint8_t mPickIdCounter{0}; ///< Number of pick IDs assigned this frame.
         };
     }
 }

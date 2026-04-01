@@ -18,6 +18,7 @@ limitations under the License.
 #include <cstdint>
 #include <vector>
 #include <memory>
+#include <functional>
 #include <algorithm>
 #include "aeongui/Platform.hpp"
 #include "aeongui/Canvas.hpp"
@@ -50,6 +51,15 @@ namespace AeonGUI
              *  @param aCanvas The rendering surface.
              */
             DLL void Draw ( Canvas& aCanvas ) const;
+            /** @brief Draw the document onto a canvas with a per-node callback.
+             *
+             *  The callback is invoked for each node before DrawStart,
+             *  with the canvas already saved.  This is used to assign
+             *  pick IDs before geometry elements render their paths.
+             *  @param aCanvas  The rendering surface.
+             *  @param aPreDraw Callback invoked for each node before DrawStart.
+             */
+            DLL void Draw ( Canvas& aCanvas, const std::function<void ( const Node& ) >& aPreDraw ) const;
             /** @brief Advance animation time and update all animations.
              *  @param aDeltaTime Time elapsed since last update, in seconds.
              */
@@ -68,18 +78,31 @@ namespace AeonGUI
              *  @see https://dom.spec.whatwg.org/#dom-document-getelementbyid
              */
             DLL Element* getElementById ( const DOMString& aElementId ) const;
-            /** @brief Find the topmost element at the given viewport coordinates.
-             *  @param aCanvas Canvas with the current rendering state (transforms).
-             *  @param aX The X coordinate in viewport space.
-             *  @param aY The Y coordinate in viewport space.
-             *  @return Pointer to the topmost Element at (x, y), or nullptr.
-             *  @see https://drafts.csswg.org/cssom-view/#dom-document-elementfrompoint
-             */
-            DLL Element* elementFromPoint ( Canvas& aCanvas, double aX, double aY ) const;
             /** @brief Get the document-level CSS stylesheet.
              *  @return Raw pointer to the stylesheet, or nullptr.
              */
             DLL css_stylesheet* GetStyleSheet() const;
+            /** @brief Mark the document as needing a redraw.
+             *
+             *  Called automatically when element styles or attributes change.
+             *  The Window will perform a full redraw on the next Draw() call.
+             */
+            void MarkDirty()
+            {
+                mDirty = true;
+            }
+            /** @brief Check whether the document needs redrawing.
+             *  @return true if the document has been modified since the last draw.
+             */
+            bool IsDirty() const
+            {
+                return mDirty;
+            }
+            /** @brief Clear the dirty flag after a redraw. */
+            void ClearDirty()
+            {
+                mDirty = false;
+            }
             /**@}*/
         private:
             void Load ();
@@ -88,6 +111,7 @@ namespace AeonGUI
             StyleSheetPtr mStyleSheet{};
             USVString mUrl{};
             double mDocumentTime{0.0};
+            bool mDirty{true};
         };
     }
 }

@@ -26,7 +26,7 @@ namespace AeonGUI
 
         static bool HasScheme ( const USVString& url )
         {
-            static const std::regex scheme_regex ( R"(^[a-zA-Z][a-zA-Z0-9+\-.]*:)" );
+            static const std::regex scheme_regex ( R"(^[a-zA-Z][a-zA-Z0-9+\-.]+:)" );
             return std::regex_search ( url, scheme_regex );
         }
 

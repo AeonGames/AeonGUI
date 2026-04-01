@@ -359,17 +359,19 @@ void Window::RenderLoop()
     glBindVertexArray ( mVAO );
     glDisable ( GL_DEPTH_TEST );
     mWindow.Update ( static_cast<double> ( delta ) );
-    mWindow.Draw();
-    glBindTexture ( GL_TEXTURE_2D, mScreenTexture );
-    glTexImage2D ( GL_TEXTURE_2D,
-                   0,
-                   GL_RGBA,
-                   static_cast<GLsizei> ( mWindow.GetWidth() ),
-                   static_cast<GLsizei> ( mWindow.GetHeight() ),
-                   0,
-                   GL_BGRA,
-                   GL_UNSIGNED_INT_8_8_8_8_REV,
-                   mWindow.GetPixels() );
+    if ( mWindow.Draw() )
+    {
+        glBindTexture ( GL_TEXTURE_2D, mScreenTexture );
+        glTexImage2D ( GL_TEXTURE_2D,
+                       0,
+                       GL_RGBA,
+                       static_cast<GLsizei> ( mWindow.GetWidth() ),
+                       static_cast<GLsizei> ( mWindow.GetHeight() ),
+                       0,
+                       GL_BGRA,
+                       GL_UNSIGNED_INT_8_8_8_8_REV,
+                       mWindow.GetPixels() );
+    }
     glDrawArrays ( GL_TRIANGLE_FAN, 0, 4 );
     SwapBuffers ( hDC );
     last_time = this_time;

@@ -88,16 +88,21 @@ namespace AeonGUI
         DLL void Transform ( const Matrix2x3& aMatrix ) final;
         DLL void Save() final;
         DLL void Restore() final;
-        DLL bool PointInPath ( const Path& aPath, double aX, double aY ) const final;
         DLL void* GetNativeSurface() const final;
         DLL void PushGroup() final;
         DLL void PopGroup() final;
         DLL void ApplyDropShadow ( double aDx, double aDy,
                                    double aStdDeviationX, double aStdDeviationY,
                                    const Color& aFloodColor, double aFloodOpacity ) final;
+        DLL uint8_t PickAtPoint ( double aX, double aY ) const final;
+        DLL void ResetPick() final;
     private:
+        void InitPickSurface ( uint32_t aWidth, uint32_t aHeight );
+        void DestroyPickSurface();
         cairo_surface_t* mCairoSurface{};
         cairo_t* mCairoContext{};
+        cairo_surface_t* mPickSurface{};
+        cairo_t* mPickContext{};
         ColorAttr mFillColor{};
         ColorAttr mStrokeColor{};
         double mStrokeWidth{1};

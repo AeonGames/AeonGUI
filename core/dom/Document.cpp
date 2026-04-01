@@ -24,7 +24,6 @@ limitations under the License.
 #include <stack>
 #include "aeongui/ElementFactory.hpp"
 #include "aeongui/dom/Document.hpp"
-#include "aeongui/dom/SVGGeometryElement.hpp"
 #include "aeongui/dom/Text.hpp"
 
 namespace AeonGUI
@@ -224,10 +223,16 @@ namespace AeonGUI
 
         void Document::Draw ( Canvas& aCanvas ) const
         {
+            Draw ( aCanvas, [] ( const Node& ) {} );
+        }
+
+        void Document::Draw ( Canvas& aCanvas, const std::function<void ( const Node& ) >& aPreDraw ) const
+        {
             TraverseDepthFirstPreOrder (
-                [&aCanvas] ( const Node & aNode )
+                [&aCanvas, &aPreDraw] ( const Node & aNode )
             {
                 aCanvas.Save();
+                aPreDraw ( aNode );
                 aNode.DrawStart ( aCanvas );
             },
             [&aCanvas] ( const Node & aNode )
@@ -256,37 +261,6 @@ namespace AeonGUI
                     }
                 }
             } );
-            return result;
-        }
-
-        Element* Document::elementFromPoint ( Canvas& aCanvas, double aX, double aY ) const
-        {
-            Element* result = nullptr;
-            aCanvas.SetHitTesting ( true );
-            TraverseDepthFirstPreOrder (
-                [&aCanvas, aX, aY, &result] ( const Node & aNode )
-            {
-                aCanvas.Save();
-                aNode.DrawStart ( aCanvas );
-                if ( aNode.nodeType() == Node::ELEMENT_NODE )
-                {
-                    const auto* geometry = dynamic_cast<const SVGGeometryElement*> ( &aNode );
-                    if ( geometry && aCanvas.PointInPath ( geometry->GetPath(), aX, aY ) )
-                    {
-                        result = const_cast<Element*> ( static_cast<const Element*> ( &aNode ) );
-                    }
-                }
-            },
-            [&aCanvas] ( const Node & aNode )
-            {
-                aNode.DrawFinish ( aCanvas );
-                aCanvas.Restore();
-            },
-            [] ( const Node & aNode )
-            {
-                return aNode.IsDrawEnabled();
-            } );
-            aCanvas.SetHitTesting ( false );
             return result;
         }
     }

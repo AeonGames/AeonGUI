@@ -23,6 +23,7 @@ limitations under the License.
 #include "aeongui/dom/Element.hpp"
 #include "aeongui/dom/Window.hpp"
 #include "aeongui/dom/Document.hpp"
+#include "aeongui/dom/SVGGeometryElement.hpp"
 #include "aeongui/dom/MouseEvent.hpp"
 #include "aeongui/dom/KeyboardEvent.hpp"
 #include "aeongui/dom/WheelEvent.hpp"
@@ -60,6 +61,7 @@ namespace AeonGUI
         void Window::ResizeViewport ( uint32_t aWidth, uint32_t aHeight )
         {
             mCanvas.ResizeViewport ( aWidth, aHeight );
+            mDocument.MarkDirty();
         }
 
         const uint8_t* Window::GetPixels() const
@@ -80,10 +82,34 @@ namespace AeonGUI
             return mCanvas.GetStride();
         }
 
-        void Window::Draw()
+        bool Window::Draw()
         {
+            if ( !mDocument.IsDirty() )
+            {
+                return false;
+            }
             mCanvas.Clear();
-            mDocument.Draw ( mCanvas );
+            mCanvas.ResetPick();
+            mPickIdCounter = 0;
+            mPickElements.fill ( nullptr );
+            mDocument.Draw ( mCanvas, [this] ( const Node & aNode )
+            {
+                if ( aNode.nodeType() == Node::ELEMENT_NODE &&
+                     dynamic_cast<const SVGGeometryElement * > ( &aNode ) &&
+                     mPickIdCounter < 255 )
+                {
+                    ++mPickIdCounter;
+                    mPickElements[mPickIdCounter] = const_cast<Element*> ( static_cast<const Element*> ( &aNode ) );
+                    mCanvas.SetPickId ( mPickIdCounter );
+                }
+                else
+                {
+                    mCanvas.SetPickId ( 0 );
+                }
+            } );
+            mCanvas.SetPickId ( 0 );
+            mDocument.ClearDirty();
+            return true;
         }
 
         void Window::Update ( double aDeltaTime )
@@ -91,11 +117,17 @@ namespace AeonGUI
             mDocument.AdvanceTime ( aDeltaTime );
         }
 
+        Element* Window::elementFromPoint ( double aX, double aY ) const
+        {
+            uint8_t id = mCanvas.PickAtPoint ( aX, aY );
+            return ( id > 0 && id <= mPickIdCounter ) ? mPickElements[id] : nullptr;
+        }
+
         void Window::HandleMouseMove ( double aX, double aY, unsigned short aButtons,
                                        bool aCtrlKey, bool aShiftKey,
                                        bool aAltKey, bool aMetaKey )
         {
-            Element* target = mDocument.elementFromPoint ( mCanvas, aX, aY );
+            Element* target = elementFromPoint ( aX, aY );
             // Handle mouseenter/mouseleave when the hovered element changes.
             // Per W3C spec, mouseenter/mouseleave do NOT bubble but must fire
             // independently on every ancestor between the old/new target and
@@ -175,7 +207,7 @@ namespace AeonGUI
                                        bool aCtrlKey, bool aShiftKey,
                                        bool aAltKey, bool aMetaKey )
         {
-            Element* target = mDocument.elementFromPoint ( mCanvas, aX, aY );
+            Element* target = elementFromPoint ( aX, aY );
             // Update focus on mousedown
             if ( target != mFocusedElement )
             {
@@ -230,7 +262,7 @@ namespace AeonGUI
                 mActiveElement->ReselectCSS();
                 mActiveElement = nullptr;
             }
-            Element* target = mDocument.elementFromPoint ( mCanvas, aX, aY );
+            Element* target = elementFromPoint ( aX, aY );
             if ( target )
             {
                 MouseEvent upEvent ( "mouseup", MouseEventInit{EventModifierInit{UIEventInit{EventInit{true, true, false}, this, 0}, aCtrlKey, aShiftKey, aAltKey, aMetaKey}, aX, aY, aX, aY, aButton, aButtons, nullptr} );
@@ -268,7 +300,7 @@ namespace AeonGUI
                                    bool aCtrlKey, bool aShiftKey,
                                    bool aAltKey, bool aMetaKey )
         {
-            Element* target = mDocument.elementFromPoint ( mCanvas, aX, aY );
+            Element* target = elementFromPoint ( aX, aY );
             if ( target )
             {
                 WheelEvent wheelEvent ( "wheel", WheelEventInit{MouseEventInit{EventModifierInit{UIEventInit{EventInit{true, true, false}, this, 0}, aCtrlKey, aShiftKey, aAltKey, aMetaKey}, aX, aY, aX, aY, 0, aButtons, nullptr}, aDeltaX, aDeltaY, 0.0, aDeltaMode} );

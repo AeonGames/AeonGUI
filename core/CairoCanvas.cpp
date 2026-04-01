@@ -34,7 +34,9 @@ namespace AeonGUI
     CairoCanvas::CairoCanvas ( uint32_t aWidth, uint32_t aHeight ) :
         mCairoSurface{cairo_image_surface_create ( CAIRO_FORMAT_ARGB32, aWidth, aHeight ) },
         mCairoContext{cairo_create ( reinterpret_cast<cairo_surface_t*> ( mCairoSurface ) ) }
-    {}
+    {
+        InitPickSurface ( aWidth, aHeight );
+    }
 
     void CairoCanvas::ResizeViewport ( uint32_t aWidth, uint32_t aHeight )
     {
@@ -52,6 +54,8 @@ namespace AeonGUI
         }
         mCairoSurface = cairo_image_surface_create ( CAIRO_FORMAT_ARGB32, aWidth, aHeight );
         mCairoContext = cairo_create ( mCairoSurface );
+        DestroyPickSurface();
+        InitPickSurface ( aWidth, aHeight );
     }
 
     const uint8_t* CairoCanvas::GetPixels() const
@@ -84,6 +88,7 @@ namespace AeonGUI
     }
     CairoCanvas::~CairoCanvas()
     {
+        DestroyPickSurface();
         if ( mCairoContext )
         {
             cairo_destroy ( mCairoContext );
@@ -207,6 +212,13 @@ namespace AeonGUI
             cairo_paint_with_alpha ( mCairoContext, mOpacity );
         }
         cairo_new_path ( mCairoContext );
+        // Fill path on pick surface for hit testing
+        if ( mPickId > 0 && mPickContext )
+        {
+            cairo_append_path ( mPickContext, path.GetCairoPath() );
+            cairo_set_source_rgba ( mPickContext, 0, 0, 0, mPickId / 255.0 );
+            cairo_fill ( mPickContext );
+        }
     }
 
     void CairoCanvas::DrawImage ( const uint8_t* aPixels,
@@ -627,6 +639,10 @@ namespace AeonGUI
             translate_x, translate_y
         };
         cairo_set_matrix ( mCairoContext, &transform );
+        if ( mPickContext )
+        {
+            cairo_set_matrix ( mPickContext, &transform );
+        }
     }
     void CairoCanvas::SetTransform ( const Matrix2x3& aMatrix )
     {
@@ -637,6 +653,10 @@ namespace AeonGUI
             aMatrix[4], aMatrix[5]
         };
         cairo_set_matrix ( mCairoContext, &transform );
+        if ( mPickContext )
+        {
+            cairo_set_matrix ( mPickContext, &transform );
+        }
     }
     void CairoCanvas::Transform ( const Matrix2x3& aMatrix )
     {
@@ -647,22 +667,26 @@ namespace AeonGUI
             aMatrix[4], aMatrix[5]
         };
         cairo_transform ( mCairoContext, &transform );
+        if ( mPickContext )
+        {
+            cairo_transform ( mPickContext, &transform );
+        }
     }
     void CairoCanvas::Save()
     {
         cairo_save ( mCairoContext );
+        if ( mPickContext )
+        {
+            cairo_save ( mPickContext );
+        }
     }
     void CairoCanvas::Restore()
     {
         cairo_restore ( mCairoContext );
-    }
-    bool CairoCanvas::PointInPath ( const Path& aPath, double aX, double aY ) const
-    {
-        const CairoPath& path = reinterpret_cast<const CairoPath&> ( aPath );
-        cairo_append_path ( mCairoContext, path.GetCairoPath() );
-        bool result = cairo_in_fill ( mCairoContext, aX, aY ) || cairo_in_stroke ( mCairoContext, aX, aY );
-        cairo_new_path ( mCairoContext );
-        return result;
+        if ( mPickContext )
+        {
+            cairo_restore ( mPickContext );
+        }
     }
     void* CairoCanvas::GetNativeSurface() const
     {
@@ -832,5 +856,64 @@ namespace AeonGUI
         cairo_set_source ( mCairoContext, contentPattern );
         cairo_paint ( mCairoContext );
         cairo_pattern_destroy ( contentPattern );
+    }
+
+    void CairoCanvas::InitPickSurface ( uint32_t aWidth, uint32_t aHeight )
+    {
+        if ( aWidth == 0 || aHeight == 0 )
+        {
+            return;
+        }
+        mPickSurface = cairo_image_surface_create ( CAIRO_FORMAT_A8, aWidth, aHeight );
+        mPickContext = cairo_create ( mPickSurface );
+        cairo_set_antialias ( mPickContext, CAIRO_ANTIALIAS_NONE );
+        cairo_set_operator ( mPickContext, CAIRO_OPERATOR_SOURCE );
+    }
+
+    void CairoCanvas::DestroyPickSurface()
+    {
+        if ( mPickContext )
+        {
+            cairo_destroy ( mPickContext );
+            mPickContext = nullptr;
+        }
+        if ( mPickSurface )
+        {
+            cairo_surface_destroy ( mPickSurface );
+            mPickSurface = nullptr;
+        }
+    }
+
+    void CairoCanvas::ResetPick()
+    {
+        mPickId = 0;
+        if ( mPickContext )
+        {
+            cairo_save ( mPickContext );
+            cairo_set_operator ( mPickContext, CAIRO_OPERATOR_CLEAR );
+            cairo_paint ( mPickContext );
+            cairo_restore ( mPickContext );
+            cairo_set_operator ( mPickContext, CAIRO_OPERATOR_SOURCE );
+        }
+    }
+
+    uint8_t CairoCanvas::PickAtPoint ( double aX, double aY ) const
+    {
+        if ( !mPickSurface )
+        {
+            return 0;
+        }
+        int ix = static_cast<int> ( aX );
+        int iy = static_cast<int> ( aY );
+        int w = cairo_image_surface_get_width ( mPickSurface );
+        int h = cairo_image_surface_get_height ( mPickSurface );
+        if ( ix < 0 || iy < 0 || ix >= w || iy >= h )
+        {
+            return 0;
+        }
+        cairo_surface_flush ( mPickSurface );
+        const uint8_t* data = cairo_image_surface_get_data ( mPickSurface );
+        int stride = cairo_image_surface_get_stride ( mPickSurface );
+        return data[iy * stride + ix];
     }
 }

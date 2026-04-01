@@ -37,6 +37,7 @@ set(TESTED_SRCS
   DOMPointTest.cpp
   DOMRectReadOnlyTest.cpp
   DOMRectTest.cpp
+  HitTestTest.cpp
   Location.cpp
   NodeTest.cpp
   RasterImageTest.cpp

@@ -265,8 +265,6 @@ limitations under the License.
     }
     lastTime = currentTime;
     
-    mWindow->Draw();
-    
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     OPENGL_CHECK_ERROR;
     
@@ -275,18 +273,21 @@ limitations under the License.
     glBindVertexArray(mVAO);
     OPENGL_CHECK_ERROR;
     
-    glBindTexture(GL_TEXTURE_2D, mScreenTexture);
-    OPENGL_CHECK_ERROR;
-    glTexSubImage2D(GL_TEXTURE_2D,
-                    0,
-                    0,
-                    0,
-                    (GLsizei)mWindow->GetWidth(),
-                    (GLsizei)mWindow->GetHeight(),
-                    GL_BGRA,
-                    GL_UNSIGNED_INT_8_8_8_8_REV,
-                    mWindow->GetPixels());
-    OPENGL_CHECK_ERROR;
+    if ( mWindow->Draw() )
+    {
+        glBindTexture(GL_TEXTURE_2D, mScreenTexture);
+        OPENGL_CHECK_ERROR;
+        glTexSubImage2D(GL_TEXTURE_2D,
+                        0,
+                        0,
+                        0,
+                        (GLsizei)mWindow->GetWidth(),
+                        (GLsizei)mWindow->GetHeight(),
+                        GL_BGRA,
+                        GL_UNSIGNED_INT_8_8_8_8_REV,
+                        mWindow->GetPixels());
+        OPENGL_CHECK_ERROR;
+    }
     
     glDrawArrays(GL_TRIANGLE_FAN, 0, 4);
     OPENGL_CHECK_ERROR;

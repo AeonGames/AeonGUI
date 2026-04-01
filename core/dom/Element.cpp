@@ -20,6 +20,7 @@ limitations under the License.
 #include "aeongui/Color.hpp"
 #include "aeongui/Matrix2x3.hpp"
 #include "aeongui/dom/Element.hpp"
+#include "aeongui/dom/Document.hpp"
 #include "aeongui/dom/SVGAnimateElement.hpp"
 #include "aeongui/dom/SVGSetElement.hpp"
 #include "aeongui/dom/SVGAnimateTransformElement.hpp"
@@ -538,6 +539,11 @@ namespace AeonGUI
                     css_computed_style_destroy ( mComputedStyles->styles[CSS_PSEUDO_ELEMENT_NONE] );
                     mComputedStyles->styles[CSS_PSEUDO_ELEMENT_NONE] = composed;
                 }
+            }
+            Document* doc = ownerDocument();
+            if ( doc )
+            {
+                doc->MarkDirty();
             }
         }
 

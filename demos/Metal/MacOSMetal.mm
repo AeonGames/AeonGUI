@@ -216,17 +216,18 @@ static const uint16_t indices[] = { 0, 1, 2, 0, 2, 3 };
 
 - (void)drawInMTKView:(nonnull MTKView*)view
 {
-    mWindow->Draw();
+    if ( mWindow->Draw() )
+    {
+        // Upload pixels from AeonGUI into the Metal texture
+        NSUInteger width  = mWindow->GetWidth();
+        NSUInteger height = mWindow->GetHeight();
+        NSUInteger stride = mWindow->GetStride();
 
-    // Upload pixels from AeonGUI into the Metal texture
-    NSUInteger width  = mWindow->GetWidth();
-    NSUInteger height = mWindow->GetHeight();
-    NSUInteger stride = mWindow->GetStride();
-
-    [mScreenTexture replaceRegion:MTLRegionMake2D(0, 0, width, height)
-                      mipmapLevel:0
-                        withBytes:mWindow->GetPixels()
-                      bytesPerRow:stride];
+        [mScreenTexture replaceRegion:MTLRegionMake2D(0, 0, width, height)
+                          mipmapLevel:0
+                            withBytes:mWindow->GetPixels()
+                          bytesPerRow:stride];
+    }
 
     // ── Render ───────────────────────────────────────────────────────────
     id<MTLCommandBuffer> commandBuffer = [mCommandQueue commandBuffer];

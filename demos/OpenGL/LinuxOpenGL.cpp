@@ -333,22 +333,23 @@ bool GLWindow::Create ( Display* dpy )
         }
         last_time = current_time;
 
-        mWindow.Draw();
-
         glClear ( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT );
         OPENGL_CHECK_ERROR;
-        glBindTexture ( GL_TEXTURE_2D, mScreenTexture );
-        OPENGL_CHECK_ERROR;
-        glTexSubImage2D ( GL_TEXTURE_2D,
-                          0,
-                          0,
-                          0,
-                          static_cast<GLsizei> ( mWindow.GetWidth() ),
-                          static_cast<GLsizei> ( mWindow.GetHeight() ),
-                          GL_BGRA,
-                          GL_UNSIGNED_INT_8_8_8_8_REV,
-                          mWindow.GetPixels() );
-        OPENGL_CHECK_ERROR;
+        if ( mWindow.Draw() )
+        {
+            glBindTexture ( GL_TEXTURE_2D, mScreenTexture );
+            OPENGL_CHECK_ERROR;
+            glTexSubImage2D ( GL_TEXTURE_2D,
+                              0,
+                              0,
+                              0,
+                              static_cast<GLsizei> ( mWindow.GetWidth() ),
+                              static_cast<GLsizei> ( mWindow.GetHeight() ),
+                              GL_BGRA,
+                              GL_UNSIGNED_INT_8_8_8_8_REV,
+                              mWindow.GetPixels() );
+            OPENGL_CHECK_ERROR;
+        }
         glEnable ( GL_TEXTURE_2D );
         glBegin ( GL_TRIANGLE_FAN );
         {

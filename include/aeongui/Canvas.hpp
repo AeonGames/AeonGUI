@@ -193,13 +193,6 @@ namespace AeonGUI
         /** @brief Restore the previously saved graphics state.
          */
         virtual void Restore() = 0;
-        /** @brief Test whether a point lies inside the fill or stroke of a path.
-         *  @param aPath  The path to test against (uses current CTM).
-         *  @param aX     The X coordinate in user space.
-         *  @param aY     The Y coordinate in user space.
-         *  @return true if the point is inside the fill or stroke area.
-         */
-        virtual bool PointInPath ( const Path& aPath, double aX, double aY ) const = 0;
         /** @brief Get the native rendering surface handle.
          *  @return Pointer to the underlying surface (e.g. cairo_surface_t).
          */
@@ -246,10 +239,29 @@ namespace AeonGUI
         {
             return mHitTesting;
         }
+        /** @brief Set the current pick ID for subsequent Draw calls.
+         *
+         *  When non-zero, Draw(path) also fills the path on the
+         *  internal pick buffer using this value.  Set to 0 to
+         *  disable pick rendering for non-geometry nodes.
+         */
+        void SetPickId ( uint8_t aPickId )
+        {
+            mPickId = aPickId;
+        }
+        /** @brief Read the pick ID at the given viewport coordinates.
+         *  @param aX X coordinate in viewport pixels.
+         *  @param aY Y coordinate in viewport pixels.
+         *  @return Pick ID at that pixel, or 0 if empty / out of bounds.
+         */
+        virtual uint8_t PickAtPoint ( double aX, double aY ) const = 0;
+        /** @brief Clear the pick buffer and reset for a new frame. */
+        virtual void ResetPick() = 0;
         /** @brief Virtual destructor. */
         virtual ~Canvas() = 0;
     protected:
         bool mHitTesting{false};
+        uint8_t mPickId{0};
     };
 }
 #endif
