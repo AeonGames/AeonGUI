@@ -26,6 +26,7 @@ limitations under the License.
 #include "aeongui/dom/SVGScriptElement.hpp"
 #include "aeongui/dom/Document.hpp"
 #include "aeongui/dom/Event.hpp"
+#include "aeongui/dom/Text.hpp"
 
 namespace AeonGUI
 {
@@ -259,6 +260,7 @@ namespace AeonGUI
                 mContext.getAttribute = &SVGScriptElement::API_getAttribute;
                 mContext.getEventType = &SVGScriptElement::API_getEventType;
                 mContext.setAttribute = &SVGScriptElement::API_setAttribute;
+                mContext.querySelector = &SVGScriptElement::API_querySelector;
 
                 sActiveScriptElement = this;
                 mOnLoadFunc ( &mContext );
@@ -350,7 +352,20 @@ namespace AeonGUI
                 return;
             }
             Element* elem = reinterpret_cast<Element*> ( element );
-            elem->setAttribute ( name, value );
+            if ( std::string ( name ) == "textContent" )
+            {
+                // textContent is a DOM property, not an attribute.
+                // Replace all child text nodes with a single new one.
+                while ( !elem->childNodes().empty() )
+                {
+                    elem->RemoveNode ( elem->childNodes().front().get() );
+                }
+                elem->AddNode ( std::make_unique<Text> ( value, elem ) );
+            }
+            else
+            {
+                elem->setAttribute ( name, value );
+            }
         }
 
         const char* SVGScriptElement::API_getEventType ( AeonGUI_Event* event )
@@ -361,6 +376,17 @@ namespace AeonGUI
             }
             Event* evt = reinterpret_cast<Event*> ( event );
             return evt->type().c_str();
+        }
+
+        AeonGUI_Element* SVGScriptElement::API_querySelector ( AeonGUI_Element* element, const char* selector )
+        {
+            if ( !element || !selector )
+            {
+                return nullptr;
+            }
+            Element* elem = reinterpret_cast<Element*> ( element );
+            Element* result = elem->querySelector ( selector );
+            return reinterpret_cast<AeonGUI_Element*> ( result );
         }
     }
 }

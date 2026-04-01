@@ -262,6 +262,7 @@ namespace AeonGUI
         Element* Document::elementFromPoint ( Canvas& aCanvas, double aX, double aY ) const
         {
             Element* result = nullptr;
+            aCanvas.SetHitTesting ( true );
             TraverseDepthFirstPreOrder (
                 [&aCanvas, aX, aY, &result] ( const Node & aNode )
             {
@@ -278,12 +279,14 @@ namespace AeonGUI
             },
             [&aCanvas] ( const Node & aNode )
             {
+                aNode.DrawFinish ( aCanvas );
                 aCanvas.Restore();
             },
             [] ( const Node & aNode )
             {
                 return aNode.IsDrawEnabled();
             } );
+            aCanvas.SetHitTesting ( false );
             return result;
         }
     }

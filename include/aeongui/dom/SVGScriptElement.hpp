@@ -93,6 +93,7 @@ namespace AeonGUI
             static const char* API_getAttribute ( AeonGUI_Element* element, const char* name );
             static void API_setAttribute ( AeonGUI_Element* element, const char* name, const char* value );
             static const char* API_getEventType ( AeonGUI_Event* event );
+            static AeonGUI_Element* API_querySelector ( AeonGUI_Element* element, const char* selector );
 
             void* mLibHandle {nullptr};
             AeonGUI_OnLoadFunc mOnLoadFunc {nullptr};

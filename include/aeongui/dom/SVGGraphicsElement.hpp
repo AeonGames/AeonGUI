@@ -37,11 +37,17 @@ namespace AeonGUI
             /** @brief Destructor. */
             ~SVGGraphicsElement() override;
             /** @brief Apply the element's transform and begin drawing.
+             *  If a filter attribute is present, begins offscreen capture.
              *  @param aCanvas Target canvas.
              */
             void DrawStart ( Canvas& aCanvas ) const override;
+            /** @brief Finish drawing and apply any filter effects.
+             *  @param aCanvas Target canvas.
+             */
+            void DrawFinish ( Canvas& aCanvas ) const override;
         private:
             Matrix2x3 mTransform{};
+            mutable bool mHasFilter{false};
         };
     }
 }

@@ -132,6 +132,13 @@ typedef struct AeonGUI_PluginContext
      *  @param value   New value.
      */
     void ( *setAttribute ) ( AeonGUI_Element* element, const char* name, const char* value );
+
+    /** @brief Find the first descendant element matching a CSS selector.
+     *  @param element The root element to search within.
+     *  @param selector CSS selector string.
+     *  @return Element handle, or NULL if not found.
+     */
+    AeonGUI_Element* ( *querySelector ) ( AeonGUI_Element* element, const char* selector );
 } AeonGUI_PluginContext;
 
 /**

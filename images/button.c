@@ -32,7 +32,6 @@ static AeonGUI_PluginContext* gCtx = NULL;
 typedef struct
 {
     const char* groupId;
-    const char* rectId;
     const char* label;
     const char* normalGrad;
     const char* hoverGrad;
@@ -41,9 +40,9 @@ typedef struct
 
 static const ButtonInfo gButtons[] =
 {
-    { "blueBtn",  "blueBtnRect",  "Blue Button",  "url(#btnGrad)",      "url(#btnGradHover)",      "url(#btnGradActive)" },
-    { "greenBtn", "greenBtnRect", "Green Button", "url(#btnGradGreen)", "url(#btnGradGreenHover)", "url(#btnGradGreenActive)" },
-    { "redBtn",   "redBtnRect",   "Red Button",   "url(#btnGradRed)",   "url(#btnGradRedHover)",   "url(#btnGradRedActive)" },
+    { "blueBtn",  "Blue Button",  "url(#btnGrad)",      "url(#btnGradHover)",      "url(#btnGradActive)" },
+    { "greenBtn", "Green Button", "url(#btnGradGreen)", "url(#btnGradGreenHover)", "url(#btnGradGreenActive)" },
+    { "redBtn",   "Red Button",   "url(#btnGradRed)",   "url(#btnGradRedHover)",   "url(#btnGradRedActive)" },
 };
 
 #define BUTTON_COUNT (sizeof(gButtons) / sizeof(gButtons[0]))
@@ -68,7 +67,8 @@ static void setStatus ( const char* text )
 static void onMouseOver ( AeonGUI_Event* event, void* userData )
 {
     const ButtonInfo* info = ( const ButtonInfo* ) userData;
-    AeonGUI_Element* rect = gCtx->getElementById ( gCtx->document, info->rectId );
+    AeonGUI_Element* group = gCtx->getElementById ( gCtx->document, info->groupId );
+    AeonGUI_Element* rect = group ? gCtx->querySelector ( group, "rect" ) : NULL;
     if ( rect )
     {
         gCtx->setAttribute ( rect, "fill", info->hoverGrad );
@@ -83,8 +83,8 @@ static void onMouseOver ( AeonGUI_Event* event, void* userData )
 static void onMouseOut ( AeonGUI_Event* event, void* userData )
 {
     const ButtonInfo* info = ( const ButtonInfo* ) userData;
-    AeonGUI_Element* rect = gCtx->getElementById ( gCtx->document, info->rectId );
     AeonGUI_Element* group = gCtx->getElementById ( gCtx->document, info->groupId );
+    AeonGUI_Element* rect = group ? gCtx->querySelector ( group, "rect" ) : NULL;
     if ( rect )
     {
         gCtx->setAttribute ( rect, "fill", info->normalGrad );
@@ -104,8 +104,8 @@ static void onMouseOut ( AeonGUI_Event* event, void* userData )
 static void onMouseDown ( AeonGUI_Event* event, void* userData )
 {
     const ButtonInfo* info = ( const ButtonInfo* ) userData;
-    AeonGUI_Element* rect = gCtx->getElementById ( gCtx->document, info->rectId );
     AeonGUI_Element* group = gCtx->getElementById ( gCtx->document, info->groupId );
+    AeonGUI_Element* rect = group ? gCtx->querySelector ( group, "rect" ) : NULL;
     if ( rect )
     {
         gCtx->setAttribute ( rect, "fill", info->activeGrad );
@@ -125,8 +125,8 @@ static void onMouseDown ( AeonGUI_Event* event, void* userData )
 static void onMouseUp ( AeonGUI_Event* event, void* userData )
 {
     const ButtonInfo* info = ( const ButtonInfo* ) userData;
-    AeonGUI_Element* rect = gCtx->getElementById ( gCtx->document, info->rectId );
     AeonGUI_Element* group = gCtx->getElementById ( gCtx->document, info->groupId );
+    AeonGUI_Element* rect = group ? gCtx->querySelector ( group, "rect" ) : NULL;
     if ( rect )
     {
         gCtx->setAttribute ( rect, "fill", info->hoverGrad );
@@ -147,8 +147,9 @@ static void onMouseUp ( AeonGUI_Event* event, void* userData )
 
 static void onToggleDown ( AeonGUI_Event* event, void* userData )
 {
-    AeonGUI_Element* rect = gCtx->getElementById ( gCtx->document, "toggleBtnRect" );
-    AeonGUI_Element* text = gCtx->getElementById ( gCtx->document, "toggleBtnText" );
+    AeonGUI_Element* toggle = gCtx->getElementById ( gCtx->document, "toggleBtn" );
+    AeonGUI_Element* rect = toggle ? gCtx->querySelector ( toggle, "rect" ) : NULL;
+    AeonGUI_Element* text = toggle ? gCtx->querySelector ( toggle, "text" ) : NULL;
 
     if ( !gToggleOn )
     {

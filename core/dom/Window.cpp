@@ -27,6 +27,8 @@ limitations under the License.
 #include "aeongui/dom/KeyboardEvent.hpp"
 #include "aeongui/dom/WheelEvent.hpp"
 #include "aeongui/dom/FocusEvent.hpp"
+#include <vector>
+#include <algorithm>
 
 namespace AeonGUI
 {
@@ -94,23 +96,71 @@ namespace AeonGUI
                                        bool aAltKey, bool aMetaKey )
         {
             Element* target = mDocument.elementFromPoint ( mCanvas, aX, aY );
-            // Handle mouseenter/mouseleave when the hovered element changes
+            // Handle mouseenter/mouseleave when the hovered element changes.
+            // Per W3C spec, mouseenter/mouseleave do NOT bubble but must fire
+            // independently on every ancestor between the old/new target and
+            // their lowest common ancestor.
             if ( target != mHoverElement )
             {
-                if ( mHoverElement )
+                // Build ancestor chains for old and new hover elements.
+                auto ancestors = [] ( Element * e ) -> std::vector<Element*>
                 {
-                    mHoverElement->setHover ( false );
-                    mHoverElement->ReselectCSS();
+                    std::vector<Element*> chain;
+                    for ( Node * n = e; n != nullptr; n = n->parentNode() )
+                    {
+                        if ( n->nodeType() == Node::ELEMENT_NODE )
+                        {
+                            chain.push_back ( static_cast<Element*> ( n ) );
+                        }
+                    }
+                    return chain;
+                };
+                auto oldChain = ancestors ( mHoverElement );  // [target, parent, ... , root]
+                auto newChain = ancestors ( target );
+
+                // Find the lowest common ancestor (first element in oldChain also in newChain).
+                Element* lca = nullptr;
+                for ( auto * e : oldChain )
+                {
+                    if ( std::find ( newChain.begin(), newChain.end(), e ) != newChain.end() )
+                    {
+                        lca = e;
+                        break;
+                    }
+                }
+
+                // Fire mouseleave on old target and ancestors up to (not including) LCA.
+                for ( auto * e : oldChain )
+                {
+                    if ( e == lca )
+                    {
+                        break;
+                    }
+                    e->setHover ( false );
+                    e->ReselectCSS();
                     MouseEvent leaveEvent ( "mouseleave", MouseEventInit{EventModifierInit{UIEventInit{EventInit{false, false, false}, this, 0}, aCtrlKey, aShiftKey, aAltKey, aMetaKey}, aX, aY, aX, aY, 0, aButtons, target} );
-                    mHoverElement->dispatchEvent ( leaveEvent );
+                    e->dispatchEvent ( leaveEvent );
                 }
-                if ( target )
+
+                // Fire mouseenter on new target and ancestors up to (not including) LCA.
+                // Fire in top-down order (ancestors first), per spec.
+                std::vector<Element*> enterElements;
+                for ( auto * e : newChain )
                 {
-                    target->setHover ( true );
-                    target->ReselectCSS();
-                    MouseEvent enterEvent ( "mouseenter", MouseEventInit{EventModifierInit{UIEventInit{EventInit{false, false, false}, this, 0}, aCtrlKey, aShiftKey, aAltKey, aMetaKey}, aX, aY, aX, aY, 0, aButtons, mHoverElement} );
-                    target->dispatchEvent ( enterEvent );
+                    if ( e == lca )
+                    {
+                        break;
+                    }
+                    enterElements.push_back ( e );
                 }
+                for ( auto it = enterElements.rbegin(); it != enterElements.rend(); ++it )
+                {
+                    ( *it )->setHover ( true );
+                    ( *it )->ReselectCSS();
+                    MouseEvent enterEvent ( "mouseenter", MouseEventInit{EventModifierInit{UIEventInit{EventInit{false, false, false}, this, 0}, aCtrlKey, aShiftKey, aAltKey, aMetaKey}, aX, aY, aX, aY, 0, aButtons, mHoverElement} );
+                    ( *it )->dispatchEvent ( enterEvent );
+                }
+
                 mHoverElement = target;
             }
             if ( target )

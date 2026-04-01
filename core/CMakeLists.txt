@@ -19,6 +19,7 @@ set(AEONGUI_HEADERS
     ../include/aeongui/Color.hpp
     ../include/aeongui/RasterImage.hpp
     ../include/aeongui/StyleSheet.hpp
+    ../include/aeongui/CSSSelector.hpp
     ../include/aeongui/TextLayout.hpp
     ../include/aeongui/PangoTextLayout.hpp
     ../include/aeongui/FontDatabase.hpp
@@ -94,6 +95,7 @@ set(AEONGUI_DOM_HEADERS
 
 set(AEONGUI_SOURCES
     AeonGUI.cpp
+    CSSSelector.cpp
     ElementFactory.cpp
     Rect.cpp
     Transform.cpp

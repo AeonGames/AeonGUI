@@ -17,12 +17,13 @@ limitations under the License.
 #define AEONGUI_SVGFEDROPSHADOWELEMENT_H
 
 #include "SVGElement.hpp"
+#include "aeongui/Color.hpp"
 
 namespace AeonGUI
 {
     namespace DOM
     {
-        /** @brief SVG \<feDropShadow\> filter primitive (stub — not yet rendered).
+        /** @brief SVG \<feDropShadow\> filter primitive.
          *  @see https://www.w3.org/TR/filter-effects/#InterfaceSVGFEDropShadowElement
          */
         class SVGFEDropShadowElement : public SVGElement
@@ -31,6 +32,37 @@ namespace AeonGUI
             SVGFEDropShadowElement ( const DOMString& aTagName, AttributeMap&& aAttributes, Node* aParent );
             ~SVGFEDropShadowElement() final;
             bool IsDrawEnabled() const final;
+            double dx() const
+            {
+                return mDx;
+            }
+            double dy() const
+            {
+                return mDy;
+            }
+            double stdDeviationX() const
+            {
+                return mStdDeviationX;
+            }
+            double stdDeviationY() const
+            {
+                return mStdDeviationY;
+            }
+            Color floodColor() const
+            {
+                return mFloodColor;
+            }
+            double floodOpacity() const
+            {
+                return mFloodOpacity;
+            }
+        private:
+            double mDx{2};
+            double mDy{2};
+            double mStdDeviationX{2};
+            double mStdDeviationY{2};
+            Color mFloodColor{CSS3Color::black};
+            double mFloodOpacity{1.0};
         };
     }
 }

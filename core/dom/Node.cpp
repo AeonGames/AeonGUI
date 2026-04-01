@@ -18,6 +18,8 @@ Copyright (C) 2010-2013,2019,2020,2023-2026 Rodrigo Hernandez Cordoba
 #include <stack>
 #include "aeongui/dom/Node.hpp"
 #include "aeongui/dom/Document.hpp"
+#include "aeongui/dom/Element.hpp"
+#include "aeongui/CSSSelector.hpp"
 #include "aeongui/Color.hpp"
 
 namespace AeonGUI
@@ -44,6 +46,46 @@ namespace AeonGUI
                 node = node->parentNode();
             }
             return nullptr;
+        }
+
+        Element* Node::querySelector ( const DOMString& aSelector ) const
+        {
+            auto selectors = ParseSelector ( aSelector );
+            Element* result = nullptr;
+            const Node* root = this;
+            StackTraverseDepthFirstPreOrder (
+                [&selectors, &result, root] ( const Node & aNode )
+            {
+                if ( !result && &aNode != root && aNode.nodeType() == Node::ELEMENT_NODE )
+                {
+                    Element* elem = const_cast<Element*> ( static_cast<const Element*> ( &aNode ) );
+                    if ( MatchesAny ( *elem, selectors ) )
+                    {
+                        result = elem;
+                    }
+                }
+            } );
+            return result;
+        }
+
+        std::vector<Element*> Node::querySelectorAll ( const DOMString& aSelector ) const
+        {
+            auto selectors = ParseSelector ( aSelector );
+            std::vector<Element*> results;
+            const Node* root = this;
+            StackTraverseDepthFirstPreOrder (
+                [&selectors, &results, root] ( const Node & aNode )
+            {
+                if ( &aNode != root && aNode.nodeType() == Node::ELEMENT_NODE )
+                {
+                    Element* elem = const_cast<Element*> ( static_cast<const Element*> ( &aNode ) );
+                    if ( MatchesAny ( *elem, selectors ) )
+                    {
+                        results.push_back ( elem );
+                    }
+                }
+            } );
+            return results;
         }
 
         bool Node::IsDrawEnabled() const

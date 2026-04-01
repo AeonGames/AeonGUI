@@ -23,6 +23,7 @@ limitations under the License.
 #include "aeongui/Platform.hpp"
 #include "aeongui/AttributeMap.hpp"
 #include "aeongui/dom/EventTarget.hpp"
+#include "aeongui/dom/DOMString.hpp"
 
 namespace AeonGUI
 {
@@ -30,6 +31,7 @@ namespace AeonGUI
     namespace DOM
     {
         class Document;
+        class Element;
         /** @brief Base class for all nodes in the DOM tree.
          *
          *  Implements the DOM Node interface: parent/child relationships,
@@ -203,6 +205,18 @@ namespace AeonGUI
              *  @see https://dom.spec.whatwg.org/#dom-node-ownerdocument
              */
             DLL Document* ownerDocument() const;
+            /** @brief Find the first descendant element matching a CSS selector.
+             *  @param aSelector CSS selector string.
+             *  @return Pointer to the first matching Element, or nullptr.
+             *  @see https://dom.spec.whatwg.org/#dom-parentnode-queryselector
+             */
+            DLL Element* querySelector ( const DOMString& aSelector ) const;
+            /** @brief Find all descendant elements matching a CSS selector.
+             *  @param aSelector CSS selector string.
+             *  @return Vector of pointers to matching Elements.
+             *  @see https://dom.spec.whatwg.org/#dom-parentnode-queryselectorall
+             */
+            DLL std::vector<Element*> querySelectorAll ( const DOMString& aSelector ) const;
             /**@}*/
         private:
             DLL virtual void OnAncestorChanged();

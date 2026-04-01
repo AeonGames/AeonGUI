@@ -263,3 +263,246 @@ TEST ( DocumentTest, SetAttributeUpdatesIdLookup )
     std::error_code ec;
     std::filesystem::remove ( tempPath, ec );
 }
+
+TEST ( DocumentTest, QuerySelectorByType )
+{
+    const std::filesystem::path tempPath = std::filesystem::temp_directory_path() / "aeongui-qs-type.svg";
+    {
+        std::ofstream file ( tempPath, std::ios::binary | std::ios::out );
+        file << R"(<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100">)"
+             << R"(<rect id="r1" x="0" y="0" width="50" height="50"/>)"
+             << R"(<circle id="c1" cx="50" cy="50" r="25"/>)"
+             << R"(</svg>)";
+    }
+
+    AeonGUI::DOM::Document document;
+    document.Load ( tempPath.string() );
+
+    auto* elem = document.querySelector ( "rect" );
+    ASSERT_NE ( elem, nullptr );
+    EXPECT_EQ ( elem->id(), "r1" );
+
+    auto* circle = document.querySelector ( "circle" );
+    ASSERT_NE ( circle, nullptr );
+    EXPECT_EQ ( circle->id(), "c1" );
+
+    auto* none = document.querySelector ( "line" );
+    EXPECT_EQ ( none, nullptr );
+
+    std::error_code ec;
+    std::filesystem::remove ( tempPath, ec );
+}
+
+TEST ( DocumentTest, QuerySelectorById )
+{
+    const std::filesystem::path tempPath = std::filesystem::temp_directory_path() / "aeongui-qs-id.svg";
+    {
+        std::ofstream file ( tempPath, std::ios::binary | std::ios::out );
+        file << R"(<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100">)"
+             << R"(<rect id="myRect" x="0" y="0" width="50" height="50"/>)"
+             << R"(</svg>)";
+    }
+
+    AeonGUI::DOM::Document document;
+    document.Load ( tempPath.string() );
+
+    auto* elem = document.querySelector ( "#myRect" );
+    ASSERT_NE ( elem, nullptr );
+    EXPECT_EQ ( elem->tagName(), "rect" );
+
+    auto* none = document.querySelector ( "#missing" );
+    EXPECT_EQ ( none, nullptr );
+
+    std::error_code ec;
+    std::filesystem::remove ( tempPath, ec );
+}
+
+TEST ( DocumentTest, QuerySelectorByClass )
+{
+    const std::filesystem::path tempPath = std::filesystem::temp_directory_path() / "aeongui-qs-class.svg";
+    {
+        std::ofstream file ( tempPath, std::ios::binary | std::ios::out );
+        file << R"(<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100">)"
+             << R"(<rect class="btn" id="r1" x="0" y="0" width="50" height="50"/>)"
+             << R"(<rect class="label" id="r2" x="0" y="50" width="50" height="50"/>)"
+             << R"(</svg>)";
+    }
+
+    AeonGUI::DOM::Document document;
+    document.Load ( tempPath.string() );
+
+    auto* elem = document.querySelector ( ".btn" );
+    ASSERT_NE ( elem, nullptr );
+    EXPECT_EQ ( elem->id(), "r1" );
+
+    auto* label = document.querySelector ( ".label" );
+    ASSERT_NE ( label, nullptr );
+    EXPECT_EQ ( label->id(), "r2" );
+
+    std::error_code ec;
+    std::filesystem::remove ( tempPath, ec );
+}
+
+TEST ( DocumentTest, QuerySelectorCompound )
+{
+    const std::filesystem::path tempPath = std::filesystem::temp_directory_path() / "aeongui-qs-compound.svg";
+    {
+        std::ofstream file ( tempPath, std::ios::binary | std::ios::out );
+        file << R"(<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100">)"
+             << R"(<rect class="btn" id="r1" x="0" y="0" width="50" height="50"/>)"
+             << R"(<circle class="btn" id="c1" cx="50" cy="50" r="25"/>)"
+             << R"(</svg>)";
+    }
+
+    AeonGUI::DOM::Document document;
+    document.Load ( tempPath.string() );
+
+    auto* elem = document.querySelector ( "circle.btn" );
+    ASSERT_NE ( elem, nullptr );
+    EXPECT_EQ ( elem->id(), "c1" );
+
+    std::error_code ec;
+    std::filesystem::remove ( tempPath, ec );
+}
+
+TEST ( DocumentTest, QuerySelectorDescendant )
+{
+    const std::filesystem::path tempPath = std::filesystem::temp_directory_path() / "aeongui-qs-desc.svg";
+    {
+        std::ofstream file ( tempPath, std::ios::binary | std::ios::out );
+        file << R"(<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100">)"
+             << R"(<g id="group1">)"
+             << R"(<rect id="r1" x="0" y="0" width="50" height="50"/>)"
+             << R"(</g>)"
+             << R"(<rect id="r2" x="50" y="0" width="50" height="50"/>)"
+             << R"(</svg>)";
+    }
+
+    AeonGUI::DOM::Document document;
+    document.Load ( tempPath.string() );
+
+    // Descendant combinator: rect inside g
+    auto* elem = document.querySelector ( "g rect" );
+    ASSERT_NE ( elem, nullptr );
+    EXPECT_EQ ( elem->id(), "r1" );
+
+    std::error_code ec;
+    std::filesystem::remove ( tempPath, ec );
+}
+
+TEST ( DocumentTest, QuerySelectorChild )
+{
+    const std::filesystem::path tempPath = std::filesystem::temp_directory_path() / "aeongui-qs-child.svg";
+    {
+        std::ofstream file ( tempPath, std::ios::binary | std::ios::out );
+        file << R"(<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100">)"
+             << R"(<g id="outer"><g id="inner"><rect id="r1" x="0" y="0" width="50" height="50"/></g></g>)"
+             << R"(</svg>)";
+    }
+
+    AeonGUI::DOM::Document document;
+    document.Load ( tempPath.string() );
+
+    // Child combinator: svg > g should match "outer"
+    auto* elem = document.querySelector ( "svg > g" );
+    ASSERT_NE ( elem, nullptr );
+    EXPECT_EQ ( elem->id(), "outer" );
+
+    // Descendant should still work through nested groups
+    auto* r1 = document.querySelector ( "svg rect" );
+    ASSERT_NE ( r1, nullptr );
+    EXPECT_EQ ( r1->id(), "r1" );
+
+    std::error_code ec;
+    std::filesystem::remove ( tempPath, ec );
+}
+
+TEST ( DocumentTest, QuerySelectorAll )
+{
+    const std::filesystem::path tempPath = std::filesystem::temp_directory_path() / "aeongui-qsa.svg";
+    {
+        std::ofstream file ( tempPath, std::ios::binary | std::ios::out );
+        file << R"(<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100">)"
+             << R"(<rect id="r1" x="0" y="0" width="25" height="25"/>)"
+             << R"(<rect id="r2" x="25" y="0" width="25" height="25"/>)"
+             << R"(<circle id="c1" cx="50" cy="50" r="10"/>)"
+             << R"(</svg>)";
+    }
+
+    AeonGUI::DOM::Document document;
+    document.Load ( tempPath.string() );
+
+    auto rects = document.querySelectorAll ( "rect" );
+    ASSERT_EQ ( rects.size(), 2u );
+    EXPECT_EQ ( rects[0]->id(), "r1" );
+    EXPECT_EQ ( rects[1]->id(), "r2" );
+
+    auto all = document.querySelectorAll ( "*" );
+    // svg + rect + rect + circle = 4 elements
+    EXPECT_EQ ( all.size(), 4u );
+
+    auto empty = document.querySelectorAll ( "line" );
+    EXPECT_TRUE ( empty.empty() );
+
+    std::error_code ec;
+    std::filesystem::remove ( tempPath, ec );
+}
+
+TEST ( DocumentTest, ElementQuerySelector )
+{
+    const std::filesystem::path tempPath = std::filesystem::temp_directory_path() / "aeongui-elem-qs.svg";
+    {
+        std::ofstream file ( tempPath, std::ios::binary | std::ios::out );
+        file << R"(<svg xmlns="http://www.w3.org/2000/svg" width="200" height="100">)"
+             << R"(<g id="btn1"><rect id="r1" x="0" y="0" width="50" height="50"/><text id="t1">OK</text></g>)"
+             << R"(<g id="btn2"><rect id="r2" x="60" y="0" width="50" height="50"/><text id="t2">Cancel</text></g>)"
+             << R"(</svg>)";
+    }
+
+    AeonGUI::DOM::Document document;
+    document.Load ( tempPath.string() );
+
+    // querySelector on an Element should only search within that element's subtree
+    auto* btn1 = document.getElementById ( "btn1" );
+    ASSERT_NE ( btn1, nullptr );
+
+    auto* rectInBtn1 = btn1->querySelector ( "rect" );
+    ASSERT_NE ( rectInBtn1, nullptr );
+    EXPECT_EQ ( rectInBtn1->id(), "r1" );
+
+    auto* textInBtn1 = btn1->querySelector ( "text" );
+    ASSERT_NE ( textInBtn1, nullptr );
+    EXPECT_EQ ( textInBtn1->id(), "t1" );
+
+    std::error_code ec;
+    std::filesystem::remove ( tempPath, ec );
+}
+
+TEST ( DocumentTest, QuerySelectorCommaList )
+{
+    const std::filesystem::path tempPath = std::filesystem::temp_directory_path() / "aeongui-qs-comma.svg";
+    {
+        std::ofstream file ( tempPath, std::ios::binary | std::ios::out );
+        file << R"(<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100">)"
+             << R"(<rect id="r1" x="0" y="0" width="50" height="50"/>)"
+             << R"(<circle id="c1" cx="75" cy="75" r="10"/>)"
+             << R"(</svg>)";
+    }
+
+    AeonGUI::DOM::Document document;
+    document.Load ( tempPath.string() );
+
+    // Comma-separated selectors: first match in document order
+    auto* elem = document.querySelector ( "circle, rect" );
+    ASSERT_NE ( elem, nullptr );
+    // rect appears first in document order
+    EXPECT_EQ ( elem->id(), "r1" );
+
+    auto all = document.querySelectorAll ( "rect, circle" );
+    ASSERT_EQ ( all.size(), 2u );
+    EXPECT_EQ ( all[0]->id(), "r1" );
+    EXPECT_EQ ( all[1]->id(), "c1" );
+
+    std::error_code ec;
+    std::filesystem::remove ( tempPath, ec );
+}

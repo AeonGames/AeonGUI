@@ -204,8 +204,52 @@ namespace AeonGUI
          *  @return Pointer to the underlying surface (e.g. cairo_surface_t).
          */
         virtual void* GetNativeSurface() const = 0;
+        /** @brief Begin an offscreen group for filter/compositing.
+         *
+         *  All subsequent drawing is redirected to a temporary surface.
+         *  Call PopGroup() to retrieve and composite the result.
+         */
+        virtual void PushGroup() = 0;
+        /** @brief End an offscreen group and composite back.
+         *
+         *  Pops the group pushed by PushGroup() and paints it back
+         *  to the underlying surface.
+         */
+        virtual void PopGroup() = 0;
+        /** @brief Apply a drop-shadow filter to the current group content.
+         *
+         *  Must be called between PushGroup() and PopGroup().
+         *  The implementation captures the group, creates a blurred shadow,
+         *  offsets it, and composites it under the original content.
+         *
+         *  @param aDx            Horizontal offset of the shadow.
+         *  @param aDy            Vertical offset of the shadow.
+         *  @param aStdDeviationX Horizontal Gaussian blur standard deviation.
+         *  @param aStdDeviationY Vertical Gaussian blur standard deviation.
+         *  @param aFloodColor    Shadow color.
+         *  @param aFloodOpacity  Shadow opacity [0.0, 1.0].
+         */
+        virtual void ApplyDropShadow ( double aDx, double aDy,
+                                       double aStdDeviationX, double aStdDeviationY,
+                                       const Color& aFloodColor, double aFloodOpacity ) = 0;
+        /** @brief Enable or disable hit-testing mode.
+         *
+         *  When true, filter effects (PushGroup/PopGroup/ApplyDropShadow)
+         *  are skipped to avoid expensive pixel processing during
+         *  elementFromPoint traversals.
+         */
+        void SetHitTesting ( bool aHitTesting )
+        {
+            mHitTesting = aHitTesting;
+        }
+        bool IsHitTesting() const
+        {
+            return mHitTesting;
+        }
         /** @brief Virtual destructor. */
         virtual ~Canvas() = 0;
+    protected:
+        bool mHitTesting{false};
     };
 }
 #endif

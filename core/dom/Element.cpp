@@ -461,6 +461,13 @@ namespace AeonGUI
                     ReselectCSS();
                 }
             }
+            else if ( aName == "fill" || aName == "stroke" ||
+                      aName == "fill-opacity" || aName == "stroke-opacity" ||
+                      aName == "stroke-width" || aName == "opacity" ||
+                      aName == "transform" )
+            {
+                ReselectCSS();
+            }
         }
 
         bool Element::isHover() const

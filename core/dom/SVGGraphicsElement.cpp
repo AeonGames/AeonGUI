@@ -14,6 +14,9 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 #include "aeongui/dom/SVGGraphicsElement.hpp"
+#include "aeongui/dom/SVGFilterElement.hpp"
+#include "aeongui/dom/SVGFEDropShadowElement.hpp"
+#include "aeongui/dom/Document.hpp"
 #include "aeongui/Canvas.hpp"
 #include <libcss/libcss.h>
 
@@ -42,6 +45,88 @@ namespace AeonGUI
         {
             aCanvas.Transform ( mTransform );
             ApplyChildTransformAnimations ( aCanvas );
+
+            // Check for filter="url(#id)" attribute — skip during hit testing
+            mHasFilter = false;
+            if ( !aCanvas.IsHitTesting() )
+            {
+                const DOMString* filterAttr = getAttribute ( "filter" );
+                if ( filterAttr && !filterAttr->empty() )
+                {
+                    if ( filterAttr->compare ( 0, 5, "url(#" ) == 0 && filterAttr->back() == ')' )
+                    {
+                        std::string filterId = filterAttr->substr ( 5, filterAttr->size() - 6 );
+                        Document* doc = ownerDocument();
+                        if ( doc )
+                        {
+                            Element* filterElem = doc->getElementById ( filterId );
+                            if ( filterElem && filterElem->tagName() == "filter" )
+                            {
+                                mHasFilter = true;
+                                aCanvas.PushGroup();
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        void SVGGraphicsElement::DrawFinish ( Canvas& aCanvas ) const
+        {
+            if ( !mHasFilter )
+            {
+                return;
+            }
+
+            const DOMString* filterAttr = getAttribute ( "filter" );
+            if ( !filterAttr || filterAttr->empty() )
+            {
+                aCanvas.PopGroup();
+                return;
+            }
+
+            // Re-resolve the filter element to access its primitives
+            if ( filterAttr->compare ( 0, 5, "url(#" ) != 0 || filterAttr->back() != ')' )
+            {
+                aCanvas.PopGroup();
+                return;
+            }
+            std::string filterId = filterAttr->substr ( 5, filterAttr->size() - 6 );
+            Document* doc = ownerDocument();
+            Element* filterElem = doc ? doc->getElementById ( filterId ) : nullptr;
+            if ( !filterElem || filterElem->tagName() != "filter" )
+            {
+                aCanvas.PopGroup();
+                return;
+            }
+
+            // Iterate child filter primitives and apply them
+            bool applied = false;
+            for ( const auto& child : filterElem->childNodes() )
+            {
+                if ( child->nodeType() != Node::ELEMENT_NODE )
+                {
+                    continue;
+                }
+                Element* primitive = static_cast<Element*> ( child.get() );
+                if ( primitive->tagName() == "feDropShadow" )
+                {
+                    const SVGFEDropShadowElement* dropShadow =
+                        static_cast<const SVGFEDropShadowElement*> ( primitive );
+                    aCanvas.ApplyDropShadow (
+                        dropShadow->dx(), dropShadow->dy(),
+                        dropShadow->stdDeviationX(), dropShadow->stdDeviationY(),
+                        dropShadow->floodColor(), dropShadow->floodOpacity() );
+                    applied = true;
+                    break; // feDropShadow is a shorthand — typically only one per filter
+                }
+            }
+
+            if ( !applied )
+            {
+                // No recognized primitives — just pop the group unchanged
+                aCanvas.PopGroup();
+            }
         }
     }
 }

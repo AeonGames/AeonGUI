@@ -90,6 +90,11 @@ namespace AeonGUI
         DLL void Restore() final;
         DLL bool PointInPath ( const Path& aPath, double aX, double aY ) const final;
         DLL void* GetNativeSurface() const final;
+        DLL void PushGroup() final;
+        DLL void PopGroup() final;
+        DLL void ApplyDropShadow ( double aDx, double aDy,
+                                   double aStdDeviationX, double aStdDeviationY,
+                                   const Color& aFloodColor, double aFloodOpacity ) final;
     private:
         cairo_surface_t* mCairoSurface{};
         cairo_t* mCairoContext{};

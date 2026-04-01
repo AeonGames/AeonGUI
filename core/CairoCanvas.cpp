@@ -20,6 +20,7 @@ limitations under the License.
 #include <iostream>
 #include <algorithm>
 #include <cmath>
+#include <cstring>
 #include <limits>
 #include <vector>
 #include "aeongui/CairoCanvas.hpp"
@@ -666,5 +667,170 @@ namespace AeonGUI
     void* CairoCanvas::GetNativeSurface() const
     {
         return mCairoSurface;
+    }
+
+    void CairoCanvas::PushGroup()
+    {
+        cairo_push_group ( mCairoContext );
+    }
+
+    void CairoCanvas::PopGroup()
+    {
+        cairo_pop_group_to_source ( mCairoContext );
+        cairo_paint ( mCairoContext );
+    }
+
+    // 3-pass box blur approximation of Gaussian blur (applied per-axis).
+    // Each pass uses a sliding-window accumulator for O(n) per row/column.
+    static void BoxBlurH ( uint8_t* aData, int aWidth, int aHeight, int aStride, int aRadius )
+    {
+        if ( aRadius <= 0 )
+        {
+            return;
+        }
+        std::vector<uint8_t> tmp ( static_cast<size_t> ( aStride ) * static_cast<size_t> ( aHeight ) );
+        const double invDiam = 1.0 / ( 2 * aRadius + 1 );
+        for ( int y = 0; y < aHeight; y++ )
+        {
+            const uint8_t* src = aData + y * aStride;
+            uint8_t* dst = tmp.data() + y * aStride;
+            double sumB = 0, sumG = 0, sumR = 0, sumA = 0;
+            for ( int k = -aRadius; k <= aRadius; k++ )
+            {
+                int idx = std::clamp ( k, 0, aWidth - 1 ) * 4;
+                sumB += src[idx + 0];
+                sumG += src[idx + 1];
+                sumR += src[idx + 2];
+                sumA += src[idx + 3];
+            }
+            for ( int x = 0; x < aWidth; x++ )
+            {
+                dst[x * 4 + 0] = static_cast<uint8_t> ( std::clamp ( sumB * invDiam, 0.0, 255.0 ) );
+                dst[x * 4 + 1] = static_cast<uint8_t> ( std::clamp ( sumG * invDiam, 0.0, 255.0 ) );
+                dst[x * 4 + 2] = static_cast<uint8_t> ( std::clamp ( sumR * invDiam, 0.0, 255.0 ) );
+                dst[x * 4 + 3] = static_cast<uint8_t> ( std::clamp ( sumA * invDiam, 0.0, 255.0 ) );
+                int addIdx = std::clamp ( x + aRadius + 1, 0, aWidth - 1 ) * 4;
+                int subIdx = std::clamp ( x - aRadius, 0, aWidth - 1 ) * 4;
+                sumB += src[addIdx + 0] - src[subIdx + 0];
+                sumG += src[addIdx + 1] - src[subIdx + 1];
+                sumR += src[addIdx + 2] - src[subIdx + 2];
+                sumA += src[addIdx + 3] - src[subIdx + 3];
+            }
+        }
+        std::memcpy ( aData, tmp.data(), static_cast<size_t> ( aStride ) * static_cast<size_t> ( aHeight ) );
+    }
+
+    static void BoxBlurV ( uint8_t* aData, int aWidth, int aHeight, int aStride, int aRadius )
+    {
+        if ( aRadius <= 0 )
+        {
+            return;
+        }
+        std::vector<uint8_t> tmp ( static_cast<size_t> ( aStride ) * static_cast<size_t> ( aHeight ) );
+        const double invDiam = 1.0 / ( 2 * aRadius + 1 );
+        for ( int x = 0; x < aWidth; x++ )
+        {
+            double sumB = 0, sumG = 0, sumR = 0, sumA = 0;
+            for ( int k = -aRadius; k <= aRadius; k++ )
+            {
+                int iy = std::clamp ( k, 0, aHeight - 1 );
+                const uint8_t* src = aData + iy * aStride + x * 4;
+                sumB += src[0];
+                sumG += src[1];
+                sumR += src[2];
+                sumA += src[3];
+            }
+            for ( int y = 0; y < aHeight; y++ )
+            {
+                uint8_t* dst = tmp.data() + y * aStride + x * 4;
+                dst[0] = static_cast<uint8_t> ( std::clamp ( sumB * invDiam, 0.0, 255.0 ) );
+                dst[1] = static_cast<uint8_t> ( std::clamp ( sumG * invDiam, 0.0, 255.0 ) );
+                dst[2] = static_cast<uint8_t> ( std::clamp ( sumR * invDiam, 0.0, 255.0 ) );
+                dst[3] = static_cast<uint8_t> ( std::clamp ( sumA * invDiam, 0.0, 255.0 ) );
+                int addY = std::clamp ( y + aRadius + 1, 0, aHeight - 1 );
+                int subY = std::clamp ( y - aRadius, 0, aHeight - 1 );
+                const uint8_t* addP = aData + addY * aStride + x * 4;
+                const uint8_t* subP = aData + subY * aStride + x * 4;
+                sumB += addP[0] - subP[0];
+                sumG += addP[1] - subP[1];
+                sumR += addP[2] - subP[2];
+                sumA += addP[3] - subP[3];
+            }
+        }
+        std::memcpy ( aData, tmp.data(), static_cast<size_t> ( aStride ) * static_cast<size_t> ( aHeight ) );
+    }
+
+    static int StdDevToBoxRadius ( double aSigma )
+    {
+        if ( aSigma <= 0.0 )
+        {
+            return 0;
+        }
+        double d = std::floor ( aSigma * 3.0 * std::sqrt ( 2.0 * M_PI ) / 4.0 + 0.5 );
+        int r = static_cast<int> ( d ) / 2;
+        return ( r < 1 ) ? 1 : r;
+    }
+
+    void CairoCanvas::ApplyDropShadow ( double aDx, double aDy,
+                                        double aStdDeviationX, double aStdDeviationY,
+                                        const Color& aFloodColor, double aFloodOpacity )
+    {
+        // Pop the content group — cairo internally restores the state saved by push_group.
+        cairo_pattern_t* contentPattern = cairo_pop_group ( mCairoContext );
+
+        // -- Step 1: Render the shadow into its own group so we can blur it. --
+        // Push a shadow group, paint the flood color masked by the content alpha,
+        // then pop to get blurrable pixels.
+        cairo_push_group ( mCairoContext );
+
+        // Offset by (dx, dy) in user-space for the shadow position.
+        cairo_save ( mCairoContext );
+        cairo_translate ( mCairoContext, aDx, aDy );
+
+        // Set flood color as the source; use content alpha as the mask.
+        double opacity = std::clamp ( aFloodOpacity, 0.0, 1.0 );
+        cairo_set_source_rgba ( mCairoContext,
+                                aFloodColor.R(), aFloodColor.G(), aFloodColor.B(),
+                                opacity );
+        cairo_mask ( mCairoContext, contentPattern );
+        cairo_restore ( mCairoContext );
+
+        // Pop the shadow group — we now have a shadow pattern to blur.
+        cairo_pattern_t* shadowPattern = cairo_pop_group ( mCairoContext );
+
+        // -- Step 2: Blur the shadow surface if stdDeviation > 0. --
+        int radiusX = StdDevToBoxRadius ( aStdDeviationX );
+        int radiusY = StdDevToBoxRadius ( aStdDeviationY );
+        if ( radiusX > 0 || radiusY > 0 )
+        {
+            cairo_surface_t* shadowSurface = nullptr;
+            if ( cairo_pattern_get_surface ( shadowPattern, &shadowSurface ) == CAIRO_STATUS_SUCCESS
+                 && shadowSurface )
+            {
+                cairo_surface_flush ( shadowSurface );
+                int w = cairo_image_surface_get_width ( shadowSurface );
+                int h = cairo_image_surface_get_height ( shadowSurface );
+                if ( w > 0 && h > 0 )
+                {
+                    uint8_t* data = cairo_image_surface_get_data ( shadowSurface );
+                    int stride = cairo_image_surface_get_stride ( shadowSurface );
+                    for ( int pass = 0; pass < 3; pass++ )
+                    {
+                        BoxBlurH ( data, w, h, stride, radiusX );
+                        BoxBlurV ( data, w, h, stride, radiusY );
+                    }
+                    cairo_surface_mark_dirty ( shadowSurface );
+                }
+            }
+        }
+
+        // -- Step 3: Paint the blurred shadow, then the original content on top. --
+        cairo_set_source ( mCairoContext, shadowPattern );
+        cairo_paint ( mCairoContext );
+        cairo_pattern_destroy ( shadowPattern );
+
+        cairo_set_source ( mCairoContext, contentPattern );
+        cairo_paint ( mCairoContext );
+        cairo_pattern_destroy ( contentPattern );
     }
 }

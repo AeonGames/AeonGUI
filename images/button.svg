@@ -61,7 +61,7 @@
      onmouseout="btnMouseOut(this, 'url(#btnGrad)', 'Blue Button')"
      onmousedown="btnMouseDown(this, 'url(#btnGradActive)', 'Blue Button')"
      onmouseup="btnMouseUp(this, 'url(#btnGradHover)', 'Blue Button')">
-    <rect id="blueBtnRect" x="100" y="100" width="200" height="60" rx="10" fill="url(#btnGrad)" stroke="#29e" stroke-width="2"/>
+    <rect x="100" y="100" width="200" height="60" rx="10" fill="url(#btnGrad)" stroke="#29e" stroke-width="2"/>
     <text x="200" y="138" text-anchor="middle" font-family="sans-serif" font-size="20" fill="#fff" pointer-events="none">Blue Button</text>
   </g>
 
@@ -71,7 +71,7 @@
      onmouseout="btnMouseOut(this, 'url(#btnGradGreen)', 'Green Button')"
      onmousedown="btnMouseDown(this, 'url(#btnGradGreenActive)', 'Green Button')"
      onmouseup="btnMouseUp(this, 'url(#btnGradGreenHover)', 'Green Button')">
-    <rect id="greenBtnRect" x="500" y="100" width="200" height="60" rx="10" fill="url(#btnGradGreen)" stroke="#2a2" stroke-width="2"/>
+    <rect x="500" y="100" width="200" height="60" rx="10" fill="url(#btnGradGreen)" stroke="#2a2" stroke-width="2"/>
     <text x="600" y="138" text-anchor="middle" font-family="sans-serif" font-size="20" fill="#fff" pointer-events="none">Green Button</text>
   </g>
 
@@ -81,14 +81,14 @@
      onmouseout="btnMouseOut(this, 'url(#btnGradRed)', 'Red Button')"
      onmousedown="btnMouseDown(this, 'url(#btnGradRedActive)', 'Red Button')"
      onmouseup="btnMouseUp(this, 'url(#btnGradRedHover)', 'Red Button')">
-    <rect id="redBtnRect" x="300" y="250" width="200" height="60" rx="10" fill="url(#btnGradRed)" stroke="#b22" stroke-width="2"/>
+    <rect x="300" y="250" width="200" height="60" rx="10" fill="url(#btnGradRed)" stroke="#b22" stroke-width="2"/>
     <text x="400" y="288" text-anchor="middle" font-family="sans-serif" font-size="20" fill="#fff" pointer-events="none">Red Button</text>
   </g>
 
   <!-- Toggle Button -->
   <g id="toggleBtn" cursor="pointer" filter="url(#shadow)"
      onmousedown="toggleMouseDown(this)">
-    <rect id="toggleBtnRect" x="300" y="380" width="200" height="60" rx="30" fill="#888" stroke="#666" stroke-width="2"/>
-    <text id="toggleBtnText" x="400" y="418" text-anchor="middle" font-family="sans-serif" font-size="22" font-weight="bold" fill="#fff" pointer-events="none">OFF</text>
+    <rect x="300" y="380" width="200" height="60" rx="30" fill="#888" stroke="#666" stroke-width="2"/>
+    <text x="400" y="418" text-anchor="middle" font-family="sans-serif" font-size="22" font-weight="bold" fill="#fff" pointer-events="none">OFF</text>
   </g>
 </svg>
