@@ -8,6 +8,7 @@
 *.dll
 *.so
 *.dylib
+*.pdb
 
 # Compressed Files            #
 ###############################

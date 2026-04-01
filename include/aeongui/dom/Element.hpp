@@ -60,7 +60,7 @@ namespace AeonGUI
             /** @brief Get the tag name.
              *  @return The element's tag name.
              */
-            const DOMString& tagName() const;
+            DLL const DOMString& tagName() const;
             /** @brief Get the element's ID attribute value.
              *  @return The ID string.
              */
@@ -86,15 +86,15 @@ namespace AeonGUI
             /** @brief Check the :hover pseudo-class state.
              *  @return true if this element is hovered.
              */
-            bool isHover() const;
+            DLL bool isHover() const;
             /** @brief Check the :active pseudo-class state.
              *  @return true if this element is active (mouse held down).
              */
-            bool isActive() const;
+            DLL bool isActive() const;
             /** @brief Check the :focus pseudo-class state.
              *  @return true if this element has focus.
              */
-            bool isFocus() const;
+            DLL bool isFocus() const;
             /** @brief Set the :hover pseudo-class state.
              *  @param aHover true if the element is hovered. */
             void setHover ( bool aHover );
