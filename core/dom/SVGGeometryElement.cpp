@@ -15,13 +15,24 @@ limitations under the License.
 */
 #include <iostream>
 #include "aeongui/dom/SVGGeometryElement.hpp"
+#ifdef AEONGUI_USE_SKIA
+#include "aeongui/SkiaPath.hpp"
+#else
+#include "aeongui/CairoPath.hpp"
+#endif
 #include "aeongui/StyleSheet.hpp"
 #include <libcss/libcss.h>
 namespace AeonGUI
 {
     namespace DOM
     {
-        SVGGeometryElement::SVGGeometryElement ( const DOMString& aTagName, AttributeMap&& aAttributes, Node* aParent ) : SVGGraphicsElement ( aTagName, std::move ( aAttributes ), aParent ), mPath{}
+        SVGGeometryElement::SVGGeometryElement ( const DOMString& aTagName, AttributeMap&& aAttributes, Node* aParent ) : SVGGraphicsElement ( aTagName, std::move ( aAttributes ), aParent ), mPath{std::make_unique <
+#ifdef AEONGUI_USE_SKIA
+                    SkiaPath
+#else
+                    CairoPath
+#endif
+                    > () }
         {
         }
         SVGGeometryElement::~SVGGeometryElement() = default;
@@ -35,7 +46,7 @@ namespace AeonGUI
             }
             ApplyChildPaintAnimations ( aCanvas );
             RebuildAnimatedPath();
-            aCanvas.Draw ( mPath );
+            aCanvas.Draw ( *mPath );
         }
     }
 }

@@ -39,7 +39,11 @@ namespace AeonGUI
             return mLengthAdjust;
         }
 
+#ifdef AEONGUI_USE_SKIA
+        SkiaTextLayout& SVGTextContentElement::GetTextLayout() const
+#else
         PangoTextLayout& SVGTextContentElement::GetTextLayout() const
+#endif
         {
             return mTextLayout;
         }

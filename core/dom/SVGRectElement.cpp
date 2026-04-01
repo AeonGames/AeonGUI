@@ -141,7 +141,7 @@ namespace AeonGUI
                 }
                 // 10. close path.
                 path[i++] = static_cast<uint64_t> ( 'Z' );
-                mPath.Construct ( path.data(), i );
+                mPath->Construct ( path.data(), i );
             }
         }
 
@@ -274,7 +274,7 @@ namespace AeonGUI
                 path[i++] = mY;
             }
             path[i++] = static_cast<uint64_t> ( 'Z' );
-            mPath.Construct ( path.data(), i );
+            mPath->Construct ( path.data(), i );
         }
     }
 }

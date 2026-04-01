@@ -17,9 +17,9 @@ limitations under the License.
 #define AEONGUI_SVGGEOMETRYELEMENT_H
 
 #include <vector>
+#include <memory>
 #include "SVGGraphicsElement.hpp"
-// Path type should be selectable and should match Canvas type
-#include "aeongui/CairoPath.hpp"
+#include "aeongui/Path.hpp"
 
 namespace AeonGUI
 {
@@ -44,11 +44,11 @@ namespace AeonGUI
              */
             void DrawStart ( Canvas& aCanvas ) const final;
             /** @brief Get the path data for this geometry element.
-             *  @return Const reference to the CairoPath.
+             *  @return Const reference to the Path.
              */
-            const CairoPath& GetPath() const
+            const Path& GetPath() const
             {
-                return mPath;
+                return *mPath;
             }
         protected:
             /** @brief Rebuild the cached path with animated attribute values.
@@ -57,7 +57,7 @@ namespace AeonGUI
              *  child path-modifying animations (e.g. rx/ry on rect) are active.
              */
             virtual void RebuildAnimatedPath() const {}
-            mutable CairoPath mPath; ///< Cached Cairo path for this geometry.
+            mutable std::unique_ptr<Path> mPath; ///< Cached path for this geometry.
         };
     }
 }

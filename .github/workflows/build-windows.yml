@@ -20,6 +20,7 @@ jobs:
     strategy:
       matrix:
         compiler: [msvc]
+        backend: [Cairo, Skia]
 
     steps:
     - name: '🧰 Checkout'
@@ -89,7 +90,7 @@ jobs:
 
     - name: '🛠️ Configuring'
       run: |
-        cmake -DCMAKE_TOOLCHAIN_FILE="C:/vcpkg/scripts/buildsystems/vcpkg.cmake" -B ${{github.workspace}}/build
+        cmake -DCMAKE_TOOLCHAIN_FILE="C:/vcpkg/scripts/buildsystems/vcpkg.cmake" -DAEONGUI_BACKEND=${{ matrix.backend }} -B ${{github.workspace}}/build
         dir ${{github.workspace}}/build/demos/OpenGL/GL/
         dir ${{github.workspace}}/build/demos/OpenGL/KHR/
         cat ${{github.workspace}}/build/demos/OpenGL/GL/glcorearb.h

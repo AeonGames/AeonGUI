@@ -17,10 +17,11 @@ limitations under the License.
 #define AEONGUI_WINDOW_H
 #include <cstdint>
 #include <array>
+#include <memory>
 #include <unordered_map>
 #include <string>
 #include "aeongui/Platform.hpp"
-#include "aeongui/CairoCanvas.hpp"
+#include "aeongui/Canvas.hpp"
 #include "aeongui/dom/EventTarget.hpp"
 #include "aeongui/dom/USVString.hpp"
 #include "aeongui/dom/DOMString.hpp"
@@ -34,7 +35,7 @@ namespace AeonGUI
         class Document;
         /** @brief Represents a display window in the AeonGUI framework.
          *
-         *  Owns a Document, a CairoCanvas, and a Location.
+         *  Owns a Document, a Canvas, and a Location.
          *  Renders the document into a pixel buffer that can be blitted
          *  to the screen.
          *  @see https://html.spec.whatwg.org/multipage/nav-history-apis.html#window
@@ -186,7 +187,7 @@ namespace AeonGUI
             Element* mActiveElement{nullptr};  ///< The element currently being clicked (mousedown).
             Location mLocation{std::bind ( &Window::OnLocationChanged, this, std::placeholders::_1 ) };
             Document mDocument{};
-            CairoCanvas mCanvas{};
+            std::unique_ptr<Canvas> mCanvas;
             std::array<Element*, 256> mPickElements{}; ///< Pick ID → Element* map (0 = none).
             uint8_t mPickIdCounter{0}; ///< Number of pick IDs assigned this frame.
             /// Cached device-space bounds per element for dirty rect computation.

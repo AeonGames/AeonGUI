@@ -58,7 +58,7 @@ namespace AeonGUI
                 /// 2. perform an absolute lineto operation to absolute location (x2,y2)
                 static_cast<uint64_t> ( 'L' ), mX2, mY2,
             };
-            mPath.Construct ( path );
+            mPath->Construct ( path );
         }
 
         void SVGLineElement::onAttributeChanged ( const DOMString& aName, const DOMString& aValue )

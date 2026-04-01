@@ -258,6 +258,19 @@ namespace AeonGUI
         virtual uint8_t PickAtPoint ( double aX, double aY ) const = 0;
         /** @brief Clear the pick buffer and reset for a new frame. */
         virtual void ResetPick() = 0;
+        /** @brief Set a device-space clip rectangle on both render and pick surfaces.
+         *
+         *  Must be called between Save() and Restore().
+         *  @param aX X of clip rect (device pixels).
+         *  @param aY Y of clip rect (device pixels).
+         *  @param aWidth  Width (device pixels).
+         *  @param aHeight Height (device pixels).
+         */
+        virtual void SetClipRect ( double aX, double aY, double aWidth, double aHeight ) = 0;
+        /** @brief Create a new Path object suitable for this canvas backend.
+         *  @return A new empty Path instance.
+         */
+        virtual std::unique_ptr<Path> CreatePath() const = 0;
         /** @brief Virtual destructor. */
         virtual ~Canvas() = 0;
 

@@ -60,7 +60,7 @@ namespace AeonGUI
                     // 6. close path.
                     static_cast<uint64_t> ( 'Z' ),
                 };
-                mPath.Construct ( path );
+                mPath->Construct ( path );
             }
         }
 

@@ -50,7 +50,7 @@ namespace AeonGUI
                     path.emplace_back ( std::stod ( match[1] ) );
                     path.emplace_back ( std::stod ( match[2] ) );
                 }
-                mPath.Construct ( path );
+                mPath->Construct ( path );
             }
         }
 

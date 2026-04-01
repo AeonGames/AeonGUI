@@ -5,15 +5,17 @@ on: [push, pull_request]
 jobs:
 
   build:
-    runs-on: ${{ matrix.runs-on }}
+    runs-on: windows-latest
     strategy:
       fail-fast: false
       matrix:
+        sys: [mingw64, ucrt64, clang64]
+        backend: [Cairo, Skia]
         include:
-          - { icon: '🟦', sys: mingw64, runs-on: 'windows-latest' }
-          - { icon: '🟨', sys: ucrt64, runs-on: 'windows-latest' }
-          - { icon: '🟧', sys: clang64, runs-on: 'windows-latest' }
-    name: 🚧${{ matrix.icon }} ${{ matrix.sys }}
+          - { sys: mingw64, icon: '🟦' }
+          - { sys: ucrt64,  icon: '🟨' }
+          - { sys: clang64, icon: '🟧' }
+    name: 🚧${{ matrix.icon }} ${{ matrix.sys }} (${{ matrix.backend }})
     defaults:
       run:
         shell: msys2 {0}
@@ -63,7 +65,7 @@ jobs:
           cmake:p
           make:p
           tools-git:p
-          cairo:p
+          ${{ matrix.backend == 'Skia' && 'skia:p' || 'cairo:p' }}
           pango:p
           libxml2:p
           gtest:p
@@ -80,7 +82,7 @@ jobs:
       if: steps.changes.outputs.compiled == 'true'
 
     - name: '🛠️ Configuring'
-      run: cmake -G "MSYS Makefiles" -B ${{github.workspace}}/build -DCMAKE_BUILD_TYPE=Release
+      run: cmake -G "MSYS Makefiles" -B ${{github.workspace}}/build -DCMAKE_BUILD_TYPE=Release -DAEONGUI_BACKEND=${{ matrix.backend }}
       if: steps.changes.outputs.compiled == 'true'
 
     - name: '🏗️ Building'

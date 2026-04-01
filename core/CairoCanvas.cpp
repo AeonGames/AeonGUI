@@ -984,4 +984,9 @@ namespace AeonGUI
             cairo_set_matrix ( mPickContext, &saved );
         }
     }
+
+    std::unique_ptr<Path> CairoCanvas::CreatePath() const
+    {
+        return std::make_unique<CairoPath>();
+    }
 }

@@ -38,7 +38,7 @@ namespace AeonGUI
                     std::cerr << "Path Data: " << std::get<std::string> ( d ) << std::endl;
 #endif
                 }
-                mPath.Construct ( path );
+                mPath->Construct ( path );
             }
         }
 
@@ -51,7 +51,7 @@ namespace AeonGUI
             {
                 std::vector<DrawType> path;
                 ParsePathData ( path, aValue.c_str() );
-                mPath.Construct ( path );
+                mPath->Construct ( path );
             }
         }
     }

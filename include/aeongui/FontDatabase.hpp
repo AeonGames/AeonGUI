@@ -32,8 +32,8 @@ namespace AeonGUI
     /**
      * FontDatabase provides a local font database for AeonGUI,
      * independent of system-installed fonts.
-     * It uses FcConfig + PangoFontMap to load fonts from
-     * application-provided directories.
+     * It uses FcConfig to load fonts from application-provided directories.
+     * It also manages a PangoFontMap backed by the local FcConfig.
      *
      * This is a singleton; call Initialize()/Finalize() once.
      */
@@ -56,6 +56,10 @@ namespace AeonGUI
          *  @return true on success.
          */
         DLL static bool AddFontFile ( const std::string& aPath );
+        /** @brief Get the FcConfig used by the font database.
+         *  @return Pointer to the FcConfig.
+         */
+        DLL static FcConfig* GetFcConfig();
         /** @brief Get the PangoFontMap backed by the local font database.
          *  @return Pointer to the PangoFontMap.
          */

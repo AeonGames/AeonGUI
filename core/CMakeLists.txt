@@ -8,8 +8,6 @@ set(AEONGUI_HEADERS
     ../include/aeongui/ElementFactory.hpp
     ../include/aeongui/StringLiteral.hpp
     ../include/aeongui/Canvas.hpp
-    ../include/aeongui/CairoCanvas.hpp
-    ../include/aeongui/CairoPath.hpp
     ../include/aeongui/Path.hpp
     ../include/aeongui/AABB.hpp
     ../include/aeongui/Matrix2x3.hpp
@@ -21,10 +19,22 @@ set(AEONGUI_HEADERS
     ../include/aeongui/StyleSheet.hpp
     ../include/aeongui/CSSSelector.hpp
     ../include/aeongui/TextLayout.hpp
-    ../include/aeongui/PangoTextLayout.hpp
     ../include/aeongui/FontDatabase.hpp
     ../include/aeongui/PluginAPI.h
 )
+if(AEONGUI_BACKEND STREQUAL "Cairo")
+    list(APPEND AEONGUI_HEADERS
+        ../include/aeongui/CairoCanvas.hpp
+        ../include/aeongui/CairoPath.hpp
+        ../include/aeongui/PangoTextLayout.hpp
+    )
+elseif(AEONGUI_BACKEND STREQUAL "Skia")
+    list(APPEND AEONGUI_HEADERS
+        ../include/aeongui/SkiaCanvas.hpp
+        ../include/aeongui/SkiaPath.hpp
+        ../include/aeongui/SkiaTextLayout.hpp
+    )
+endif()
 set(AEONGUI_DOM_HEADERS
     ../include/aeongui/dom/DOMException.hpp
     ../include/aeongui/dom/DOMMatrix.hpp
@@ -103,17 +113,27 @@ set(AEONGUI_SOURCES
     Matrix2x3.cpp
     AABB.cpp
     Canvas.cpp
-    CairoCanvas.cpp
     Path.cpp
-    CairoPath.cpp
     Color.cpp
     RasterImage.cpp
     StyleSheet.cpp
     Canvas.cpp
     TextLayout.cpp
-    PangoTextLayout.cpp
     FontDatabase.cpp
 )
+if(AEONGUI_BACKEND STREQUAL "Cairo")
+    list(APPEND AEONGUI_SOURCES
+        CairoCanvas.cpp
+        CairoPath.cpp
+        PangoTextLayout.cpp
+    )
+elseif(AEONGUI_BACKEND STREQUAL "Skia")
+    list(APPEND AEONGUI_SOURCES
+        SkiaCanvas.cpp
+        SkiaPath.cpp
+        SkiaTextLayout.cpp
+    )
+endif()
 
 set(AEONGUI_DOM_SOURCES
     dom/DOMMatrix.cpp
@@ -195,10 +215,27 @@ endif(USE_CUDA)
 parser_code(path_data ${CMAKE_CURRENT_SOURCE_DIR}/parsers ${CMAKE_CURRENT_SOURCE_DIR}/parsers)
 #parser_code(style ${CMAKE_CURRENT_SOURCE_DIR}/parsers ${CMAKE_CURRENT_SOURCE_DIR}/parsers)
 
-include_directories(${CAIRO_INCLUDE_DIRS} ${PANGO_INCLUDE_DIRS} ${HARFBUZZ_INCLUDE_DIRS} ${FONTCONFIG_INCLUDE_DIRS} ${FREETYPE_INCLUDE_DIR_freetype2} ${FREETYPE_INCLUDE_DIR_ft2build} ${LIBXML2_INCLUDE_DIRS})
+if(AEONGUI_BACKEND STREQUAL "Cairo")
+    include_directories(${CAIRO_INCLUDE_DIRS} ${PANGO_INCLUDE_DIRS} ${HARFBUZZ_INCLUDE_DIRS} ${FONTCONFIG_INCLUDE_DIRS} ${FREETYPE_INCLUDE_DIR_freetype2} ${FREETYPE_INCLUDE_DIR_ft2build} ${LIBXML2_INCLUDE_DIRS})
+elseif(AEONGUI_BACKEND STREQUAL "Skia")
+    include_directories(${PANGO_INCLUDE_DIRS} ${HARFBUZZ_INCLUDE_DIRS} ${FONTCONFIG_INCLUDE_DIRS} ${FREETYPE_INCLUDE_DIR_freetype2} ${FREETYPE_INCLUDE_DIR_ft2build} ${LIBXML2_INCLUDE_DIRS})
+endif()
 add_library(AeonGUI SHARED ${AEONGUI_HEADERS} ${AEONGUI_SOURCES} ${AEONGUI_DOM_HEADERS} ${AEONGUI_DOM_SOURCES} ${AEONGUI_RESOURCES} ${BISON_path_data_parser_OUTPUTS} ${FLEX_path_data_lexer_OUTPUTS})
 set_target_properties(AeonGUI PROPERTIES COMPILE_FLAGS "-DNOMINMAX -D_CRT_SECURE_NO_WARNINGS")
-target_link_libraries(AeonGUI PRIVATE libcss ${pkgcfg_lib_CAIRO_cairo} ${pkgcfg_lib_PANGO_pango-1.0} ${pkgcfg_lib_PANGO_pangocairo-1.0} ${pkgcfg_lib_PANGO_pangoft2-1.0} ${pkgcfg_lib_PANGO_gobject-2.0} ${pkgcfg_lib_HARFBUZZ_harfbuzz} ${pkgcfg_lib_FONTCONFIG_fontconfig} ${LIBXML2_LIBRARIES} ${FREETYPE_LIBRARIES})
+if(AEONGUI_BACKEND STREQUAL "Cairo")
+    target_link_libraries(AeonGUI PRIVATE libcss ${pkgcfg_lib_CAIRO_cairo} ${pkgcfg_lib_PANGO_pango-1.0} ${pkgcfg_lib_PANGO_pangocairo-1.0} ${pkgcfg_lib_PANGO_pangoft2-1.0} ${pkgcfg_lib_PANGO_gobject-2.0} ${pkgcfg_lib_HARFBUZZ_harfbuzz} ${pkgcfg_lib_FONTCONFIG_fontconfig} ${LIBXML2_LIBRARIES} ${FREETYPE_LIBRARIES})
+elseif(AEONGUI_BACKEND STREQUAL "Skia")
+    if(TARGET unofficial::skia::skia)
+        target_link_libraries(AeonGUI PRIVATE libcss unofficial::skia::skia ${pkgcfg_lib_PANGO_pango-1.0} ${pkgcfg_lib_PANGO_pangoft2-1.0} ${pkgcfg_lib_PANGO_gobject-2.0} ${pkgcfg_lib_HARFBUZZ_harfbuzz} ${pkgcfg_lib_FONTCONFIG_fontconfig} ${LIBXML2_LIBRARIES} ${FREETYPE_LIBRARIES})
+        if(MSVC)
+            target_link_libraries(AeonGUI PRIVATE FontSub Usp10)
+        endif()
+    else()
+        target_include_directories(AeonGUI SYSTEM PUBLIC ${SKIA_INCLUDE_DIRS})
+        target_link_libraries(AeonGUI PRIVATE libcss ${SKIA_LIBRARIES} ${pkgcfg_lib_PANGO_pango-1.0} ${pkgcfg_lib_PANGO_pangoft2-1.0} ${pkgcfg_lib_PANGO_gobject-2.0} ${pkgcfg_lib_HARFBUZZ_harfbuzz} ${pkgcfg_lib_FONTCONFIG_fontconfig} ${LIBXML2_LIBRARIES} ${FREETYPE_LIBRARIES})
+    endif()
+    target_compile_definitions(AeonGUI PUBLIC AEONGUI_USE_SKIA=1)
+endif()
 
 if(USE_PNG AND PNG_FOUND)
   target_compile_definitions(AeonGUI PRIVATE USE_PNG=1)
@@ -218,25 +255,47 @@ if(USE_JPEG AND JPEG_FOUND)
   target_link_libraries(AeonGUI PRIVATE JPEG::JPEG)
 endif()
 
-target_precompile_headers(AeonGUI
-  PUBLIC
-    ${AEONGUI_HEADERS}
-    ${AEONGUI_DOM_HEADERS}
-  PRIVATE
-    <cairo.h>
-    <string>
-    <unordered_map>
-    <iostream>
-    <algorithm>
-    <cmath>
-    <limits>
-    <vector>
-    <functional>
-    <memory>
-    <utility>
-    <tuple>
-    <regex>
-)
+if(AEONGUI_BACKEND STREQUAL "Cairo")
+    target_precompile_headers(AeonGUI
+      PUBLIC
+        ${AEONGUI_HEADERS}
+        ${AEONGUI_DOM_HEADERS}
+      PRIVATE
+        <cairo.h>
+        <string>
+        <unordered_map>
+        <iostream>
+        <algorithm>
+        <cmath>
+        <limits>
+        <vector>
+        <functional>
+        <memory>
+        <utility>
+        <tuple>
+        <regex>
+    )
+elseif(AEONGUI_BACKEND STREQUAL "Skia")
+    target_precompile_headers(AeonGUI
+      PUBLIC
+        ${AEONGUI_HEADERS}
+        ${AEONGUI_DOM_HEADERS}
+      PRIVATE
+        <include/core/SkCanvas.h>
+        <string>
+        <unordered_map>
+        <iostream>
+        <algorithm>
+        <cmath>
+        <limits>
+        <vector>
+        <functional>
+        <memory>
+        <utility>
+        <tuple>
+        <regex>
+    )
+endif()
 
 if(MINGW)
   fix_compile_commands(AeonGUI)

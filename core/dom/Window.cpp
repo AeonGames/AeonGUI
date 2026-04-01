@@ -22,6 +22,11 @@ limitations under the License.
 
 #include "aeongui/dom/Element.hpp"
 #include "aeongui/dom/Window.hpp"
+#ifdef AEONGUI_USE_SKIA
+#include "aeongui/SkiaCanvas.hpp"
+#else
+#include "aeongui/CairoCanvas.hpp"
+#endif
 #include "aeongui/dom/Document.hpp"
 #include "aeongui/dom/SVGGeometryElement.hpp"
 #include "aeongui/dom/SVGFilterElement.hpp"
@@ -38,9 +43,21 @@ namespace AeonGUI
 {
     namespace DOM
     {
-        Window::Window () = default;
+        Window::Window () : mCanvas{std::make_unique <
+#ifdef AEONGUI_USE_SKIA
+                                        SkiaCanvas
+#else
+                                        CairoCanvas
+#endif
+                                        > () } {}
         Window::Window ( uint32_t aWidth, uint32_t aHeight ) :
-            mCanvas{aWidth, aHeight}
+            mCanvas{std::make_unique <
+#ifdef AEONGUI_USE_SKIA
+                    SkiaCanvas
+#else
+                    CairoCanvas
+#endif
+                    > ( aWidth, aHeight ) }
         {
         }
 
@@ -63,26 +80,26 @@ namespace AeonGUI
 
         void Window::ResizeViewport ( uint32_t aWidth, uint32_t aHeight )
         {
-            mCanvas.ResizeViewport ( aWidth, aHeight );
+            mCanvas->ResizeViewport ( aWidth, aHeight );
             mDocument.MarkDirty();
         }
 
         const uint8_t* Window::GetPixels() const
         {
-            return mCanvas.GetPixels();
+            return mCanvas->GetPixels();
         }
 
         size_t Window::GetWidth() const
         {
-            return mCanvas.GetWidth();
+            return mCanvas->GetWidth();
         }
         size_t Window::GetHeight() const
         {
-            return mCanvas.GetHeight();
+            return mCanvas->GetHeight();
         }
         size_t Window::GetStride() const
         {
-            return mCanvas.GetStride();
+            return mCanvas->GetStride();
         }
 
         bool Window::Draw()
@@ -107,7 +124,7 @@ namespace AeonGUI
         {
             mPickIdCounter = 0;
             mPickElements.fill ( nullptr );
-            mDocument.Draw ( mCanvas, [this] ( const Node & aNode )
+            mDocument.Draw ( *mCanvas, [this] ( const Node & aNode )
             {
                 if ( aNode.nodeType() == Node::ELEMENT_NODE &&
                      dynamic_cast<const SVGGeometryElement * > ( &aNode ) &&
@@ -115,14 +132,14 @@ namespace AeonGUI
                 {
                     ++mPickIdCounter;
                     mPickElements[mPickIdCounter] = const_cast<Element*> ( static_cast<const Element*> ( &aNode ) );
-                    mCanvas.SetPickId ( mPickIdCounter );
+                    mCanvas->SetPickId ( mPickIdCounter );
                 }
                 else
                 {
-                    mCanvas.SetPickId ( 0 );
+                    mCanvas->SetPickId ( 0 );
                 }
             } );
-            mCanvas.SetPickId ( 0 );
+            mCanvas->SetPickId ( 0 );
         }
 
         void Window::CacheBounds()
@@ -132,7 +149,7 @@ namespace AeonGUI
             {
                 if ( mPickElements[i] )
                 {
-                    Canvas::PickBounds bounds = mCanvas.GetPickBounds ( i );
+                    Canvas::PickBounds bounds = mCanvas->GetPickBounds ( i );
                     // Expand bounds for drop-shadow filter effects.
                     const DOMString* filterAttr = mPickElements[i]->getAttribute ( "filter" );
                     if ( filterAttr && filterAttr->compare ( 0, 5, "url(#" ) == 0 && filterAttr->back() == ')' )
@@ -165,8 +182,8 @@ namespace AeonGUI
 
         void Window::FullDraw()
         {
-            mCanvas.Clear();
-            mCanvas.ResetPick();
+            mCanvas->Clear();
+            mCanvas->ResetPick();
             AssignPickIds();
             CacheBounds();
         }
@@ -195,15 +212,15 @@ namespace AeonGUI
             {
                 // Some dirty elements lack cached bounds (e.g. text nodes)
                 // — fall back to full draw.
-                mCanvas.Clear();
-                mCanvas.ResetPick();
+                mCanvas->Clear();
+                mCanvas->ResetPick();
                 AssignPickIds();
                 CacheBounds();
                 return;
             }
             // Clamp to viewport.
-            double vw = static_cast<double> ( mCanvas.GetWidth() );
-            double vh = static_cast<double> ( mCanvas.GetHeight() );
+            double vw = static_cast<double> ( mCanvas->GetWidth() );
+            double vh = static_cast<double> ( mCanvas->GetHeight() );
             dx1 = std::max ( std::floor ( dx1 ), 0.0 );
             dy1 = std::max ( std::floor ( dy1 ), 0.0 );
             dx2 = std::min ( std::ceil ( dx2 ), vw );
@@ -214,12 +231,12 @@ namespace AeonGUI
                 return;
             }
             // Clip both surfaces to the dirty rectangle, clear, and redraw.
-            mCanvas.Save();
-            mCanvas.SetClipRect ( dx1, dy1, dx2 - dx1, dy2 - dy1 );
-            mCanvas.Clear();
-            mCanvas.ResetPick();
+            mCanvas->Save();
+            mCanvas->SetClipRect ( dx1, dy1, dx2 - dx1, dy2 - dy1 );
+            mCanvas->Clear();
+            mCanvas->ResetPick();
             AssignPickIds();
-            mCanvas.Restore();
+            mCanvas->Restore();
             CacheBounds();
         }
 
@@ -230,7 +247,7 @@ namespace AeonGUI
 
         Element* Window::elementFromPoint ( double aX, double aY ) const
         {
-            uint8_t id = mCanvas.PickAtPoint ( aX, aY );
+            uint8_t id = mCanvas->PickAtPoint ( aX, aY );
             return ( id > 0 && id <= mPickIdCounter ) ? mPickElements[id] : nullptr;
         }
 

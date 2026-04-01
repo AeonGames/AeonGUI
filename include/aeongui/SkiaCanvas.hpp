@@ -1,5 +1,5 @@
 /*
-Copyright (C) 2019,2020,2024,2025,2026 Rodrigo Jose Hernandez Cordoba
+Copyright (C) 2026 Rodrigo Jose Hernandez Cordoba
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -13,36 +13,25 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 */
-#ifndef AEONGUI_CAIROCANVAS_H
-#define AEONGUI_CAIROCANVAS_H
+#ifndef AEONGUI_SKIACANVAS_H
+#define AEONGUI_SKIACANVAS_H
 #include <cstdint>
 #include <string>
+#include <vector>
+#include <include/core/SkRefCnt.h>
 #include "aeongui/Canvas.hpp"
 
-struct _cairo_surface;
-typedef struct _cairo_surface cairo_surface_t;
-struct _cairo;
-typedef struct _cairo cairo_t;
+class SkSurface;
+class SkCanvas;
 
 namespace AeonGUI
 {
-    /** @brief Cairo-backed Canvas implementation.
-     *
-     *  Provides software rasterization of paths, images, and text
-     *  using the Cairo 2D graphics library.
-     */
-    class CairoCanvas : public Canvas
+    class SkiaCanvas : public Canvas
     {
     public:
-        /** @brief Default constructor. Creates an empty canvas. */
-        DLL CairoCanvas ();
-        /** @brief Construct a canvas with the given viewport size.
-         *  @param aWidth  Initial width in pixels.
-         *  @param aHeight Initial height in pixels.
-         */
-        DLL CairoCanvas ( uint32_t aWidth, uint32_t aHeight );
-        /** @brief Destructor. Releases Cairo resources. */
-        DLL ~CairoCanvas() final;
+        DLL SkiaCanvas ();
+        DLL SkiaCanvas ( uint32_t aWidth, uint32_t aHeight );
+        DLL ~SkiaCanvas() final;
         DLL void ResizeViewport ( uint32_t aWidth, uint32_t aHeight ) final;
         DLL const uint8_t* GetPixels() const final;
         DLL size_t GetWidth() const final;
@@ -99,18 +88,31 @@ namespace AeonGUI
         DLL void SetClipRect ( double aX, double aY, double aWidth, double aHeight ) final;
         DLL std::unique_ptr<Path> CreatePath() const final;
     private:
-        void InitPickSurface ( uint32_t aWidth, uint32_t aHeight );
-        void DestroyPickSurface();
-        cairo_surface_t* mCairoSurface{};
-        cairo_t* mCairoContext{};
-        cairo_surface_t* mPickSurface{};
-        cairo_t* mPickContext{};
+        void InitSurfaces ( uint32_t aWidth, uint32_t aHeight );
+        // Render surface
+        sk_sp<SkSurface> mSurface;
+        SkCanvas* mCanvas{};  // owned by mSurface
+        // Pick surface (A8)
+        std::vector<uint8_t> mPickPixels;
+        uint32_t mWidth{0};
+        uint32_t mHeight{0};
+        // BGRA pixel cache (Skia stores RGBA, we expose BGRA for compatibility)
+        mutable std::vector<uint8_t> mPixelCache;
+        mutable bool mPixelCacheDirty{true};
+        // Paint state
         ColorAttr mFillColor{};
         ColorAttr mStrokeColor{};
         double mStrokeWidth{1};
         double mStrokeOpacity{1};
         double mFillOpacity{1};
         double mOpacity{1};
+        // Offscreen group stack
+        struct SavedLayer
+        {
+            sk_sp<SkSurface> surface;
+            SkCanvas* canvas;
+        };
+        std::vector<SavedLayer> mGroupStack;
     };
 }
 #endif

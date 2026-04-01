@@ -18,8 +18,12 @@ limitations under the License.
 #include <fontconfig/fontconfig.h>
 #include <pango/pango.h>
 #include <pango/pangofc-fontmap.h>
+#ifdef AEONGUI_USE_SKIA
+#include <pango/pangoft2.h>
+#else
 #include <pango/pangocairo.h>
 #include <cairo.h>
+#endif
 #include <iostream>
 #include <filesystem>
 #ifdef _WIN32
@@ -113,9 +117,13 @@ namespace AeonGUI
 
         // Do NOT load system configuration — we want a local-only database.
         // FcConfigSetCurrent is NOT called so the system default remains untouched for
-        // other libraries; we only use sFcConfig explicitly via our PangoFontMap.
+        // other libraries; we only use sFcConfig explicitly via our font map.
 
+#ifdef AEONGUI_USE_SKIA
+        sFontMap = pango_ft2_font_map_new();
+#else
         sFontMap = pango_cairo_font_map_new_for_font_type ( CAIRO_FONT_TYPE_FT );
+#endif
         if ( sFontMap == nullptr )
         {
             FcConfigDestroy ( sFcConfig );
@@ -187,6 +195,11 @@ namespace AeonGUI
         }
         pango_fc_font_map_config_changed ( PANGO_FC_FONT_MAP ( sFontMap ) );
         return true;
+    }
+
+    FcConfig* FontDatabase::GetFcConfig()
+    {
+        return sFcConfig;
     }
 
     PangoFontMap* FontDatabase::GetFontMap()
