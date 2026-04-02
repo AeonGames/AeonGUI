@@ -237,8 +237,14 @@ if(CMAKE_C_COMPILER_ID STREQUAL "GNU" OR CMAKE_C_COMPILER_ID STREQUAL "Clang")
 	set(CMAKE_C_FLAGS_DEBUG "-DDEBUG -g -O0")
 endif()
 
-# TODO: Set _ALIGNED to the proper attribute if/when required
-add_definitions(-D_USE_MATH_DEFINES  -D_ALIGNED=)
+# _ALIGNED is used by libcss (NetSurf) on struct css_rule to ensure correct
+# alignment when casting between base/derived struct types (C inheritance).
+# On ARM, GCC warns about casts increasing alignment requirements without this.
+if(MSVC)
+  add_definitions(-D_USE_MATH_DEFINES "-D_ALIGNED=__declspec(align(8))")
+else()
+  add_definitions(-D_USE_MATH_DEFINES "-D_ALIGNED=__attribute__((aligned))")
+endif()
 
 if(BUILD_UNIT_TESTS)
   add_subdirectory(tests)
@@ -314,12 +320,15 @@ install(
   FILES
     include/aeongui/AeonGUI.hpp
     include/aeongui/AABB.hpp
+    include/aeongui/Attribute.hpp
+    include/aeongui/AttributeMap.hpp
     include/aeongui/Canvas.hpp
     include/aeongui/Color.hpp
     include/aeongui/CSSSelector.hpp
     include/aeongui/DrawType.hpp
     include/aeongui/ElementFactory.hpp
     include/aeongui/FontDatabase.hpp
+    include/aeongui/LogLevel.hpp
     include/aeongui/Matrix2x3.hpp
     include/aeongui/Path.hpp
     include/aeongui/Platform.hpp
