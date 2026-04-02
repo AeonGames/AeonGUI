@@ -17,6 +17,7 @@ limitations under the License.
 #include <cmath>
 #include <filesystem>
 #include <iostream>
+#include <mutex>
 #include <regex>
 #include <libxml/tree.h>
 #include <libxml/parser.h>
@@ -99,8 +100,15 @@ namespace AeonGUI
             return NodeType::DOCUMENT_NODE;
         }
 
+        // Serialize Document::Load: libwapcaplet (used by libcss) maintains a
+        // global string-intern hash table with no internal synchronisation.
+        // All CSS/lwc access in this codebase flows through Load, so a
+        // single static mutex is sufficient to prevent the data race.
+        static std::mutex sLoadMutex;
+
         void Document::Load ( const USVString& aFilename )
         {
+            std::lock_guard<std::mutex> lock ( sLoadMutex );
             mUrl = HasScheme ( aFilename ) ? aFilename : PathToFileURL ( aFilename );
             xmlDocPtr document{xmlReadFile ( reinterpret_cast<const char*> ( mUrl.c_str() ), nullptr, 0 ) };
             if ( document == nullptr )

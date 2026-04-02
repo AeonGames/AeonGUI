@@ -21,7 +21,6 @@ limitations under the License.
 #include <tuple>
 #include <algorithm>
 #include <iostream>
-#include <shared_mutex>
 #include <mutex>
 #include "aeongui/StringLiteral.hpp"
 #include "aeongui/LogLevel.hpp"
@@ -108,11 +107,15 @@ namespace AeonGUI
         MakeConstructor<DOM::SVGFEDropShadowElement> ( "feDropShadow" ),
     };
 
-    static std::shared_mutex sConstructorsMutex;
+    static std::mutex& GetConstructorsMutex()
+    {
+        static std::mutex sMutex;
+        return sMutex;
+    }
 
     std::unique_ptr<DOM::Element> Construct ( const char* aIdentifier, AttributeMap&& aAttributeMap, DOM::Node* aParent )
     {
-        std::shared_lock<std::shared_mutex> lock ( sConstructorsMutex );
+        std::lock_guard<std::mutex> lock ( GetConstructorsMutex() );
         auto it = std::find_if ( Constructors.begin(), Constructors.end(),
                                  [aIdentifier] ( const Constructor & aConstructor )
         {
@@ -128,7 +131,7 @@ namespace AeonGUI
 
     void Destroy ( const char* aIdentifier, DOM::Element* aElement )
     {
-        std::shared_lock<std::shared_mutex> lock ( sConstructorsMutex );
+        std::lock_guard<std::mutex> lock ( GetConstructorsMutex() );
         auto it = std::find_if ( Constructors.begin(), Constructors.end(),
                                  [aIdentifier] ( const Constructor & aConstructor )
         {
@@ -149,7 +152,7 @@ namespace AeonGUI
                                const std::function < void ( DOM::Element* ) > & aDestructor
                              )
     {
-        std::unique_lock<std::shared_mutex> lock ( sConstructorsMutex );
+        std::lock_guard<std::mutex> lock ( GetConstructorsMutex() );
         auto it = std::find_if ( Constructors.begin(), Constructors.end(),
                                  [aIdentifier] ( const Constructor & aConstructor )
         {
@@ -164,7 +167,7 @@ namespace AeonGUI
     }
     bool UnregisterConstructor ( const StringLiteral& aIdentifier )
     {
-        std::unique_lock<std::shared_mutex> lock ( sConstructorsMutex );
+        std::lock_guard<std::mutex> lock ( GetConstructorsMutex() );
         auto it = std::find_if ( Constructors.begin(), Constructors.end(),
                                  [aIdentifier] ( const Constructor & aConstructor )
         {
@@ -179,7 +182,7 @@ namespace AeonGUI
     }
     void EnumerateConstructors ( const std::function<bool ( const StringLiteral& ) >& aEnumerator )
     {
-        std::shared_lock<std::shared_mutex> lock ( sConstructorsMutex );
+        std::lock_guard<std::mutex> lock ( GetConstructorsMutex() );
         for ( auto& i : Constructors )
         {
             if ( !aEnumerator ( std::get<0> ( i ) ) )

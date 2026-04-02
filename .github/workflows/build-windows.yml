@@ -91,13 +91,7 @@ jobs:
     - name: '🛠️ Configuring'
       run: |
         cmake -DCMAKE_TOOLCHAIN_FILE="C:/vcpkg/scripts/buildsystems/vcpkg.cmake" -DAEONGUI_BACKEND=${{ matrix.backend }} -B ${{github.workspace}}/build
-        dir ${{github.workspace}}/build/demos/OpenGL/GL/
-        dir ${{github.workspace}}/build/demos/OpenGL/KHR/
-        cat ${{github.workspace}}/build/demos/OpenGL/GL/glcorearb.h
-        cat ${{github.workspace}}/build/demos/OpenGL/GL/wglext.h
-        cat ${{github.workspace}}/build/demos/OpenGL/KHR/khrplatform.h
 
-      if: matrix.compiler == 'msvc' && steps.changes.outputs.compiled == 'true'
 
     - name: '🏗️ Building'
       run: cmake --build ${{github.workspace}}/build

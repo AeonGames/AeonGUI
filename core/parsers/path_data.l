@@ -19,6 +19,7 @@ limitations under the License.
 #include <cstdlib>
 #include <mutex>
 #include "aeongui/DrawType.hpp"
+#include "aeongui/Platform.hpp"
 #include "../core/parsers/dstype.hpp"
 #include "path_data_parser.hpp"
 #define YY_NO_UNISTD_H 1
@@ -69,7 +70,7 @@ namespace AeonGUI
 {
 	namespace DOM
 	{
-		int ParsePathData(std::vector<DrawType>& aPath,const char* string)
+		DLL int ParsePathData(std::vector<DrawType>& aPath,const char* string)
 		{
 			static std::mutex parser_mutex;
 			std::lock_guard<std::mutex> lock(parser_mutex);

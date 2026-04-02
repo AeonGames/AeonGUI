@@ -71,7 +71,7 @@ namespace AeonGUI
         DLL static PangoContext* CreateContext();
     private:
         FontDatabase() = delete;
-        static std::recursive_mutex sMutex;
+        static std::recursive_mutex& GetMutex();
         static FcConfig* sFcConfig;
         static PangoFontMap* sFontMap;
     };

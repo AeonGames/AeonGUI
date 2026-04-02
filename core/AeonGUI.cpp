@@ -15,6 +15,7 @@ limitations under the License.
 */
 
 #include <memory>
+#include <libxml/parser.h>
 #include "aeongui/AeonGUI.hpp"
 #include "aeongui/FontDatabase.hpp"
 
@@ -22,6 +23,7 @@ namespace AeonGUI
 {
     void Initialize ( int argc, char *argv[] )
     {
+        xmlInitParser();
         FontDatabase::Initialize();
     }
     void Finalize()

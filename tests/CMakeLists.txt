@@ -37,6 +37,7 @@ set(TESTED_SRCS
   DOMPointTest.cpp
   DOMRectReadOnlyTest.cpp
   DOMRectTest.cpp
+  ErrorHandlingTest.cpp
   HitTestTest.cpp
   Location.cpp
   NodeTest.cpp
@@ -46,6 +47,7 @@ set(TESTED_SRCS
   SVGImageElementTest.cpp
   SVGLengthTest.cpp
   SVGScriptElementTest.cpp
+  ThreadSafetyTest.cpp
   UIEventsTest.cpp
 )
 

@@ -35,8 +35,8 @@
    especially those whose name start with YY_ or yy_.  They are
    private implementation details that can be changed or removed.  */
 
-#ifndef YY_D_C_CODE_AEONGUI_MINGW64_CORE_PATH_DATA_PARSER_HPP_INCLUDED
-# define YY_D_C_CODE_AEONGUI_MINGW64_CORE_PATH_DATA_PARSER_HPP_INCLUDED
+#ifndef YY_D_C_CODE_AEONGUI_MINGW64_SKIA_CORE_PATH_DATA_PARSER_HPP_INCLUDED
+# define YY_D_C_CODE_AEONGUI_MINGW64_SKIA_CORE_PATH_DATA_PARSER_HPP_INCLUDED
 /* Debug traces.  */
 #ifndef DDEBUG
 # if defined YYDEBUG
@@ -56,7 +56,7 @@ extern int ddebug;
 #line 15 "C:/Code/AeonGUI/core/parsers/path_data.ypp"
 
 /*
-Copyright (C) 2019-2021,2023,2025 Rodrigo Jose Hernandez Cordoba
+Copyright (C) 2019-2021,2023,2025,2026 Rodrigo Jose Hernandez Cordoba
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
 You may obtain a copy of the License at
@@ -68,7 +68,7 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-#line 72 "C:/Code/AeonGUI/mingw64/core/path_data_parser.hpp"
+#line 72 "C:/Code/AeonGUI/mingw64-skia/core/path_data_parser.hpp"
 
 /* Token kinds.  */
 #ifndef DTOKENTYPE
@@ -98,4 +98,4 @@ extern DSTYPE dlval;
 int dparse ( std::vector<AeonGUI::DrawType>& aPath );
 
 
-#endif /* !YY_D_C_CODE_AEONGUI_MINGW64_CORE_PATH_DATA_PARSER_HPP_INCLUDED  */
+#endif /* !YY_D_C_CODE_AEONGUI_MINGW64_SKIA_CORE_PATH_DATA_PARSER_HPP_INCLUDED  */

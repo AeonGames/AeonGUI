@@ -21,7 +21,7 @@ namespace AeonGUI
     namespace DOM
     {
         static const std::regex url_regex (
-            R"(^((?:[/\w]+):)(//)?([^:/?#]+)?(?::(\d+))?([/\w :.-]+)?(\?[\w=&-]+)?(#[\w-]+)?$)"
+            R"(^((?:[/\w]+):)(//)?([^:/?#]+)?(?::(\d+))?([/\w :.~-]+)?(\?[\w=&-]+)?(#[\w-]+)?$)"
         );
 
         static bool HasScheme ( const USVString& url )

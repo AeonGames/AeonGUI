@@ -41,9 +41,14 @@ limitations under the License.
 
 namespace AeonGUI
 {
-    std::recursive_mutex FontDatabase::sMutex;
     FcConfig* FontDatabase::sFcConfig = nullptr;
     PangoFontMap* FontDatabase::sFontMap = nullptr;
+
+    std::recursive_mutex& FontDatabase::GetMutex()
+    {
+        static std::recursive_mutex sMutex;
+        return sMutex;
+    }
 
     static std::filesystem::path GetExecutableDir()
     {
@@ -108,7 +113,7 @@ namespace AeonGUI
 
     void FontDatabase::Initialize()
     {
-        std::lock_guard<std::recursive_mutex> lock ( sMutex );
+        std::lock_guard<std::recursive_mutex> lock ( GetMutex() );
         if ( sFcConfig != nullptr )
         {
             return;
@@ -159,7 +164,7 @@ namespace AeonGUI
 
     void FontDatabase::Finalize()
     {
-        std::lock_guard<std::recursive_mutex> lock ( sMutex );
+        std::lock_guard<std::recursive_mutex> lock ( GetMutex() );
         if ( sFontMap != nullptr )
         {
             g_object_unref ( sFontMap );
@@ -174,7 +179,7 @@ namespace AeonGUI
 
     void FontDatabase::AddFontDirectory ( const std::string& aPath )
     {
-        std::lock_guard<std::recursive_mutex> lock ( sMutex );
+        std::lock_guard<std::recursive_mutex> lock ( GetMutex() );
         if ( sFcConfig == nullptr )
         {
             std::string msg{"FontDatabase: Not initialized"};
@@ -194,7 +199,7 @@ namespace AeonGUI
 
     void FontDatabase::AddFontFile ( const std::string& aPath )
     {
-        std::lock_guard<std::recursive_mutex> lock ( sMutex );
+        std::lock_guard<std::recursive_mutex> lock ( GetMutex() );
         if ( sFcConfig == nullptr )
         {
             std::string msg{"FontDatabase: Not initialized"};
@@ -213,19 +218,19 @@ namespace AeonGUI
 
     FcConfig* FontDatabase::GetFcConfig()
     {
-        std::lock_guard<std::recursive_mutex> lock ( sMutex );
+        std::lock_guard<std::recursive_mutex> lock ( GetMutex() );
         return sFcConfig;
     }
 
     PangoFontMap* FontDatabase::GetFontMap()
     {
-        std::lock_guard<std::recursive_mutex> lock ( sMutex );
+        std::lock_guard<std::recursive_mutex> lock ( GetMutex() );
         return sFontMap;
     }
 
     PangoContext* FontDatabase::CreateContext()
     {
-        std::lock_guard<std::recursive_mutex> lock ( sMutex );
+        std::lock_guard<std::recursive_mutex> lock ( GetMutex() );
         if ( sFontMap == nullptr )
         {
             std::string msg{"FontDatabase: Cannot create context, not initialized"};
