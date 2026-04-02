@@ -28,8 +28,8 @@ namespace AeonGUI
     {
     public:
         SkiaPath();
-        void Construct ( const std::vector<DrawType>& aCommands ) final;
-        void Construct ( const DrawType* aCommands, size_t aCommandCount ) final;
+        void Construct ( const std::vector<DrawType>& aCommands, size_t aPathDataHint = 0 ) final;
+        void Construct ( const DrawType* aCommands, size_t aCommandCount, size_t aPathDataHint = 0 ) final;
         ~SkiaPath();
         /** @brief Access the underlying Skia path object.
          *  @return Const reference to the internal @c SkPath.

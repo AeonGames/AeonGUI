@@ -32,7 +32,7 @@ namespace AeonGUI
 {
     namespace DOM
     {
-        int ParsePathData ( std::vector<DrawType>& aPath, const char* s );
+        int ParsePathData ( std::vector<DrawType>& aPath, const char* s, size_t& aEstimate );
     }
 }
 
@@ -45,7 +45,8 @@ TEST ( ParsePathDataThreadSafety, ConcurrentParseProducesSameResults )
 
     // Parse once on the main thread to get the expected result.
     std::vector<AeonGUI::DrawType> expected;
-    ASSERT_EQ ( AeonGUI::DOM::ParsePathData ( expected, pathStr ), 0 );
+    size_t expectedEstimate = 0;
+    ASSERT_EQ ( AeonGUI::DOM::ParsePathData ( expected, pathStr, expectedEstimate ), 0 );
 
     std::vector<std::vector<AeonGUI::DrawType>> results ( kThreads );
     std::vector<std::thread> threads;
@@ -55,7 +56,8 @@ TEST ( ParsePathDataThreadSafety, ConcurrentParseProducesSameResults )
     {
         threads.emplace_back ( [&results, i, pathStr]()
         {
-            EXPECT_EQ ( AeonGUI::DOM::ParsePathData ( results[i], pathStr ), 0 );
+            size_t estimate = 0;
+            EXPECT_EQ ( AeonGUI::DOM::ParsePathData ( results[i], pathStr, estimate ), 0 );
         } );
     }
 
@@ -76,17 +78,20 @@ TEST ( ParsePathDataThreadSafety, ConcurrentParseDifferentPaths )
     const char* pathB = "M0 0 L100 0 L100 100 Z";
 
     std::vector<AeonGUI::DrawType> expectedA, expectedB;
-    ASSERT_EQ ( AeonGUI::DOM::ParsePathData ( expectedA, pathA ), 0 );
-    ASSERT_EQ ( AeonGUI::DOM::ParsePathData ( expectedB, pathB ), 0 );
+    size_t estimateA = 0, estimateB = 0;
+    ASSERT_EQ ( AeonGUI::DOM::ParsePathData ( expectedA, pathA, estimateA ), 0 );
+    ASSERT_EQ ( AeonGUI::DOM::ParsePathData ( expectedB, pathB, estimateB ), 0 );
 
     std::vector<AeonGUI::DrawType> resultA, resultB;
     std::thread tA ( [&]()
     {
-        AeonGUI::DOM::ParsePathData ( resultA, pathA );
+        size_t estimate = 0;
+        AeonGUI::DOM::ParsePathData ( resultA, pathA, estimate );
     } );
     std::thread tB ( [&]()
     {
-        AeonGUI::DOM::ParsePathData ( resultB, pathB );
+        size_t estimate = 0;
+        AeonGUI::DOM::ParsePathData ( resultB, pathB, estimate );
     } );
     tA.join();
     tB.join();
@@ -112,7 +117,8 @@ TEST ( ParsePathDataThreadSafety, StressTest )
             for ( int j = 0; j < kIterations; ++j )
             {
                 std::vector<AeonGUI::DrawType> path;
-                if ( AeonGUI::DOM::ParsePathData ( path, pathStr ) != 0 )
+                size_t estimate = 0;
+                if ( AeonGUI::DOM::ParsePathData ( path, pathStr, estimate ) != 0 )
                 {
                     ++failures;
                 }
@@ -289,7 +295,7 @@ TEST ( DocumentThreadSafety, ConcurrentDocumentLoads )
     const std::string svgStr =
         R"(<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100">)"
         R"(<rect x="10" y="10" width="80" height="80"/>)"
-        R"(</svg>)";
+R"(</svg>)";
 
     // Write temp files (one per thread to avoid file contention).
     std::vector<std::filesystem::path> paths;

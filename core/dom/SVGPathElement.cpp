@@ -21,13 +21,14 @@ namespace AeonGUI
 {
     namespace DOM
     {
-        int ParsePathData ( std::vector<DrawType>& aPath, const char* s );
+        int ParsePathData ( std::vector<DrawType>& aPath, const char* s, size_t& aEstimate );
         SVGPathElement::SVGPathElement ( const std::string& aTagName, AttributeMap&& aAttributes, Node* aParent ) : SVGGeometryElement { aTagName, std::move ( aAttributes ), aParent }
         {
             if ( mAttributes.find ( "d" ) != mAttributes.end() )
             {
                 std::vector<DrawType> path;
-                if ( ParsePathData ( path, mAttributes.at ( "d" ).c_str() ) )
+                size_t estimate = 0;
+                if ( ParsePathData ( path, mAttributes.at ( "d" ).c_str(), estimate ) )
                 {
 #if 0
                     auto id = GetAttribute ( "id" );
@@ -38,7 +39,7 @@ namespace AeonGUI
                     std::cerr << "Path Data: " << std::get<std::string> ( d ) << std::endl;
 #endif
                 }
-                mPath->Construct ( path );
+                mPath->Construct ( path, estimate );
             }
         }
 
@@ -50,8 +51,9 @@ namespace AeonGUI
             if ( aName == "d" )
             {
                 std::vector<DrawType> path;
-                ParsePathData ( path, aValue.c_str() );
-                mPath->Construct ( path );
+                size_t estimate = 0;
+                ParsePathData ( path, aValue.c_str(), estimate );
+                mPath->Construct ( path, estimate );
             }
         }
     }

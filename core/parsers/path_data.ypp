@@ -1,6 +1,6 @@
 %code top {
 /*
-Copyright (C) 2019-2021,2023,2025 Rodrigo Jose Hernandez Cordoba
+Copyright (C) 2019-2021,2023,2025,2026 Rodrigo Jose Hernandez Cordoba
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
 You may obtain a copy of the License at
@@ -14,7 +14,7 @@ limitations under the License.
 }
 %code requires {
 /*
-Copyright (C) 2019-2021,2023,2025 Rodrigo Jose Hernandez Cordoba
+Copyright (C) 2019-2021,2023,2025,2026 Rodrigo Jose Hernandez Cordoba
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
 You may obtain a copy of the License at
@@ -37,7 +37,7 @@ limitations under the License.
 extern int dlex();
 extern "C"
 {
-    int derror (std::vector<AeonGUI::DrawType>& aPath,const char *s);
+    int derror (std::vector<AeonGUI::DrawType>& aPath,size_t& aEstimate,const char *s);
 }
 static void Merge(dstype& aLeft,dstype& aRight)
 {
@@ -68,6 +68,7 @@ static dstype GetArcArgs(const dstype& aRadii,const dstype& aRotation,const dsty
 %}
 %define api.prefix {d}
 %parse-param {std::vector<AeonGUI::DrawType>& aPath}
+%parse-param {size_t& aEstimate}
 %token NUMBER
 %%
 svg-path:
@@ -94,47 +95,47 @@ drawto-command:
     | smooth-quadratic-bezier-curveto
     | elliptical-arc;
 moveto:
-    'M' single-coordinate-pair-argument-sequence {AddCommandToPath(aPath,std::get<AeonGUI::DrawType>($1),std::get<std::vector<AeonGUI::DrawType>>($2));}
+    'M' single-coordinate-pair-argument-sequence {auto& args=std::get<std::vector<AeonGUI::DrawType>>($2);aEstimate+=args.size();AddCommandToPath(aPath,std::get<AeonGUI::DrawType>($1),args);}
     |
-    'm' single-coordinate-pair-argument-sequence {AddCommandToPath(aPath,std::get<AeonGUI::DrawType>($1),std::get<std::vector<AeonGUI::DrawType>>($2));}
+    'm' single-coordinate-pair-argument-sequence {auto& args=std::get<std::vector<AeonGUI::DrawType>>($2);aEstimate+=args.size();AddCommandToPath(aPath,std::get<AeonGUI::DrawType>($1),args);}
     ;
 closepath:
-    'Z' {aPath.emplace_back(std::get<AeonGUI::DrawType>($1));}
-    |'z' {aPath.emplace_back(std::get<AeonGUI::DrawType>($1));}
+    'Z' {aEstimate+=3;aPath.emplace_back(std::get<AeonGUI::DrawType>($1));}
+    |'z' {aEstimate+=3;aPath.emplace_back(std::get<AeonGUI::DrawType>($1));}
     ;
 lineto:
-    'L' single-coordinate-pair-argument-sequence {AddCommandToPath(aPath,std::get<AeonGUI::DrawType>($1),std::get<std::vector<AeonGUI::DrawType>>($2));}
+    'L' single-coordinate-pair-argument-sequence {auto& args=std::get<std::vector<AeonGUI::DrawType>>($2);aEstimate+=args.size();AddCommandToPath(aPath,std::get<AeonGUI::DrawType>($1),args);}
     |
-    'l' single-coordinate-pair-argument-sequence {AddCommandToPath(aPath,std::get<AeonGUI::DrawType>($1),std::get<std::vector<AeonGUI::DrawType>>($2));}
+    'l' single-coordinate-pair-argument-sequence {auto& args=std::get<std::vector<AeonGUI::DrawType>>($2);aEstimate+=args.size();AddCommandToPath(aPath,std::get<AeonGUI::DrawType>($1),args);}
     ;
 horizontal-lineto:
-    'H' coordinate-argument-sequence {AddCommandToPath(aPath,std::get<AeonGUI::DrawType>($1),std::get<std::vector<AeonGUI::DrawType>>($2));}
-    | 'h' coordinate-argument-sequence {AddCommandToPath(aPath,std::get<AeonGUI::DrawType>($1),std::get<std::vector<AeonGUI::DrawType>>($2));}
+    'H' coordinate-argument-sequence {auto& args=std::get<std::vector<AeonGUI::DrawType>>($2);aEstimate+=2*args.size();AddCommandToPath(aPath,std::get<AeonGUI::DrawType>($1),args);}
+    | 'h' coordinate-argument-sequence {auto& args=std::get<std::vector<AeonGUI::DrawType>>($2);aEstimate+=2*args.size();AddCommandToPath(aPath,std::get<AeonGUI::DrawType>($1),args);}
     ;
 vertical-lineto:
-    'V' coordinate-argument-sequence {AddCommandToPath(aPath,std::get<AeonGUI::DrawType>($1),std::get<std::vector<AeonGUI::DrawType>>($2));}
-    | 'v' coordinate-argument-sequence {AddCommandToPath(aPath,std::get<AeonGUI::DrawType>($1),std::get<std::vector<AeonGUI::DrawType>>($2));}
+    'V' coordinate-argument-sequence {auto& args=std::get<std::vector<AeonGUI::DrawType>>($2);aEstimate+=2*args.size();AddCommandToPath(aPath,std::get<AeonGUI::DrawType>($1),args);}
+    | 'v' coordinate-argument-sequence {auto& args=std::get<std::vector<AeonGUI::DrawType>>($2);aEstimate+=2*args.size();AddCommandToPath(aPath,std::get<AeonGUI::DrawType>($1),args);}
     ;
 curveto:
-    'C' triple-coordinate-pair-argument-sequence {AddCommandToPath(aPath,std::get<AeonGUI::DrawType>($1),std::get<std::vector<AeonGUI::DrawType>>($2));}
-    | 'c' triple-coordinate-pair-argument-sequence {AddCommandToPath(aPath,std::get<AeonGUI::DrawType>($1),std::get<std::vector<AeonGUI::DrawType>>($2));}
+    'C' triple-coordinate-pair-argument-sequence {auto& args=std::get<std::vector<AeonGUI::DrawType>>($2);aEstimate+=args.size()*2/3;AddCommandToPath(aPath,std::get<AeonGUI::DrawType>($1),args);}
+    | 'c' triple-coordinate-pair-argument-sequence {auto& args=std::get<std::vector<AeonGUI::DrawType>>($2);aEstimate+=args.size()*2/3;AddCommandToPath(aPath,std::get<AeonGUI::DrawType>($1),args);}
     ;
 smooth-curveto:
-    'S' double-coordinate-pair-argument-sequence {AddCommandToPath(aPath,std::get<AeonGUI::DrawType>($1),std::get<std::vector<AeonGUI::DrawType>>($2));}
-    | 's' double-coordinate-pair-argument-sequence {AddCommandToPath(aPath,std::get<AeonGUI::DrawType>($1),std::get<std::vector<AeonGUI::DrawType>>($2));}
+    'S' double-coordinate-pair-argument-sequence {auto& args=std::get<std::vector<AeonGUI::DrawType>>($2);aEstimate+=args.size();AddCommandToPath(aPath,std::get<AeonGUI::DrawType>($1),args);}
+    | 's' double-coordinate-pair-argument-sequence {auto& args=std::get<std::vector<AeonGUI::DrawType>>($2);aEstimate+=args.size();AddCommandToPath(aPath,std::get<AeonGUI::DrawType>($1),args);}
     ;
 quadratic-bezier-curveto:
-    'Q' double-coordinate-pair-argument-sequence {AddCommandToPath(aPath,std::get<AeonGUI::DrawType>($1),std::get<std::vector<AeonGUI::DrawType>>($2));}
-    | 'q' double-coordinate-pair-argument-sequence {AddCommandToPath(aPath,std::get<AeonGUI::DrawType>($1),std::get<std::vector<AeonGUI::DrawType>>($2));}
+    'Q' double-coordinate-pair-argument-sequence {auto& args=std::get<std::vector<AeonGUI::DrawType>>($2);aEstimate+=args.size();AddCommandToPath(aPath,std::get<AeonGUI::DrawType>($1),args);}
+    | 'q' double-coordinate-pair-argument-sequence {auto& args=std::get<std::vector<AeonGUI::DrawType>>($2);aEstimate+=args.size();AddCommandToPath(aPath,std::get<AeonGUI::DrawType>($1),args);}
     ;
 smooth-quadratic-bezier-curveto:
-    'T' single-coordinate-pair-argument-sequence {AddCommandToPath(aPath,std::get<AeonGUI::DrawType>($1),std::get<std::vector<AeonGUI::DrawType>>($2));}
-    | 't' single-coordinate-pair-argument-sequence {AddCommandToPath(aPath,std::get<AeonGUI::DrawType>($1),std::get<std::vector<AeonGUI::DrawType>>($2));}
+    'T' single-coordinate-pair-argument-sequence {auto& args=std::get<std::vector<AeonGUI::DrawType>>($2);aEstimate+=2*args.size();AddCommandToPath(aPath,std::get<AeonGUI::DrawType>($1),args);}
+    | 't' single-coordinate-pair-argument-sequence {auto& args=std::get<std::vector<AeonGUI::DrawType>>($2);aEstimate+=2*args.size();AddCommandToPath(aPath,std::get<AeonGUI::DrawType>($1),args);}
     ;
 elliptical-arc:
-    'A' elliptical-arc-argument-sequence {AddCommandToPath(aPath,std::get<AeonGUI::DrawType>($1),std::get<std::vector<AeonGUI::DrawType>>($2));}
+    'A' elliptical-arc-argument-sequence {auto& args=std::get<std::vector<AeonGUI::DrawType>>($2);aEstimate+=args.size()*16/7;AddCommandToPath(aPath,std::get<AeonGUI::DrawType>($1),args);}
     |
-    'a' elliptical-arc-argument-sequence {AddCommandToPath(aPath,std::get<AeonGUI::DrawType>($1),std::get<std::vector<AeonGUI::DrawType>>($2));}
+    'a' elliptical-arc-argument-sequence {auto& args=std::get<std::vector<AeonGUI::DrawType>>($2);aEstimate+=args.size()*16/7;AddCommandToPath(aPath,std::get<AeonGUI::DrawType>($1),args);}
     ;
 elliptical-arc-argument-sequence:
     elliptical-arc-argument { $$ = std::move($1); }
@@ -215,8 +216,9 @@ coordinate:
 %%
 extern "C"
 {
-    int derror (std::vector<AeonGUI::DrawType>& aPath,const char *s)
+    int derror (std::vector<AeonGUI::DrawType>& aPath,size_t& aEstimate,const char *s)
     {
+        (void)aEstimate;
         std::cerr << s << std::endl;
         return 0;
     }

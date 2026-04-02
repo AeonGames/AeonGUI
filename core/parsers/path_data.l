@@ -70,14 +70,19 @@ namespace AeonGUI
 {
 	namespace DOM
 	{
-		DLL int ParsePathData(std::vector<DrawType>& aPath,const char* string)
+		static std::mutex& GetParserMutex()
 		{
 			static std::mutex parser_mutex;
-			std::lock_guard<std::mutex> lock(parser_mutex);
+			return parser_mutex;
+		}
+
+		DLL int ParsePathData(std::vector<DrawType>& aPath,const char* string,size_t& aEstimate)
+		{
+			std::lock_guard<std::mutex> lock(GetParserMutex());
 			YY_BUFFER_STATE state=d_scan_string(string);
 			d_switch_to_buffer(state);
 			BEGIN(INITIAL);
-			int result = dparse(aPath);
+			int result = dparse(aPath,aEstimate);
 			d_delete_buffer(state);
 			return result;
 		}

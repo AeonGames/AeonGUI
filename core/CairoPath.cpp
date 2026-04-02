@@ -189,15 +189,29 @@ namespace AeonGUI
         return &mPath;
     }
 
-    void CairoPath::Construct ( const std::vector<DrawType>& aCommands )
+    void CairoPath::Construct ( const std::vector<DrawType>& aCommands, size_t aPathDataHint )
     {
-        Construct ( aCommands.data(), aCommands.size() );
+        Construct ( aCommands.data(), aCommands.size(), aPathDataHint );
     }
 
-    void CairoPath::Construct ( const DrawType* aCommands, size_t aCommandCount )
+    void CairoPath::Construct ( const DrawType* aCommands, size_t aCommandCount, size_t aPathDataHint )
     {
         mPathData.clear();
-        /** @todo calculate mPathData size if posible */
+        if ( aPathDataHint > 0 )
+        {
+            mPathData.reserve ( aPathDataHint );
+        }
+        else
+        {
+            // Upper bound: each command produces at most 3 elements (Z),
+            // each argument produces at most 2 elements.
+            size_t estimated = 0;
+            for ( size_t idx = 0; idx < aCommandCount; ++idx )
+            {
+                estimated += std::holds_alternative<uint64_t> ( aCommands[idx] ) ? 3 : 2;
+            }
+            mPathData.reserve ( estimated );
+        }
         uint64_t last_cmd{};
         Vector2 last_point{0, 0};
         Vector2 last_move{0, 0};

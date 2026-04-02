@@ -9,10 +9,11 @@ else
 fi
 
 YEAR=`date +"%Y"`
-FILES=`git diff --cached $against --name-only --diff-filter=ACMR | grep -E "\.(c|cpp|h|hpp)$"`
+FILES=`git diff --cached $against --name-only --diff-filter=ACMR | grep -E "\.(c|cpp|h|hpp|ypp|l)$"`
+FORMAT_FILES=`git diff --cached $against --name-only --diff-filter=ACMR | grep -E "\.(c|cpp|h|hpp)$"`
 PYTHON_FILES=`git diff --cached $against --name-only --diff-filter=ACMR | grep -E "\.(py)$"`
 PROTO_FILES=`git diff --cached $against --name-only --diff-filter=ACMR | grep -E "\.(proto)$"`
-TEXT_FILES=`git diff --cached $against --name-only --diff-filter=ACMR | grep -E "\.(yml|txt|md|ypp)$"`
+TEXT_FILES=`git diff --cached $against --name-only --diff-filter=ACMR | grep -E "\.(yml|txt|md|ypp|l)$"`
 CMAKE_FILES=`git diff --cached $against --name-only --diff-filter=ACMR | grep -E "(\.cmake|CMakeLists\.txt)$"`
 
 EXIT_CODE=0
@@ -102,7 +103,7 @@ if [ $EXIT_CODE -ne 0 ]; then
     exit 1
 fi
 
-for FILE in $FILES; do
+for FILE in $FORMAT_FILES; do
 	${ASTYLE_EXECUTABLE} --quiet ${ASTYLE_OPTIONS} $FILE
 	if [ $? -ne 0 ]; then
 		echo "[!] Formating $FILE failed," >&2

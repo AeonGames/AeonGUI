@@ -1,6 +1,6 @@
-#line 1 "C:/Code/AeonGUI/mingw64-skia/core/path_data_lexer.cpp"
+#line 1 "C:/Code/AeonGUI/ucrt64/core/path_data_lexer.cpp"
 
-#line 3 "C:/Code/AeonGUI/mingw64-skia/core/path_data_lexer.cpp"
+#line 3 "C:/Code/AeonGUI/ucrt64/core/path_data_lexer.cpp"
 
 #define  YY_INT_ALIGNED short int
 
@@ -1291,9 +1291,9 @@ limitations under the License.
 #include "path_data_parser.hpp"
 #define YY_NO_UNISTD_H 1
 #define YY_NO_INPUT 1
-#line 1292 "C:/Code/AeonGUI/mingw64-skia/core/path_data_lexer.cpp"
+#line 1292 "C:/Code/AeonGUI/ucrt64/core/path_data_lexer.cpp"
 #define YY_NO_UNISTD_H 1
-#line 1294 "C:/Code/AeonGUI/mingw64-skia/core/path_data_lexer.cpp"
+#line 1294 "C:/Code/AeonGUI/ucrt64/core/path_data_lexer.cpp"
 
 #define INITIAL 0
 
@@ -1517,7 +1517,7 @@ YY_DECL
     {
 #line 41 "C:/Code/AeonGUI/core/parsers/path_data.l"
 
-#line 1511 "C:/Code/AeonGUI/mingw64-skia/core/path_data_lexer.cpp"
+#line 1511 "C:/Code/AeonGUI/ucrt64/core/path_data_lexer.cpp"
 
         while ( /*CONSTCOND*/1 )        /* loops until end-of-file is reached */
         {
@@ -1681,7 +1681,7 @@ do_action:  /* This label is used only to access EOF actions. */
 #line 67 "C:/Code/AeonGUI/core/parsers/path_data.l"
                 ECHO;
                 YY_BREAK
-#line 1674 "C:/Code/AeonGUI/mingw64-skia/core/path_data_lexer.cpp"
+#line 1674 "C:/Code/AeonGUI/ucrt64/core/path_data_lexer.cpp"
             case YY_STATE_EOF ( INITIAL ) :
                 yyterminate();
 
@@ -2728,14 +2728,19 @@ namespace AeonGUI
 {
     namespace DOM
     {
-        DLL int ParsePathData ( std::vector<DrawType>& aPath, const char* string )
+        static std::mutex& GetParserMutex()
         {
             static std::mutex parser_mutex;
-            std::lock_guard<std::mutex> lock ( parser_mutex );
+            return parser_mutex;
+        }
+
+        DLL int ParsePathData ( std::vector<DrawType>& aPath, const char* string, size_t& aEstimate )
+        {
+            std::lock_guard<std::mutex> lock ( GetParserMutex() );
             YY_BUFFER_STATE state = d_scan_string ( string );
             d_switch_to_buffer ( state );
             BEGIN ( INITIAL );
-            int result = dparse ( aPath );
+            int result = dparse ( aPath, aEstimate );
             d_delete_buffer ( state );
             return result;
         }

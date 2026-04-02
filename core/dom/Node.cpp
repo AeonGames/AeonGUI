@@ -138,10 +138,6 @@ namespace AeonGUI
 #define TraverseDepthFirstPreOrder(...) \
     void Node::TraverseDepthFirstPreOrder ( const std::function<void ( __VA_ARGS__ Node& ) >& aAction ) __VA_ARGS__ \
     {\
-        /** @todo (EC++ Item 3) This code is the same as the constant overload,\
-        but can't easily be implemented in terms of that because of aAction's Node parameter\
-        need to also be const.\
-        */\
         auto node{this};\
         aAction ( *node );\
         auto parent = mParent;\

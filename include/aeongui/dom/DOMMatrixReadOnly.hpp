@@ -32,7 +32,6 @@ namespace AeonGUI
          *  2D and 3D transforms. Provides methods for multiplication,
          *  rotation, scaling, skewing, translation, and inversion.
          *  @see https://drafts.fxtf.org/geometry/#dommatrixreadonly
-         *  @todo Implement CSS transform and transform-functions related functions.
          */
         class DLL DOMMatrixReadOnly
         {

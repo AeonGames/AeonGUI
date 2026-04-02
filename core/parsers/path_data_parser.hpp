@@ -35,8 +35,8 @@
    especially those whose name start with YY_ or yy_.  They are
    private implementation details that can be changed or removed.  */
 
-#ifndef YY_D_C_CODE_AEONGUI_MINGW64_SKIA_CORE_PATH_DATA_PARSER_HPP_INCLUDED
-# define YY_D_C_CODE_AEONGUI_MINGW64_SKIA_CORE_PATH_DATA_PARSER_HPP_INCLUDED
+#ifndef YY_D_C_CODE_AEONGUI_UCRT64_CORE_PATH_DATA_PARSER_HPP_INCLUDED
+# define YY_D_C_CODE_AEONGUI_UCRT64_CORE_PATH_DATA_PARSER_HPP_INCLUDED
 /* Debug traces.  */
 #ifndef DDEBUG
 # if defined YYDEBUG
@@ -68,7 +68,7 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-#line 72 "C:/Code/AeonGUI/mingw64-skia/core/path_data_parser.hpp"
+#line 72 "C:/Code/AeonGUI/ucrt64/core/path_data_parser.hpp"
 
 /* Token kinds.  */
 #ifndef DTOKENTYPE
@@ -95,7 +95,7 @@ typedef int DSTYPE;
 extern DSTYPE dlval;
 
 
-int dparse ( std::vector<AeonGUI::DrawType>& aPath );
+int dparse ( std::vector<AeonGUI::DrawType>& aPath, size_t& aEstimate );
 
 
-#endif /* !YY_D_C_CODE_AEONGUI_MINGW64_SKIA_CORE_PATH_DATA_PARSER_HPP_INCLUDED  */
+#endif /* !YY_D_C_CODE_AEONGUI_UCRT64_CORE_PATH_DATA_PARSER_HPP_INCLUDED  */

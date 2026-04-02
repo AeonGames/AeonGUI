@@ -147,7 +147,6 @@ namespace AeonGUI
                 mStyleSheet.reset ( stylesheet );
             }
 
-            ///@todo use document->children instead?
             xmlElementPtr root_element = reinterpret_cast<xmlElementPtr> ( xmlDocGetRootElement ( document ) );
             AddNodes ( AddNode ( Construct ( reinterpret_cast<const char*> ( root_element->name ), ExtractElementAttributes ( root_element ), this ) ), root_element->children );
             xmlFreeDoc ( document );

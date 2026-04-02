@@ -28,13 +28,14 @@ namespace AeonGUI
         return mPath;
     }
 
-    void SkiaPath::Construct ( const std::vector<DrawType>& aCommands )
+    void SkiaPath::Construct ( const std::vector<DrawType>& aCommands, size_t aPathDataHint )
     {
-        Construct ( aCommands.data(), aCommands.size() );
+        Construct ( aCommands.data(), aCommands.size(), aPathDataHint );
     }
 
-    void SkiaPath::Construct ( const DrawType* aCommands, size_t aCommandCount )
+    void SkiaPath::Construct ( const DrawType* aCommands, size_t aCommandCount, size_t aPathDataHint )
     {
+        ( void ) aPathDataHint;
         mPath.reset();
         uint64_t last_cmd{};
         Vector2 last_point{0, 0};

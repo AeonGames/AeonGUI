@@ -42,12 +42,13 @@ namespace AeonGUI
         /** @brief Build the path from a vector of draw commands.
          *  @param aCommands The draw command sequence.
          */
-        virtual void Construct ( const std::vector<DrawType>& aCommands ) = 0;
+        virtual void Construct ( const std::vector<DrawType>& aCommands, size_t aPathDataHint = 0 ) = 0;
         /** @brief Build the path from a raw array of draw commands.
          *  @param aCommands     Pointer to the command array.
          *  @param aCommandCount Number of commands.
+         *  @param aPathDataHint Pre-computed size hint for internal storage.
          */
-        virtual void Construct ( const DrawType* aCommands, size_t aCommandCount ) = 0;
+        virtual void Construct ( const DrawType* aCommands, size_t aCommandCount, size_t aPathDataHint = 0 ) = 0;
         /** @brief Compute the total arc length of the path.
          *  @return Total length in user units.
          */
