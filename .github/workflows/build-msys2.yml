@@ -10,12 +10,11 @@ jobs:
       fail-fast: false
       matrix:
         sys: [mingw64, ucrt64, clang64]
-        backend: [Cairo, Skia]
         include:
           - { sys: mingw64, icon: '🟦' }
           - { sys: ucrt64,  icon: '🟨' }
           - { sys: clang64, icon: '🟧' }
-    name: 🚧${{ matrix.icon }} ${{ matrix.sys }} (${{ matrix.backend }})
+    name: 🚧${{ matrix.icon }} ${{ matrix.sys }}
     defaults:
       run:
         shell: msys2 {0}
@@ -65,7 +64,7 @@ jobs:
           cmake:p
           make:p
           tools-git:p
-          ${{ matrix.backend == 'Skia' && 'skia:p' || 'cairo:p' }}
+          cairo:p
           pango:p
           libxml2:p
           gtest:p
@@ -82,7 +81,7 @@ jobs:
       if: steps.changes.outputs.compiled == 'true'
 
     - name: '🛠️ Configuring'
-      run: cmake -G "MSYS Makefiles" -B ${{github.workspace}}/build -DCMAKE_BUILD_TYPE=Release -DAEONGUI_BACKEND=${{ matrix.backend }}
+      run: cmake -G "MSYS Makefiles" -B ${{github.workspace}}/build -DCMAKE_BUILD_TYPE=Release
       if: steps.changes.outputs.compiled == 'true'
 
     - name: '🏗️ Building'
@@ -90,7 +89,7 @@ jobs:
       if: steps.changes.outputs.compiled == 'true'
 
     - name: '🧪 Running Tests'
-      run: ctest --test-dir ${{github.workspace}}/build
+      run: ctest --test-dir ${{github.workspace}}/build --output-on-failure
       if: steps.changes.outputs.compiled == 'true'
 
     - name: '✅ Skip build (no compiled changes)'

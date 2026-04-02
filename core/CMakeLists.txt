@@ -221,7 +221,11 @@ elseif(AEONGUI_BACKEND STREQUAL "Skia")
     include_directories(${PANGO_INCLUDE_DIRS} ${HARFBUZZ_INCLUDE_DIRS} ${FONTCONFIG_INCLUDE_DIRS} ${FREETYPE_INCLUDE_DIR_freetype2} ${FREETYPE_INCLUDE_DIR_ft2build} ${LIBXML2_INCLUDE_DIRS})
 endif()
 add_library(AeonGUI SHARED ${AEONGUI_HEADERS} ${AEONGUI_SOURCES} ${AEONGUI_DOM_HEADERS} ${AEONGUI_DOM_SOURCES} ${AEONGUI_RESOURCES} ${BISON_path_data_parser_OUTPUTS} ${FLEX_path_data_lexer_OUTPUTS})
-set_target_properties(AeonGUI PROPERTIES COMPILE_FLAGS "-DNOMINMAX -D_CRT_SECURE_NO_WARNINGS")
+set_target_properties(AeonGUI PROPERTIES
+    COMPILE_FLAGS "-DNOMINMAX -D_CRT_SECURE_NO_WARNINGS"
+    VERSION ${PROJECT_VERSION}
+    SOVERSION ${PROJECT_VERSION_MAJOR}
+)
 if(AEONGUI_BACKEND STREQUAL "Cairo")
     target_link_libraries(AeonGUI PRIVATE libcss ${pkgcfg_lib_CAIRO_cairo} ${pkgcfg_lib_PANGO_pango-1.0} ${pkgcfg_lib_PANGO_pangocairo-1.0} ${pkgcfg_lib_PANGO_pangoft2-1.0} ${pkgcfg_lib_PANGO_gobject-2.0} ${pkgcfg_lib_HARFBUZZ_harfbuzz} ${pkgcfg_lib_FONTCONFIG_fontconfig} ${LIBXML2_LIBRARIES} ${FREETYPE_LIBRARIES})
 elseif(AEONGUI_BACKEND STREQUAL "Skia")

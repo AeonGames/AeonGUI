@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.10)
-project(AeonGUI NONE)
+project(AeonGUI VERSION 0.9.0 LANGUAGES NONE)
 
 function(add_docs_target)
   find_package(Doxygen)
@@ -106,7 +106,7 @@ option(USE_ZLIB "Use the zlib compression library" ON)
 option(USE_PNG "Enable PNG image support (Requires zlib)" ON)
 option(USE_JPEG "Enable JPEG image support" ON)
 option(USE_CUDA "Enable CUDA support")
-option(BUILD_UNIT_TESTS "Enable Unit Tests using GTest/GMock")
+option(BUILD_UNIT_TESTS "Enable Unit Tests using GTest/GMock" ON)
 set(AEONGUI_BACKEND "Cairo" CACHE STRING "2D rendering backend (Cairo or Skia)")
 set_property(CACHE AEONGUI_BACKEND PROPERTY STRINGS Cairo Skia)
 set(CMAKE_BUILD_TYPE "Debug" CACHE STRING "One of Debug|Release|RelWithDebInfo|MinSizeRel")
@@ -244,7 +244,6 @@ include(opensans)
 include_directories(include common demos/common core)
 add_subdirectory(css)
 add_subdirectory(core)
-add_subdirectory(tests)
 
 # Demo native plugin for button.svg
 add_library(button_plugin SHARED images/button.c)
@@ -290,22 +289,48 @@ install(TARGETS AeonGUI
 
 install(
   FILES
-    include/aeongui/AeonGUI.h
-    include/aeongui/AABB.h
-    include/aeongui/AttributeMap.h
-    include/aeongui/Attribute.hpp
-    include/aeongui/Window.h
-    include/aeongui/Document.h
-    include/aeongui/Platform.h
-    include/aeongui/Canvas.h
-    include/aeongui/CairoCanvas.h
-    include/aeongui/DrawType.h
-    include/aeongui/Color.h
-    include/aeongui/Vector2.h
-    include/aeongui/Element.h
-    include/aeongui/Transform.h
-    include/aeongui/Matrix2x3.h
+    include/aeongui/AeonGUI.hpp
+    include/aeongui/AABB.hpp
+    include/aeongui/Canvas.hpp
+    include/aeongui/Color.hpp
+    include/aeongui/CSSSelector.hpp
+    include/aeongui/DrawType.hpp
+    include/aeongui/ElementFactory.hpp
+    include/aeongui/FontDatabase.hpp
+    include/aeongui/Matrix2x3.hpp
+    include/aeongui/Path.hpp
+    include/aeongui/Platform.hpp
+    include/aeongui/PluginAPI.h
+    include/aeongui/RasterImage.hpp
+    include/aeongui/Rect.hpp
+    include/aeongui/StringLiteral.hpp
+    include/aeongui/StyleSheet.hpp
+    include/aeongui/TextLayout.hpp
+    include/aeongui/Transform.hpp
+    include/aeongui/Vector2.hpp
 	DESTINATION include/aeongui
+)
+if(AEONGUI_BACKEND STREQUAL "Cairo")
+  install(
+    FILES
+      include/aeongui/CairoCanvas.hpp
+      include/aeongui/CairoPath.hpp
+      include/aeongui/PangoTextLayout.hpp
+    DESTINATION include/aeongui
+  )
+elseif(AEONGUI_BACKEND STREQUAL "Skia")
+  install(
+    FILES
+      include/aeongui/SkiaCanvas.hpp
+      include/aeongui/SkiaPath.hpp
+      include/aeongui/SkiaTextLayout.hpp
+    DESTINATION include/aeongui
+  )
+endif()
+install(
+  DIRECTORY include/aeongui/dom/
+  DESTINATION include/aeongui/dom
+  FILES_MATCHING PATTERN "*.hpp"
 )
 
 install(

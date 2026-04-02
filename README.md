@@ -215,6 +215,7 @@ Four rendering backends are included:
 ## Common CMake Options
 
 - `-DAEONGUI_BACKEND=Cairo|Skia` Select the 2D rendering backend (default: `Cairo`).
+- `-DBUILD_UNIT_TESTS=ON|OFF` Build and register unit tests (default: `ON`).
 - `-DUSE_ZLIB=ON|OFF` Enable/disable zlib integration.
 - `-DUSE_PNG=ON|OFF` Enable/disable PNG decoding.
 - `-DUSE_JPEG=ON|OFF` Enable/disable JPEG decoding (`libjpeg-turbo`).
@@ -246,6 +247,66 @@ cmake -B build -DCMAKE_BUILD_TYPE=Debug -DUSE_PNG=ON -DUSE_JPEG=ON
 | `tests/`              | Unit tests (GoogleTest / GoogleMock).                |
 | `tools/`              | Developer utilities (code generation scripts).      |
 | `cmake/`              | CMake helper modules and templates.                 |
+
+## Thread Safety
+
+AeonGUI is **not thread-safe**.  All library calls (`Window`, `Document`,
+`Canvas`, `FontDatabase`, etc.) must be made from a single thread.  There
+are no internal mutexes or atomic guards.
+
+If your application needs to render multiple `Window` instances
+concurrently, serialise all AeonGUI API calls behind your own lock, or
+confine each `Window` to a dedicated thread with its own
+`AeonGUI::Initialize()` / `AeonGUI::Finalize()` lifecycle (not currently
+tested).
+
+## Error Handling
+
+The library uses a mixed error-reporting strategy:
+
+| Scenario | Behaviour |
+|----------|----------|
+| Document load failure (file not found, parse error) | Throws `std::runtime_error` |
+| CSS parsing error | Throws `std::runtime_error` |
+| Image load (`RasterImage::Load*`) | Returns `bool` (`true` on success) |
+| Font database initialisation | Returns `bool`, logs to `stderr` on failure |
+| Plugin load (`<script>` element) | Logs to `stderr`, continues silently |
+| Unknown SVG element tag | Creates a generic `Element`, logs to `stdout` |
+
+There is no custom exception hierarchy yet.  Callers should be prepared to
+catch `std::runtime_error` from `Document` and `Element` construction.
+
+## SVG Feature Support
+
+### Supported elements
+
+| Category | Elements |
+|----------|----------|
+| Structure | `<svg>`, `<g>`, `<defs>`, `<use>`, `<symbol>` |
+| Shapes | `<rect>`, `<circle>`, `<ellipse>`, `<line>`, `<polyline>`, `<polygon>`, `<path>` |
+| Text | `<text>`, `<tspan>`, `<textPath>` |
+| Paint | `<linearGradient>`, `<stop>` |
+| Images | `<image>` (PNG, JPEG, PCX) |
+| Animation | `<animate>`, `<set>`, `<animateTransform>`, `<animateMotion>` |
+| Scripting | `<script>` (native C plugin API, not JavaScript) |
+| Filters | `<filter>`, `<feDropShadow>` |
+
+### Supported CSS / presentation attributes
+
+- `fill`, `stroke`, `stroke-width`, `opacity`, `fill-opacity`, `stroke-opacity`
+- `font-family`, `font-size`, `font-weight`, `font-style`
+- `transform`, `viewBox`, `preserveAspectRatio`
+- Pseudo-classes: `:hover`, `:active`, `:focus`
+
+### Not yet implemented
+
+- `<radialGradient>`
+- `<clipPath>`, `<mask>`
+- `<pattern>`, `<marker>`
+- Filter primitives beyond `<feDropShadow>` (`<feGaussianBlur>`, `<feBlend>`, `<feColorMatrix>`, etc.)
+- `stroke-dasharray`, `stroke-linecap`, `stroke-linejoin`
+- CSS attribute selectors (`[attr=value]`)
+- `<a>` (hyperlinks)
 
 ## Notes For New Contributors
 
@@ -320,8 +381,9 @@ as `click` and `mouseenter`.
 CSS pseudo-classes `:hover`, `:active`, and `:focus` are resolved
 dynamically based on mouse input.
 
-Filters, `clip-path`, `mask`, and advanced text features (text-on-a-path)
-are not yet implemented.
+Filters, `clip-path`, `mask`, and advanced text features are not yet
+implemented.  See the [SVG Feature Support](#svg-feature-support) section
+for details.
 
 ### How do I generate the API documentation?
 
