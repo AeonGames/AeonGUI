@@ -26,6 +26,7 @@ limitations under the License.
 #endif
 #include <iostream>
 #include <filesystem>
+#include <mutex>
 #ifdef _WIN32
 #include <windows.h>
 #elif defined(__APPLE__)
@@ -37,6 +38,7 @@ limitations under the License.
 
 namespace AeonGUI
 {
+    std::recursive_mutex FontDatabase::sMutex;
     FcConfig* FontDatabase::sFcConfig = nullptr;
     PangoFontMap* FontDatabase::sFontMap = nullptr;
 
@@ -103,6 +105,7 @@ namespace AeonGUI
 
     bool FontDatabase::Initialize()
     {
+        std::lock_guard<std::recursive_mutex> lock ( sMutex );
         if ( sFcConfig != nullptr )
         {
             return true;
@@ -152,6 +155,7 @@ namespace AeonGUI
 
     void FontDatabase::Finalize()
     {
+        std::lock_guard<std::recursive_mutex> lock ( sMutex );
         if ( sFontMap != nullptr )
         {
             g_object_unref ( sFontMap );
@@ -166,6 +170,7 @@ namespace AeonGUI
 
     bool FontDatabase::AddFontDirectory ( const std::string& aPath )
     {
+        std::lock_guard<std::recursive_mutex> lock ( sMutex );
         if ( sFcConfig == nullptr )
         {
             std::cerr << "FontDatabase: Not initialized" << std::endl;
@@ -183,6 +188,7 @@ namespace AeonGUI
 
     bool FontDatabase::AddFontFile ( const std::string& aPath )
     {
+        std::lock_guard<std::recursive_mutex> lock ( sMutex );
         if ( sFcConfig == nullptr )
         {
             std::cerr << "FontDatabase: Not initialized" << std::endl;
@@ -199,16 +205,19 @@ namespace AeonGUI
 
     FcConfig* FontDatabase::GetFcConfig()
     {
+        std::lock_guard<std::recursive_mutex> lock ( sMutex );
         return sFcConfig;
     }
 
     PangoFontMap* FontDatabase::GetFontMap()
     {
+        std::lock_guard<std::recursive_mutex> lock ( sMutex );
         return sFontMap;
     }
 
     PangoContext* FontDatabase::CreateContext()
     {
+        std::lock_guard<std::recursive_mutex> lock ( sMutex );
         if ( sFontMap == nullptr )
         {
             return nullptr;

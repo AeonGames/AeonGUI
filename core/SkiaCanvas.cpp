@@ -161,42 +161,43 @@ namespace AeonGUI
 
     static hb_draw_funcs_t* GetHbDrawFuncs()
     {
-        static hb_draw_funcs_t* funcs = nullptr;
-        if ( !funcs )
+        static hb_draw_funcs_t* funcs = []()
         {
-            funcs = hb_draw_funcs_create();
-            hb_draw_funcs_set_move_to_func ( funcs,
+            hb_draw_funcs_t* f = hb_draw_funcs_create();
+            hb_draw_funcs_set_move_to_func ( f,
                                              [] ( hb_draw_funcs_t*, void* draw_data, hb_draw_state_t*,
                                                   float to_x, float to_y, void* )
             {
                 static_cast<SkPath*> ( draw_data )->moveTo ( to_x, -to_y );
             }, nullptr, nullptr );
-            hb_draw_funcs_set_line_to_func ( funcs,
+            hb_draw_funcs_set_line_to_func ( f,
                                              [] ( hb_draw_funcs_t*, void* draw_data, hb_draw_state_t*,
                                                   float to_x, float to_y, void* )
             {
                 static_cast<SkPath*> ( draw_data )->lineTo ( to_x, -to_y );
             }, nullptr, nullptr );
-            hb_draw_funcs_set_quadratic_to_func ( funcs,
+            hb_draw_funcs_set_quadratic_to_func ( f,
                                                   [] ( hb_draw_funcs_t*, void* draw_data, hb_draw_state_t*,
                                                           float cx, float cy, float to_x, float to_y, void* )
             {
                 static_cast<SkPath*> ( draw_data )->quadTo ( cx, -cy, to_x, -to_y );
             }, nullptr, nullptr );
-            hb_draw_funcs_set_cubic_to_func ( funcs,
+            hb_draw_funcs_set_cubic_to_func ( f,
                                               [] ( hb_draw_funcs_t*, void* draw_data, hb_draw_state_t*,
                                                    float c1x, float c1y, float c2x, float c2y,
                                                    float to_x, float to_y, void* )
             {
                 static_cast<SkPath*> ( draw_data )->cubicTo ( c1x, -c1y, c2x, -c2y, to_x, -to_y );
             }, nullptr, nullptr );
-            hb_draw_funcs_set_close_path_func ( funcs,
+            hb_draw_funcs_set_close_path_func ( f,
                                                 [] ( hb_draw_funcs_t*, void* draw_data, hb_draw_state_t*, void* )
             {
                 static_cast<SkPath*> ( draw_data )->close();
             }, nullptr, nullptr );
-            hb_draw_funcs_make_immutable ( funcs );
+            hb_draw_funcs_make_immutable ( f );
+            return f;
         }
+        ();
         return funcs;
     }
 

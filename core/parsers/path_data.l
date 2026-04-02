@@ -1,6 +1,6 @@
 %{
 /*
-Copyright (C) 2019-2021,2023,2025 Rodrigo Jose Hernandez Cordoba
+Copyright (C) 2019-2021,2023,2025,2026 Rodrigo Jose Hernandez Cordoba
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -17,6 +17,7 @@ limitations under the License.
 #include <cstddef>
 #include <cstdint>
 #include <cstdlib>
+#include <mutex>
 #include "aeongui/DrawType.hpp"
 #include "../core/parsers/dstype.hpp"
 #include "path_data_parser.hpp"
@@ -70,10 +71,14 @@ namespace AeonGUI
 	{
 		int ParsePathData(std::vector<DrawType>& aPath,const char* string)
 		{
+			static std::mutex parser_mutex;
+			std::lock_guard<std::mutex> lock(parser_mutex);
 			YY_BUFFER_STATE state=d_scan_string(string);
 			d_switch_to_buffer(state);
 			BEGIN(INITIAL);
-			return dparse(aPath);
+			int result = dparse(aPath);
+			d_delete_buffer(state);
+			return result;
 		}
 	}
 }

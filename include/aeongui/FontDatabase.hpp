@@ -18,6 +18,7 @@ limitations under the License.
 
 #include <string>
 #include <vector>
+#include <mutex>
 #include "aeongui/Platform.hpp"
 
 struct _PangoFontMap;
@@ -70,6 +71,7 @@ namespace AeonGUI
         DLL static PangoContext* CreateContext();
     private:
         FontDatabase() = delete;
+        static std::recursive_mutex sMutex;
         static FcConfig* sFcConfig;
         static PangoFontMap* sFontMap;
     };

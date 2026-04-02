@@ -250,15 +250,26 @@ cmake -B build -DCMAKE_BUILD_TYPE=Debug -DUSE_PNG=ON -DUSE_JPEG=ON
 
 ## Thread Safety
 
-AeonGUI is **not thread-safe**.  All library calls (`Window`, `Document`,
-`Canvas`, `FontDatabase`, etc.) must be made from a single thread.  There
-are no internal mutexes or atomic guards.
+AeonGUI is **thread-safe** for typical usage patterns.  Internal
+synchronisation protects all shared mutable state:
 
-If your application needs to render multiple `Window` instances
-concurrently, serialise all AeonGUI API calls behind your own lock, or
-confine each `Window` to a dedicated thread with its own
-`AeonGUI::Initialize()` / `AeonGUI::Finalize()` lifecycle (not currently
-tested).
+| Component | Protection |
+|-----------|-----------|
+| `FontDatabase` (singleton) | `std::recursive_mutex` guards all static methods (`Initialize`, `Finalize`, `AddFont*`, `Get*`, `CreateContext`) |
+| Element factory (`Construct`, `Destroy`, `Register/Unregister`) | `std::shared_mutex` — concurrent reads, exclusive writes |
+| SVG path-data parser (Flex/Bison) | `std::mutex` serialises all `ParsePathData` calls |
+| HarfBuzz draw-funcs singleton (Skia backend) | C++11 magic-static initialisation (thread-safe by language guarantee) |
+| CSS statics (`unit_len_ctx`, `screen_media`, `select_handler`) | Immutable after static initialisation — safe for concurrent reads |
+| Per-thread CSS hint buffer | `thread_local` storage — no contention |
+
+**Guidelines:**
+
+- A single `Document` / `Window` instance must still be accessed from one
+  thread at a time (DOM trees are not internally locked).
+- Different `Document` / `Window` instances may be used from different
+  threads concurrently.
+- `FontDatabase::Initialize()` and `Finalize()` are safe to call from any
+  thread; concurrent `Initialize()` calls are idempotent.
 
 ## Error Handling
 
