@@ -16,6 +16,8 @@ limitations under the License.
 #include <iostream>
 #include <algorithm>
 #include <filesystem>
+#include <sstream>
+#include <stdexcept>
 #ifdef _WIN32
 #define WIN32_LEAN_AND_MEAN
 #include <windows.h>
@@ -24,6 +26,7 @@ limitations under the License.
 #include <dlfcn.h>
 #endif
 #include "aeongui/dom/SVGScriptElement.hpp"
+#include "aeongui/LogLevel.hpp"
 #include "aeongui/dom/Document.hpp"
 #include "aeongui/dom/Event.hpp"
 #include "aeongui/dom/Text.hpp"
@@ -146,9 +149,11 @@ namespace AeonGUI
             mLibHandle = static_cast<void*> ( ::LoadLibraryA ( aPath.c_str() ) );
             if ( !mLibHandle )
             {
-                std::cerr << "SVGScriptElement: Failed to load library: " << aPath
-                          << " (error " << GetLastError() << ")" << std::endl;
-                return;
+                std::ostringstream oss;
+                oss << "SVGScriptElement: Failed to load library: " << aPath
+                    << " (error " << GetLastError() << ")";
+                std::cerr << LogLevel::Error << oss.str() << std::endl;
+                throw std::runtime_error ( oss.str() );
             }
             mOnLoadFunc = reinterpret_cast<AeonGUI_OnLoadFunc> (
                               ::GetProcAddress ( static_cast<HMODULE> ( mLibHandle ), "AeonGUI_OnLoad" ) );
@@ -158,9 +163,11 @@ namespace AeonGUI
             mLibHandle = dlopen ( aPath.c_str(), RTLD_LAZY );
             if ( !mLibHandle )
             {
-                std::cerr << "SVGScriptElement: Failed to load library: " << aPath
-                          << " (" << dlerror() << ")" << std::endl;
-                return;
+                std::ostringstream oss;
+                oss << "SVGScriptElement: Failed to load library: " << aPath
+                    << " (" << dlerror() << ")";
+                std::cerr << LogLevel::Error << oss.str() << std::endl;
+                throw std::runtime_error ( oss.str() );
             }
             mOnLoadFunc = reinterpret_cast<AeonGUI_OnLoadFunc> (
                               dlsym ( mLibHandle, "AeonGUI_OnLoad" ) );
@@ -169,9 +176,12 @@ namespace AeonGUI
 #endif
             if ( !mOnLoadFunc )
             {
-                std::cerr << "SVGScriptElement: Library " << aPath
-                          << " does not export AeonGUI_OnLoad" << std::endl;
+                std::ostringstream oss;
+                oss << "SVGScriptElement: Library " << aPath
+                    << " does not export AeonGUI_OnLoad";
+                std::cerr << LogLevel::Error << oss.str() << std::endl;
                 UnloadLibrary();
+                throw std::runtime_error ( oss.str() );
             }
         }
 
@@ -214,8 +224,9 @@ namespace AeonGUI
             auto hrefIt = mAttributes.find ( "href" );
             if ( hrefIt == mAttributes.end() || hrefIt->second.empty() )
             {
-                std::cerr << "SVGScriptElement: native script missing href attribute" << std::endl;
-                return;
+                std::string msg{"SVGScriptElement: native script missing href attribute"};
+                std::cerr << LogLevel::Error << msg << std::endl;
+                throw std::runtime_error ( msg );
             }
 
             auto candidates = BuildLibraryPaths ( hrefIt->second );
@@ -230,24 +241,39 @@ namespace AeonGUI
                 }
             }
 
-            std::cout << "SVGScriptElement: Loading native plugin: " << libPath << std::endl;
-            LoadLibrary ( libPath );
-
-            if ( !mLibHandle )
+            std::cerr << LogLevel::Info << "SVGScriptElement: Loading native plugin: " << libPath << std::endl;
+            try
             {
+                LoadLibrary ( libPath );
+            }
+            catch ( const std::exception& )
+            {
+                mLibHandle = nullptr;
                 for ( const auto& candidate : candidates )
                 {
                     if ( candidate == libPath )
                     {
                         continue;
                     }
-                    std::cout << "SVGScriptElement: Retrying native plugin: " << candidate << std::endl;
-                    LoadLibrary ( candidate );
-                    if ( mLibHandle )
+                    std::cerr << LogLevel::Info << "SVGScriptElement: Retrying native plugin: " << candidate << std::endl;
+                    try
                     {
+                        LoadLibrary ( candidate );
                         break;
                     }
+                    catch ( const std::exception& )
+                    {
+                        mLibHandle = nullptr;
+                    }
                 }
+            }
+
+            if ( !mLibHandle )
+            {
+                std::ostringstream oss;
+                oss << "SVGScriptElement: Failed to load native plugin '" << hrefIt->second << "' from any candidate path";
+                std::cerr << LogLevel::Error << oss.str() << std::endl;
+                return;
             }
 
             if ( mOnLoadFunc )

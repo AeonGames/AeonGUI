@@ -17,7 +17,9 @@ limitations under the License.
 #include <string>
 #include <cstdio>
 #include <cstdlib>
+#include <iostream>
 #include "aeongui/Color.hpp"
+#include "aeongui/LogLevel.hpp"
 #include "aeongui/Matrix2x3.hpp"
 #include "aeongui/dom/Element.hpp"
 #include "aeongui/dom/Document.hpp"
@@ -217,6 +219,7 @@ namespace AeonGUI
                 code = css_stylesheet_create ( &params, &stylesheet );
                 if ( code != CSS_OK )
                 {
+                    std::cerr << LogLevel::Error << css_error_to_string ( code ) << std::endl;
                     throw std::runtime_error ( css_error_to_string ( code ) );
                 }
                 mInlineStyleSheet.reset ( stylesheet );
@@ -228,11 +231,13 @@ namespace AeonGUI
             code = css_stylesheet_append_data ( mInlineStyleSheet.get(), reinterpret_cast<const uint8_t*> ( css.data() ), css.size() );
             if ( code != CSS_OK  && code != CSS_NEEDDATA )
             {
+                std::cerr << LogLevel::Error << css_error_to_string ( code ) << std::endl;
                 throw std::runtime_error ( css_error_to_string ( code ) );
             }
             code = css_stylesheet_data_done ( mInlineStyleSheet.get() );
             if ( code != CSS_OK )
             {
+                std::cerr << LogLevel::Error << css_error_to_string ( code ) << std::endl;
                 throw std::runtime_error ( css_error_to_string ( code ) );
             }
 
@@ -240,6 +245,7 @@ namespace AeonGUI
             css_error err{css_select_ctx_create ( &css_select_ctx ) };
             if ( err != CSS_OK )
             {
+                std::cerr << LogLevel::Error << css_error_to_string ( code ) << std::endl;
                 throw std::runtime_error ( css_error_to_string ( code ) );
             }
 
@@ -247,6 +253,7 @@ namespace AeonGUI
             err = css_select_style ( css_select_ctx, this, &unit_len_ctx, &screen_media, mInlineStyleSheet.get(), &select_handler, nullptr, &results );
             if ( err != CSS_OK )
             {
+                std::cerr << LogLevel::Error << css_error_to_string ( code ) << std::endl;
                 throw std::runtime_error ( css_error_to_string ( code ) );
             }
             mComputedStyles.reset ( results );

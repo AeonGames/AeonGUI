@@ -15,6 +15,7 @@ limitations under the License.
 */
 
 #include "aeongui/FontDatabase.hpp"
+#include "aeongui/LogLevel.hpp"
 #include <fontconfig/fontconfig.h>
 #include <pango/pango.h>
 #include <pango/pangofc-fontmap.h>
@@ -25,6 +26,8 @@ limitations under the License.
 #include <cairo.h>
 #endif
 #include <iostream>
+#include <sstream>
+#include <stdexcept>
 #include <filesystem>
 #include <mutex>
 #ifdef _WIN32
@@ -75,7 +78,7 @@ namespace AeonGUI
         FcFontSet* fontSet = FcFontList ( aConfig, pattern, objectSet );
         if ( fontSet != nullptr )
         {
-            std::cout << "FontDatabase: " << fontSet->nfont << " font(s) available:" << std::endl;
+            std::cerr << LogLevel::Info << "FontDatabase: " << fontSet->nfont << " font(s) available:" << std::endl;
             for ( int i = 0; i < fontSet->nfont; ++i )
             {
                 FcChar8* family = nullptr;
@@ -84,7 +87,7 @@ namespace AeonGUI
                 FcPatternGetString ( fontSet->fonts[i], FC_FAMILY, 0, &family );
                 FcPatternGetString ( fontSet->fonts[i], FC_STYLE, 0, &style );
                 FcPatternGetString ( fontSet->fonts[i], FC_FILE,   0, &file );
-                std::cout << "  [" << i << "] "
+                std::cerr << LogLevel::Info << "  [" << i << "] "
                           << ( family ? reinterpret_cast<const char*> ( family ) : "?" ) << " "
                           << ( style  ? reinterpret_cast<const char*> ( style )  : "" )  << "  ("
                           << ( file   ? reinterpret_cast<const char*> ( file )   : "?" ) << ")"
@@ -94,7 +97,7 @@ namespace AeonGUI
         }
         else
         {
-            std::cout << "FontDatabase: 0 font(s) available." << std::endl;
+            std::cerr << LogLevel::Info << "FontDatabase: 0 font(s) available." << std::endl;
         }
         if ( objectSet != nullptr )
         {
@@ -103,19 +106,20 @@ namespace AeonGUI
         FcPatternDestroy ( pattern );
     }
 
-    bool FontDatabase::Initialize()
+    void FontDatabase::Initialize()
     {
         std::lock_guard<std::recursive_mutex> lock ( sMutex );
         if ( sFcConfig != nullptr )
         {
-            return true;
+            return;
         }
 
         sFcConfig = FcConfigCreate();
         if ( sFcConfig == nullptr )
         {
-            std::cerr << "FontDatabase: Failed to create FcConfig" << std::endl;
-            return false;
+            std::string msg{"FontDatabase: Failed to create FcConfig"};
+            std::cerr << LogLevel::Error << msg << std::endl;
+            throw std::runtime_error ( msg );
         }
 
         // Do NOT load system configuration — we want a local-only database.
@@ -131,8 +135,9 @@ namespace AeonGUI
         {
             FcConfigDestroy ( sFcConfig );
             sFcConfig = nullptr;
-            std::cerr << "FontDatabase: Failed to create PangoFcFontMap" << std::endl;
-            return false;
+            std::string msg{"FontDatabase: Failed to create PangoFcFontMap"};
+            std::cerr << LogLevel::Error << msg << std::endl;
+            throw std::runtime_error ( msg );
         }
 
         pango_fc_font_map_set_config ( PANGO_FC_FONT_MAP ( sFontMap ), sFcConfig );
@@ -141,16 +146,15 @@ namespace AeonGUI
         std::filesystem::path fontsDir = GetExecutableDir() / "fonts";
         if ( std::filesystem::is_directory ( fontsDir ) )
         {
-            std::cout << "FontDatabase: Auto-loading fonts from " << fontsDir.string() << std::endl;
+            std::cerr << LogLevel::Info << "FontDatabase: Auto-loading fonts from " << fontsDir.string() << std::endl;
             AddFontDirectory ( fontsDir.string() );
         }
         else
         {
-            std::cout << "FontDatabase: No fonts/ directory found at " << fontsDir.string() << std::endl;
+            std::cerr << LogLevel::Info << "FontDatabase: No fonts/ directory found at " << fontsDir.string() << std::endl;
         }
 
         LogAvailableFonts ( sFcConfig );
-        return true;
     }
 
     void FontDatabase::Finalize()
@@ -168,39 +172,43 @@ namespace AeonGUI
         }
     }
 
-    bool FontDatabase::AddFontDirectory ( const std::string& aPath )
+    void FontDatabase::AddFontDirectory ( const std::string& aPath )
     {
         std::lock_guard<std::recursive_mutex> lock ( sMutex );
         if ( sFcConfig == nullptr )
         {
-            std::cerr << "FontDatabase: Not initialized" << std::endl;
-            return false;
+            std::string msg{"FontDatabase: Not initialized"};
+            std::cerr << LogLevel::Error << msg << std::endl;
+            throw std::runtime_error ( msg );
         }
         if ( !FcConfigAppFontAddDir ( sFcConfig, reinterpret_cast<const FcChar8*> ( aPath.c_str() ) ) )
         {
-            std::cerr << "FontDatabase: Failed to add font directory: " << aPath << std::endl;
-            return false;
+            std::ostringstream oss;
+            oss << "FontDatabase: Failed to add font directory: " << aPath;
+            std::cerr << LogLevel::Error << oss.str() << std::endl;
+            throw std::runtime_error ( oss.str() );
         }
         // Notify pango that the font configuration changed.
         pango_fc_font_map_config_changed ( PANGO_FC_FONT_MAP ( sFontMap ) );
-        return true;
     }
 
-    bool FontDatabase::AddFontFile ( const std::string& aPath )
+    void FontDatabase::AddFontFile ( const std::string& aPath )
     {
         std::lock_guard<std::recursive_mutex> lock ( sMutex );
         if ( sFcConfig == nullptr )
         {
-            std::cerr << "FontDatabase: Not initialized" << std::endl;
-            return false;
+            std::string msg{"FontDatabase: Not initialized"};
+            std::cerr << LogLevel::Error << msg << std::endl;
+            throw std::runtime_error ( msg );
         }
         if ( !FcConfigAppFontAddFile ( sFcConfig, reinterpret_cast<const FcChar8*> ( aPath.c_str() ) ) )
         {
-            std::cerr << "FontDatabase: Failed to add font file: " << aPath << std::endl;
-            return false;
+            std::ostringstream oss;
+            oss << "FontDatabase: Failed to add font file: " << aPath;
+            std::cerr << LogLevel::Error << oss.str() << std::endl;
+            throw std::runtime_error ( oss.str() );
         }
         pango_fc_font_map_config_changed ( PANGO_FC_FONT_MAP ( sFontMap ) );
-        return true;
     }
 
     FcConfig* FontDatabase::GetFcConfig()
@@ -220,7 +228,9 @@ namespace AeonGUI
         std::lock_guard<std::recursive_mutex> lock ( sMutex );
         if ( sFontMap == nullptr )
         {
-            return nullptr;
+            std::string msg{"FontDatabase: Cannot create context, not initialized"};
+            std::cerr << LogLevel::Error << msg << std::endl;
+            throw std::runtime_error ( msg );
         }
         return pango_font_map_create_context ( sFontMap );
     }

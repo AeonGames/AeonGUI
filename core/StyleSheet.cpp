@@ -18,6 +18,7 @@ limitations under the License.
 #include "aeongui/Color.hpp"
 #include "aeongui/dom/Document.hpp"
 #include <algorithm>
+#include "aeongui/LogLevel.hpp"
 #include <iostream>
 #include <string>
 #include <libcss/libcss.h>
@@ -29,7 +30,7 @@ namespace AeonGUI
         css_error code{ css_stylesheet_destroy ( p ) };
         if ( code != CSS_OK )
         {
-            std::cerr << "css_stylesheet_destroy failed with code: " << code << std::endl;
+            std::cerr << LogLevel::Error << "css_stylesheet_destroy failed with code: " << code << std::endl;
         }
     }
 
@@ -38,7 +39,7 @@ namespace AeonGUI
         css_error code{ css_select_ctx_destroy ( p ) };
         if ( code != CSS_OK )
         {
-            std::cerr << "css_select_ctx_destroy failed with code: " << code << std::endl;
+            std::cerr << LogLevel::Error << "css_select_ctx_destroy failed with code: " << code << std::endl;
         }
     }
 
@@ -47,7 +48,7 @@ namespace AeonGUI
         css_error code{ css_select_results_destroy ( p ) };
         if ( code != CSS_OK )
         {
-            std::cerr << "css_select_results_destroy failed with code: " << code << std::endl;
+            std::cerr << LogLevel::Error << "css_select_results_destroy failed with code: " << code << std::endl;
         }
     }
 
@@ -56,7 +57,7 @@ namespace AeonGUI
         css_error code{ css_computed_style_destroy ( p ) };
         if ( code != CSS_OK )
         {
-            std::cerr << "css_computed_style_destroy failed with code: " << code << std::endl;
+            std::cerr << LogLevel::Error << "css_computed_style_destroy failed with code: " << code << std::endl;
         }
     }
 

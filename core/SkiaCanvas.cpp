@@ -521,11 +521,11 @@ namespace AeonGUI
             return;
         }
 
-        PangoContext* pangoContext = FontDatabase::CreateContext();
-        if ( !pangoContext )
+        if ( !FontDatabase::GetFontMap() )
         {
             return;
         }
+        PangoContext* pangoContext = FontDatabase::CreateContext();
         PangoLayout* layout = pango_layout_new ( pangoContext );
         PangoFontDescription* desc = CreateSkiaFontDescription ( aFontFamily, aFontSize, aFontWeight, aFontStyle );
         pango_layout_set_font_description ( layout, desc );
@@ -600,11 +600,11 @@ namespace AeonGUI
             return 0.0;
         }
 
-        PangoContext* pangoContext = FontDatabase::CreateContext();
-        if ( !pangoContext )
+        if ( !FontDatabase::GetFontMap() )
         {
             return 0.0;
         }
+        PangoContext* pangoContext = FontDatabase::CreateContext();
         PangoLayout* layout = pango_layout_new ( pangoContext );
         PangoFontDescription* desc = CreateSkiaFontDescription ( aFontFamily, aFontSize, aFontWeight, aFontStyle );
         pango_layout_set_font_description ( layout, desc );
@@ -633,11 +633,11 @@ namespace AeonGUI
             return;
         }
 
-        PangoContext* pangoContext = FontDatabase::CreateContext();
-        if ( !pangoContext )
+        if ( !FontDatabase::GetFontMap() )
         {
             return;
         }
+        PangoContext* pangoContext = FontDatabase::CreateContext();
         PangoLayout* layout = pango_layout_new ( pangoContext );
         PangoFontDescription* desc = CreateSkiaFontDescription ( aFontFamily, aFontSize, aFontWeight, aFontStyle );
         pango_layout_set_font_description ( layout, desc );

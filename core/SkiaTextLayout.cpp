@@ -23,8 +23,11 @@ namespace AeonGUI
 {
     SkiaTextLayout::SkiaTextLayout()
     {
-        mPangoContext = FontDatabase::CreateContext();
-        if ( !mPangoContext )
+        if ( FontDatabase::GetFontMap() )
+        {
+            mPangoContext = FontDatabase::CreateContext();
+        }
+        else
         {
             PangoFontMap* fontMap = pango_ft2_font_map_new();
             mPangoContext = pango_font_map_create_context ( fontMap );

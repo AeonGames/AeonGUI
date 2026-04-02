@@ -23,8 +23,11 @@ namespace AeonGUI
 {
     PangoTextLayout::PangoTextLayout()
     {
-        mPangoContext = FontDatabase::CreateContext();
-        if ( !mPangoContext )
+        if ( FontDatabase::GetFontMap() )
+        {
+            mPangoContext = FontDatabase::CreateContext();
+        }
+        else
         {
             // Fallback: create context from the default Cairo font map.
             PangoFontMap* fontMap = pango_cairo_font_map_get_default();

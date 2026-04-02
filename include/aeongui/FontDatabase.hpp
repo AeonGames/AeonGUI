@@ -42,21 +42,21 @@ namespace AeonGUI
     {
     public:
         /** @brief Initialize the font database. Call once at startup.
-         *  @return true on success.
+         *  @throws std::runtime_error on failure.
          */
-        DLL static bool Initialize();
+        DLL static void Initialize();
         /// Finalize the font database. Call once at shutdown.
         DLL static void Finalize();
         /** @brief Add a directory of font files (.ttf, .otf, etc.) to the database.
          *  @param aPath Path to the font directory.
-         *  @return true on success.
+         *  @throws std::runtime_error on failure.
          */
-        DLL static bool AddFontDirectory ( const std::string& aPath );
+        DLL static void AddFontDirectory ( const std::string& aPath );
         /** @brief Add a single font file to the database.
          *  @param aPath Path to the font file.
-         *  @return true on success.
+         *  @throws std::runtime_error on failure.
          */
-        DLL static bool AddFontFile ( const std::string& aPath );
+        DLL static void AddFontFile ( const std::string& aPath );
         /** @brief Get the FcConfig used by the font database.
          *  @return Pointer to the FcConfig.
          */

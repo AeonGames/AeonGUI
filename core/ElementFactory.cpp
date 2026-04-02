@@ -24,6 +24,7 @@ limitations under the License.
 #include <shared_mutex>
 #include <mutex>
 #include "aeongui/StringLiteral.hpp"
+#include "aeongui/LogLevel.hpp"
 #include "aeongui/ElementFactory.hpp"
 #include "aeongui/dom/Element.hpp"
 #include "aeongui/dom/SVGSVGElement.hpp"
@@ -61,7 +62,7 @@ namespace AeonGUI
 
     template<class T> Constructor MakeConstructor ( StringLiteral aId )
     {
-        std::cout << "Registering constructor for: " << aId.GetString() << std::endl;
+        std::cerr << LogLevel::Info << "Registering constructor for: " << aId.GetString() << std::endl;
         return
             Constructor
         {
@@ -121,7 +122,7 @@ namespace AeonGUI
         {
             return std::get<0> ( std::get<1> ( *it ) ) ( aIdentifier, std::move ( aAttributeMap ), aParent );
         }
-        std::cout << "No constructor registered for identifier: " << aIdentifier << std::endl;
+        std::cerr << LogLevel::Warning << "No constructor registered for identifier: " << aIdentifier << std::endl;
         return std::make_unique<DOM::Element> (  aIdentifier, std::move ( aAttributeMap ), aParent );
     }
 

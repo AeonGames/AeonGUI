@@ -15,6 +15,7 @@ limitations under the License.
 */
 
 #include <gtest/gtest.h>
+#include <stdexcept>
 #include <vector>
 #include <cstdint>
 #include "aeongui/RasterImage.hpp"
@@ -54,7 +55,7 @@ TEST ( RasterImageTest, LoadPcxFromMemory )
     AeonGUI::RasterImage image;
     std::vector<uint8_t> data = Make1x1Pcx ( 0x2Au );
 
-    ASSERT_TRUE ( image.LoadFromMemory ( data.data(), data.size() ) );
+    ASSERT_NO_THROW ( image.LoadFromMemory ( data.data(), data.size() ) );
     EXPECT_TRUE ( image.IsLoaded() );
     EXPECT_EQ ( image.GetEncodedFormat(), AeonGUI::RasterImage::EncodedFormat::PCX );
     EXPECT_EQ ( image.GetPixelFormat(), AeonGUI::RasterImage::PixelFormat::RGBA8 );
@@ -76,8 +77,8 @@ TEST ( RasterImageTest, ReplaceImageOnSuccessfulLoad )
     std::vector<uint8_t> first = Make1x1Pcx ( 0x11u );
     std::vector<uint8_t> second = Make1x1Pcx ( 0x66u );
 
-    ASSERT_TRUE ( image.LoadFromMemory ( first.data(), first.size() ) );
-    ASSERT_TRUE ( image.LoadFromMemory ( second.data(), second.size() ) );
+    ASSERT_NO_THROW ( image.LoadFromMemory ( first.data(), first.size() ) );
+    ASSERT_NO_THROW ( image.LoadFromMemory ( second.data(), second.size() ) );
 
     const uint8_t* pixels = image.GetPixels();
     ASSERT_NE ( pixels, nullptr );
@@ -93,8 +94,8 @@ TEST ( RasterImageTest, FailedLoadKeepsPreviousImage )
     std::vector<uint8_t> valid = Make1x1Pcx ( 0x33u );
     std::vector<uint8_t> invalid{0x00u, 0x01u, 0x02u, 0x03u};
 
-    ASSERT_TRUE ( image.LoadFromMemory ( valid.data(), valid.size() ) );
-    ASSERT_FALSE ( image.LoadFromMemory ( invalid.data(), invalid.size() ) );
+    ASSERT_NO_THROW ( image.LoadFromMemory ( valid.data(), valid.size() ) );
+    ASSERT_THROW ( image.LoadFromMemory ( invalid.data(), invalid.size() ), std::runtime_error );
 
     EXPECT_TRUE ( image.IsLoaded() );
     EXPECT_EQ ( image.GetEncodedFormat(), AeonGUI::RasterImage::EncodedFormat::PCX );

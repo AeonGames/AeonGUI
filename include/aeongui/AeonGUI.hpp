@@ -1,5 +1,5 @@
 /*
-Copyright (C) 2013,2019,2020,2023,2025 Rodrigo Jose Hernandez Cordoba
+Copyright (C) 2013,2019,2020,2023,2025,2026 Rodrigo Jose Hernandez Cordoba
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -21,10 +21,10 @@ limitations under the License.
 namespace AeonGUI
 {
     /*! \brief Initializes extensions and global resources required by the library.
-        \return true if initialization succeded, false if not.
+        \throws std::runtime_error if initialization fails.
         \sa Finalize
     */
-    DLL bool Initialize ( int argc, char *argv[] );
+    DLL void Initialize ( int argc, char *argv[] );
     /*! \brief Finalizes any global resources allocated by Initialize.
         \sa Initialize
     */

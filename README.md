@@ -273,19 +273,33 @@ synchronisation protects all shared mutable state:
 
 ## Error Handling
 
-The library uses a mixed error-reporting strategy:
+All errors are reported via exceptions (`std::runtime_error` or
+`DOMException` subclasses).  Before throwing, every error is logged to
+`std::cerr` with a colour-coded severity prefix using ANSI escape sequences
+(see `include/aeongui/LogLevel.hpp`):
+
+| Level | Colour | Usage |
+|-------|--------|-------|
+| `LogLevel::Debug` | Blue | Internal trace messages |
+| `LogLevel::Info` | Green | Informational (font loading, plugin search) |
+| `LogLevel::Warning` | Yellow | Non-fatal issues (unknown SVG tag) |
+| `LogLevel::Error` | Red | Errors logged before every `throw` |
 
 | Scenario | Behaviour |
 |----------|----------|
 | Document load failure (file not found, parse error) | Throws `std::runtime_error` |
-| CSS parsing error | Throws `std::runtime_error` |
-| Image load (`RasterImage::Load*`) | Returns `bool` (`true` on success) |
-| Font database initialisation | Returns `bool`, logs to `stderr` on failure |
-| Plugin load (`<script>` element) | Logs to `stderr`, continues silently |
-| Unknown SVG element tag | Creates a generic `Element`, logs to `stdout` |
+| CSS parsing / selector error | Throws `std::runtime_error` |
+| Image load (`RasterImage::Load*`) | Throws `std::runtime_error` |
+| Font database initialisation (`Initialize`) | Throws `std::runtime_error` |
+| Font context creation (uninitialised) | Throws `std::runtime_error` |
+| Plugin load (`<script>` element) | Logs error, continues (no throw) |
+| Unknown SVG element tag | Logs warning, creates generic `Element` |
+| CSS deleter callbacks | Logs error (cannot throw from destructor path) |
 
-There is no custom exception hierarchy yet.  Callers should be prepared to
-catch `std::runtime_error` from `Document` and `Element` construction.
+Callers should be prepared to catch `std::runtime_error` from `Initialize()`,
+`Document::Load()`, `Element` construction, and `RasterImage::Load*()`.
+`DOMException` subclasses (e.g. `TypeError`, `InvalidStateError`) are thrown
+for DOM spec violations.
 
 ## SVG Feature Support
 

@@ -14,6 +14,7 @@ Copyright (C) 2010-2012,2019,2020,2023,2025,2026 Rodrigo Hernandez Cordoba
    limitations under the License.
 ******************************************************************************/
 #include "aeongui/Color.hpp"
+#include "aeongui/LogLevel.hpp"
 #include <algorithm>
 #include <iostream>
 #include <unordered_map>
@@ -230,6 +231,7 @@ namespace AeonGUI
         if ( !IsColor ( value, &bgra ) )
         {
             std::string err{value + " is not a color value."};
+            std::cerr << LogLevel::Error << err << std::endl;
             throw std::runtime_error ( err.c_str() );
         }
     }

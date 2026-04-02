@@ -14,6 +14,7 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 #include <iostream>
+#include "aeongui/LogLevel.hpp"
 #include "aeongui/dom/SVGDefsElement.hpp"
 
 namespace AeonGUI
@@ -22,7 +23,7 @@ namespace AeonGUI
     {
         SVGDefsElement::SVGDefsElement ( const std::string& aTagName, AttributeMap&& aAttributes, Node* aParent ) : SVGGraphicsElement {aTagName, std::move ( aAttributes ), aParent}
         {
-            std::cout << __func__ << std::endl;
+            std::cerr << LogLevel::Debug << __func__ << std::endl;
         }
         SVGDefsElement::~SVGDefsElement() = default;
         bool SVGDefsElement::IsDrawEnabled() const

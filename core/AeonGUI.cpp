@@ -20,9 +20,9 @@ limitations under the License.
 
 namespace AeonGUI
 {
-    bool Initialize ( int argc, char *argv[] )
+    void Initialize ( int argc, char *argv[] )
     {
-        return FontDatabase::Initialize();
+        FontDatabase::Initialize();
     }
     void Finalize()
     {

@@ -15,9 +15,11 @@ limitations under the License.
 */
 
 #include <cctype>
+#include <iostream>
 #include <stdexcept>
 #include <libcss/libcss.h>
 #include "aeongui/CSSSelector.hpp"
+#include "aeongui/LogLevel.hpp"
 #include "aeongui/dom/Element.hpp"
 
 namespace AeonGUI
@@ -82,6 +84,7 @@ namespace AeonGUI
                 }
                 if ( mPos == start )
                 {
+                    std::cerr << LogLevel::Error << "Expected identifier in CSS selector" << std::endl;
                     throw std::runtime_error ( "Expected identifier in CSS selector" );
                 }
                 return mInput.substr ( start, mPos - start );
@@ -92,6 +95,7 @@ namespace AeonGUI
                 SimpleSelector sel{};
                 if ( mPos >= mInput.size() )
                 {
+                    std::cerr << LogLevel::Error << "Unexpected end of selector" << std::endl;
                     throw std::runtime_error ( "Unexpected end of selector" );
                 }
 
@@ -153,12 +157,14 @@ namespace AeonGUI
                                 sel.attrOp = SimpleSelector::Substring;
                                 break;
                             default:
+                                std::cerr << LogLevel::Error << "Unknown attribute operator in CSS selector" << std::endl;
                                 throw std::runtime_error ( "Unknown attribute operator in CSS selector" );
                             }
                             mPos += 2;
                         }
                         else
                         {
+                            std::cerr << LogLevel::Error << "Invalid attribute selector syntax" << std::endl;
                             throw std::runtime_error ( "Invalid attribute selector syntax" );
                         }
                         SkipWhitespace();
@@ -166,6 +172,7 @@ namespace AeonGUI
                         SkipWhitespace();
                         if ( mPos >= mInput.size() || mInput[mPos] != ']' )
                         {
+                            std::cerr << LogLevel::Error << "Expected ']' in attribute selector" << std::endl;
                             throw std::runtime_error ( "Expected ']' in attribute selector" );
                         }
                         ++mPos;
@@ -178,6 +185,7 @@ namespace AeonGUI
                 }
                 else
                 {
+                    std::cerr << LogLevel::Error << "Unexpected character in CSS selector" << std::endl;
                     throw std::runtime_error ( "Unexpected character in CSS selector" );
                 }
                 return sel;
@@ -187,6 +195,7 @@ namespace AeonGUI
             {
                 if ( mPos >= mInput.size() )
                 {
+                    std::cerr << LogLevel::Error << "Unexpected end of attribute value" << std::endl;
                     throw std::runtime_error ( "Unexpected end of attribute value" );
                 }
                 if ( mInput[mPos] == '"' || mInput[mPos] == '\'' )
@@ -200,6 +209,7 @@ namespace AeonGUI
                     }
                     if ( mPos >= mInput.size() )
                     {
+                        std::cerr << LogLevel::Error << "Unterminated string in attribute selector" << std::endl;
                         throw std::runtime_error ( "Unterminated string in attribute selector" );
                     }
                     std::string val = mInput.substr ( start, mPos - start );

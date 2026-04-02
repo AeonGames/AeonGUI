@@ -15,11 +15,12 @@ limitations under the License.
 */
 #include "aeongui/dom/SVGImageElement.hpp"
 #include "aeongui/Canvas.hpp"
+#include "aeongui/LogLevel.hpp"
 #include "aeongui/dom/Document.hpp"
 #include <algorithm>
 #include <cctype>
-#include <cstdio>
 #include <filesystem>
+#include <iostream>
 #include <libcss/libcss.h>
 
 namespace AeonGUI
@@ -182,13 +183,17 @@ namespace AeonGUI
 
             if ( resolvedPath.empty() )
             {
-                std::fprintf ( stderr, "SVGImageElement: empty image path after href normalization from '%s'.\n", mHref.baseVal().c_str() );
+                std::cerr << LogLevel::Error << "SVGImageElement: empty image path after href normalization from '" << mHref.baseVal() << "'" << std::endl;
                 return false;
             }
 
-            if ( !mRasterImage.LoadFromFile ( resolvedPath ) )
+            try
             {
-                std::fprintf ( stderr, "SVGImageElement: failed to load image '%s' (resolved to '%s').\n", mHref.baseVal().c_str(), resolvedPath.c_str() );
+                mRasterImage.LoadFromFile ( resolvedPath );
+            }
+            catch ( const std::exception& e )
+            {
+                std::cerr << LogLevel::Error << "SVGImageElement: failed to load image '" << mHref.baseVal() << "' (resolved to '" << resolvedPath << "'): " << e.what() << std::endl;
                 return false;
             }
             return true;

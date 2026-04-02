@@ -15,11 +15,15 @@ limitations under the License.
 */
 
 #include "aeongui/RasterImage.hpp"
+#include "aeongui/LogLevel.hpp"
 
 #include <array>
 #include <cstdio>
 #include <cstring>
 #include <fstream>
+#include <iostream>
+#include <sstream>
+#include <stdexcept>
 #include <string>
 
 #if defined ( USE_PNG ) && USE_PNG
@@ -276,12 +280,15 @@ namespace AeonGUI
     {
     }
 
-    bool RasterImage::LoadFromFile ( const std::string& aPath )
+    void RasterImage::LoadFromFile ( const std::string& aPath )
     {
         std::ifstream file ( aPath, std::ios_base::binary | std::ios_base::in );
         if ( !file.is_open() )
         {
-            return false;
+            std::ostringstream oss;
+            oss << "RasterImage: Could not open file: " << aPath;
+            std::cerr << LogLevel::Error << oss.str() << std::endl;
+            throw std::runtime_error ( oss.str() );
         }
 
         file.seekg ( 0, std::ios_base::end );
@@ -289,24 +296,32 @@ namespace AeonGUI
         file.seekg ( 0, std::ios_base::beg );
         if ( end <= 0 )
         {
-            return false;
+            std::ostringstream oss;
+            oss << "RasterImage: Empty or unreadable file: " << aPath;
+            std::cerr << LogLevel::Error << oss.str() << std::endl;
+            throw std::runtime_error ( oss.str() );
         }
 
         std::vector<uint8_t> bytes ( static_cast<size_t> ( end ) );
         file.read ( reinterpret_cast<char*> ( bytes.data() ), static_cast<std::streamsize> ( bytes.size() ) );
         if ( !file )
         {
-            return false;
+            std::ostringstream oss;
+            oss << "RasterImage: Read error on file: " << aPath;
+            std::cerr << LogLevel::Error << oss.str() << std::endl;
+            throw std::runtime_error ( oss.str() );
         }
 
-        return LoadFromMemory ( bytes.data(), bytes.size() );
+        LoadFromMemory ( bytes.data(), bytes.size() );
     }
 
-    bool RasterImage::LoadFromMemory ( const void* aData, size_t aSize )
+    void RasterImage::LoadFromMemory ( const void* aData, size_t aSize )
     {
         if ( aData == nullptr || aSize < 3 )
         {
-            return false;
+            std::string msg{"RasterImage: Invalid data (null or too small)"};
+            std::cerr << LogLevel::Error << msg << std::endl;
+            throw std::runtime_error ( msg );
         }
 
         const uint8_t* bytes = static_cast<const uint8_t*> ( aData );
@@ -338,19 +353,18 @@ namespace AeonGUI
 
         if ( !loaded )
         {
-            return false;
+            std::string msg{"RasterImage: Failed to decode image data"};
+            std::cerr << LogLevel::Error << msg << std::endl;
+            throw std::runtime_error ( msg );
         }
 
         if ( IsLoaded() )
         {
-            std::fprintf ( stderr,
-                           "RasterImage: replacing image %ux%u (%zu bytes) with %ux%u (%zu bytes).\n",
-                           mWidth,
-                           mHeight,
-                           mPixelData.size(),
-                           width,
-                           height,
-                           rgba.size() );
+            std::cerr << LogLevel::Info
+                      << "RasterImage: replacing image " << mWidth << "x" << mHeight
+                      << " (" << mPixelData.size() << " bytes) with "
+                      << width << "x" << height
+                      << " (" << rgba.size() << " bytes)." << std::endl;
         }
 
         mEncodedFormat = format;
@@ -358,7 +372,6 @@ namespace AeonGUI
         mWidth = width;
         mHeight = height;
         mPixelData.swap ( rgba );
-        return true;
     }
 
     void RasterImage::Clear()

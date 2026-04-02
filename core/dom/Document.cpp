@@ -23,6 +23,7 @@ limitations under the License.
 #include <libcss/libcss.h>
 #include <stack>
 #include "aeongui/ElementFactory.hpp"
+#include "aeongui/LogLevel.hpp"
 #include "aeongui/dom/Document.hpp"
 #include "aeongui/dom/Text.hpp"
 
@@ -104,7 +105,9 @@ namespace AeonGUI
             xmlDocPtr document{xmlReadFile ( reinterpret_cast<const char*> ( mUrl.c_str() ), nullptr, 0 ) };
             if ( document == nullptr )
             {
-                throw std::runtime_error ( "Could not open file: " + mUrl );
+                std::string msg{"Could not open file: " + mUrl};
+                std::cerr << LogLevel::Error << msg << std::endl;
+                throw std::runtime_error ( msg );
             }
 
             css_error code{};
@@ -130,6 +133,7 @@ namespace AeonGUI
                 code = css_stylesheet_create ( &params, &stylesheet );
                 if ( code != CSS_OK )
                 {
+                    std::cerr << LogLevel::Error << css_error_to_string ( code ) << std::endl;
                     throw std::runtime_error ( css_error_to_string ( code ) );
                 }
                 mStyleSheet.reset ( stylesheet );

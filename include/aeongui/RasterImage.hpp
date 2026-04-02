@@ -53,15 +53,15 @@ namespace AeonGUI
 
         /** @brief Load an image from a file.
          *  @param aPath Path to the image file.
-         *  @return true if loading succeeded.
+         *  @throws std::runtime_error if loading fails.
          */
-        DLL bool LoadFromFile ( const std::string& aPath );
+        DLL void LoadFromFile ( const std::string& aPath );
         /** @brief Load an image from a memory buffer.
          *  @param aData Pointer to the encoded image data.
          *  @param aSize Size of the data in bytes.
-         *  @return true if loading succeeded.
+         *  @throws std::runtime_error if loading fails.
          */
-        DLL bool LoadFromMemory ( const void* aData, size_t aSize );
+        DLL void LoadFromMemory ( const void* aData, size_t aSize );
         /** @brief Release the decoded pixel data. */
         DLL void Clear();
 

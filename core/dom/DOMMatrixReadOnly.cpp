@@ -1,5 +1,5 @@
 /*
-Copyright (C) 2025 Rodrigo Jose Hernandez Cordoba
+Copyright (C) 2025,2026 Rodrigo Jose Hernandez Cordoba
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -15,8 +15,10 @@ limitations under the License.
 */
 #include "aeongui/dom/DOMMatrixReadOnly.hpp"
 #include "aeongui/dom/DOMException.hpp"
+#include "aeongui/LogLevel.hpp"
 #include <cmath>
 #include <algorithm>
+#include <iostream>
 namespace AeonGUI
 {
     namespace DOM
@@ -25,6 +27,7 @@ namespace AeonGUI
         {
             if ( values.size() != 6 && values.size() != 16 )
             {
+                std::cerr << LogLevel::Error << "DOMMatrixReadOnly constructor requires 6 or 16 values." << std::endl;
                 throw DOMTypeMismatchError ( "DOMMatrixReadOnly constructor requires 6 or 16 values." );
             }
             else if ( values.size() == 16 )
@@ -190,6 +193,7 @@ namespace AeonGUI
 
             if ( std::abs ( det ) < 1e-10f )
             {
+                std::cerr << LogLevel::Error << "Matrix is not invertible" << std::endl;
                 throw DOMInvalidStateError ( "Matrix is not invertible" );
             }
 
