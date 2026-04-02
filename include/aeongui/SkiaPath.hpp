@@ -20,6 +20,10 @@ limitations under the License.
 
 namespace AeonGUI
 {
+    /** @brief Skia-based Path implementation.
+     *
+     *  Wraps an @c SkPath and is constructed from AeonGUI draw commands.
+     */
     class SkiaPath : public Path
     {
     public:
@@ -27,6 +31,9 @@ namespace AeonGUI
         void Construct ( const std::vector<DrawType>& aCommands ) final;
         void Construct ( const DrawType* aCommands, size_t aCommandCount ) final;
         ~SkiaPath();
+        /** @brief Access the underlying Skia path object.
+         *  @return Const reference to the internal @c SkPath.
+         */
         const SkPath& GetSkPath() const;
         DLL double GetTotalLength() const final;
         PathPoint GetPointAtLength ( double aDistance ) const final;

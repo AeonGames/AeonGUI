@@ -28,6 +28,11 @@ namespace AeonGUI
         class SVGFilterElement : public SVGElement
         {
         public:
+            /** @brief Construct an SVGFilterElement.
+             *  @param aTagName    Tag name ("filter").
+             *  @param aAttributes Element attributes.
+             *  @param aParent     Parent node.
+             */
             SVGFilterElement ( const DOMString& aTagName, AttributeMap&& aAttributes, Node* aParent );
             ~SVGFilterElement() final;
             bool IsDrawEnabled() const final;

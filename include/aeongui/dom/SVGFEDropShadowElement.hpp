@@ -29,29 +29,52 @@ namespace AeonGUI
         class SVGFEDropShadowElement : public SVGElement
         {
         public:
+            /** @brief Construct an SVGFEDropShadowElement.
+             *  @param aTagName    Tag name ("feDropShadow").
+             *  @param aAttributes Element attributes.
+             *  @param aParent     Parent node.
+             */
             SVGFEDropShadowElement ( const DOMString& aTagName, AttributeMap&& aAttributes, Node* aParent );
             ~SVGFEDropShadowElement() final;
             bool IsDrawEnabled() const final;
+            /** @brief Horizontal shadow offset.
+             *  @return The dx value.
+             */
             double dx() const
             {
                 return mDx;
             }
+            /** @brief Vertical shadow offset.
+             *  @return The dy value.
+             */
             double dy() const
             {
                 return mDy;
             }
+            /** @brief Horizontal Gaussian blur standard deviation.
+             *  @return The stdDeviationX value.
+             */
             double stdDeviationX() const
             {
                 return mStdDeviationX;
             }
+            /** @brief Vertical Gaussian blur standard deviation.
+             *  @return The stdDeviationY value.
+             */
             double stdDeviationY() const
             {
                 return mStdDeviationY;
             }
+            /** @brief Shadow fill color.
+             *  @return The flood color.
+             */
             Color floodColor() const
             {
                 return mFloodColor;
             }
+            /** @brief Shadow opacity [0.0, 1.0].
+             *  @return The flood opacity.
+             */
             double floodOpacity() const
             {
                 return mFloodOpacity;

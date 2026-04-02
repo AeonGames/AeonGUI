@@ -8,19 +8,19 @@
 [![Aeon Games](https://www.aeongames.com/AeonBlack.svg)](https://aeongames.com)
 
 AeonGUI is a cross-platform C++ GUI and SVG rendering library focused on game UI and interactive applications.
-It implements a subset of the SVG DOM and CSS styling pipeline, with a backend designed to remain rendering-API agnostic.
+It implements a subset of the SVG DOM and CSS styling pipeline, with a pluggable 2D rendering backend (Cairo or Skia) selected at build time.
 
-Keywords: `C++ GUI`, `SVG renderer`, `game UI`, `cross-platform UI library`, `CMake`, `Cairo`, `Pango`, `libxml2`.
+Keywords: `C++ GUI`, `SVG renderer`, `game UI`, `cross-platform UI library`, `CMake`, `Cairo`, `Skia`, `Pango`, `HarfBuzz`, `libxml2`.
 
 ## Introduction
 
 AeonGUI lets you describe user interfaces with SVG and style them with CSS,
 then render them on top of any graphics API your application already uses.
 The library parses an SVG document into a DOM tree, resolves CSS styles,
-performs text layout, and produces pixel output through Cairo&mdash;but the
-rendered result is handed to your application as a plain pixel buffer, so
-it can be composited as a texture in OpenGL, Vulkan, Metal, or any other
-rendering pipeline.
+performs text layout, and produces pixel output through a selectable 2D
+backend (Cairo or Skia)&mdash;but the rendered result is handed to your
+application as a plain pixel buffer, so it can be composited as a texture
+in OpenGL, Vulkan, Metal, or any other rendering pipeline.
 
 The project is written in modern C++ (C++20) and built with CMake.
 All third-party dependencies are either vendored or fetched automatically,
@@ -34,6 +34,9 @@ and the build integrates cleanly with vcpkg on Windows.
 - **Rendering-API agnostic.** The core library never calls OpenGL, Vulkan,
   or Metal directly.  It rasterises into a CPU-side pixel buffer that your
   engine composites however it sees fit.
+- **Pluggable 2D backend.** Choose between Cairo and Skia at build time
+  via the `AEONGUI_BACKEND` CMake option.  Both backends produce identical
+  pixel-buffer output and share the same Pango + HarfBuzz text pipeline.
 - **Minimal footprint.** Only the parts of the SVG and DOM specifications
   that are useful for game and application UI are implemented&mdash;no
   scripting engine, no full browser layout model.
@@ -70,7 +73,7 @@ AeonGUI is under active development and still evolving. APIs and behavior may ch
 - CSS-based styling through `libcss`, including `:hover`, `:active`, and `:focus` pseudo-classes.
 - SMIL animation engine: `<animate>`, `<set>`, `<animateTransform>`, and `<animateMotion>` elements
   with time-based and event-based (`click`, `mouseenter`, …) activation.
-- Text layout and font shaping via `Pango` and `Fontconfig`.
+- Text layout and font shaping via `Pango`, `HarfBuzz`, and `Fontconfig`.
 - XML parsing via `libxml2`.
 - Raster image support with magic-based format detection. PCX decoding is
   always available with no extra dependencies. PNG and JPEG decoding are
@@ -93,7 +96,7 @@ rectangle "libxml2 parser" as parser
 rectangle "DOM tree\n(Node / Element / Text)" as dom
 rectangle "CSS resolution\n(libcss)" as css
 rectangle "Text layout\n(Pango / Fontconfig)" as text
-rectangle "Rasterisation\n(Cairo)" as raster
+rectangle "Rasterisation\n(Cairo or Skia)" as raster
 rectangle "Pixel buffer" as pixels
 rectangle "Your engine composites\nthe buffer as a texture" as engine
 
@@ -108,10 +111,11 @@ pixels --> engine
 ```
 
 The `Window` class ties these stages together: it owns a `Document` (the DOM
-tree), a `CairoCanvas` (the rendering surface), and a `Location` (the URL
-of the loaded SVG).  Your application creates a `Window`, points its
-`Location` at an SVG file, calls `Update()` each frame to advance
-animations, calls `Draw()`, and reads back pixels via `GetPixels()`.
+tree), a `Canvas` (the rendering surface&mdash;`CairoCanvas` or `SkiaCanvas`
+depending on the chosen backend), and a `Location` (the URL of the loaded
+SVG).  Your application creates a `Window`, points its `Location` at an SVG
+file, calls `Update()` each frame to advance animations, calls `Draw()`, and
+reads back pixels via `GetPixels()`.
 Mouse input is forwarded through `HandleMouseMove()`, `HandleMouseDown()`,
 and `HandleMouseUp()`, which drive CSS pseudo-class state, hit-testing,
 and DOM event dispatch for SMIL event-based triggers.
@@ -129,8 +133,9 @@ CI builds currently run on:
 
 Core dependencies used by the project:
 
-- `cairo`
+- `cairo` (default backend) **or** `skia` (alternative backend)
 - `pango`
+- `harfbuzz`
 - `fontconfig`
 - `libxml2`
 - `zlib`
@@ -139,6 +144,13 @@ Core dependencies used by the project:
 - `gtest`/`gmock` for tests
 
 For MSVC builds, the repository is configured for `vcpkg` manifests (`vcpkg.json`).
+
+### Backend-specific notes
+
+| Backend | Text rendering pipeline | Package manager availability |
+|---------|------------------------|-----------------------------|
+| Cairo   | Pango + PangoCairo     | vcpkg, apt, brew, MSYS2 pacman |
+| Skia    | Pango + PangoFT2 + HarfBuzz draw API | vcpkg, MSYS2 pacman |
 
 ## Quick Start
 
@@ -154,15 +166,25 @@ cd AeonGUI
 #### Windows (MSVC + vcpkg)
 
 ```bash
+# Cairo backend (default)
 cmake -B build -DCMAKE_TOOLCHAIN_FILE="C:/vcpkg/scripts/buildsystems/vcpkg.cmake"
 cmake --build build
+
+# Skia backend
+cmake -B build-skia -DCMAKE_TOOLCHAIN_FILE="C:/vcpkg/scripts/buildsystems/vcpkg.cmake" -DAEONGUI_BACKEND=Skia
+cmake --build build-skia
 ```
 
 #### Windows (MSYS2 / MinGW)
 
 ```bash
+# Cairo backend (default)
 cmake -G "MSYS Makefiles" -B build -DCMAKE_BUILD_TYPE=Release
 cmake --build build
+
+# Skia backend (requires mingw-w64-x86_64-skia or equivalent pacboy)
+cmake -G "MSYS Makefiles" -B build-skia -DCMAKE_BUILD_TYPE=Release -DAEONGUI_BACKEND=Skia
+cmake --build build-skia
 ```
 
 #### Linux / macOS
@@ -192,6 +214,7 @@ Four rendering backends are included:
 
 ## Common CMake Options
 
+- `-DAEONGUI_BACKEND=Cairo|Skia` Select the 2D rendering backend (default: `Cairo`).
 - `-DUSE_ZLIB=ON|OFF` Enable/disable zlib integration.
 - `-DUSE_PNG=ON|OFF` Enable/disable PNG decoding.
 - `-DUSE_JPEG=ON|OFF` Enable/disable JPEG decoding (`libjpeg-turbo`).
@@ -274,10 +297,11 @@ No. Historical experiments existed, but the current codebase is C++ focused and 
 
 ### Can I use AeonGUI with my own rendering engine?
 
-Yes. AeonGUI renders into a CPU-side pixel buffer (BGRA). You can upload
-that buffer as a texture in OpenGL, Vulkan, Metal, DirectX, or any other API
-and composite it however you like. The demo applications show how to do
-this for OpenGL, Vulkan, Metal, and Direct3D12.
+Yes. AeonGUI renders into a CPU-side pixel buffer (BGRA), regardless of
+whether the Cairo or Skia backend is selected. You can upload that buffer
+as a texture in OpenGL, Vulkan, Metal, DirectX, or any other API and
+composite it however you like. The demo applications show how to do this
+for OpenGL, Vulkan, Metal, and Direct3D12.
 
 ### Which parts of SVG are supported?
 

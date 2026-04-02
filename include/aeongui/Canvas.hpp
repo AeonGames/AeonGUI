@@ -231,11 +231,15 @@ namespace AeonGUI
          *  When true, filter effects (PushGroup/PopGroup/ApplyDropShadow)
          *  are skipped to avoid expensive pixel processing during
          *  elementFromPoint traversals.
+         *  @param aHitTesting True to enable hit-testing mode, false to disable.
          */
         void SetHitTesting ( bool aHitTesting )
         {
             mHitTesting = aHitTesting;
         }
+        /** @brief Query whether the canvas is in hit-testing mode.
+         *  @return True if hit-testing is active.
+         */
         bool IsHitTesting() const
         {
             return mHitTesting;
@@ -245,6 +249,7 @@ namespace AeonGUI
          *  When non-zero, Draw(path) also fills the path on the
          *  internal pick buffer using this value.  Set to 0 to
          *  disable pick rendering for non-geometry nodes.
+         *  @param aPickId The pick ID to assign (0 disables pick rendering).
          */
         void SetPickId ( uint8_t aPickId )
         {
@@ -277,7 +282,10 @@ namespace AeonGUI
         /** @brief Device-space bounding box for a pick-tracked element. */
         struct PickBounds
         {
-            double x1{0}, y1{0}, x2{0}, y2{0};
+            double x1{0}; ///< Left edge (device pixels).
+            double y1{0}; ///< Top edge (device pixels).
+            double x2{0}; ///< Right edge (device pixels).
+            double y2{0}; ///< Bottom edge (device pixels).
         };
         /** @brief Get the cached device-space bounds for a pick ID.
          *  @param aId Pick ID (1-255).
@@ -288,9 +296,9 @@ namespace AeonGUI
             return mPickBounds[aId];
         }
     protected:
-        bool mHitTesting{false};
-        uint8_t mPickId{0};
-        std::array<PickBounds, 256> mPickBounds{};
+        bool mHitTesting{false};                  ///< True when in hit-testing mode.
+        uint8_t mPickId{0};                       ///< Current pick ID for Draw calls.
+        std::array<PickBounds, 256> mPickBounds{}; ///< Cached device-space bounds per pick ID.
     };
 }
 #endif

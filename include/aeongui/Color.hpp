@@ -264,7 +264,10 @@ namespace AeonGUI
     /** @brief A linear gradient paint. */
     struct LinearGradient
     {
-        double x1{0}, y1{0}, x2{1}, y2{0}; ///< Gradient vector.
+        double x1{0}; ///< Start X of the gradient vector.
+        double y1{0}; ///< Start Y of the gradient vector.
+        double x2{1}; ///< End X of the gradient vector.
+        double y2{0}; ///< End Y of the gradient vector.
         std::vector<GradientStop> stops;    ///< Color stops.
         bool objectBoundingBox{true};       ///< True if coords are relative to the element bounding box.
     };

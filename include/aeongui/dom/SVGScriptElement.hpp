@@ -62,7 +62,9 @@ namespace AeonGUI
             /** @brief Destructor.  Unloads the plugin if loaded. */
             ~SVGScriptElement() override;
 
-            /** @brief Not drawable. */
+            /** @brief Not drawable.
+             *  @return Always false.
+             */
             bool IsDrawEnabled() const override;
 
             /** @brief Called after document load — loads the native plugin. */

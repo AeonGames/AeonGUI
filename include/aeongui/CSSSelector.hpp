@@ -30,17 +30,19 @@ namespace AeonGUI
     /// A single simple selector component (type, id, class, or attribute).
     struct SimpleSelector
     {
+        /// Kind of simple selector.
         enum Type
         {
             Universal,   ///< *
             TypeSel,     ///< e.g. rect, text
-            Id,          ///< #myId
+            Id,          ///< \#myId
             Class,       ///< .myClass
             Attribute    ///< [attr] or [attr=value]
         };
-        Type type{Universal};
-        std::string name{};
+        Type type{Universal};    ///< The selector kind.
+        std::string name{};      ///< Selector name (tag name, id, class, or attribute name).
         std::string value{}; ///< For attribute selectors with a value.
+        /// Attribute matching operator.
         enum AttrOp
         {
             Exists,      ///< [attr]
@@ -51,13 +53,13 @@ namespace AeonGUI
             Suffix,      ///< [attr$=value]
             Substring    ///< [attr*=value]
         };
-        AttrOp attrOp{Exists};
+        AttrOp attrOp{Exists}; ///< The attribute match operation.
     };
 
     /// A compound selector: a sequence of simple selectors that must all match the same element.
     struct CompoundSelector
     {
-        std::vector<SimpleSelector> selectors{};
+        std::vector<SimpleSelector> selectors{}; ///< Simple selectors in this compound.
     };
 
     /// Combinator between compound selectors.
@@ -74,12 +76,13 @@ namespace AeonGUI
     /// Stored left-to-right as written in CSS.
     struct ComplexSelector
     {
+        /// A compound selector together with the combinator that precedes it.
         struct Part
         {
-            CompoundSelector compound{};
-            Combinator combinator{Combinator::None};
+            CompoundSelector compound{};            ///< The compound selector for this part.
+            Combinator combinator{Combinator::None}; ///< Combinator linking to the next part.
         };
-        std::vector<Part> parts{};
+        std::vector<Part> parts{}; ///< Parts in left-to-right order as written in CSS.
     };
 
     /// Parse a CSS selector string into a list of complex selectors (comma-separated).

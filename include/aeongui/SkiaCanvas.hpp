@@ -26,10 +26,20 @@ class SkCanvas;
 
 namespace AeonGUI
 {
+    /** @brief Skia-based Canvas implementation.
+     *
+     *  Renders 2D geometry, text, and images into a CPU-side pixel buffer
+     *  using Google Skia.  Selected at build time with @c -DAEONGUI_BACKEND=Skia.
+     */
     class SkiaCanvas : public Canvas
     {
     public:
+        /** @brief Construct an empty (zero-size) SkiaCanvas. */
         DLL SkiaCanvas ();
+        /** @brief Construct a SkiaCanvas with the given viewport dimensions.
+         *  @param aWidth  Viewport width in pixels.
+         *  @param aHeight Viewport height in pixels.
+         */
         DLL SkiaCanvas ( uint32_t aWidth, uint32_t aHeight );
         DLL ~SkiaCanvas() final;
         DLL void ResizeViewport ( uint32_t aWidth, uint32_t aHeight ) final;
