@@ -1,9 +1,36 @@
-# Keep source files with native EOL
-*.c text
-*.cpp text
-*.h text
+# Normalize all text files to LF in the repo and working tree
+* text=auto eol=lf
 
-# Keep shaders on Unix format regardless of platform
+# Source files
+*.c text eol=lf
+*.cc text eol=lf
+*.cpp text eol=lf
+*.cxx text eol=lf
+*.h text eol=lf
+*.hpp text eol=lf
+*.cu text eol=lf
+
+# Build/config files
+*.cmake text eol=lf
+*.json text eol=lf
+*.yml text eol=lf
+*.yaml text eol=lf
+*.md text eol=lf
+*.txt text eol=lf
+*.py text eol=lf
+*.rb text eol=lf
+*.sh text eol=lf
+*.in text eol=lf
+
+# Windows-specific files get CRLF
+*.bat text eol=crlf
+*.cmd text eol=crlf
+*.ps1 text eol=crlf
+*.sln text eol=crlf
+*.slnx text eol=crlf
+*.vcxproj text eol=crlf
+
+# Shaders
 vertex_shader text eol=lf
 fragment_shader text eol=lf
 

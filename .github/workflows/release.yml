@@ -34,6 +34,7 @@ jobs:
       id: check
       run: |
         MANUAL_VERSION="${{ inputs.version }}"
+        EVENT_NAME="${{ github.event_name }}"
 
         # Extract version from HEAD CMakeLists.txt
         NEW_VERSION=$(grep -oP 'project\(AeonGUI VERSION \K[0-9]+\.[0-9]+\.[0-9]+' CMakeLists.txt)
@@ -43,9 +44,13 @@ jobs:
         fi
 
         if [[ -n "$MANUAL_VERSION" ]]; then
-          # Manual dispatch: use the provided version, skip commit comparison
+          # Manual dispatch with explicit version
           NEW_VERSION="$MANUAL_VERSION"
           echo "Manual dispatch with version: $NEW_VERSION"
+        elif [[ "$EVENT_NAME" == "workflow_dispatch" ]]; then
+          # Manual dispatch without version: use CMakeLists.txt version,
+          # skip commit comparison—tag existence check below is sufficient
+          echo "Manual dispatch using CMakeLists.txt version: $NEW_VERSION"
         else
           # Push trigger: compare HEAD vs previous commit
           BEFORE="${{ github.event.before }}"
