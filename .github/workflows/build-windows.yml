@@ -49,6 +49,10 @@ jobs:
             - '**/*.hpp'
             - '**/*.cu'
 
+    - name: '✅ Skip build (no compiled changes)'
+      if: steps.changes.outputs.compiled != 'true'
+      run: echo "No compiled-relevant files changed. Skipping build and tests."
+
     - name: 🔄 Update Visual Studio
       shell: pwsh
       run: |
@@ -91,7 +95,7 @@ jobs:
     - name: '🛠️ Configuring'
       run: |
         cmake -DCMAKE_TOOLCHAIN_FILE="C:/vcpkg/scripts/buildsystems/vcpkg.cmake" -DAEONGUI_BACKEND=${{ matrix.backend }} -B ${{github.workspace}}/build
-
+      if: steps.changes.outputs.compiled == 'true'
 
     - name: '🏗️ Building'
       run: cmake --build ${{github.workspace}}/build
@@ -101,6 +105,4 @@ jobs:
       run: ctest --output-on-failure --verbose -C Debug --test-dir ${{github.workspace}}/build
       if: steps.changes.outputs.compiled == 'true'
 
-    - name: '✅ Skip build (no compiled changes)'
-      if: steps.changes.outputs.compiled != 'true'
-      run: echo "No compiled-relevant files changed. Skipping build and tests."
+
