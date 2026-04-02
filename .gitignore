@@ -46,6 +46,7 @@ mingw32
 mingw64
 clang32
 clang64
+ucrt64
 msys64
 .vscode
 include/GL

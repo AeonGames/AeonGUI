@@ -28,7 +28,16 @@ namespace AeonGUI
     {
     public:
         SkiaPath();
+        /** @brief Build the Skia path from a vector of draw commands.
+         *  @param aCommands The draw command sequence.
+         *  @param aPathDataHint Pre-computed size hint (unused by Skia backend).
+         */
         void Construct ( const std::vector<DrawType>& aCommands, size_t aPathDataHint = 0 ) final;
+        /** @brief Build the Skia path from a raw array of draw commands.
+         *  @param aCommands     Pointer to the command array.
+         *  @param aCommandCount Number of commands.
+         *  @param aPathDataHint Pre-computed size hint (unused by Skia backend).
+         */
         void Construct ( const DrawType* aCommands, size_t aCommandCount, size_t aPathDataHint = 0 ) final;
         ~SkiaPath();
         /** @brief Access the underlying Skia path object.

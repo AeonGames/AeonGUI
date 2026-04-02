@@ -33,6 +33,7 @@ namespace AeonGUI
         CairoPath();
         /** @brief Build the Cairo path from a vector of draw commands.
          *  @param aCommands The draw command sequence.
+         *  @param aPathDataHint Pre-computed size hint for mPathData.
          */
         void Construct ( const std::vector<DrawType>& aCommands, size_t aPathDataHint = 0 ) final;
         /** @brief Build the Cairo path from a raw array of draw commands.

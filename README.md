@@ -301,7 +301,7 @@ Callers should be prepared to catch `std::runtime_error` from `Initialize()`,
 `DOMException` subclasses (e.g. `TypeError`, `InvalidStateError`) are thrown
 for DOM spec violations.
 
-## SVG Feature Support
+## SVG Feature Support {#svg-feature-support}
 
 ### Supported elements
 

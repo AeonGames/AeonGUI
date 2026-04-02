@@ -41,6 +41,7 @@ namespace AeonGUI
     public:
         /** @brief Build the path from a vector of draw commands.
          *  @param aCommands The draw command sequence.
+         *  @param aPathDataHint Pre-computed size hint for internal storage.
          */
         virtual void Construct ( const std::vector<DrawType>& aCommands, size_t aPathDataHint = 0 ) = 0;
         /** @brief Build the path from a raw array of draw commands.
