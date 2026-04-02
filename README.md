@@ -7,6 +7,10 @@
 
 [![Aeon Games](https://www.aeongames.com/AeonBlack.svg)](https://aeongames.com)
 
+> **Get notified of new releases:** click
+> [Watch → Custom → Releases](https://github.com/AeonGames/AeonGUI/subscription)
+> to receive notifications when a new version is published.
+
 AeonGUI is a cross-platform C++ GUI and SVG rendering library focused on game UI and interactive applications.
 It implements a subset of the SVG DOM and CSS styling pipeline, with a pluggable 2D rendering backend (Cairo or Skia) selected at build time.
 
