@@ -1,0 +1,46 @@
+class Aeongui < Formula
+  desc "Cross-platform C++ SVG DOM and rendering library for game UI"
+  homepage "https://github.com/AeonGames/AeonGUI"
+  url "https://github.com/AeonGames/AeonGUI/archive/v@PROJECT_VERSION@.tar.gz"
+  sha256 ""
+  license "Apache-2.0"
+
+  depends_on "cmake" => :build
+  depends_on "pkg-config" => :build
+  depends_on "bison" => :build
+  depends_on "flex" => :build
+  depends_on "googletest" => :build
+  depends_on "cairo"
+  depends_on "pango"
+  depends_on "fontconfig"
+  depends_on "freetype"
+  depends_on "harfbuzz"
+  depends_on "libxml2"
+  depends_on "zlib"
+  depends_on "libpng"
+  depends_on "jpeg-turbo"
+
+  def install
+    system "cmake", "-B", "build", "-S", ".",
+           *std_cmake_args,
+           "-DAEONGUI_BACKEND=Cairo",
+           "-DBUILD_UNIT_TESTS=OFF"
+    system "cmake", "--build", "build"
+    system "cmake", "--install", "build"
+  end
+
+  test do
+    (testpath/"test.cpp").write <<~CPP
+      #include <aeongui/AeonGUI.hpp>
+      int main() {
+        AeonGUI::Initialize(0, nullptr);
+        AeonGUI::Finalize();
+        return 0;
+      }
+    CPP
+    system ENV.cxx, "-std=c++20", "test.cpp",
+           "-I#{include}", "-L#{lib}", "-lAeonGUI",
+           "-o", "test"
+    system "./test"
+  end
+end

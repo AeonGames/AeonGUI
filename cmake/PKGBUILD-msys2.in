@@ -1,0 +1,56 @@
+# Maintainer: Rodrigo Jose Hernandez Cordoba <kwizatz@aeongames.com>
+_realname=aeongui
+pkgbase=mingw-w64-${_realname}
+pkgname="${MINGW_PACKAGE_PREFIX}-${_realname}"
+pkgver=@PROJECT_VERSION@
+pkgrel=1
+pkgdesc='Cross-platform C++ SVG DOM and rendering library for game UI (mingw-w64)'
+arch=('any')
+mingw_arch=('mingw64' 'ucrt64' 'clang64')
+url='https://github.com/AeonGames/AeonGUI'
+license=('spdx:Apache-2.0')
+depends=(
+    "${MINGW_PACKAGE_PREFIX}-cairo"
+    "${MINGW_PACKAGE_PREFIX}-pango"
+    "${MINGW_PACKAGE_PREFIX}-fontconfig"
+    "${MINGW_PACKAGE_PREFIX}-freetype"
+    "${MINGW_PACKAGE_PREFIX}-harfbuzz"
+    "${MINGW_PACKAGE_PREFIX}-libxml2"
+    "${MINGW_PACKAGE_PREFIX}-zlib"
+    "${MINGW_PACKAGE_PREFIX}-libpng"
+    "${MINGW_PACKAGE_PREFIX}-libjpeg-turbo"
+)
+makedepends=(
+    "${MINGW_PACKAGE_PREFIX}-cmake"
+    "${MINGW_PACKAGE_PREFIX}-make"
+    "${MINGW_PACKAGE_PREFIX}-toolchain"
+    "${MINGW_PACKAGE_PREFIX}-pkg-config"
+    "${MINGW_PACKAGE_PREFIX}-gtest"
+    "flex"
+    "bison"
+)
+source=("https://github.com/AeonGames/AeonGUI/archive/v${pkgver}.tar.gz")
+sha256sums=('SKIP')
+
+build() {
+    cmake -B build -S "AeonGUI-${pkgver}" \
+        -G "MSYS Makefiles" \
+        -DCMAKE_BUILD_TYPE=Release \
+        -DCMAKE_INSTALL_PREFIX="${MINGW_PREFIX}" \
+        -DAEONGUI_BACKEND=Cairo \
+        -DBUILD_UNIT_TESTS=OFF
+    cmake --build build
+}
+
+check() {
+    cmake -B build -S "AeonGUI-${pkgver}" \
+        -DBUILD_UNIT_TESTS=ON
+    cmake --build build --target unit-tests
+    ctest --test-dir build --output-on-failure
+}
+
+package() {
+    DESTDIR="${pkgdir}" cmake --install build
+    install -Dm644 "AeonGUI-${pkgver}/LICENSE" \
+        "${pkgdir}${MINGW_PREFIX}/share/licenses/${_realname}/LICENSE"
+}

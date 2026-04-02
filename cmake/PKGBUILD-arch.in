@@ -1,0 +1,52 @@
+# Maintainer: Rodrigo Jose Hernandez Cordoba <kwizatz@aeongames.com>
+pkgname=aeongui
+pkgver=@PROJECT_VERSION@
+pkgrel=1
+pkgdesc='Cross-platform C++ SVG DOM and rendering library for game UI'
+arch=('x86_64')
+url='https://github.com/AeonGames/AeonGUI'
+license=('Apache-2.0')
+depends=(
+    'cairo'
+    'pango'
+    'fontconfig'
+    'freetype2'
+    'harfbuzz'
+    'libxml2'
+    'zlib'
+    'libpng'
+    'libjpeg-turbo'
+)
+makedepends=(
+    'cmake'
+    'make'
+    'gcc'
+    'flex'
+    'bison'
+    'pkgconf'
+    'gtest'
+)
+source=("https://github.com/AeonGames/AeonGUI/archive/v${pkgver}.tar.gz")
+sha256sums=('SKIP')
+
+build() {
+    cmake -B build -S "AeonGUI-${pkgver}" \
+        -DCMAKE_BUILD_TYPE=Release \
+        -DCMAKE_INSTALL_PREFIX=/usr \
+        -DAEONGUI_BACKEND=Cairo \
+        -DBUILD_UNIT_TESTS=OFF
+    cmake --build build
+}
+
+check() {
+    cmake -B build -S "AeonGUI-${pkgver}" \
+        -DBUILD_UNIT_TESTS=ON
+    cmake --build build --target unit-tests
+    ctest --test-dir build --output-on-failure
+}
+
+package() {
+    DESTDIR="${pkgdir}" cmake --install build
+    install -Dm644 "AeonGUI-${pkgver}/LICENSE" \
+        "${pkgdir}/usr/share/licenses/${pkgname}/LICENSE"
+}

@@ -363,3 +363,15 @@ install(
 )
 
 file(INSTALL LICENSE DESTINATION share/aeongui RENAME copyright)
+
+# --- Packaging templates ---
+configure_file("${CMAKE_SOURCE_DIR}/cmake/PKGBUILD-arch.in"
+               "${CMAKE_BINARY_DIR}/PKGBUILD-arch" @ONLY)
+configure_file("${CMAKE_SOURCE_DIR}/cmake/PKGBUILD-msys2.in"
+               "${CMAKE_BINARY_DIR}/PKGBUILD-msys2" @ONLY)
+configure_file("${CMAKE_SOURCE_DIR}/cmake/vcpkg-port-vcpkg.json.in"
+               "${CMAKE_BINARY_DIR}/vcpkg-port/vcpkg.json" @ONLY)
+configure_file("${CMAKE_SOURCE_DIR}/cmake/vcpkg-port-portfile.cmake.in"
+               "${CMAKE_BINARY_DIR}/vcpkg-port/portfile.cmake" @ONLY)
+configure_file("${CMAKE_SOURCE_DIR}/cmake/aeongui.rb.in"
+               "${CMAKE_BINARY_DIR}/aeongui.rb" @ONLY)

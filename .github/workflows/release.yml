@@ -1,0 +1,323 @@
+name: Release
+
+on:
+  push:
+    branches: [master]
+    paths:
+      - 'CMakeLists.txt'
+  workflow_dispatch:
+    inputs:
+      version:
+        description: 'Release version (e.g. 0.9.0). Leave empty to read from CMakeLists.txt.'
+        required: false
+        type: string
+        default: ''
+
+permissions:
+  contents: write
+
+jobs:
+
+  # ── Version gate ───────────────────────────────────────────────
+  version-check:
+    runs-on: ubuntu-latest
+    outputs:
+      should_release: ${{ steps.check.outputs.should_release }}
+      version: ${{ steps.check.outputs.version }}
+    steps:
+    - name: '🧰 Checkout'
+      uses: actions/checkout@v6
+      with:
+        fetch-depth: 0
+
+    - name: '🔍 Check version bump and changelog'
+      id: check
+      run: |
+        MANUAL_VERSION="${{ inputs.version }}"
+
+        # Extract version from HEAD CMakeLists.txt
+        NEW_VERSION=$(grep -oP 'project\(AeonGUI VERSION \K[0-9]+\.[0-9]+\.[0-9]+' CMakeLists.txt)
+        if [[ -z "$NEW_VERSION" ]]; then
+          echo "::error::Could not parse version from CMakeLists.txt"
+          exit 1
+        fi
+
+        if [[ -n "$MANUAL_VERSION" ]]; then
+          # Manual dispatch: use the provided version, skip commit comparison
+          NEW_VERSION="$MANUAL_VERSION"
+          echo "Manual dispatch with version: $NEW_VERSION"
+        else
+          # Push trigger: compare HEAD vs previous commit
+          BEFORE="${{ github.event.before }}"
+          OLD_VERSION=$(git show "${BEFORE}:CMakeLists.txt" 2>/dev/null \
+            | grep -oP 'project\(AeonGUI VERSION \K[0-9]+\.[0-9]+\.[0-9]+' || echo "0.0.0")
+          echo "Previous commit version: $OLD_VERSION"
+          echo "Current commit version:  $NEW_VERSION"
+
+          # If version unchanged in this push, skip silently
+          if [[ "$NEW_VERSION" == "$OLD_VERSION" ]]; then
+            echo "Version unchanged ($NEW_VERSION), skipping release"
+            echo "should_release=false" >> "$GITHUB_OUTPUT"
+            echo "version=$NEW_VERSION" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+
+          # Fail if the new version is lower than the previous
+          HIGHER=$(printf '%s\n%s' "$OLD_VERSION" "$NEW_VERSION" | sort -V | tail -1)
+          if [[ "$HIGHER" == "$OLD_VERSION" ]]; then
+            echo "::error::Version $NEW_VERSION is lower than previous $OLD_VERSION"
+            exit 1
+          fi
+
+          # Fail if CHANGELOG.md was not modified in this push
+          if ! git diff --name-only "${BEFORE}" "${{ github.sha }}" | grep -q '^CHANGELOG.md$'; then
+            echo "::error::Version bumped to $NEW_VERSION but CHANGELOG.md was not updated"
+            exit 1
+          fi
+        fi
+
+        # Also verify against the latest release tag (catches manual dispatch regressions)
+        LATEST_TAG=$(git tag -l 'v*' --sort=-version:refname | head -n1 || true)
+        if [[ -n "$LATEST_TAG" ]]; then
+          TAG_VERSION="${LATEST_TAG#v}"
+          if [[ "$NEW_VERSION" == "$TAG_VERSION" ]]; then
+            echo "Version $NEW_VERSION already released as $LATEST_TAG, skipping"
+            echo "should_release=false" >> "$GITHUB_OUTPUT"
+            echo "version=$NEW_VERSION" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+          HIGHER=$(printf '%s\n%s' "$TAG_VERSION" "$NEW_VERSION" | sort -V | tail -1)
+          if [[ "$HIGHER" == "$TAG_VERSION" ]]; then
+            echo "::error::Version $NEW_VERSION is lower than existing release $TAG_VERSION"
+            exit 1
+          fi
+        fi
+
+        echo "should_release=true" >> "$GITHUB_OUTPUT"
+        echo "version=$NEW_VERSION" >> "$GITHUB_OUTPUT"
+
+  # ── Create tag and GitHub release ──────────────────────────────
+  create-release:
+    needs: version-check
+    if: needs.version-check.outputs.should_release == 'true'
+    runs-on: ubuntu-latest
+    steps:
+    - name: '🧰 Checkout'
+      uses: actions/checkout@v6
+      with:
+        fetch-depth: 0
+
+    - name: '🏷️ Create tag'
+      run: |
+        git config user.name  "github-actions[bot]"
+        git config user.email "github-actions[bot]@users.noreply.github.com"
+        git tag -a "v${{ needs.version-check.outputs.version }}" -m "Release v${{ needs.version-check.outputs.version }}"
+        git push origin "v${{ needs.version-check.outputs.version }}"
+
+    - name: '📦 Create GitHub Release'
+      uses: softprops/action-gh-release@v2
+      with:
+        tag_name: v${{ needs.version-check.outputs.version }}
+        name: AeonGUI v${{ needs.version-check.outputs.version }}
+        generate_release_notes: true
+        draft: false
+        prerelease: false
+
+  # ── Arch Linux package (Cairo) ─────────────────────────────────
+  arch-package:
+    needs: [version-check, create-release]
+    if: needs.version-check.outputs.should_release == 'true'
+    runs-on: ubuntu-latest
+    container: archlinux:base-devel
+    steps:
+    - name: '🧰 Checkout'
+      uses: actions/checkout@v6
+      with:
+        ref: v${{ needs.version-check.outputs.version }}
+
+    - name: '📦 Install dependencies'
+      run: |
+        pacman -Syu --noconfirm
+        pacman -S --noconfirm cmake make gcc flex bison pkgconf gtest \
+          cairo pango fontconfig freetype2 harfbuzz libxml2 zlib libpng libjpeg-turbo \
+          git
+
+    - name: '🛠️ Configure to generate PKGBUILD'
+      run: |
+        cmake -B build -DCMAKE_BUILD_TYPE=Release -DAEONGUI_BACKEND=Cairo
+        cp build/PKGBUILD-arch PKGBUILD
+
+    - name: '📦 Build package'
+      run: |
+        useradd -m builder
+        chown -R builder: .
+        su builder -c "makepkg -s --noconfirm --skippgpcheck"
+
+    - name: '📤 Upload Arch package'
+      uses: softprops/action-gh-release@v2
+      with:
+        tag_name: v${{ needs.version-check.outputs.version }}
+        files: '*.pkg.tar.zst'
+
+  # ── MSYS2 packages (mingw64, ucrt64, clang64 — Cairo) ─────────
+  msys2-package:
+    needs: [version-check, create-release]
+    if: needs.version-check.outputs.should_release == 'true'
+    runs-on: windows-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        sys: [mingw64, ucrt64, clang64]
+        include:
+          - { sys: mingw64, icon: '🟦' }
+          - { sys: ucrt64,  icon: '🟨' }
+          - { sys: clang64, icon: '🟧' }
+    name: 📦${{ matrix.icon }} MSYS2 ${{ matrix.sys }}
+    defaults:
+      run:
+        shell: msys2 {0}
+    steps:
+    - name: '🧰 Checkout'
+      uses: actions/checkout@v6
+      with:
+        ref: v${{ needs.version-check.outputs.version }}
+
+    - name: '${{ matrix.icon }} Setup MSYS2'
+      uses: msys2/setup-msys2@v2
+      with:
+        msystem: ${{ matrix.sys }}
+        update: true
+        install: >-
+          git
+          make
+          flex
+          bison
+          base-devel
+        pacboy: >-
+          toolchain:p
+          cmake:p
+          make:p
+          cairo:p
+          pango:p
+          libxml2:p
+          gtest:p
+          pkg-config:p
+          zlib:p
+          libpng:p
+          libjpeg-turbo:p
+
+    - name: '🛠️ Configure to generate PKGBUILD'
+      run: |
+        cmake -G "MSYS Makefiles" -B build -DCMAKE_BUILD_TYPE=Release -DAEONGUI_BACKEND=Cairo
+        cp build/PKGBUILD-msys2 PKGBUILD
+
+    - name: '📦 Build package'
+      run: makepkg-mingw -s --noconfirm --skippgpcheck
+
+    - name: '📤 Upload MSYS2 package'
+      uses: softprops/action-gh-release@v2
+      with:
+        tag_name: v${{ needs.version-check.outputs.version }}
+        files: '*.pkg.tar.zst'
+
+  # ── Homebrew formula (Cairo) ───────────────────────────────────
+  brew-formula:
+    needs: [version-check, create-release]
+    if: needs.version-check.outputs.should_release == 'true'
+    runs-on: macos-latest
+    steps:
+    - name: '🧰 Checkout'
+      uses: actions/checkout@v6
+      with:
+        ref: v${{ needs.version-check.outputs.version }}
+
+    - name: '📦 Install dependencies'
+      run: |
+        brew update
+        brew install cmake pkg-config cairo pango libxml2 bison zlib libpng libjpeg-turbo
+
+    - name: '🛠️ Configure to generate formula'
+      run: |
+        export PATH="/opt/homebrew/opt/bison/bin:$PATH"
+        export PKG_CONFIG_PATH="/opt/homebrew/lib/pkgconfig:$PKG_CONFIG_PATH"
+        cmake -B build -DCMAKE_BUILD_TYPE=Release -DAEONGUI_BACKEND=Cairo
+
+    - name: '🔑 Compute source tarball sha256'
+      id: sha
+      run: |
+        curl -sL "https://github.com/AeonGames/AeonGUI/archive/v${{ needs.version-check.outputs.version }}.tar.gz" -o source.tar.gz
+        SHA=$(shasum -a 256 source.tar.gz | awk '{print $1}')
+        echo "sha256=$SHA" >> "$GITHUB_OUTPUT"
+
+    - name: '📝 Patch sha256 into formula'
+      run: |
+        sed -i '' 's/sha256 ""/sha256 "${{ steps.sha.outputs.sha256 }}"/' build/aeongui.rb
+
+    - name: '🏗️ Test brew install from formula'
+      run: brew install --formula build/aeongui.rb
+
+    - name: '📤 Upload Homebrew formula'
+      uses: softprops/action-gh-release@v2
+      with:
+        tag_name: v${{ needs.version-check.outputs.version }}
+        files: build/aeongui.rb
+
+  # ── vcpkg port archives (Cairo + Skia) ────────────────────────
+  vcpkg-port:
+    needs: [version-check, create-release]
+    if: needs.version-check.outputs.should_release == 'true'
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        backend: [Cairo, Skia]
+    name: 📦 vcpkg port (${{ matrix.backend }})
+    steps:
+    - name: '🧰 Checkout'
+      uses: actions/checkout@v6
+      with:
+        ref: v${{ needs.version-check.outputs.version }}
+
+    - name: '📦 Install dependencies'
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y cmake build-essential pkg-config libcairo-dev \
+          libpango1.0-dev libxml2-dev zlib1g-dev libpng-dev libjpeg-dev
+
+    - name: '🛠️ Configure to generate port files'
+      run: cmake -B build -DCMAKE_BUILD_TYPE=Release -DAEONGUI_BACKEND=Cairo
+
+    - name: '🔑 Compute source SHA512'
+      id: sha
+      run: |
+        curl -sL "https://github.com/AeonGames/AeonGUI/archive/v${{ needs.version-check.outputs.version }}.tar.gz" -o source.tar.gz
+        SHA=$(sha512sum source.tar.gz | awk '{print $1}')
+        echo "sha512=$SHA" >> "$GITHUB_OUTPUT"
+
+    - name: '📝 Prepare ${{ matrix.backend }} port'
+      run: |
+        BACKEND_LOWER=$(echo "${{ matrix.backend }}" | tr '[:upper:]' '[:lower:]')
+        mkdir -p port
+
+        # Patch portfile: set correct backend and SHA512
+        sed -e 's/-DAEONGUI_BACKEND=Cairo/-DAEONGUI_BACKEND=${{ matrix.backend }}/' \
+            -e 's/SHA512 0/SHA512 ${{ steps.sha.outputs.sha512 }}/' \
+            build/vcpkg-port/portfile.cmake > port/portfile.cmake
+
+        # Patch vcpkg.json: swap cairo↔skia dependency when needed
+        if [[ "${{ matrix.backend }}" == "Skia" ]]; then
+          sed 's/"cairo"/"skia"/' build/vcpkg-port/vcpkg.json > port/vcpkg.json
+        else
+          cp build/vcpkg-port/vcpkg.json port/vcpkg.json
+        fi
+
+    - name: '📦 Create vcpkg port archive'
+      run: |
+        BACKEND_LOWER=$(echo "${{ matrix.backend }}" | tr '[:upper:]' '[:lower:]')
+        tar -czf "aeongui-vcpkg-port-${BACKEND_LOWER}-${{ needs.version-check.outputs.version }}.tar.gz" -C port .
+
+    - name: '📤 Upload vcpkg port archive'
+      uses: softprops/action-gh-release@v2
+      with:
+        tag_name: v${{ needs.version-check.outputs.version }}
+        files: 'aeongui-vcpkg-port-*.tar.gz'
