@@ -22,6 +22,22 @@ if(DOCS_ONLY)
   return()
 endif()
 
+option(BUILD_SCRIPTS_ONLY "Generate only packaging scripts (PKGBUILDs, brew formula, vcpkg port)" OFF)
+if(BUILD_SCRIPTS_ONLY)
+  message(STATUS "BUILD_SCRIPTS_ONLY is ON: generating packaging templates only")
+  configure_file("${CMAKE_SOURCE_DIR}/cmake/PKGBUILD-arch.in"
+                 "${CMAKE_BINARY_DIR}/PKGBUILD-arch" @ONLY NEWLINE_STYLE UNIX)
+  configure_file("${CMAKE_SOURCE_DIR}/cmake/PKGBUILD-msys2.in"
+                 "${CMAKE_BINARY_DIR}/PKGBUILD-msys2" @ONLY NEWLINE_STYLE UNIX)
+  configure_file("${CMAKE_SOURCE_DIR}/cmake/vcpkg-port-vcpkg.json.in"
+                 "${CMAKE_BINARY_DIR}/vcpkg-port/vcpkg.json" @ONLY)
+  configure_file("${CMAKE_SOURCE_DIR}/cmake/vcpkg-port-portfile.cmake.in"
+                 "${CMAKE_BINARY_DIR}/vcpkg-port/portfile.cmake" @ONLY)
+  configure_file("${CMAKE_SOURCE_DIR}/cmake/aeongui.rb.in"
+                 "${CMAKE_BINARY_DIR}/aeongui.rb" @ONLY)
+  return()
+endif()
+
 enable_language(CXX C)
 
 enable_testing()
@@ -287,7 +303,9 @@ set_target_properties(button_plugin PROPERTIES
   LIBRARY_OUTPUT_DIRECTORY "${CMAKE_SOURCE_DIR}/images"
 )
 
-add_subdirectory(demos/OpenGL)
+if(OpenGL_FOUND)
+  add_subdirectory(demos/OpenGL)
+endif()
 if(APPLE)
     add_subdirectory(demos/Metal)
 endif()
@@ -296,7 +314,10 @@ if(WIN32)
   add_subdirectory(demos/Direct3D12)
 endif()
 
-set(DEMO_DIRS ${CMAKE_SOURCE_DIR}/demos/OpenGL)
+set(DEMO_DIRS "")
+if(OpenGL_FOUND)
+  list(APPEND DEMO_DIRS ${CMAKE_SOURCE_DIR}/demos/OpenGL)
+endif()
 if(APPLE)
     list(APPEND DEMO_DIRS ${CMAKE_SOURCE_DIR}/demos/Metal)
 endif()
@@ -375,9 +396,9 @@ file(INSTALL LICENSE DESTINATION share/aeongui RENAME copyright)
 
 # --- Packaging templates ---
 configure_file("${CMAKE_SOURCE_DIR}/cmake/PKGBUILD-arch.in"
-               "${CMAKE_BINARY_DIR}/PKGBUILD-arch" @ONLY)
+               "${CMAKE_BINARY_DIR}/PKGBUILD-arch" @ONLY NEWLINE_STYLE UNIX)
 configure_file("${CMAKE_SOURCE_DIR}/cmake/PKGBUILD-msys2.in"
-               "${CMAKE_BINARY_DIR}/PKGBUILD-msys2" @ONLY)
+               "${CMAKE_BINARY_DIR}/PKGBUILD-msys2" @ONLY NEWLINE_STYLE UNIX)
 configure_file("${CMAKE_SOURCE_DIR}/cmake/vcpkg-port-vcpkg.json.in"
                "${CMAKE_BINARY_DIR}/vcpkg-port/vcpkg.json" @ONLY)
 configure_file("${CMAKE_SOURCE_DIR}/cmake/vcpkg-port-portfile.cmake.in"

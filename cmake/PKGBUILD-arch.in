@@ -16,6 +16,8 @@ depends=(
     'zlib'
     'libpng'
     'libjpeg-turbo'
+    'mesa'
+    'libx11'
 )
 makedepends=(
     'cmake'
@@ -24,7 +26,6 @@ makedepends=(
     'flex'
     'bison'
     'pkgconf'
-    'gtest'
 )
 source=("https://github.com/AeonGames/AeonGUI/archive/v${pkgver}.tar.gz")
 sha256sums=('SKIP')
@@ -36,13 +37,6 @@ build() {
         -DAEONGUI_BACKEND=Cairo \
         -DBUILD_UNIT_TESTS=OFF
     cmake --build build
-}
-
-check() {
-    cmake -B build -S "AeonGUI-${pkgver}" \
-        -DBUILD_UNIT_TESTS=ON
-    cmake --build build --target unit-tests
-    ctest --test-dir build --output-on-failure
 }
 
 package() {

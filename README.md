@@ -216,6 +216,85 @@ Four rendering backends are included:
 | `MetalDemo`     | Metal   | macOS only.                               |
 | `Direct3D12Demo` | Direct3D12 | Windows only.                         |
 
+## Installing from Release Packages
+
+Pre-built packages and build recipes are attached to each
+[GitHub Release](https://github.com/AeonGames/AeonGUI/releases).
+Pick the method that matches your platform.
+
+### Arch Linux
+
+**Install pre-built package:**
+
+Download the `aeongui-<version>-1-x86_64.pkg.tar.zst` file from the release
+assets and install it with `pacman`:
+
+```bash
+sudo pacman -U aeongui-0.9.0-1-x86_64.pkg.tar.zst
+```
+
+**Build from source using PKGBUILD:**
+
+Download `PKGBUILD-arch-<version>.tar.gz` from the release assets and build
+with `makepkg`:
+
+```bash
+tar -xzf PKGBUILD-arch-0.9.0.tar.gz
+makepkg -s --skippgpcheck
+sudo pacman -U aeongui-0.9.0-1-x86_64.pkg.tar.zst
+```
+
+### MSYS2 (mingw64 / ucrt64 / clang64)
+
+**Install pre-built package:**
+
+Download the `.pkg.tar.zst` matching your MSYS2 environment (e.g.
+`mingw-w64-ucrt-x86_64-aeongui-<version>-1-any.pkg.tar.zst`) and install
+from the corresponding MSYS2 shell:
+
+```bash
+pacman -U mingw-w64-ucrt-x86_64-aeongui-0.9.0-1-any.pkg.tar.zst
+```
+
+Replace `ucrt-x86_64` with `x86_64` (mingw64) or `clang-x86_64` (clang64)
+as needed.
+
+**Build from source using PKGBUILD:**
+
+Download `PKGBUILD-msys2-<version>.tar.gz` from the release assets and build
+with `makepkg-mingw`:
+
+```bash
+tar -xzf PKGBUILD-msys2-0.9.0.tar.gz
+makepkg-mingw -s --skippgpcheck
+pacman -U mingw-w64-*-aeongui-*.pkg.tar.zst
+```
+
+### macOS (Homebrew)
+
+Download `aeongui-brew-<version>.tar.gz` from the release assets and install
+via a local tap. This builds AeonGUI from source using the formula:
+
+```bash
+tar -xzf aeongui-brew-0.9.0.tar.gz
+brew tap-new --no-git local/aeongui
+cp aeongui.rb "$(brew --repository)/Library/Taps/local/homebrew-aeongui/Formula/aeongui.rb"
+brew install local/aeongui/aeongui
+```
+
+### vcpkg (Windows / Linux / macOS)
+
+Download the vcpkg port archive for your desired backend
+(`aeongui-vcpkg-port-cairo-<version>.tar.gz` or
+`aeongui-vcpkg-port-skia-<version>.tar.gz`) from the release assets.
+Extract it into a local overlay port directory and point vcpkg at it:
+
+```bash
+mkdir -p overlay-ports/aeongui
+tar -xzf aeongui-vcpkg-port-cairo-0.9.0.tar.gz -C overlay-ports/aeongui
+vcpkg install aeongui --overlay-ports=overlay-ports
+```
+
 ## Common CMake Options
 
 - `-DAEONGUI_BACKEND=Cairo|Skia` Select the 2D rendering backend (default: `Cairo`).
