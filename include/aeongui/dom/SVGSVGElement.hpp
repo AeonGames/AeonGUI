@@ -50,6 +50,7 @@ namespace AeonGUI
             double mHeight{};
             ViewBox mViewBox{};
             PreserveAspectRatio mPreserveAspectRatio{};
+            bool mHasViewBox{false};
         };
     }
 }

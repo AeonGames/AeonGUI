@@ -33,6 +33,7 @@ namespace AeonGUI
 
         void SVGSVGElement::ParseAttributes()
         {
+            mHasViewBox = false;
             if ( mAttributes.find ( "viewBox" ) != mAttributes.end() )
             {
                 static const std::regex viewBoxRegex{R"((-?(?:[0-9]*\.[0-9]+(?:[eE][-+]?[0-9]+)?|[0-9]+))[[:space:]]+(-?(?:[0-9]*\.[0-9]+(?:[eE][-+]?[0-9]+)?|[0-9]+))[[:space:]]+(-?(?:[0-9]*\.[0-9]+(?:[eE][-+]?[0-9]+)?|[0-9]+))[[:space:]]+(-?(?:[0-9]*\.[0-9]+(?:[eE][-+]?[0-9]+)?|[0-9]+)))"};
@@ -45,6 +46,7 @@ namespace AeonGUI
                     mViewBox.height = std::stod ( match[4] );
                     mViewBox.min_x      = std::stod ( match[1] );
                     mViewBox.min_y      = std::stod ( match[2] );
+                    mHasViewBox = true;
                 }
             }
             if ( mAttributes.find ( "width" ) != mAttributes.end() )
@@ -73,7 +75,10 @@ namespace AeonGUI
         void SVGSVGElement::DrawStart ( Canvas& aCanvas ) const
         {
             SVGGraphicsElement::DrawStart ( aCanvas );
-            aCanvas.SetViewBox ( mViewBox, mPreserveAspectRatio );
+            if ( mHasViewBox )
+            {
+                aCanvas.SetViewBox ( mViewBox, mPreserveAspectRatio );
+            }
         }
     }
 }
