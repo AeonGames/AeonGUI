@@ -1,8 +1,7 @@
-vcpkg_from_github(
+vcpkg_from_git(
     OUT_SOURCE_PATH SOURCE_PATH
-    REPO AeonGames/AeonGUI
-    REF "v@PROJECT_VERSION@"
-    SHA512 0
+    URL https://github.com/AeonGames/AeonGUI.git
+    REF @GIT_COMMIT_HASH@
 )
 
 vcpkg_cmake_configure(

@@ -22,6 +22,20 @@ if(DOCS_ONLY)
   return()
 endif()
 
+find_package(Git QUIET)
+if(GIT_FOUND)
+  execute_process(
+    COMMAND "${GIT_EXECUTABLE}" rev-parse HEAD
+    WORKING_DIRECTORY "${CMAKE_SOURCE_DIR}"
+    OUTPUT_VARIABLE GIT_COMMIT_HASH
+    OUTPUT_STRIP_TRAILING_WHITESPACE
+    ERROR_QUIET
+  )
+endif()
+if(NOT GIT_COMMIT_HASH)
+  set(GIT_COMMIT_HASH "0000000000000000000000000000000000000000")
+endif()
+
 option(BUILD_SCRIPTS_ONLY "Generate only packaging scripts (PKGBUILDs, brew formula, vcpkg port)" OFF)
 if(BUILD_SCRIPTS_ONLY)
   message(STATUS "BUILD_SCRIPTS_ONLY is ON: generating packaging templates only")
@@ -62,7 +76,6 @@ include(vscode)
 
 set(OpenGL_GL_PREFERENCE GLVND)
 find_package(OpenGL)
-find_package(Git)
 
 find_program(BASH_EXECUTABLE bash HINTS ENV MINGW_PREFIX MSYS2_PATH)
 find_program(ZSH_EXECUTABLE zsh HINTS ENV MINGW_PREFIX MSYS2_PATH)

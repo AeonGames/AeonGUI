@@ -178,19 +178,18 @@ jobs:
         tar -czf PKGBUILD-msys2-${{ needs.version-check.outputs.version }}.tar.gz PKGBUILD-msys2
 
     # ── Homebrew formula with sha256 ──
-    - name: '🔑 Compute source tarball hashes'
+    - name: '🔑 Compute source tarball sha256'
       id: hashes
       run: |
         curl -sL "https://github.com/AeonGames/AeonGUI/archive/v${{ needs.version-check.outputs.version }}.tar.gz" -o source.tar.gz
         echo "sha256=$(sha256sum source.tar.gz | awk '{print $1}')" >> "$GITHUB_OUTPUT"
-        echo "sha512=$(sha512sum source.tar.gz | awk '{print $1}')" >> "$GITHUB_OUTPUT"
 
     - name: '📦 Package Homebrew formula'
       run: |
         sed -i 's/sha256 ""/sha256 "${{ steps.hashes.outputs.sha256 }}"/' scripts-build/aeongui.rb
         tar -czf aeongui-brew-${{ needs.version-check.outputs.version }}.tar.gz -C scripts-build aeongui.rb
 
-    # ── vcpkg ports with sha512 ──
+    # ── vcpkg ports ──
     - name: '📦 Create vcpkg port archives'
       run: |
         for BACKEND in Cairo Skia; do
@@ -198,7 +197,6 @@ jobs:
           mkdir -p "port-${BACKEND_LOWER}"
 
           sed -e "s|-DAEONGUI_BACKEND=Cairo|-DAEONGUI_BACKEND=${BACKEND}|" \
-              -e "s|SHA512 0|SHA512 ${{ steps.hashes.outputs.sha512 }}|" \
               scripts-build/vcpkg-port/portfile.cmake > "port-${BACKEND_LOWER}/portfile.cmake"
 
           if [[ "$BACKEND" == "Skia" ]]; then
