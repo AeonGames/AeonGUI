@@ -15,7 +15,7 @@ limitations under the License.
 */
 
 #include <cmath>
-#include "aeongui/SkiaPath.hpp"
+#include "SkiaPath.hpp"
 #include <include/core/SkPathMeasure.h>
 
 namespace AeonGUI

@@ -17,6 +17,11 @@ limitations under the License.
 #include "aeongui/dom/Text.hpp"
 #include "aeongui/dom/DOMException.hpp"
 #include "aeongui/StyleSheet.hpp"
+#ifdef AEONGUI_USE_SKIA
+#include "SkiaTextLayout.hpp"
+#else
+#include "PangoTextLayout.hpp"
+#endif
 #include <libcss/libcss.h>
 #include <algorithm>
 #include <cmath>
@@ -25,11 +30,16 @@ namespace AeonGUI
 {
     namespace DOM
     {
-        SVGTextContentElement::SVGTextContentElement ( const DOMString& aTagName, AttributeMap&& aAttributes, Node* aParent ) : SVGGraphicsElement { aTagName, std::move ( aAttributes ), aParent }
+        SVGTextContentElement::SVGTextContentElement ( const DOMString& aTagName, AttributeMap&& aAttributes, Node* aParent ) : SVGGraphicsElement { aTagName, std::move ( aAttributes ), aParent },
+#ifdef AEONGUI_USE_SKIA
+            mTextLayout { std::make_unique<SkiaTextLayout>() }
+#else
+            mTextLayout { std::make_unique<PangoTextLayout>() }
+#endif
         {
         }
         SVGTextContentElement::~SVGTextContentElement() = default;
-        const SVGAnimatedLength& SVGTextContentElement::textLength() const
+        const SVGAnimatedLength & SVGTextContentElement::textLength() const
         {
             return mTextLength;
         }
@@ -39,29 +49,25 @@ namespace AeonGUI
             return mLengthAdjust;
         }
 
-#ifdef AEONGUI_USE_SKIA
-        SkiaTextLayout& SVGTextContentElement::GetTextLayout() const
-#else
-        PangoTextLayout& SVGTextContentElement::GetTextLayout() const
-#endif
+        TextLayout& SVGTextContentElement::GetTextLayout() const
         {
-            return mTextLayout;
+            return *mTextLayout;
         }
 
         void SVGTextContentElement::syncTextLayout() const
         {
             std::string text = getTextContent();
-            mTextLayout.SetText ( text );
+            mTextLayout->SetText ( text );
 
             // Apply font properties from CSS computed styles if available.
             css_select_results* results{ GetComputedStyles() };
             if ( results && results->styles[CSS_PSEUDO_ELEMENT_NONE] )
             {
                 css_computed_style* style = results->styles[CSS_PSEUDO_ELEMENT_NONE];
-                mTextLayout.SetFontFamily ( GetCSSFontFamily ( style ) );
-                mTextLayout.SetFontSize ( GetCSSFontSize ( style ) );
-                mTextLayout.SetFontWeight ( GetCSSFontWeight ( style ) );
-                mTextLayout.SetFontStyle ( GetCSSFontStyle ( style ) );
+                mTextLayout->SetFontFamily ( GetCSSFontFamily ( style ) );
+                mTextLayout->SetFontSize ( GetCSSFontSize ( style ) );
+                mTextLayout->SetFontWeight ( GetCSSFontWeight ( style ) );
+                mTextLayout->SetFontStyle ( GetCSSFontStyle ( style ) );
             }
         }
 
@@ -98,7 +104,7 @@ namespace AeonGUI
         float SVGTextContentElement::getComputedTextLength() const
         {
             syncTextLayout();
-            return static_cast<float> ( mTextLayout.GetTextWidth() );
+            return static_cast<float> ( mTextLayout->GetTextWidth() );
         }
 
         float SVGTextContentElement::getSubStringLength ( long start, long end ) const
@@ -124,8 +130,8 @@ namespace AeonGUI
 
             // Measure full text up to actualEnd and subtract measurement up to start.
             syncTextLayout();
-            double endX = mTextLayout.GetCharOffsetX ( actualEnd );
-            double startX = mTextLayout.GetCharOffsetX ( start );
+            double endX = mTextLayout->GetCharOffsetX ( actualEnd );
+            double startX = mTextLayout->GetCharOffsetX ( start );
             return static_cast<float> ( endX - startX );
         }
 
@@ -140,7 +146,7 @@ namespace AeonGUI
             }
 
             syncTextLayout();
-            float xPos = static_cast<float> ( mTextLayout.GetCharOffsetX ( index ) );
+            float xPos = static_cast<float> ( mTextLayout->GetCharOffsetX ( index ) );
             return DOMPoint ( xPos, 0.0f, 0.0f, 1.0f );
         }
 
@@ -155,7 +161,7 @@ namespace AeonGUI
             }
 
             syncTextLayout();
-            float xPos = static_cast<float> ( mTextLayout.GetCharOffsetX ( index + 1 ) );
+            float xPos = static_cast<float> ( mTextLayout->GetCharOffsetX ( index + 1 ) );
             return DOMPoint ( xPos, 0.0f, 0.0f, 1.0f );
         }
 
@@ -170,10 +176,10 @@ namespace AeonGUI
             }
 
             syncTextLayout();
-            float xStart = static_cast<float> ( mTextLayout.GetCharOffsetX ( index ) );
-            float xEnd = static_cast<float> ( mTextLayout.GetCharOffsetX ( index + 1 ) );
+            float xStart = static_cast<float> ( mTextLayout->GetCharOffsetX ( index ) );
+            float xEnd = static_cast<float> ( mTextLayout->GetCharOffsetX ( index + 1 ) );
             float charWidth = xEnd - xStart;
-            float height = static_cast<float> ( mTextLayout.GetTextHeight() );
+            float height = static_cast<float> ( mTextLayout->GetTextHeight() );
 
             return DOMRect ( xStart, -height, charWidth, height );
         }
@@ -205,8 +211,8 @@ namespace AeonGUI
             // Walk character positions to find hit.
             for ( long i = 0; i < totalChars; ++i )
             {
-                float xStart = static_cast<float> ( mTextLayout.GetCharOffsetX ( i ) );
-                float xEnd = static_cast<float> ( mTextLayout.GetCharOffsetX ( i + 1 ) );
+                float xStart = static_cast<float> ( mTextLayout->GetCharOffsetX ( i ) );
+                float xEnd = static_cast<float> ( mTextLayout->GetCharOffsetX ( i + 1 ) );
                 if ( point.x() >= xStart && point.x() < xEnd )
                 {
                     return i;

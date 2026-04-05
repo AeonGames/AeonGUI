@@ -23,9 +23,9 @@ limitations under the License.
 #include "aeongui/dom/Element.hpp"
 #include "aeongui/dom/Window.hpp"
 #ifdef AEONGUI_USE_SKIA
-#include "aeongui/SkiaCanvas.hpp"
+#include "SkiaCanvas.hpp"
 #else
-#include "aeongui/CairoCanvas.hpp"
+#include "CairoCanvas.hpp"
 #endif
 #include "aeongui/dom/Document.hpp"
 #include "aeongui/dom/SVGGeometryElement.hpp"

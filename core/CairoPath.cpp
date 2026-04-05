@@ -16,10 +16,11 @@ limitations under the License.
 
 #include <cmath>
 #include <cairo.h>
-#include "aeongui/CairoPath.hpp"
+#include "CairoPath.hpp"
 
 namespace AeonGUI
 {
+    static_assert ( sizeof ( cairo_path_t ) <= 32, "CairoPath: cairo_path_t size exceeds static allocation buffer" );
     /**@note the following two functions have been adapted from librsvg code. */
     static void
     path_arc_segment ( std::vector<cairo_path_data_t>& path_data,

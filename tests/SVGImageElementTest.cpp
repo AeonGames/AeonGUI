@@ -17,13 +17,13 @@ limitations under the License.
 #include <gtest/gtest.h>
 #include "aeongui/dom/SVGImageElement.hpp"
 #ifdef AEONGUI_USE_SKIA
-#include "aeongui/SkiaCanvas.hpp"
+#include "SkiaCanvas.hpp"
 namespace AeonGUI
 {
     using TestCanvas = SkiaCanvas;
 }
 #else
-#include "aeongui/CairoCanvas.hpp"
+#include "CairoCanvas.hpp"
 namespace AeonGUI
 {
     using TestCanvas = CairoCanvas;

@@ -15,10 +15,13 @@ limitations under the License.
 */
 #ifndef AEONGUI_CAIROPATH_H
 #define AEONGUI_CAIROPATH_H
-#include <cairo.h>
-#include "aeongui/CairoCanvas.hpp"
+#include "CairoCanvas.hpp"
 #include "aeongui/Path.hpp"
 
+struct cairo_path;
+typedef struct cairo_path cairo_path_t;
+union _cairo_path_data_t;
+typedef union _cairo_path_data_t cairo_path_data_t;
 namespace AeonGUI
 {
     /** @brief Cairo-backend path implementation.
@@ -52,7 +55,8 @@ namespace AeonGUI
         PathPoint GetPointAtLength ( double aDistance ) const final;
         bool IsClosed() const final;
     private:
-        cairo_path_t mPath{};
+        uint8_t mPathStaticAllocated[ 32 ] {};
+        cairo_path_t& mPath{*reinterpret_cast<cairo_path_t*> ( &mPathStaticAllocated ) };
         std::vector<cairo_path_data_t> mPathData;
     };
 }

@@ -16,7 +16,7 @@ limitations under the License.
 
 #include <pango/pango.h>
 #include <pango/pangoft2.h>
-#include "aeongui/SkiaTextLayout.hpp"
+#include "SkiaTextLayout.hpp"
 #include "aeongui/FontDatabase.hpp"
 
 namespace AeonGUI

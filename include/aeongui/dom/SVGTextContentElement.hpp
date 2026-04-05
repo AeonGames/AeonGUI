@@ -21,11 +21,7 @@ limitations under the License.
 #include "SVGAnimatedEnumeration.hpp"
 #include "DOMPoint.hpp"
 #include "DOMRect.hpp"
-#ifdef AEONGUI_USE_SKIA
-#include "aeongui/SkiaTextLayout.hpp"
-#else
-#include "aeongui/PangoTextLayout.hpp"
-#endif
+#include "aeongui/TextLayout.hpp"
 #include <memory>
 
 namespace AeonGUI
@@ -93,11 +89,7 @@ namespace AeonGUI
         protected:
             /// Access the internal text layout for subclass use.
             /// @return Reference to the TextLayout.
-#ifdef AEONGUI_USE_SKIA
-            SkiaTextLayout& GetTextLayout() const;
-#else
-            PangoTextLayout& GetTextLayout() const;
-#endif
+            TextLayout& GetTextLayout() const;
             /** @brief Get concatenated text content from child text nodes.
              *  @return UTF-8 text collected from this node subtree.
              */
@@ -108,11 +100,7 @@ namespace AeonGUI
 
             SVGAnimatedLength mTextLength;
             SVGAnimatedEnumeration mLengthAdjust;
-#ifdef AEONGUI_USE_SKIA
-            mutable SkiaTextLayout mTextLayout;
-#else
-            mutable PangoTextLayout mTextLayout;
-#endif
+            mutable std::unique_ptr<TextLayout> mTextLayout;
         };
     }
 }

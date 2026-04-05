@@ -20,13 +20,13 @@ limitations under the License.
 #include "aeongui/dom/Document.hpp"
 #include "aeongui/dom/Event.hpp"
 #ifdef AEONGUI_USE_SKIA
-#include "aeongui/SkiaCanvas.hpp"
+#include "SkiaCanvas.hpp"
 namespace AeonGUI
 {
     using TestCanvas = SkiaCanvas;
 }
 #else
-#include "aeongui/CairoCanvas.hpp"
+#include "CairoCanvas.hpp"
 namespace AeonGUI
 {
     using TestCanvas = CairoCanvas;

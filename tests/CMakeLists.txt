@@ -28,6 +28,7 @@ find_package(GTest CONFIG REQUIRED)
 
 include_directories(${GTEST_INCLUDE_DIR}
                     ${PROJECT_SOURCE_DIR}/include
+                    ${PROJECT_SOURCE_DIR}/core
                     ${CAIRO_INCLUDE_DIRS})
 set(TESTED_SRCS
   DocumentTest.cpp

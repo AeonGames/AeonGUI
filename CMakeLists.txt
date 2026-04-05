@@ -236,13 +236,7 @@ if(PKG_CONFIG_FOUND)
 endif()
 
 find_package(Freetype)
-if(FREETYPE_FOUND)
-	include_directories(${FREETYPE_INCLUDE_DIRS})
-endif()
 find_package(LibXml2)
-if(LIBXML2_FOUND)
-	include_directories(${LIBXML2_INCLUDE_DIR})
-endif()
 
 find_package(X11)
 
@@ -377,23 +371,7 @@ install(
     include/aeongui/Vector2.hpp
 	DESTINATION include/aeongui
 )
-if(AEONGUI_BACKEND STREQUAL "Cairo")
-  install(
-    FILES
-      include/aeongui/CairoCanvas.hpp
-      include/aeongui/CairoPath.hpp
-      include/aeongui/PangoTextLayout.hpp
-    DESTINATION include/aeongui
-  )
-elseif(AEONGUI_BACKEND STREQUAL "Skia")
-  install(
-    FILES
-      include/aeongui/SkiaCanvas.hpp
-      include/aeongui/SkiaPath.hpp
-      include/aeongui/SkiaTextLayout.hpp
-    DESTINATION include/aeongui
-  )
-endif()
+
 install(
   DIRECTORY include/aeongui/dom/
   DESTINATION include/aeongui/dom

@@ -21,13 +21,13 @@ limitations under the License.
 #include "aeongui/dom/Window.hpp"
 #include "aeongui/dom/Event.hpp"
 #ifdef AEONGUI_USE_SKIA
-#include "aeongui/SkiaCanvas.hpp"
+#include "SkiaCanvas.hpp"
 namespace AeonGUI
 {
     using TestCanvas = SkiaCanvas;
 }
 #else
-#include "aeongui/CairoCanvas.hpp"
+#include "CairoCanvas.hpp"
 namespace AeonGUI
 {
     using TestCanvas = CairoCanvas;
@@ -213,7 +213,7 @@ TEST ( SMILAnimationTest, AnimateRadiusLoadsAndDraws )
         R"(<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100">)"
         R"(<circle cx="50" cy="50" r="20" fill="#48d">)"
         R"(<animate attributeName="r" values="20;40;20" dur="2s" repeatCount="indefinite"/>)"
-R"(</circle></svg>)"
+        R"(</circle></svg>)"
     };
 
     AeonGUI::TestCanvas canvas ( 100u, 100u );
@@ -695,7 +695,7 @@ TEST ( SMILAnimationTest, FiniteRepeatCountGreaterThanOne )
         R"(<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100">)"
         R"(<rect x="0" y="0" width="100" height="100" fill="#f00">)"
         R"(<animate attributeName="fill" values="#f00;#0f0;#f00" dur="1s" repeatCount="3"/>)"
-R"(</rect></svg>)"
+        R"(</rect></svg>)"
     };
 
     AeonGUI::TestCanvas canvas ( 100u, 100u );

@@ -22,13 +22,13 @@ limitations under the License.
 #include "aeongui/dom/Document.hpp"
 #include "aeongui/dom/SVGGeometryElement.hpp"
 #ifdef AEONGUI_USE_SKIA
-#include "aeongui/SkiaCanvas.hpp"
+#include "SkiaCanvas.hpp"
 namespace AeonGUI
 {
     using TestCanvas = SkiaCanvas;
 }
 #else
-#include "aeongui/CairoCanvas.hpp"
+#include "CairoCanvas.hpp"
 namespace AeonGUI
 {
     using TestCanvas = CairoCanvas;
@@ -201,7 +201,7 @@ TEST ( DocumentTest, SetAttributeUpdatesCirclePath )
         ASSERT_TRUE ( file.is_open() );
         file << R"(<svg xmlns="http://www.w3.org/2000/svg" width="200" height="200">)"
              << R"(<circle id="c" cx="100" cy="100" r="40"/>)"
-<< R"(</svg>)";
+             << R"(</svg>)";
     }
 
     AeonGUI::DOM::Document document;

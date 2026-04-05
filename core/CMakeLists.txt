@@ -23,16 +23,16 @@ set(AEONGUI_HEADERS
     ../include/aeongui/PluginAPI.h
 )
 if(AEONGUI_BACKEND STREQUAL "Cairo")
-    list(APPEND AEONGUI_HEADERS
-        ../include/aeongui/CairoCanvas.hpp
-        ../include/aeongui/CairoPath.hpp
-        ../include/aeongui/PangoTextLayout.hpp
+    set(AEONGUI_BACKEND_HEADERS
+        CairoCanvas.hpp
+        CairoPath.hpp
+        PangoTextLayout.hpp
     )
 elseif(AEONGUI_BACKEND STREQUAL "Skia")
-    list(APPEND AEONGUI_HEADERS
-        ../include/aeongui/SkiaCanvas.hpp
-        ../include/aeongui/SkiaPath.hpp
-        ../include/aeongui/SkiaTextLayout.hpp
+    set(AEONGUI_BACKEND_HEADERS
+        SkiaCanvas.hpp
+        SkiaPath.hpp
+        SkiaTextLayout.hpp
     )
 endif()
 set(AEONGUI_DOM_HEADERS
@@ -215,11 +215,13 @@ endif(USE_CUDA)
 parser_code(path_data ${CMAKE_CURRENT_SOURCE_DIR}/parsers ${CMAKE_CURRENT_SOURCE_DIR}/parsers)
 #parser_code(style ${CMAKE_CURRENT_SOURCE_DIR}/parsers ${CMAKE_CURRENT_SOURCE_DIR}/parsers)
 
-add_library(AeonGUI SHARED ${AEONGUI_HEADERS} ${AEONGUI_SOURCES} ${AEONGUI_DOM_HEADERS} ${AEONGUI_DOM_SOURCES} ${AEONGUI_RESOURCES} ${BISON_path_data_parser_OUTPUTS} ${FLEX_path_data_lexer_OUTPUTS})
+add_library(AeonGUI SHARED ${AEONGUI_HEADERS} ${AEONGUI_BACKEND_HEADERS} ${AEONGUI_SOURCES} ${AEONGUI_DOM_HEADERS} ${AEONGUI_DOM_SOURCES} ${AEONGUI_RESOURCES} ${BISON_path_data_parser_OUTPUTS} ${FLEX_path_data_lexer_OUTPUTS})
 target_include_directories(AeonGUI
     PUBLIC
         $<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}/include>
         $<INSTALL_INTERFACE:include>
+    PRIVATE
+        ${CMAKE_CURRENT_SOURCE_DIR}
     PRIVATE
         ${PANGO_INCLUDE_DIRS}
         ${HARFBUZZ_INCLUDE_DIRS}
@@ -230,7 +232,7 @@ target_include_directories(AeonGUI
 )
 if(AEONGUI_BACKEND STREQUAL "Cairo")
     foreach(_dir IN LISTS CAIRO_INCLUDE_DIRS)
-        target_include_directories(AeonGUI SYSTEM PUBLIC $<BUILD_INTERFACE:${_dir}>)
+        target_include_directories(AeonGUI SYSTEM PRIVATE ${_dir})
     endforeach()
 elseif(AEONGUI_BACKEND STREQUAL "Skia")
     # Skia include directories are added below per-target
@@ -246,14 +248,14 @@ elseif(AEONGUI_BACKEND STREQUAL "Skia")
     if(TARGET unofficial::skia::skia)
         get_target_property(SKIA_VCPKG_INCLUDE_DIRS unofficial::skia::skia INTERFACE_INCLUDE_DIRECTORIES)
         foreach(_dir IN LISTS SKIA_VCPKG_INCLUDE_DIRS)
-            target_include_directories(AeonGUI SYSTEM PUBLIC $<BUILD_INTERFACE:${_dir}>)
+            target_include_directories(AeonGUI SYSTEM PRIVATE ${_dir})
         endforeach()
         target_link_libraries(AeonGUI PRIVATE libcss unofficial::skia::skia ${pkgcfg_lib_PANGO_pango-1.0} ${pkgcfg_lib_PANGO_pangoft2-1.0} ${pkgcfg_lib_PANGO_gobject-2.0} ${pkgcfg_lib_HARFBUZZ_harfbuzz} ${pkgcfg_lib_FONTCONFIG_fontconfig} ${LIBXML2_LIBRARIES} ${FREETYPE_LIBRARIES})
         if(MSVC)
             target_link_libraries(AeonGUI PRIVATE FontSub Usp10)
         endif()
     else()
-        target_include_directories(AeonGUI SYSTEM PUBLIC ${SKIA_INCLUDE_DIRS})
+        target_include_directories(AeonGUI SYSTEM PRIVATE ${SKIA_INCLUDE_DIRS})
         target_link_libraries(AeonGUI PRIVATE libcss ${SKIA_LIBRARIES} ${pkgcfg_lib_PANGO_pango-1.0} ${pkgcfg_lib_PANGO_pangoft2-1.0} ${pkgcfg_lib_PANGO_gobject-2.0} ${pkgcfg_lib_HARFBUZZ_harfbuzz} ${pkgcfg_lib_FONTCONFIG_fontconfig} ${LIBXML2_LIBRARIES} ${FREETYPE_LIBRARIES})
     endif()
     target_compile_definitions(AeonGUI PUBLIC AEONGUI_USE_SKIA=1)
@@ -286,11 +288,18 @@ foreach(_hdr IN LISTS AEONGUI_HEADERS AEONGUI_DOM_HEADERS)
     list(APPEND AEONGUI_PCH_PUBLIC_HEADERS "<${_rel}>")
 endforeach()
 
+# Build quoted-path include list for PRIVATE backend precompiled headers.
+set(AEONGUI_PCH_BACKEND_HEADERS "")
+foreach(_hdr IN LISTS AEONGUI_BACKEND_HEADERS)
+    list(APPEND AEONGUI_PCH_BACKEND_HEADERS "\"${_hdr}\"")
+endforeach()
+
 if(AEONGUI_BACKEND STREQUAL "Cairo")
     target_precompile_headers(AeonGUI
       PUBLIC
         ${AEONGUI_PCH_PUBLIC_HEADERS}
       PRIVATE
+        ${AEONGUI_PCH_BACKEND_HEADERS}
         <cairo.h>
         <string>
         <unordered_map>
@@ -310,6 +319,7 @@ elseif(AEONGUI_BACKEND STREQUAL "Skia")
       PUBLIC
         ${AEONGUI_PCH_PUBLIC_HEADERS}
       PRIVATE
+        ${AEONGUI_PCH_BACKEND_HEADERS}
         <include/core/SkCanvas.h>
         <string>
         <unordered_map>

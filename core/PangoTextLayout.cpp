@@ -14,7 +14,7 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-#include "aeongui/PangoTextLayout.hpp"
+#include "PangoTextLayout.hpp"
 #include "aeongui/FontDatabase.hpp"
 #include <pango/pango.h>
 #include <pango/pangocairo.h>

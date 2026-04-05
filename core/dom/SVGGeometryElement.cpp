@@ -16,9 +16,9 @@ limitations under the License.
 #include <iostream>
 #include "aeongui/dom/SVGGeometryElement.hpp"
 #ifdef AEONGUI_USE_SKIA
-#include "aeongui/SkiaPath.hpp"
+#include "SkiaPath.hpp"
 #else
-#include "aeongui/CairoPath.hpp"
+#include "CairoPath.hpp"
 #endif
 #include "aeongui/StyleSheet.hpp"
 #include <libcss/libcss.h>

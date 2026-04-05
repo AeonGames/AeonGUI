@@ -23,9 +23,9 @@ limitations under the License.
 #include <cstring>
 #include <limits>
 #include <vector>
-#include "aeongui/CairoCanvas.hpp"
-#include "aeongui/CairoPath.hpp"
-#include "aeongui/PangoTextLayout.hpp"
+#include "CairoCanvas.hpp"
+#include "CairoPath.hpp"
+#include "PangoTextLayout.hpp"
 #include "aeongui/FontDatabase.hpp"
 
 namespace AeonGUI

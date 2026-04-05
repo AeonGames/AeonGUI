@@ -35,8 +35,8 @@ limitations under the License.
 #include <algorithm>
 #include <cmath>
 #include <cstring>
-#include "aeongui/SkiaCanvas.hpp"
-#include "aeongui/SkiaPath.hpp"
+#include "SkiaCanvas.hpp"
+#include "SkiaPath.hpp"
 #include "aeongui/FontDatabase.hpp"
 
 namespace AeonGUI
