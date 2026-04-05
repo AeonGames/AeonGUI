@@ -1,29 +1,42 @@
-include_directories(${CMAKE_CURRENT_BINARY_DIR} ${CAIRO_INCLUDE_DIRS})
-set(CMAKE_REQUIRED_QUIET OFF)
-set(CMAKE_REQUIRED_INCLUDES ${CMAKE_CURRENT_BINARY_DIR})
+include_directories(${CAIRO_INCLUDE_DIRS})
 
-check_include_file_cxx("GL/glcorearb.h" HAS_GLCOREARB_H)
-if(NOT HAS_GLCOREARB_H)
+# Locate GL extension headers from vcpkg / system, download as fallback.
+find_path(GLCOREARB_INCLUDE_DIR GL/glcorearb.h)
+if(NOT GLCOREARB_INCLUDE_DIR)
     message(STATUS "Downloading KHR/khrplatform.h")
-    file(DOWNLOAD https://www.khronos.org/registry/EGL/api/KHR/khrplatform.h
+    file(DOWNLOAD https://registry.khronos.org/EGL/api/KHR/khrplatform.h
                 "${CMAKE_CURRENT_BINARY_DIR}/KHR/khrplatform.h"
-        SHOW_PROGRESS)
+        SHOW_PROGRESS
+        STATUS _khr_status)
     message(STATUS "Downloading GL/glcorearb.h")
-    file(DOWNLOAD https://www.khronos.org/registry/OpenGL/api/GL/glcorearb.h
+    file(DOWNLOAD https://registry.khronos.org/OpenGL/api/GL/glcorearb.h
                 "${CMAKE_CURRENT_BINARY_DIR}/GL/glcorearb.h"
-        SHOW_PROGRESS)
-    set(HAS_GLCOREARB_H 1 CACHE INTERNAL "Downloaded header file" FORCE)
+        SHOW_PROGRESS
+        STATUS _glcorearb_status)
+    list(GET _khr_status 0 _khr_code)
+    list(GET _glcorearb_status 0 _glcorearb_code)
+    if(NOT _khr_code EQUAL 0 OR NOT _glcorearb_code EQUAL 0)
+        message(FATAL_ERROR "Failed to download GL extension headers: khrplatform=${_khr_status} glcorearb=${_glcorearb_status}")
+    endif()
+    set(GLCOREARB_INCLUDE_DIR "${CMAKE_CURRENT_BINARY_DIR}" CACHE INTERNAL "GL extension headers" FORCE)
 endif()
+include_directories(${GLCOREARB_INCLUDE_DIR})
 
 if(WIN32)
-    check_include_files("GL/gl.h;GL/wglext.h" HAS_WGLEXT_H)
-    if(NOT HAS_WGLEXT_H)
-    message(STATUS "Downloading GL/wglext.h")
-    file(DOWNLOAD https://www.khronos.org/registry/OpenGL/api/GL/wglext.h
+    find_path(WGLEXT_INCLUDE_DIR GL/wglext.h)
+    if(NOT WGLEXT_INCLUDE_DIR)
+        message(STATUS "Downloading GL/wglext.h")
+        file(DOWNLOAD https://registry.khronos.org/OpenGL/api/GL/wglext.h
                     "${CMAKE_CURRENT_BINARY_DIR}/GL/wglext.h"
-            SHOW_PROGRESS)
-    set(HAS_WGLEXT_H 1 CACHE INTERNAL "Downloaded header file" FORCE)
+            SHOW_PROGRESS
+            STATUS _wglext_status)
+        list(GET _wglext_status 0 _wglext_code)
+        if(NOT _wglext_code EQUAL 0)
+            message(FATAL_ERROR "Failed to download GL/wglext.h: ${_wglext_status}")
+        endif()
+        set(WGLEXT_INCLUDE_DIR "${CMAKE_CURRENT_BINARY_DIR}" CACHE INTERNAL "WGL extension headers" FORCE)
     endif()
+    include_directories(${WGLEXT_INCLUDE_DIR})
     add_executable(OpenGLDemo Common.h WindowsOpenGL.cpp)
 elseif(APPLE)
     add_executable(OpenGLDemo Common.h MacOSOpenGL.mm)
