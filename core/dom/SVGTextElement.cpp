@@ -54,11 +54,21 @@ namespace AeonGUI
             double posY = 0.0;
             if ( x().baseVal().numberOfItems() > 0 )
             {
-                posX = static_cast<double> ( x().baseVal().getItem ( 0 ).value() );
+                const auto& xLen = x().baseVal().getItem ( 0 );
+                posX = static_cast<double> ( xLen.value() );
+                if ( xLen.unitType() == SVGLengthType::PERCENTAGE )
+                {
+                    posX = static_cast<double> ( xLen.valueInSpecifiedUnits() ) * aCanvas.GetViewportWidth() / 100.0;
+                }
             }
             if ( y().baseVal().numberOfItems() > 0 )
             {
-                posY = static_cast<double> ( y().baseVal().getItem ( 0 ).value() );
+                const auto& yLen = y().baseVal().getItem ( 0 );
+                posY = static_cast<double> ( yLen.value() );
+                if ( yLen.unitType() == SVGLengthType::PERCENTAGE )
+                {
+                    posY = static_cast<double> ( yLen.valueInSpecifiedUnits() ) * aCanvas.GetViewportHeight() / 100.0;
+                }
             }
 
             // text-anchor adjustment: measure total text width and offset posX.
