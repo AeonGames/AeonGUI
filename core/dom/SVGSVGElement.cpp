@@ -25,7 +25,6 @@ namespace AeonGUI
         SVGSVGElement::SVGSVGElement ( const std::string& aTagName, AttributeMap&& aAttributes, Node* aParent ) :
             SVGGraphicsElement { aTagName, std::move ( aAttributes ), aParent }
         {
-            std::cout << "This is a specialized implementation for the svg element." << std::endl;
             ParseAttributes();
         }
 

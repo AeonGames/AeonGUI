@@ -32,7 +32,6 @@ namespace AeonGUI
 
         SVGRectElement::SVGRectElement ( const std::string& aTagName, AttributeMap&& aAttributes, Node* aParent ) : SVGGeometryElement {aTagName, std::move ( aAttributes ), aParent}
         {
-            std::cout << "Rect" << std::endl;
             if ( mAttributes.find ( "width" ) != mAttributes.end() )
             {
                 const auto& val = mAttributes.at ( "width" );
