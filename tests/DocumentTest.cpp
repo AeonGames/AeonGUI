@@ -21,19 +21,7 @@ limitations under the License.
 #include <cstdint>
 #include "aeongui/dom/Document.hpp"
 #include "aeongui/dom/SVGGeometryElement.hpp"
-#ifdef AEONGUI_USE_SKIA
-#include "SkiaCanvas.hpp"
-namespace AeonGUI
-{
-    using TestCanvas = SkiaCanvas;
-}
-#else
-#include "CairoCanvas.hpp"
-namespace AeonGUI
-{
-    using TestCanvas = CairoCanvas;
-}
-#endif
+#include "aeongui/Canvas.hpp"
 
 namespace
 {
@@ -116,9 +104,9 @@ TEST ( DocumentTest, LoadHoverDemoSvg )
     AeonGUI::DOM::Document document;
     ASSERT_NO_THROW ( document.Load ( svgPath.string() ) );
 
-    AeonGUI::TestCanvas canvas ( 800u, 600u );
-    canvas.Clear();
-    ASSERT_NO_THROW ( document.Draw ( canvas ) );
+    auto canvas = AeonGUI::Canvas::Create ( 800u, 600u );
+    canvas->Clear();
+    ASSERT_NO_THROW ( document.Draw ( *canvas ) );
 }
 
 TEST ( DocumentTest, DrawResolvesImageHrefWithFragment )
@@ -149,9 +137,9 @@ TEST ( DocumentTest, DrawResolvesImageHrefWithFragment )
     AeonGUI::DOM::Document document;
     ASSERT_NO_THROW ( document.Load ( svgPath.string() ) );
 
-    AeonGUI::TestCanvas canvas ( 2u, 2u );
-    canvas.Clear();
-    ASSERT_NO_THROW ( document.Draw ( canvas ) );
+    auto canvas = AeonGUI::Canvas::Create ( 2u, 2u );
+    canvas->Clear();
+    ASSERT_NO_THROW ( document.Draw ( *canvas ) );
 
     std::filesystem::remove ( svgPath, ec );
     std::filesystem::remove ( imagePath, ec );

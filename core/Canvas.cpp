@@ -1,5 +1,5 @@
 /*
-Copyright (C) 2019,2025 Rodrigo Jose Hernandez Cordoba
+Copyright (C) 2019,2025,2026 Rodrigo Jose Hernandez Cordoba
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -15,8 +15,22 @@ limitations under the License.
 */
 
 #include "aeongui/Canvas.hpp"
+#ifdef AEONGUI_USE_SKIA
+#include "SkiaCanvas.hpp"
+#else
+#include "CairoCanvas.hpp"
+#endif
 
 namespace AeonGUI
 {
     Canvas::~Canvas() = default;
+
+    std::unique_ptr<Canvas> Canvas::Create ( uint32_t aWidth, uint32_t aHeight )
+    {
+#ifdef AEONGUI_USE_SKIA
+        return std::make_unique<SkiaCanvas> ( aWidth, aHeight );
+#else
+        return std::make_unique<CairoCanvas> ( aWidth, aHeight );
+#endif
+    }
 }

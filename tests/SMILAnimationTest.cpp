@@ -20,19 +20,7 @@ limitations under the License.
 #include "aeongui/dom/Document.hpp"
 #include "aeongui/dom/Window.hpp"
 #include "aeongui/dom/Event.hpp"
-#ifdef AEONGUI_USE_SKIA
-#include "SkiaCanvas.hpp"
-namespace AeonGUI
-{
-    using TestCanvas = SkiaCanvas;
-}
-#else
-#include "CairoCanvas.hpp"
-namespace AeonGUI
-{
-    using TestCanvas = CairoCanvas;
-}
-#endif
+#include "aeongui/Canvas.hpp"
 
 namespace
 {
@@ -73,9 +61,9 @@ TEST ( SMILAnimationTest, LoadSmilDemoSvg )
     AeonGUI::DOM::Document document;
     ASSERT_NO_THROW ( document.Load ( svgPath.string() ) );
 
-    AeonGUI::TestCanvas canvas ( 800u, 600u );
-    canvas.Clear();
-    ASSERT_NO_THROW ( document.Draw ( canvas ) );
+    auto canvas = AeonGUI::Canvas::Create ( 800u, 600u );
+    canvas->Clear();
+    ASSERT_NO_THROW ( document.Draw ( *canvas ) );
 }
 
 TEST ( SMILAnimationTest, AdvanceTimeAndDraw )
@@ -86,13 +74,13 @@ TEST ( SMILAnimationTest, AdvanceTimeAndDraw )
     AeonGUI::DOM::Document document;
     document.Load ( svgPath.string() );
 
-    AeonGUI::TestCanvas canvas ( 800u, 600u );
+    auto canvas = AeonGUI::Canvas::Create ( 800u, 600u );
     // Simulate 60 frames at 60fps
     for ( int i = 0; i < 60; ++i )
     {
         document.AdvanceTime ( 1.0 / 60.0 );
-        canvas.Clear();
-        ASSERT_NO_THROW ( document.Draw ( canvas ) );
+        canvas->Clear();
+        ASSERT_NO_THROW ( document.Draw ( *canvas ) );
     }
 }
 
@@ -108,10 +96,10 @@ TEST ( SMILAnimationTest, AnimateFillLoadsAndDraws )
         R"(</rect></svg>)"
     };
 
-    AeonGUI::TestCanvas canvas ( 100u, 100u );
+    auto canvas = AeonGUI::Canvas::Create ( 100u, 100u );
     svg.doc().AdvanceTime ( 1.0 );
-    canvas.Clear();
-    ASSERT_NO_THROW ( svg.doc().Draw ( canvas ) );
+    canvas->Clear();
+    ASSERT_NO_THROW ( svg.doc().Draw ( *canvas ) );
 }
 
 // ===== animate opacity =====
@@ -126,10 +114,10 @@ TEST ( SMILAnimationTest, AnimateOpacityLoadsAndDraws )
         R"(</rect></svg>)"
     };
 
-    AeonGUI::TestCanvas canvas ( 100u, 100u );
+    auto canvas = AeonGUI::Canvas::Create ( 100u, 100u );
     svg.doc().AdvanceTime ( 0.5 );
-    canvas.Clear();
-    ASSERT_NO_THROW ( svg.doc().Draw ( canvas ) );
+    canvas->Clear();
+    ASSERT_NO_THROW ( svg.doc().Draw ( *canvas ) );
 }
 
 // ===== animate stroke-width =====
@@ -144,10 +132,10 @@ TEST ( SMILAnimationTest, AnimateStrokeWidthLoadsAndDraws )
         R"(</rect></svg>)"
     };
 
-    AeonGUI::TestCanvas canvas ( 100u, 100u );
+    auto canvas = AeonGUI::Canvas::Create ( 100u, 100u );
     svg.doc().AdvanceTime ( 1.0 );
-    canvas.Clear();
-    ASSERT_NO_THROW ( svg.doc().Draw ( canvas ) );
+    canvas->Clear();
+    ASSERT_NO_THROW ( svg.doc().Draw ( *canvas ) );
 }
 
 // ===== animate cx (geometry: position) =====
@@ -162,10 +150,10 @@ TEST ( SMILAnimationTest, AnimateCxLoadsAndDraws )
         R"(</circle></svg>)"
     };
 
-    AeonGUI::TestCanvas canvas ( 200u, 100u );
+    auto canvas = AeonGUI::Canvas::Create ( 200u, 100u );
     svg.doc().AdvanceTime ( 1.0 );
-    canvas.Clear();
-    ASSERT_NO_THROW ( svg.doc().Draw ( canvas ) );
+    canvas->Clear();
+    ASSERT_NO_THROW ( svg.doc().Draw ( *canvas ) );
 }
 
 // ===== animate width (geometry: size with anchored scale) =====
@@ -180,10 +168,10 @@ TEST ( SMILAnimationTest, AnimateWidthLoadsAndDraws )
         R"(</rect></svg>)"
     };
 
-    AeonGUI::TestCanvas canvas ( 200u, 100u );
+    auto canvas = AeonGUI::Canvas::Create ( 200u, 100u );
     svg.doc().AdvanceTime ( 0.5 );
-    canvas.Clear();
-    ASSERT_NO_THROW ( svg.doc().Draw ( canvas ) );
+    canvas->Clear();
+    ASSERT_NO_THROW ( svg.doc().Draw ( *canvas ) );
 }
 
 // ===== animate height (geometry: size) =====
@@ -198,10 +186,10 @@ TEST ( SMILAnimationTest, AnimateHeightLoadsAndDraws )
         R"(</rect></svg>)"
     };
 
-    AeonGUI::TestCanvas canvas ( 100u, 200u );
+    auto canvas = AeonGUI::Canvas::Create ( 100u, 200u );
     svg.doc().AdvanceTime ( 0.5 );
-    canvas.Clear();
-    ASSERT_NO_THROW ( svg.doc().Draw ( canvas ) );
+    canvas->Clear();
+    ASSERT_NO_THROW ( svg.doc().Draw ( *canvas ) );
 }
 
 // ===== animate r (geometry: circle radius) =====
@@ -216,10 +204,10 @@ TEST ( SMILAnimationTest, AnimateRadiusLoadsAndDraws )
         R"(</circle></svg>)"
     };
 
-    AeonGUI::TestCanvas canvas ( 100u, 100u );
+    auto canvas = AeonGUI::Canvas::Create ( 100u, 100u );
     svg.doc().AdvanceTime ( 0.5 );
-    canvas.Clear();
-    ASSERT_NO_THROW ( svg.doc().Draw ( canvas ) );
+    canvas->Clear();
+    ASSERT_NO_THROW ( svg.doc().Draw ( *canvas ) );
 }
 
 // ===== animateTransform rotate =====
@@ -234,10 +222,10 @@ TEST ( SMILAnimationTest, AnimateTransformRotateLoadsAndDraws )
         R"(</rect></svg>)"
     };
 
-    AeonGUI::TestCanvas canvas ( 100u, 100u );
+    auto canvas = AeonGUI::Canvas::Create ( 100u, 100u );
     svg.doc().AdvanceTime ( 1.5 );
-    canvas.Clear();
-    ASSERT_NO_THROW ( svg.doc().Draw ( canvas ) );
+    canvas->Clear();
+    ASSERT_NO_THROW ( svg.doc().Draw ( *canvas ) );
 }
 
 // ===== animateTransform scale =====
@@ -252,10 +240,10 @@ TEST ( SMILAnimationTest, AnimateTransformScaleLoadsAndDraws )
         R"(</circle></svg>)"
     };
 
-    AeonGUI::TestCanvas canvas ( 100u, 100u );
+    auto canvas = AeonGUI::Canvas::Create ( 100u, 100u );
     svg.doc().AdvanceTime ( 0.75 );
-    canvas.Clear();
-    ASSERT_NO_THROW ( svg.doc().Draw ( canvas ) );
+    canvas->Clear();
+    ASSERT_NO_THROW ( svg.doc().Draw ( *canvas ) );
 }
 
 // ===== animateTransform translate =====
@@ -270,10 +258,10 @@ TEST ( SMILAnimationTest, AnimateTransformTranslateLoadsAndDraws )
         R"(</rect></svg>)"
     };
 
-    AeonGUI::TestCanvas canvas ( 200u, 100u );
+    auto canvas = AeonGUI::Canvas::Create ( 200u, 100u );
     svg.doc().AdvanceTime ( 1.0 );
-    canvas.Clear();
-    ASSERT_NO_THROW ( svg.doc().Draw ( canvas ) );
+    canvas->Clear();
+    ASSERT_NO_THROW ( svg.doc().Draw ( *canvas ) );
 }
 
 // ===== set element =====
@@ -288,10 +276,10 @@ TEST ( SMILAnimationTest, SetElementLoadsAndDraws )
         R"(</rect></svg>)"
     };
 
-    AeonGUI::TestCanvas canvas ( 100u, 100u );
+    auto canvas = AeonGUI::Canvas::Create ( 100u, 100u );
     svg.doc().AdvanceTime ( 0.5 );
-    canvas.Clear();
-    ASSERT_NO_THROW ( svg.doc().Draw ( canvas ) );
+    canvas->Clear();
+    ASSERT_NO_THROW ( svg.doc().Draw ( *canvas ) );
 }
 
 TEST ( SMILAnimationTest, SetElementEventBasedBeginStaysInactive )
@@ -306,11 +294,11 @@ TEST ( SMILAnimationTest, SetElementEventBasedBeginStaysInactive )
 R"(</rect></svg>)"
     };
 
-    AeonGUI::TestCanvas canvas ( 100u, 100u );
+    auto canvas = AeonGUI::Canvas::Create ( 100u, 100u );
     svg.doc().AdvanceTime ( 0.5 );
-    canvas.Clear();
+    canvas->Clear();
     // Should draw without crash even though begin="click" produces dur=0
-    ASSERT_NO_THROW ( svg.doc().Draw ( canvas ) );
+    ASSERT_NO_THROW ( svg.doc().Draw ( *canvas ) );
 }
 
 // ===== animateMotion =====
@@ -325,10 +313,10 @@ TEST ( SMILAnimationTest, AnimateMotionLoadsAndDraws )
         R"(</circle></svg>)"
     };
 
-    AeonGUI::TestCanvas canvas ( 200u, 200u );
+    auto canvas = AeonGUI::Canvas::Create ( 200u, 200u );
     svg.doc().AdvanceTime ( 1.5 );
-    canvas.Clear();
-    ASSERT_NO_THROW ( svg.doc().Draw ( canvas ) );
+    canvas->Clear();
+    ASSERT_NO_THROW ( svg.doc().Draw ( *canvas ) );
 }
 
 // ===== Timing: animation should not be active before begin time =====
@@ -343,11 +331,11 @@ TEST ( SMILAnimationTest, AnimationInactiveBeforeBeginTime )
         R"(</rect></svg>)"
     };
 
-    AeonGUI::TestCanvas canvas ( 100u, 100u );
+    auto canvas = AeonGUI::Canvas::Create ( 100u, 100u );
     // Advance only 2 seconds — animation begins at 5s so should remain inactive
     svg.doc().AdvanceTime ( 2.0 );
-    canvas.Clear();
-    ASSERT_NO_THROW ( svg.doc().Draw ( canvas ) );
+    canvas->Clear();
+    ASSERT_NO_THROW ( svg.doc().Draw ( *canvas ) );
 }
 
 // ===== Timing: freeze at end =====
@@ -362,11 +350,11 @@ TEST ( SMILAnimationTest, FreezeAtEnd )
         R"(</circle></svg>)"
     };
 
-    AeonGUI::TestCanvas canvas ( 100u, 100u );
+    auto canvas = AeonGUI::Canvas::Create ( 100u, 100u );
     // Advance well past the end
     svg.doc().AdvanceTime ( 5.0 );
-    canvas.Clear();
-    ASSERT_NO_THROW ( svg.doc().Draw ( canvas ) );
+    canvas->Clear();
+    ASSERT_NO_THROW ( svg.doc().Draw ( *canvas ) );
 }
 
 // ===== Multiple animations on same element =====
@@ -382,10 +370,10 @@ TEST ( SMILAnimationTest, MultipleAnimationsOnSameElement )
         R"(</rect></svg>)"
     };
 
-    AeonGUI::TestCanvas canvas ( 200u, 200u );
+    auto canvas = AeonGUI::Canvas::Create ( 200u, 200u );
     svg.doc().AdvanceTime ( 2.0 );
-    canvas.Clear();
-    ASSERT_NO_THROW ( svg.doc().Draw ( canvas ) );
+    canvas->Clear();
+    ASSERT_NO_THROW ( svg.doc().Draw ( *canvas ) );
 }
 
 // ===== Rapid time advancement without crash =====
@@ -405,13 +393,13 @@ R"(<animate attributeName="opacity" values="1;0.2;1" dur="2s" repeatCount="indef
         R"(</circle></svg>)"
     };
 
-    AeonGUI::TestCanvas canvas ( 100u, 100u );
+    auto canvas = AeonGUI::Canvas::Create ( 100u, 100u );
     // 300 frames at 60fps = 5 seconds
     for ( int i = 0; i < 300; ++i )
     {
         svg.doc().AdvanceTime ( 1.0 / 60.0 );
-        canvas.Clear();
-        ASSERT_NO_THROW ( svg.doc().Draw ( canvas ) );
+        canvas->Clear();
+        ASSERT_NO_THROW ( svg.doc().Draw ( *canvas ) );
     }
 }
 
@@ -427,10 +415,10 @@ TEST ( SMILAnimationTest, ZeroDurationStaysInactive )
         R"(</rect></svg>)"
     };
 
-    AeonGUI::TestCanvas canvas ( 100u, 100u );
+    auto canvas = AeonGUI::Canvas::Create ( 100u, 100u );
     svg.doc().AdvanceTime ( 1.0 );
-    canvas.Clear();
-    ASSERT_NO_THROW ( svg.doc().Draw ( canvas ) );
+    canvas->Clear();
+    ASSERT_NO_THROW ( svg.doc().Draw ( *canvas ) );
 }
 
 // ===== from/to pair instead of values attribute =====
@@ -445,10 +433,10 @@ TEST ( SMILAnimationTest, FromToPairWorks )
         R"(</rect></svg>)"
     };
 
-    AeonGUI::TestCanvas canvas ( 100u, 100u );
+    auto canvas = AeonGUI::Canvas::Create ( 100u, 100u );
     svg.doc().AdvanceTime ( 1.0 );
-    canvas.Clear();
-    ASSERT_NO_THROW ( svg.doc().Draw ( canvas ) );
+    canvas->Clear();
+    ASSERT_NO_THROW ( svg.doc().Draw ( *canvas ) );
 }
 
 // ===== animate stroke color =====
@@ -463,10 +451,10 @@ TEST ( SMILAnimationTest, AnimateStrokeColorLoadsAndDraws )
         R"(</rect></svg>)"
     };
 
-    AeonGUI::TestCanvas canvas ( 100u, 100u );
+    auto canvas = AeonGUI::Canvas::Create ( 100u, 100u );
     svg.doc().AdvanceTime ( 1.0 );
-    canvas.Clear();
-    ASSERT_NO_THROW ( svg.doc().Draw ( canvas ) );
+    canvas->Clear();
+    ASSERT_NO_THROW ( svg.doc().Draw ( *canvas ) );
 }
 
 // ===== animateTransform skewX =====
@@ -481,10 +469,10 @@ TEST ( SMILAnimationTest, AnimateTransformSkewXLoadsAndDraws )
         R"(</rect></svg>)"
     };
 
-    AeonGUI::TestCanvas canvas ( 100u, 100u );
+    auto canvas = AeonGUI::Canvas::Create ( 100u, 100u );
     svg.doc().AdvanceTime ( 1.0 );
-    canvas.Clear();
-    ASSERT_NO_THROW ( svg.doc().Draw ( canvas ) );
+    canvas->Clear();
+    ASSERT_NO_THROW ( svg.doc().Draw ( *canvas ) );
 }
 
 // ===== Event-based begin: click triggers set element =====
@@ -500,12 +488,12 @@ R"(</rect></svg>)",
         "smil-click-test.svg"
     };
 
-    AeonGUI::TestCanvas canvas ( 200u, 200u );
+    auto canvas = AeonGUI::Canvas::Create ( 200u, 200u );
 
     // Advance time — animation should NOT be active yet (event-based begin)
     svg.doc().AdvanceTime ( 0.5 );
-    canvas.Clear();
-    svg.doc().Draw ( canvas );
+    canvas->Clear();
+    svg.doc().Draw ( *canvas );
 
     // Dispatch a click event directly on the rect element
     auto* target = svg.doc().getElementById ( "target" );
@@ -515,13 +503,13 @@ R"(</rect></svg>)",
 
     // Advance time past the click — now the animation should be active
     svg.doc().AdvanceTime ( 0.5 );
-    canvas.Clear();
-    svg.doc().Draw ( canvas );
+    canvas->Clear();
+    svg.doc().Draw ( *canvas );
 
     // Advance past the duration — animation should deactivate
     svg.doc().AdvanceTime ( 2.0 );
-    canvas.Clear();
-    ASSERT_NO_THROW ( svg.doc().Draw ( canvas ) );
+    canvas->Clear();
+    ASSERT_NO_THROW ( svg.doc().Draw ( *canvas ) );
 }
 
 // ===== Event-based begin: animation stays inactive without click =====
@@ -536,13 +524,13 @@ TEST ( SMILAnimationTest, EventBasedBeginStaysInactiveWithoutEvent )
 R"(</rect></svg>)"
     };
 
-    AeonGUI::TestCanvas canvas ( 100u, 100u );
+    auto canvas = AeonGUI::Canvas::Create ( 100u, 100u );
     // Advance time without any click event — animation should never activate
     for ( int i = 0; i < 60; ++i )
     {
         svg.doc().AdvanceTime ( 1.0 / 60.0 );
-        canvas.Clear();
-        ASSERT_NO_THROW ( svg.doc().Draw ( canvas ) );
+        canvas->Clear();
+        ASSERT_NO_THROW ( svg.doc().Draw ( *canvas ) );
     }
 }
 
@@ -559,13 +547,13 @@ TEST ( SMILAnimationTest, AnimateRxRyRebuildPath )
         R"(</rect></svg>)"
     };
 
-    AeonGUI::TestCanvas canvas ( 200u, 200u );
+    auto canvas = AeonGUI::Canvas::Create ( 200u, 200u );
     // Animate through several frames — path is rebuilt each time
     for ( int i = 0; i < 120; ++i )
     {
         svg.doc().AdvanceTime ( 1.0 / 60.0 );
-        canvas.Clear();
-        ASSERT_NO_THROW ( svg.doc().Draw ( canvas ) );
+        canvas->Clear();
+        ASSERT_NO_THROW ( svg.doc().Draw ( *canvas ) );
     }
 }
 
@@ -581,10 +569,10 @@ TEST ( SMILAnimationTest, AnimateRxOnlyRebuildPath )
         R"(</rect></svg>)"
     };
 
-    AeonGUI::TestCanvas canvas ( 100u, 100u );
+    auto canvas = AeonGUI::Canvas::Create ( 100u, 100u );
     svg.doc().AdvanceTime ( 0.5 );
-    canvas.Clear();
-    ASSERT_NO_THROW ( svg.doc().Draw ( canvas ) );
+    canvas->Clear();
+    ASSERT_NO_THROW ( svg.doc().Draw ( *canvas ) );
 }
 
 // ===== Hover changes CSS on combined button (integration) =====
@@ -626,10 +614,10 @@ TEST ( SMILAnimationTest, AnimateCyLoadsAndDraws )
         R"(</circle></svg>)"
     };
 
-    AeonGUI::TestCanvas canvas ( 100u, 200u );
+    auto canvas = AeonGUI::Canvas::Create ( 100u, 200u );
     svg.doc().AdvanceTime ( 1.0 );
-    canvas.Clear();
-    ASSERT_NO_THROW ( svg.doc().Draw ( canvas ) );
+    canvas->Clear();
+    ASSERT_NO_THROW ( svg.doc().Draw ( *canvas ) );
 }
 
 // ===== animate fill-opacity =====
@@ -644,10 +632,10 @@ TEST ( SMILAnimationTest, AnimateFillOpacityLoadsAndDraws )
         R"(</rect></svg>)"
     };
 
-    AeonGUI::TestCanvas canvas ( 100u, 100u );
+    auto canvas = AeonGUI::Canvas::Create ( 100u, 100u );
     svg.doc().AdvanceTime ( 0.5 );
-    canvas.Clear();
-    ASSERT_NO_THROW ( svg.doc().Draw ( canvas ) );
+    canvas->Clear();
+    ASSERT_NO_THROW ( svg.doc().Draw ( *canvas ) );
 }
 
 // ===== animate stroke-opacity =====
@@ -662,10 +650,10 @@ TEST ( SMILAnimationTest, AnimateStrokeOpacityLoadsAndDraws )
 R"(</rect></svg>)"
     };
 
-    AeonGUI::TestCanvas canvas ( 100u, 100u );
+    auto canvas = AeonGUI::Canvas::Create ( 100u, 100u );
     svg.doc().AdvanceTime ( 0.5 );
-    canvas.Clear();
-    ASSERT_NO_THROW ( svg.doc().Draw ( canvas ) );
+    canvas->Clear();
+    ASSERT_NO_THROW ( svg.doc().Draw ( *canvas ) );
 }
 
 // ===== animateTransform skewY =====
@@ -680,10 +668,10 @@ TEST ( SMILAnimationTest, AnimateTransformSkewYLoadsAndDraws )
         R"(</rect></svg>)"
     };
 
-    AeonGUI::TestCanvas canvas ( 100u, 100u );
+    auto canvas = AeonGUI::Canvas::Create ( 100u, 100u );
     svg.doc().AdvanceTime ( 1.0 );
-    canvas.Clear();
-    ASSERT_NO_THROW ( svg.doc().Draw ( canvas ) );
+    canvas->Clear();
+    ASSERT_NO_THROW ( svg.doc().Draw ( *canvas ) );
 }
 
 // ===== Finite repeatCount > 1 =====
@@ -698,22 +686,22 @@ TEST ( SMILAnimationTest, FiniteRepeatCountGreaterThanOne )
         R"(</rect></svg>)"
     };
 
-    AeonGUI::TestCanvas canvas ( 100u, 100u );
+    auto canvas = AeonGUI::Canvas::Create ( 100u, 100u );
 
     // Mid first cycle
     svg.doc().AdvanceTime ( 0.5 );
-    canvas.Clear();
-    ASSERT_NO_THROW ( svg.doc().Draw ( canvas ) );
+    canvas->Clear();
+    ASSERT_NO_THROW ( svg.doc().Draw ( *canvas ) );
 
     // Mid second cycle
     svg.doc().AdvanceTime ( 1.0 );
-    canvas.Clear();
-    ASSERT_NO_THROW ( svg.doc().Draw ( canvas ) );
+    canvas->Clear();
+    ASSERT_NO_THROW ( svg.doc().Draw ( *canvas ) );
 
     // Past all 3 cycles (animation should stop)
     svg.doc().AdvanceTime ( 2.0 );
-    canvas.Clear();
-    ASSERT_NO_THROW ( svg.doc().Draw ( canvas ) );
+    canvas->Clear();
+    ASSERT_NO_THROW ( svg.doc().Draw ( *canvas ) );
 }
 
 // ===== Animation deactivation without freeze =====
@@ -728,17 +716,17 @@ TEST ( SMILAnimationTest, AnimationDeactivatesWithoutFreeze )
         R"(</circle></svg>)"
     };
 
-    AeonGUI::TestCanvas canvas ( 100u, 100u );
+    auto canvas = AeonGUI::Canvas::Create ( 100u, 100u );
 
     // During animation
     svg.doc().AdvanceTime ( 0.5 );
-    canvas.Clear();
-    ASSERT_NO_THROW ( svg.doc().Draw ( canvas ) );
+    canvas->Clear();
+    ASSERT_NO_THROW ( svg.doc().Draw ( *canvas ) );
 
     // After animation ends — no freeze, should deactivate cleanly
     svg.doc().AdvanceTime ( 1.0 );
-    canvas.Clear();
-    ASSERT_NO_THROW ( svg.doc().Draw ( canvas ) );
+    canvas->Clear();
+    ASSERT_NO_THROW ( svg.doc().Draw ( *canvas ) );
 }
 
 // ===== Multiple animation types on same element =====
@@ -755,12 +743,12 @@ TEST ( SMILAnimationTest, MixedAnimationTypesOnSameElement )
         R"(</rect></svg>)"
     };
 
-    AeonGUI::TestCanvas canvas ( 200u, 200u );
+    auto canvas = AeonGUI::Canvas::Create ( 200u, 200u );
     for ( int i = 0; i < 120; ++i )
     {
         svg.doc().AdvanceTime ( 1.0 / 60.0 );
-        canvas.Clear();
-        ASSERT_NO_THROW ( svg.doc().Draw ( canvas ) );
+        canvas->Clear();
+        ASSERT_NO_THROW ( svg.doc().Draw ( *canvas ) );
     }
 }
 
@@ -777,12 +765,12 @@ TEST ( SMILAnimationTest, MouseoverTriggersAnimation )
         "smil-mouseover-test.svg"
     };
 
-    AeonGUI::TestCanvas canvas ( 200u, 200u );
+    auto canvas = AeonGUI::Canvas::Create ( 200u, 200u );
 
     // Advance time — animation should not be active
     svg.doc().AdvanceTime ( 0.5 );
-    canvas.Clear();
-    svg.doc().Draw ( canvas );
+    canvas->Clear();
+    svg.doc().Draw ( *canvas );
 
     // Dispatch mouseenter event directly on the rect element
     auto* target = svg.doc().getElementById ( "hover-target" );
@@ -792,13 +780,13 @@ TEST ( SMILAnimationTest, MouseoverTriggersAnimation )
 
     // Advance time — animation should now be active
     svg.doc().AdvanceTime ( 0.5 );
-    canvas.Clear();
-    ASSERT_NO_THROW ( svg.doc().Draw ( canvas ) );
+    canvas->Clear();
+    ASSERT_NO_THROW ( svg.doc().Draw ( *canvas ) );
 
     // Advance past duration
     svg.doc().AdvanceTime ( 1.0 );
-    canvas.Clear();
-    ASSERT_NO_THROW ( svg.doc().Draw ( canvas ) );
+    canvas->Clear();
+    ASSERT_NO_THROW ( svg.doc().Draw ( *canvas ) );
 }
 
 // ===== Large time jump (numerical stability) =====
@@ -818,18 +806,18 @@ R"(<animate attributeName="opacity" values="1;0.2;1" dur="2s" repeatCount="indef
         R"(</circle></svg>)"
     };
 
-    AeonGUI::TestCanvas canvas ( 100u, 100u );
+    auto canvas = AeonGUI::Canvas::Create ( 100u, 100u );
 
     // Jump 10000 seconds at once
     svg.doc().AdvanceTime ( 10000.0 );
-    canvas.Clear();
-    ASSERT_NO_THROW ( svg.doc().Draw ( canvas ) );
+    canvas->Clear();
+    ASSERT_NO_THROW ( svg.doc().Draw ( *canvas ) );
 
     // Then a few more normal frames
     for ( int i = 0; i < 10; ++i )
     {
         svg.doc().AdvanceTime ( 1.0 / 60.0 );
-        canvas.Clear();
-        ASSERT_NO_THROW ( svg.doc().Draw ( canvas ) );
+        canvas->Clear();
+        ASSERT_NO_THROW ( svg.doc().Draw ( *canvas ) );
     }
 }

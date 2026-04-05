@@ -16,19 +16,7 @@ limitations under the License.
 
 #include <gtest/gtest.h>
 #include "aeongui/dom/SVGImageElement.hpp"
-#ifdef AEONGUI_USE_SKIA
-#include "SkiaCanvas.hpp"
-namespace AeonGUI
-{
-    using TestCanvas = SkiaCanvas;
-}
-#else
-#include "CairoCanvas.hpp"
-namespace AeonGUI
-{
-    using TestCanvas = CairoCanvas;
-}
-#endif
+#include "aeongui/Canvas.hpp"
 
 TEST ( SVGImageElementTest, ParsesCoreAttributes )
 {
@@ -76,7 +64,7 @@ TEST ( SVGImageElementTest, DrawWithMissingHrefDoesNotThrow )
         {"height", "10"}
     };
     AeonGUI::DOM::SVGImageElement image{"image", std::move ( attributes ), nullptr};
-    AeonGUI::TestCanvas canvas{32, 32};
+    auto canvas = AeonGUI::Canvas::Create ( 32, 32 );
 
-    EXPECT_NO_THROW ( image.DrawStart ( canvas ) );
+    EXPECT_NO_THROW ( image.DrawStart ( *canvas ) );
 }

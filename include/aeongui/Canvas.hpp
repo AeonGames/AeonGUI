@@ -280,6 +280,13 @@ namespace AeonGUI
         /** @brief Virtual destructor. */
         virtual ~Canvas() = 0;
 
+        /** @brief Create a Canvas using the compiled-in backend.
+         *  @param aWidth  Viewport width in pixels.
+         *  @param aHeight Viewport height in pixels.
+         *  @return A new Canvas instance.
+         */
+        AEONGUI_DLL static std::unique_ptr<Canvas> Create ( uint32_t aWidth, uint32_t aHeight );
+
         /** @brief Device-space bounding box for a pick-tracked element. */
         struct PickBounds
         {
