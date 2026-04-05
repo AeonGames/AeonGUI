@@ -229,7 +229,9 @@ target_include_directories(AeonGUI
         ${LIBXML2_INCLUDE_DIRS}
 )
 if(AEONGUI_BACKEND STREQUAL "Cairo")
-    target_include_directories(AeonGUI SYSTEM PUBLIC ${CAIRO_INCLUDE_DIRS})
+    foreach(_dir IN LISTS CAIRO_INCLUDE_DIRS)
+        target_include_directories(AeonGUI SYSTEM PUBLIC $<BUILD_INTERFACE:${_dir}>)
+    endforeach()
 elseif(AEONGUI_BACKEND STREQUAL "Skia")
     # Skia include directories are added below per-target
 endif()
