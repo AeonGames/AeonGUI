@@ -34,9 +34,9 @@ namespace AeonGUI
              *  @param aText   The text content.
              *  @param aParent The parent node.
              */
-            DLL Text ( const std::string& aText, Node* aParent );
+            AEONGUI_DLL Text ( const std::string& aText, Node* aParent );
             /** @brief Destructor. */
-            DLL ~Text() final;
+            AEONGUI_DLL ~Text() final;
             /**DOM Properties and Methods @{*/
             /** @brief Get the node type (always TEXT_NODE).
              *  @return NodeType::TEXT_NODE. */

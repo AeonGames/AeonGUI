@@ -36,17 +36,17 @@ namespace AeonGUI
     class SkiaTextLayout : public TextLayout
     {
     public:
-        DLL SkiaTextLayout();
-        DLL ~SkiaTextLayout() override;
-        DLL void SetText ( const std::string& aText ) override;
-        DLL void SetFontFamily ( const std::string& aFamily ) override;
-        DLL void SetFontSize ( double aSize ) override;
-        DLL void SetFontWeight ( int aWeight ) override;
-        DLL void SetFontStyle ( int aStyle ) override;
-        DLL double GetTextWidth() const override;
-        DLL double GetTextHeight() const override;
-        DLL double GetBaseline() const override;
-        DLL double GetCharOffsetX ( long aIndex ) const override;
+        AEONGUI_DLL SkiaTextLayout();
+        AEONGUI_DLL ~SkiaTextLayout() override;
+        AEONGUI_DLL void SetText ( const std::string& aText ) override;
+        AEONGUI_DLL void SetFontFamily ( const std::string& aFamily ) override;
+        AEONGUI_DLL void SetFontSize ( double aSize ) override;
+        AEONGUI_DLL void SetFontWeight ( int aWeight ) override;
+        AEONGUI_DLL void SetFontStyle ( int aStyle ) override;
+        AEONGUI_DLL double GetTextWidth() const override;
+        AEONGUI_DLL double GetTextHeight() const override;
+        AEONGUI_DLL double GetBaseline() const override;
+        AEONGUI_DLL double GetCharOffsetX ( long aIndex ) const override;
         /** @brief Get the underlying PangoLayout.
          *  @return Pointer to the PangoLayout.
          */

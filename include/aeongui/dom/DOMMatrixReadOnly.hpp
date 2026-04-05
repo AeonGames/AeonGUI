@@ -33,7 +33,7 @@ namespace AeonGUI
          *  rotation, scaling, skewing, translation, and inversion.
          *  @see https://drafts.fxtf.org/geometry/#dommatrixreadonly
          */
-        class DLL DOMMatrixReadOnly
+        class AEONGUI_DLL DOMMatrixReadOnly
         {
         public:
             /** @brief Construct from an initializer list.

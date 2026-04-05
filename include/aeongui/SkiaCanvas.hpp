@@ -35,68 +35,68 @@ namespace AeonGUI
     {
     public:
         /** @brief Construct an empty (zero-size) SkiaCanvas. */
-        DLL SkiaCanvas ();
+        AEONGUI_DLL SkiaCanvas ();
         /** @brief Construct a SkiaCanvas with the given viewport dimensions.
          *  @param aWidth  Viewport width in pixels.
          *  @param aHeight Viewport height in pixels.
          */
-        DLL SkiaCanvas ( uint32_t aWidth, uint32_t aHeight );
-        DLL ~SkiaCanvas() final;
-        DLL void ResizeViewport ( uint32_t aWidth, uint32_t aHeight ) final;
-        DLL const uint8_t* GetPixels() const final;
-        DLL size_t GetWidth() const final;
-        DLL size_t GetHeight() const final;
-        DLL size_t GetStride() const final;
-        DLL void Clear() final;
-        DLL void Draw ( const Path& aPath ) final;
-        DLL void DrawImage ( const uint8_t* aPixels,
-                             size_t aImageWidth,
-                             size_t aImageHeight,
-                             size_t aImageStride,
-                             double aX,
-                             double aY,
-                             double aWidth,
-                             double aHeight,
-                             double aOpacity ) final;
-        DLL void DrawText ( const std::string& aText, double aX, double aY,
-                            const std::string& aFontFamily, double aFontSize,
-                            int aFontWeight, int aFontStyle ) final;
-        DLL double MeasureText ( const std::string& aText,
-                                 const std::string& aFontFamily, double aFontSize,
-                                 int aFontWeight, int aFontStyle ) const final;
-        DLL void DrawTextOnPath ( const std::string& aText,
-                                  const Path& aPath,
-                                  double aStartOffset,
-                                  const std::string& aFontFamily, double aFontSize,
-                                  int aFontWeight, int aFontStyle,
-                                  bool aReverse = false, bool aClosed = false ) final;
-        DLL void SetFillColor ( const ColorAttr& aColor ) final;
-        DLL const ColorAttr& GetFillColor() const final;
-        DLL void SetStrokeColor ( const ColorAttr& aColor ) final;
-        DLL const ColorAttr& GetStrokeColor() const final;
-        DLL void SetStrokeWidth ( double aWidth ) final;
-        DLL double GetStrokeWidth () const final;
-        DLL void SetStrokeOpacity ( double aWidth ) final;
-        DLL double GetStrokeOpacity () const final;
-        DLL void SetFillOpacity ( double aWidth ) final;
-        DLL double GetFillOpacity () const final;
-        DLL void SetOpacity ( double aWidth ) final;
-        DLL double GetOpacity () const final;
-        DLL void SetViewBox ( const ViewBox& aViewBox, const PreserveAspectRatio& aPreserveAspectRatio ) final;
-        DLL void SetTransform ( const Matrix2x3& aMatrix ) final;
-        DLL void Transform ( const Matrix2x3& aMatrix ) final;
-        DLL void Save() final;
-        DLL void Restore() final;
-        DLL void* GetNativeSurface() const final;
-        DLL void PushGroup() final;
-        DLL void PopGroup() final;
-        DLL void ApplyDropShadow ( double aDx, double aDy,
-                                   double aStdDeviationX, double aStdDeviationY,
-                                   const Color& aFloodColor, double aFloodOpacity ) final;
-        DLL uint8_t PickAtPoint ( double aX, double aY ) const final;
-        DLL void ResetPick() final;
-        DLL void SetClipRect ( double aX, double aY, double aWidth, double aHeight ) final;
-        DLL std::unique_ptr<Path> CreatePath() const final;
+        AEONGUI_DLL SkiaCanvas ( uint32_t aWidth, uint32_t aHeight );
+        AEONGUI_DLL ~SkiaCanvas() final;
+        AEONGUI_DLL void ResizeViewport ( uint32_t aWidth, uint32_t aHeight ) final;
+        AEONGUI_DLL const uint8_t* GetPixels() const final;
+        AEONGUI_DLL size_t GetWidth() const final;
+        AEONGUI_DLL size_t GetHeight() const final;
+        AEONGUI_DLL size_t GetStride() const final;
+        AEONGUI_DLL void Clear() final;
+        AEONGUI_DLL void Draw ( const Path& aPath ) final;
+        AEONGUI_DLL void DrawImage ( const uint8_t* aPixels,
+                                     size_t aImageWidth,
+                                     size_t aImageHeight,
+                                     size_t aImageStride,
+                                     double aX,
+                                     double aY,
+                                     double aWidth,
+                                     double aHeight,
+                                     double aOpacity ) final;
+        AEONGUI_DLL void DrawText ( const std::string& aText, double aX, double aY,
+                                    const std::string& aFontFamily, double aFontSize,
+                                    int aFontWeight, int aFontStyle ) final;
+        AEONGUI_DLL double MeasureText ( const std::string& aText,
+                                         const std::string& aFontFamily, double aFontSize,
+                                         int aFontWeight, int aFontStyle ) const final;
+        AEONGUI_DLL void DrawTextOnPath ( const std::string& aText,
+                                          const Path& aPath,
+                                          double aStartOffset,
+                                          const std::string& aFontFamily, double aFontSize,
+                                          int aFontWeight, int aFontStyle,
+                                          bool aReverse = false, bool aClosed = false ) final;
+        AEONGUI_DLL void SetFillColor ( const ColorAttr& aColor ) final;
+        AEONGUI_DLL const ColorAttr& GetFillColor() const final;
+        AEONGUI_DLL void SetStrokeColor ( const ColorAttr& aColor ) final;
+        AEONGUI_DLL const ColorAttr& GetStrokeColor() const final;
+        AEONGUI_DLL void SetStrokeWidth ( double aWidth ) final;
+        AEONGUI_DLL double GetStrokeWidth () const final;
+        AEONGUI_DLL void SetStrokeOpacity ( double aWidth ) final;
+        AEONGUI_DLL double GetStrokeOpacity () const final;
+        AEONGUI_DLL void SetFillOpacity ( double aWidth ) final;
+        AEONGUI_DLL double GetFillOpacity () const final;
+        AEONGUI_DLL void SetOpacity ( double aWidth ) final;
+        AEONGUI_DLL double GetOpacity () const final;
+        AEONGUI_DLL void SetViewBox ( const ViewBox& aViewBox, const PreserveAspectRatio& aPreserveAspectRatio ) final;
+        AEONGUI_DLL void SetTransform ( const Matrix2x3& aMatrix ) final;
+        AEONGUI_DLL void Transform ( const Matrix2x3& aMatrix ) final;
+        AEONGUI_DLL void Save() final;
+        AEONGUI_DLL void Restore() final;
+        AEONGUI_DLL void* GetNativeSurface() const final;
+        AEONGUI_DLL void PushGroup() final;
+        AEONGUI_DLL void PopGroup() final;
+        AEONGUI_DLL void ApplyDropShadow ( double aDx, double aDy,
+                                           double aStdDeviationX, double aStdDeviationY,
+                                           const Color& aFloodColor, double aFloodOpacity ) final;
+        AEONGUI_DLL uint8_t PickAtPoint ( double aX, double aY ) const final;
+        AEONGUI_DLL void ResetPick() final;
+        AEONGUI_DLL void SetClipRect ( double aX, double aY, double aWidth, double aHeight ) final;
+        AEONGUI_DLL std::unique_ptr<Path> CreatePath() const final;
     private:
         void InitSurfaces ( uint32_t aWidth, uint32_t aHeight );
         // Render surface

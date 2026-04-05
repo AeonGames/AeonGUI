@@ -76,7 +76,7 @@ namespace AeonGUI
 			return parser_mutex;
 		}
 
-		DLL int ParsePathData(std::vector<DrawType>& aPath,const char* string,size_t& aEstimate)
+		AEONGUI_DLL int ParsePathData(std::vector<DrawType>& aPath,const char* string,size_t& aEstimate)
 		{
 			std::lock_guard<std::mutex> lock(GetParserMutex());
 			YY_BUFFER_STATE state=d_scan_string(string);

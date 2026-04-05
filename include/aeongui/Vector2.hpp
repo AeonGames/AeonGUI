@@ -31,92 +31,92 @@ namespace AeonGUI
     {
     public:
         /** @brief Default constructor. Initializes to (0, 0). */
-        DLL Vector2();
+        AEONGUI_DLL Vector2();
         /** @brief Construct from X and Y components.
          *  @param aX The X component.
          *  @param aY The Y component.
          */
-        DLL Vector2 ( double aX, double aY );
+        AEONGUI_DLL Vector2 ( double aX, double aY );
         /** @brief Get the X component.
          *  @return The X value.
          */
-        DLL double GetX() const;
+        AEONGUI_DLL double GetX() const;
         /** @brief Get the Y component.
          *  @return The Y value.
          */
-        DLL double GetY() const;
+        AEONGUI_DLL double GetY() const;
         /** @brief Set the X component.
          *  @param aX The new X value.
          */
-        DLL void SetX ( double aX );
+        AEONGUI_DLL void SetX ( double aX );
         /** @brief Set the Y component.
          *  @param aY The new Y value.
          */
-        DLL void SetY ( double aY );
+        AEONGUI_DLL void SetY ( double aY );
         /** @brief Get the length (magnitude) of the vector.
          *  @return The length.
          */
-        DLL double Length() const;
+        AEONGUI_DLL double Length() const;
         /** @brief Access a component by index (const).
          *  @param aIndex 0 for X, 1 for Y.
          *  @return Const reference to the component.
          */
-        DLL const double& operator[] ( std::size_t aIndex ) const;
+        AEONGUI_DLL const double& operator[] ( std::size_t aIndex ) const;
         /** @brief Access a component by index.
          *  @param aIndex 0 for X, 1 for Y.
          *  @return Reference to the component.
          */
-        DLL double& operator[] ( std::size_t aIndex );
+        AEONGUI_DLL double& operator[] ( std::size_t aIndex );
         /** @brief Add another vector in-place.
          *  @param aRight The vector to add.
          *  @return Reference to this.
          */
-        DLL Vector2& operator+= ( const Vector2& aRight );
+        AEONGUI_DLL Vector2& operator+= ( const Vector2& aRight );
         /** @brief Subtract another vector in-place.
          *  @param aRight The vector to subtract.
          *  @return Reference to this.
          */
-        DLL Vector2& operator-= ( const Vector2& aRight );
+        AEONGUI_DLL Vector2& operator-= ( const Vector2& aRight );
         /** @brief Transform by a Matrix2x3 in-place.
          *  @param aRight The matrix to multiply by.
          *  @return Reference to this.
          */
-        DLL Vector2& operator*= ( const Matrix2x3& aRight );
+        AEONGUI_DLL Vector2& operator*= ( const Matrix2x3& aRight );
         /** @brief Component-wise multiply in-place.
          *  @param aRight The vector to multiply by.
          *  @return Reference to this.
          */
-        DLL Vector2& operator*= ( const Vector2& aRight );
+        AEONGUI_DLL Vector2& operator*= ( const Vector2& aRight );
         /** @brief Scalar multiply in-place.
          *  @param aRight The scalar to multiply by.
          *  @return Reference to this.
          */
-        DLL Vector2& operator*= ( double aRight );
+        AEONGUI_DLL Vector2& operator*= ( double aRight );
         /** @brief Scalar divide in-place.
          *  @param aRight The scalar to divide by.
          *  @return Reference to this.
          */
-        DLL Vector2& operator/= ( double aRight );
+        AEONGUI_DLL Vector2& operator/= ( double aRight );
     private:
         double mVector2[2];
     };
     /** @brief Add two vectors. */
-    DLL Vector2 operator+ ( const Vector2& aLeft, const Vector2& aRight );
+    AEONGUI_DLL Vector2 operator+ ( const Vector2& aLeft, const Vector2& aRight );
     /** @brief Subtract two vectors. */
-    DLL Vector2 operator- ( const Vector2& aLeft, const Vector2& aRight );
+    AEONGUI_DLL Vector2 operator- ( const Vector2& aLeft, const Vector2& aRight );
     /** @brief Transform a vector by a Matrix2x3. */
-    DLL Vector2 operator* ( const Vector2& aLeft, const Matrix2x3& aRight );
+    AEONGUI_DLL Vector2 operator* ( const Vector2& aLeft, const Matrix2x3& aRight );
     /** @brief Component-wise multiply two vectors. */
-    DLL Vector2 operator* ( const Vector2& aLeft, const Vector2& aRight );
+    AEONGUI_DLL Vector2 operator* ( const Vector2& aLeft, const Vector2& aRight );
     /** @brief Divide a vector by a scalar. */
-    DLL Vector2 operator/ ( const Vector2& aLeft, double aRight );
+    AEONGUI_DLL Vector2 operator/ ( const Vector2& aLeft, double aRight );
     /** @brief Multiply a vector by a scalar. */
-    DLL Vector2 operator* ( const Vector2& aLeft, double aRight );
+    AEONGUI_DLL Vector2 operator* ( const Vector2& aLeft, double aRight );
     /** @brief Component-wise absolute value. */
-    DLL Vector2 Abs ( const Vector2& aVector2 );
+    AEONGUI_DLL Vector2 Abs ( const Vector2& aVector2 );
     /** @brief Dot product of two vectors. */
-    DLL double Dot ( const Vector2& aLeft, const Vector2& aRight );
+    AEONGUI_DLL double Dot ( const Vector2& aLeft, const Vector2& aRight );
     /** @brief Euclidean distance between two points. */
-    DLL double Distance ( const Vector2& aLeft, const Vector2& aRight );
+    AEONGUI_DLL double Distance ( const Vector2& aLeft, const Vector2& aRight );
 }
 #endif

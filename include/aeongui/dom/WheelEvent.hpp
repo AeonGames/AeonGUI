@@ -49,20 +49,20 @@ namespace AeonGUI
              *  @param type The event type name (typically "wheel").
              *  @param eventInitDict Optional initialization dictionary.
              */
-            DLL WheelEvent ( const DOMString& type, const WheelEventInit& eventInitDict = {} );
+            AEONGUI_DLL WheelEvent ( const DOMString& type, const WheelEventInit& eventInitDict = {} );
 
             /** @brief Get the X-axis scroll amount.
              *  @return Delta X value. */
-            DLL double deltaX() const;
+            AEONGUI_DLL double deltaX() const;
             /** @brief Get the Y-axis scroll amount.
              *  @return Delta Y value. */
-            DLL double deltaY() const;
+            AEONGUI_DLL double deltaY() const;
             /** @brief Get the Z-axis scroll amount.
              *  @return Delta Z value. */
-            DLL double deltaZ() const;
+            AEONGUI_DLL double deltaZ() const;
             /** @brief Get the unit indicator for delta values.
              *  @return One of DOM_DELTA_PIXEL, DOM_DELTA_LINE, DOM_DELTA_PAGE. */
-            DLL unsigned long deltaMode() const;
+            AEONGUI_DLL unsigned long deltaMode() const;
 
         private:
             double m_deltaX{0.0};

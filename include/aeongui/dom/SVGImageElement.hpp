@@ -37,39 +37,39 @@ namespace AeonGUI
              *  @param aAttributes Element attributes.
              *  @param aParent     Parent node.
              */
-            DLL SVGImageElement ( const DOMString& aTagName, AttributeMap&& aAttributes, Node* aParent );
+            AEONGUI_DLL SVGImageElement ( const DOMString& aTagName, AttributeMap&& aAttributes, Node* aParent );
             /** @brief Destructor. */
-            DLL ~SVGImageElement() final;
+            AEONGUI_DLL ~SVGImageElement() final;
 
             /** @brief Get the animated x position.
              *  @return The animated x length. */
-            DLL const SVGAnimatedLength& x() const;
+            AEONGUI_DLL const SVGAnimatedLength& x() const;
             /** @brief Get the animated y position.
              *  @return The animated y length. */
-            DLL const SVGAnimatedLength& y() const;
+            AEONGUI_DLL const SVGAnimatedLength& y() const;
             /** @brief Get the animated width.
              *  @return The animated width length. */
-            DLL const SVGAnimatedLength& width() const;
+            AEONGUI_DLL const SVGAnimatedLength& width() const;
             /** @brief Get the animated height.
              *  @return The animated height length. */
-            DLL const SVGAnimatedLength& height() const;
+            AEONGUI_DLL const SVGAnimatedLength& height() const;
             /** @brief Get the animated href (image source URL).
              *  @return The animated href string. */
-            DLL const SVGAnimatedString& href() const;
+            AEONGUI_DLL const SVGAnimatedString& href() const;
             /** @brief Get the animated preserveAspectRatio.
              *  @return The animated preserve aspect ratio. */
-            DLL const SVGAnimatedPreserveAspectRatio& preserveAspectRatio() const;
+            AEONGUI_DLL const SVGAnimatedPreserveAspectRatio& preserveAspectRatio() const;
             /** @brief Get the crossOrigin attribute value.
              *  @return The cross-origin string. */
-            DLL const DOMString& crossOrigin() const;
+            AEONGUI_DLL const DOMString& crossOrigin() const;
             /** @brief Get the decoding hint ("auto", "sync", or "async").
              *  @return The decoding string. */
-            DLL const DOMString& decoding() const;
+            AEONGUI_DLL const DOMString& decoding() const;
 
             /** @brief Draw the embedded image onto the canvas.
              *  @param aCanvas Target canvas.
              */
-            DLL void DrawStart ( Canvas& aCanvas ) const final;
+            AEONGUI_DLL void DrawStart ( Canvas& aCanvas ) const final;
 
         protected:
             void onAttributeChanged ( const DOMString& aName, const DOMString& aValue ) override;

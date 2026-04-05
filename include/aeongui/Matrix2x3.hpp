@@ -37,7 +37,7 @@ namespace AeonGUI
     {
     public:
         /** @brief Default constructor. Initializes to the identity matrix. */
-        DLL Matrix2x3();
+        AEONGUI_DLL Matrix2x3();
         /** @brief Construct from individual matrix elements.
          *  @param xx Row 0, column 0.
          *  @param yx Row 0, column 1.
@@ -46,7 +46,7 @@ namespace AeonGUI
          *  @param x0 Translation X.
          *  @param y0 Translation Y.
          */
-        DLL Matrix2x3 (
+        AEONGUI_DLL Matrix2x3 (
             double xx, double yx,
             double xy, double yy,
             double x0, double y0
@@ -54,36 +54,36 @@ namespace AeonGUI
         /** @brief Construct from an array of 6 doubles.
          *  @param aMatrixArray Array in row-major order {xx, yx, xy, yy, x0, y0}.
          */
-        DLL Matrix2x3 ( const std::array<const double, 6> aMatrixArray );
+        AEONGUI_DLL Matrix2x3 ( const std::array<const double, 6> aMatrixArray );
         /** @brief Construct a rotation matrix.
          *  @param aRotation Rotation angle in radians.
          */
-        DLL Matrix2x3 ( double aRotation );
+        AEONGUI_DLL Matrix2x3 ( double aRotation );
         /** @brief Construct a scale matrix.
          *  @param aScale Scale factors for each axis.
          */
-        DLL Matrix2x3 ( const Vector2& aScale );
+        AEONGUI_DLL Matrix2x3 ( const Vector2& aScale );
         /** @brief Construct a scale-rotation matrix.
          *  @param aScale    Scale factors for each axis.
          *  @param aRotation Rotation angle in radians.
          */
-        DLL Matrix2x3 ( const Vector2& aScale, double aRotation );
+        AEONGUI_DLL Matrix2x3 ( const Vector2& aScale, double aRotation );
         /** @brief Construct a full scale-rotation-translation matrix.
          *  @param aScale       Scale factors for each axis.
          *  @param aRotation    Rotation angle in radians.
          *  @param aTranslation Translation vector.
          */
-        DLL Matrix2x3 ( const Vector2& aScale, double aRotation, const Vector2& aTranslation );
+        AEONGUI_DLL Matrix2x3 ( const Vector2& aScale, double aRotation, const Vector2& aTranslation );
         /** @brief Multiply this matrix by another (post-multiply).
          *  @param aRight The right-hand-side matrix.
          *  @return Reference to this matrix after multiplication.
          */
-        DLL Matrix2x3& operator*= ( const Matrix2x3& aRight );
+        AEONGUI_DLL Matrix2x3& operator*= ( const Matrix2x3& aRight );
         /** @brief Access a matrix element by index.
          *  @param aIndex Element index [0..5].
          *  @return Const reference to the element.
          */
-        DLL const double& operator[] ( size_t aIndex ) const;
+        AEONGUI_DLL const double& operator[] ( size_t aIndex ) const;
     private:
         double mMatrix2x3[6];
     };
@@ -96,6 +96,6 @@ namespace AeonGUI
      *  @param value The SVG transform string (e.g. "rotate(45)").
      *  @return The resulting transformation matrix.
      */
-    DLL Matrix2x3 ParseSVGTransform ( const std::string& value );
+    AEONGUI_DLL Matrix2x3 ParseSVGTransform ( const std::string& value );
 }
 #endif

@@ -44,49 +44,49 @@ namespace AeonGUI
         {
         public:
             /** @brief Default constructor. Creates an empty window. */
-            DLL Window ();
+            AEONGUI_DLL Window ();
             /** @brief Construct a window with the given viewport size.
              *  @param aWidth  Initial width in pixels.
              *  @param aHeight Initial height in pixels.
              */
-            DLL Window ( uint32_t aWidth, uint32_t aHeight );
+            AEONGUI_DLL Window ( uint32_t aWidth, uint32_t aHeight );
             /** @brief Destructor. */
-            DLL ~Window () override final;
+            AEONGUI_DLL ~Window () override final;
             /** @brief Resize the rendering viewport.
              *  @param aWidth  New width in pixels.
              *  @param aHeight New height in pixels.
              */
-            DLL void ResizeViewport ( uint32_t aWidth, uint32_t aHeight );
+            AEONGUI_DLL void ResizeViewport ( uint32_t aWidth, uint32_t aHeight );
             /** @brief Get a pointer to the rendered pixel data.
              *  @return Pointer to BGRA pixel data.
              */
-            DLL const uint8_t* GetPixels() const;
+            AEONGUI_DLL const uint8_t* GetPixels() const;
             /** @brief Get the window width in pixels.
              *  @return The width. */
-            DLL size_t GetWidth() const;
+            AEONGUI_DLL size_t GetWidth() const;
             /** @brief Get the window height in pixels.
              *  @return The height. */
-            DLL size_t GetHeight() const;
+            AEONGUI_DLL size_t GetHeight() const;
             /** @brief Get the stride (bytes per row) of the pixel buffer.
              *  @return The stride in bytes. */
-            DLL size_t GetStride() const;
+            AEONGUI_DLL size_t GetStride() const;
             /** @brief Render the current document to the internal canvas.
              *  @return true if a redraw was performed, false if the scene was clean.
              */
-            DLL bool Draw();
+            AEONGUI_DLL bool Draw();
             /** @brief Advance animation time and update all animations.
              *  @param aDeltaTime Time elapsed since last frame, in seconds.
              */
-            DLL void Update ( double aDeltaTime );
+            AEONGUI_DLL void Update ( double aDeltaTime );
             /**DOM Properties and Methods @{*/
             /** @brief Get the associated Document.
              *  @return Pointer to the Document, or nullptr.
              */
-            DLL const Document* document() const;
+            AEONGUI_DLL const Document* document() const;
             /** @brief Get the Location object.
              *  @return Reference to the window's Location.
              */
-            DLL Location& location() const;
+            AEONGUI_DLL Location& location() const;
             /**@}*/
             /**Input Handling @{*/
             /** @brief Handle a mouse move event from the platform.
@@ -98,9 +98,9 @@ namespace AeonGUI
              *  @param aAltKey   Alt key held.
              *  @param aMetaKey  Meta key held.
              */
-            DLL void HandleMouseMove ( double aX, double aY, unsigned short aButtons = 0,
-                                       bool aCtrlKey = false, bool aShiftKey = false,
-                                       bool aAltKey = false, bool aMetaKey = false );
+            AEONGUI_DLL void HandleMouseMove ( double aX, double aY, unsigned short aButtons = 0,
+                                               bool aCtrlKey = false, bool aShiftKey = false,
+                                               bool aAltKey = false, bool aMetaKey = false );
             /** @brief Handle a mouse button press event from the platform.
              *  @param aX       X coordinate in viewport pixels.
              *  @param aY       Y coordinate in viewport pixels.
@@ -111,10 +111,10 @@ namespace AeonGUI
              *  @param aAltKey   Alt key held.
              *  @param aMetaKey  Meta key held.
              */
-            DLL void HandleMouseDown ( double aX, double aY, short aButton = 0,
-                                       unsigned short aButtons = 0,
-                                       bool aCtrlKey = false, bool aShiftKey = false,
-                                       bool aAltKey = false, bool aMetaKey = false );
+            AEONGUI_DLL void HandleMouseDown ( double aX, double aY, short aButton = 0,
+                                               unsigned short aButtons = 0,
+                                               bool aCtrlKey = false, bool aShiftKey = false,
+                                               bool aAltKey = false, bool aMetaKey = false );
             /** @brief Handle a mouse button release event from the platform.
              *  @param aX       X coordinate in viewport pixels.
              *  @param aY       Y coordinate in viewport pixels.
@@ -125,10 +125,10 @@ namespace AeonGUI
              *  @param aAltKey   Alt key held.
              *  @param aMetaKey  Meta key held.
              */
-            DLL void HandleMouseUp ( double aX, double aY, short aButton = 0,
-                                     unsigned short aButtons = 0,
-                                     bool aCtrlKey = false, bool aShiftKey = false,
-                                     bool aAltKey = false, bool aMetaKey = false );
+            AEONGUI_DLL void HandleMouseUp ( double aX, double aY, short aButton = 0,
+                                             unsigned short aButtons = 0,
+                                             bool aCtrlKey = false, bool aShiftKey = false,
+                                             bool aAltKey = false, bool aMetaKey = false );
             /** @brief Handle a keyboard key down event from the platform.
              *  @param aKey      The key value string.
              *  @param aCode     The physical key code string.
@@ -139,10 +139,10 @@ namespace AeonGUI
              *  @param aAltKey   Alt key held.
              *  @param aMetaKey  Meta key held.
              */
-            DLL void HandleKeyDown ( const DOMString& aKey, const DOMString& aCode,
-                                     unsigned long aLocation = 0, bool aRepeat = false,
-                                     bool aCtrlKey = false, bool aShiftKey = false,
-                                     bool aAltKey = false, bool aMetaKey = false );
+            AEONGUI_DLL void HandleKeyDown ( const DOMString& aKey, const DOMString& aCode,
+                                             unsigned long aLocation = 0, bool aRepeat = false,
+                                             bool aCtrlKey = false, bool aShiftKey = false,
+                                             bool aAltKey = false, bool aMetaKey = false );
             /** @brief Handle a keyboard key up event from the platform.
              *  @param aKey      The key value string.
              *  @param aCode     The physical key code string.
@@ -152,10 +152,10 @@ namespace AeonGUI
              *  @param aAltKey   Alt key held.
              *  @param aMetaKey  Meta key held.
              */
-            DLL void HandleKeyUp ( const DOMString& aKey, const DOMString& aCode,
-                                   unsigned long aLocation = 0,
-                                   bool aCtrlKey = false, bool aShiftKey = false,
-                                   bool aAltKey = false, bool aMetaKey = false );
+            AEONGUI_DLL void HandleKeyUp ( const DOMString& aKey, const DOMString& aCode,
+                                           unsigned long aLocation = 0,
+                                           bool aCtrlKey = false, bool aShiftKey = false,
+                                           bool aAltKey = false, bool aMetaKey = false );
             /** @brief Handle a wheel/scroll event from the platform.
              *  @param aX       X coordinate in viewport pixels.
              *  @param aY       Y coordinate in viewport pixels.
@@ -168,12 +168,12 @@ namespace AeonGUI
              *  @param aAltKey   Alt key held.
              *  @param aMetaKey  Meta key held.
              */
-            DLL void HandleWheel ( double aX, double aY,
-                                   double aDeltaX, double aDeltaY,
-                                   unsigned long aDeltaMode = 0,
-                                   unsigned short aButtons = 0,
-                                   bool aCtrlKey = false, bool aShiftKey = false,
-                                   bool aAltKey = false, bool aMetaKey = false );
+            AEONGUI_DLL void HandleWheel ( double aX, double aY,
+                                           double aDeltaX, double aDeltaY,
+                                           unsigned long aDeltaMode = 0,
+                                           unsigned short aButtons = 0,
+                                           bool aCtrlKey = false, bool aShiftKey = false,
+                                           bool aAltKey = false, bool aMetaKey = false );
             /**@}*/
         private:
             void OnLocationChanged ( const Location& location );

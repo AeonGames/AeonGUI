@@ -31,22 +31,22 @@ namespace AeonGUI
         {
         public:
             /** @brief Default constructor. */
-            DLL SVGAnimatedString();
+            AEONGUI_DLL SVGAnimatedString();
             /** @brief Destructor. */
-            DLL ~SVGAnimatedString();
+            AEONGUI_DLL ~SVGAnimatedString();
 
             /** @brief Get the base value (mutable).
              *  @return Reference to the base DOMString. */
-            DLL DOMString& baseVal();
+            AEONGUI_DLL DOMString& baseVal();
             /** @brief Get the base value (const).
              *  @return Const reference to the base DOMString. */
-            DLL const DOMString& baseVal() const;
+            AEONGUI_DLL const DOMString& baseVal() const;
             /** @brief Get the animated value (mutable).
              *  @return Reference to the animated DOMString. */
-            DLL DOMString& animVal();
+            AEONGUI_DLL DOMString& animVal();
             /** @brief Get the animated value (const).
              *  @return Const reference to the animated DOMString. */
-            DLL const DOMString& animVal() const;
+            AEONGUI_DLL const DOMString& animVal() const;
 
         private:
             DOMString mBaseVal{};

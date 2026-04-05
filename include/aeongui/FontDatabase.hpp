@@ -44,31 +44,31 @@ namespace AeonGUI
         /** @brief Initialize the font database. Call once at startup.
          *  @throws std::runtime_error on failure.
          */
-        DLL static void Initialize();
+        AEONGUI_DLL static void Initialize();
         /// Finalize the font database. Call once at shutdown.
-        DLL static void Finalize();
+        AEONGUI_DLL static void Finalize();
         /** @brief Add a directory of font files (.ttf, .otf, etc.) to the database.
          *  @param aPath Path to the font directory.
          *  @throws std::runtime_error on failure.
          */
-        DLL static void AddFontDirectory ( const std::string& aPath );
+        AEONGUI_DLL static void AddFontDirectory ( const std::string& aPath );
         /** @brief Add a single font file to the database.
          *  @param aPath Path to the font file.
          *  @throws std::runtime_error on failure.
          */
-        DLL static void AddFontFile ( const std::string& aPath );
+        AEONGUI_DLL static void AddFontFile ( const std::string& aPath );
         /** @brief Get the FcConfig used by the font database.
          *  @return Pointer to the FcConfig.
          */
-        DLL static FcConfig* GetFcConfig();
+        AEONGUI_DLL static FcConfig* GetFcConfig();
         /** @brief Get the PangoFontMap backed by the local font database.
          *  @return Pointer to the PangoFontMap.
          */
-        DLL static PangoFontMap* GetFontMap();
+        AEONGUI_DLL static PangoFontMap* GetFontMap();
         /** @brief Create a new PangoContext from the local font map.
          *  @return Pointer to a new PangoContext.
          */
-        DLL static PangoContext* CreateContext();
+        AEONGUI_DLL static PangoContext* CreateContext();
     private:
         FontDatabase() = delete;
         static std::recursive_mutex& GetMutex();

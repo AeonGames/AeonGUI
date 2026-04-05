@@ -29,7 +29,7 @@ namespace AeonGUI
          *  (e.g. translateSelf, rotateSelf).
          *  @see https://drafts.fxtf.org/geometry/#dommatrix
          */
-        class DLL DOMMatrix : public DOMMatrixReadOnly
+        class AEONGUI_DLL DOMMatrix : public DOMMatrixReadOnly
         {
         public:
             /** @brief Construct from an initializer list.

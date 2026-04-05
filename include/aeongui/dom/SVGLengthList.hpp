@@ -29,7 +29,7 @@ namespace AeonGUI
          *  Provides indexed access and modification of SVG length items.
          *  @see https://www.w3.org/TR/SVG2/types.html#InterfaceSVGLengthList
          */
-        class DLL SVGLengthList
+        class AEONGUI_DLL SVGLengthList
         {
         public:
             /** @brief Default constructor. */

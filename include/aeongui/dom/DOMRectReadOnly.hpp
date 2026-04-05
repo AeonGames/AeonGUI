@@ -28,7 +28,7 @@ namespace AeonGUI
          *  Implements the DOM DOMRectReadOnly interface.
          *  @see https://drafts.fxtf.org/geometry/#domrectreadonly
          */
-        class DLL DOMRectReadOnly
+        class AEONGUI_DLL DOMRectReadOnly
         {
         public:
             /** @brief Construct a rectangle.

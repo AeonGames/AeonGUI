@@ -27,7 +27,7 @@ namespace AeonGUI
          *
          *  Wraps base and animated SVGNumberList values.
          */
-        class DLL SVGAnimatedNumberList
+        class AEONGUI_DLL SVGAnimatedNumberList
         {
         public:
             /** @brief Default constructor. */

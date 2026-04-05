@@ -53,9 +53,9 @@ namespace AeonGUI
             /** @brief Animation elements are never drawn directly.
              *  @return Always false.
              */
-            DLL bool IsDrawEnabled() const override final;
+            AEONGUI_DLL bool IsDrawEnabled() const override final;
             /** @copydoc Node::Update */
-            DLL void Update ( double aDocumentTime ) override;
+            AEONGUI_DLL void Update ( double aDocumentTime ) override;
             /** @brief Apply this animation's effect to the canvas.
              *  @param aCanvas The target canvas.
              */

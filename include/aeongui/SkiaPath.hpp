@@ -44,7 +44,7 @@ namespace AeonGUI
          *  @return Const reference to the internal @c SkPath.
          */
         const SkPath& GetSkPath() const;
-        DLL double GetTotalLength() const final;
+        AEONGUI_DLL double GetTotalLength() const final;
         PathPoint GetPointAtLength ( double aDistance ) const final;
         bool IsClosed() const final;
     private:

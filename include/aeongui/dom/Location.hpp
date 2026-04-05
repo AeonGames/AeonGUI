@@ -33,61 +33,61 @@ namespace AeonGUI
         {
         public:
             /** @brief Default constructor. URL is "about:blank". */
-            DLL Location();
+            AEONGUI_DLL Location();
             /** @brief Construct with a change callback.
              *  @param callback Called whenever the location changes.
              */
-            DLL Location ( std::function<void ( const Location& ) > callback );
+            AEONGUI_DLL Location ( std::function<void ( const Location& ) > callback );
             /** @brief Destructor. */
-            DLL ~Location();
+            AEONGUI_DLL ~Location();
             /**DOM Properties and Methods @{*/
             /** @brief Navigate to the given URL.
              *  @param url The URL to navigate to.
              */
-            DLL void assign ( const USVString& url );
+            AEONGUI_DLL void assign ( const USVString& url );
             /** @brief Replace the current URL without creating a history entry.
              *  @param url The URL to navigate to.
              */
-            DLL void replace ( const USVString& url );
+            AEONGUI_DLL void replace ( const USVString& url );
             /** @brief Assign a URL using the = operator.
              *  @param url The URL to navigate to.
              *  @return Reference to this Location.
              */
-            DLL Location& operator= ( const USVString& url );
+            AEONGUI_DLL Location& operator= ( const USVString& url );
             /** @brief Reload the current document. */
-            DLL void reload();
+            AEONGUI_DLL void reload();
             /** @brief Get the full URL.
              *  @return The href string. */
-            DLL const USVString& href() const;
+            AEONGUI_DLL const USVString& href() const;
             /** @brief Get the origin portion of the URL.
              *  @return The origin string. */
-            DLL const USVString& origin() const;
+            AEONGUI_DLL const USVString& origin() const;
             /** @brief Get the protocol (e.g. "https:").
              *  @return The protocol string. */
-            DLL const USVString& protocol() const;
+            AEONGUI_DLL const USVString& protocol() const;
             /** @brief Get the host (hostname:port).
              *  @return The host string. */
-            DLL const USVString& host() const;
+            AEONGUI_DLL const USVString& host() const;
             /** @brief Get the hostname.
              *  @return The hostname string. */
-            DLL const USVString& hostname() const;
+            AEONGUI_DLL const USVString& hostname() const;
             /** @brief Get the port number.
              *  @return The port string. */
-            DLL const USVString& port() const;
+            AEONGUI_DLL const USVString& port() const;
             /** @brief Get the pathname.
              *  @return The pathname string. */
-            DLL const USVString& pathname() const;
+            AEONGUI_DLL const USVString& pathname() const;
             /** @brief Get the query string (including leading '?').
              *  @return The search string. */
-            DLL const USVString& search() const;
+            AEONGUI_DLL const USVString& search() const;
             /** @brief Get the fragment (including leading '#').
              *  @return The hash string. */
-            DLL const USVString& hash() const;
+            AEONGUI_DLL const USVString& hash() const;
             /**@}*/
             /** @brief Set or replace the change callback.
              *  @param callback The new callback function.
              */
-            DLL void SetCallback ( std::function<void ( const Location& ) > callback );
+            AEONGUI_DLL void SetCallback ( std::function<void ( const Location& ) > callback );
         private:
             USVString m_href{"about:blank"};
             USVString m_origin{"about:blank"};

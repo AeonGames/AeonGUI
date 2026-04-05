@@ -32,49 +32,49 @@ namespace AeonGUI
     {
     public:
         /** @brief Default constructor. Identity transform. */
-        DLL Transform();
+        AEONGUI_DLL Transform();
         /** @brief Construct from scale, rotation, and translation.
          *  @param aScale       Scale factors per axis.
          *  @param aRotation    Rotation angle in radians.
          *  @param aTranslation Translation vector.
          */
-        DLL Transform ( const Vector2& aScale, float aRotation, const Vector2 aTranslation );
+        AEONGUI_DLL Transform ( const Vector2& aScale, float aRotation, const Vector2 aTranslation );
         /** @brief Get the scale component.
          *  @return Const reference to the scale vector.
          */
-        DLL const Vector2& GetScale() const;
+        AEONGUI_DLL const Vector2& GetScale() const;
         /** @brief Get the rotation angle.
          *  @return Rotation in radians.
          */
-        DLL float GetRotation() const;
+        AEONGUI_DLL float GetRotation() const;
         /** @brief Get the translation component.
          *  @return Const reference to the translation vector.
          */
-        DLL const Vector2& GetTranslation() const;
+        AEONGUI_DLL const Vector2& GetTranslation() const;
         /** @brief Build the equivalent 2x3 transformation matrix.
          *  @return The composed Matrix2x3.
          */
-        DLL Matrix2x3 GetMatrix() const;
+        AEONGUI_DLL Matrix2x3 GetMatrix() const;
 
         /** @brief Set the scale component.
          *  @param aScale The new scale vector.
          */
-        DLL void SetScale ( const Vector2& aScale );
+        AEONGUI_DLL void SetScale ( const Vector2& aScale );
         /** @brief Set the rotation angle.
          *  @param aRotation The new rotation in radians.
          */
-        DLL void SetRotation ( float aRotation );
+        AEONGUI_DLL void SetRotation ( float aRotation );
         /** @brief Set the translation component.
          *  @param aTranslation The new translation vector.
          */
-        DLL void SetTranslation ( const Vector2& );
+        AEONGUI_DLL void SetTranslation ( const Vector2& );
         /*! \name Operators */
         //@{
         /** @brief Combine this transform with another (post-multiply).
          *  @param aTransform The right-hand-side transform.
          *  @return Reference to this transform.
          */
-        DLL Transform& operator*= ( const Transform& aTransform );
+        AEONGUI_DLL Transform& operator*= ( const Transform& aTransform );
         //@}
     private:
         Vector2 mScale{1.0f, 1.0f};
@@ -85,10 +85,10 @@ namespace AeonGUI
     /** @brief Combine two transforms.
      *  @return The composed transform.
      */
-    DLL const Transform operator* ( const Transform& aLeft, const Transform& aRight );
+    AEONGUI_DLL const Transform operator* ( const Transform& aLeft, const Transform& aRight );
     /** @brief Transform an AABB.
      *  @return The transformed bounding box.
      */
-    DLL const AABB operator* ( const Transform& aLeft, const AABB& aRight );
+    AEONGUI_DLL const AABB operator* ( const Transform& aLeft, const AABB& aRight );
 }
 #endif

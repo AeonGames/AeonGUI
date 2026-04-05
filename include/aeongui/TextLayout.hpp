@@ -35,7 +35,7 @@ namespace AeonGUI
     {
     public:
         /** @brief Virtual destructor. */
-        DLL virtual ~TextLayout() = 0;
+        AEONGUI_DLL virtual ~TextLayout() = 0;
         /** @brief Set the text content to lay out.
          *  @param aText UTF-8 text string.
          */

@@ -29,29 +29,29 @@ namespace AeonGUI
             \param aWidth Rectangle Width.
             \param aHeight Rectangle Height.
         */
-        DLL Rect ( int32_t aX = 0, int32_t aY = 0, uint32_t aWidth = 0, uint32_t aHeight = 0 );
+        AEONGUI_DLL Rect ( int32_t aX = 0, int32_t aY = 0, uint32_t aWidth = 0, uint32_t aHeight = 0 );
 
         /*! \name Getters */
         //@{
         /*! \brief Get X coordinate.
             \return Value of the rect's X coordinate.
         */
-        DLL int32_t GetX() const;
+        AEONGUI_DLL int32_t GetX() const;
 
         /*! \brief Get X coordinate.
             \return Value of the rect's X coordinate.
         */
-        DLL int32_t GetY() const;
+        AEONGUI_DLL int32_t GetY() const;
 
         /** @brief Get Width.
          *  @return The width of the rect.
          */
-        DLL uint32_t GetWidth() const;
+        AEONGUI_DLL uint32_t GetWidth() const;
 
         /** @brief Get Height.
          *  @return The height of the rect.
          */
-        DLL uint32_t GetHeight() const;
+        AEONGUI_DLL uint32_t GetHeight() const;
 
         /*! \brief Get rect position.
             \param x [out] Reference to a variable to hold the X coordinate.
@@ -72,22 +72,22 @@ namespace AeonGUI
         /*! \brief Set X coordinate.
             \param X Value to set the X coordinate of the rect to.
         */
-        DLL void SetX ( int32_t X );
+        AEONGUI_DLL void SetX ( int32_t X );
 
         /*! \brief Set Y coordinate.
             \param Y Value to set the Y coordinate of the rect to.
         */
-        DLL void SetY ( int32_t Y );
+        AEONGUI_DLL void SetY ( int32_t Y );
 
         /** @brief Set Width.
          *  @param width The new width.
          */
-        DLL void SetWidth ( uint32_t width );
+        AEONGUI_DLL void SetWidth ( uint32_t width );
 
         /** @brief Set Height.
          *  @param height The new height.
          */
-        DLL void SetHeight ( uint32_t height );
+        AEONGUI_DLL void SetHeight ( uint32_t height );
 
         //void Set ( int32_t X1, int32_t Y1, int32_t X2, int32_t Y2 );
 

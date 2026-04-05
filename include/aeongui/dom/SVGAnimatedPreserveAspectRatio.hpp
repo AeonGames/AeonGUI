@@ -27,7 +27,7 @@ namespace AeonGUI
          *
          *  Wraps base and animated PreserveAspectRatio values.
          */
-        class DLL SVGAnimatedPreserveAspectRatio
+        class AEONGUI_DLL SVGAnimatedPreserveAspectRatio
         {
         public:
             /** @brief Default constructor. */

@@ -44,11 +44,11 @@ namespace AeonGUI
              *  @param type The event type name (e.g., "focus", "blur", "focusin", "focusout").
              *  @param eventInitDict Optional initialization dictionary.
              */
-            DLL FocusEvent ( const DOMString& type, const FocusEventInit& eventInitDict = {} );
+            AEONGUI_DLL FocusEvent ( const DOMString& type, const FocusEventInit& eventInitDict = {} );
 
             /** @brief Get the related target.
              *  @return Pointer to the related EventTarget, or nullptr. */
-            DLL EventTarget* relatedTarget() const;
+            AEONGUI_DLL EventTarget* relatedTarget() const;
 
         private:
             EventTarget* m_relatedTarget{nullptr};

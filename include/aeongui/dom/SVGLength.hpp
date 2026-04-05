@@ -44,7 +44,7 @@ namespace AeonGUI
          *  Stores a numeric value and its associated unit type.
          *  @see https://www.w3.org/TR/SVG2/types.html#InterfaceSVGLength
          */
-        class DLL SVGLength
+        class AEONGUI_DLL SVGLength
         {
         public:
             /** @brief Default constructor. */

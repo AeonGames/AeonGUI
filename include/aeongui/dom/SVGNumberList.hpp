@@ -28,7 +28,7 @@ namespace AeonGUI
          *  Provides indexed access and modification of numeric items.
          *  @see https://www.w3.org/TR/SVG2/types.html#InterfaceSVGNumberList
          */
-        class DLL SVGNumberList
+        class AEONGUI_DLL SVGNumberList
         {
         public:
             /** @brief Default constructor. */

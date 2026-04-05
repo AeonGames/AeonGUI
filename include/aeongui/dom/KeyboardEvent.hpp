@@ -52,39 +52,39 @@ namespace AeonGUI
              *  @param type The event type name (e.g., "keydown", "keyup").
              *  @param eventInitDict Optional initialization dictionary.
              */
-            DLL KeyboardEvent ( const DOMString& type, const KeyboardEventInit& eventInitDict = {} );
+            AEONGUI_DLL KeyboardEvent ( const DOMString& type, const KeyboardEventInit& eventInitDict = {} );
 
             /** @brief Get the key value.
              *  @return The key value string. */
-            DLL const DOMString& key() const;
+            AEONGUI_DLL const DOMString& key() const;
             /** @brief Get the physical key code.
              *  @return The code value string. */
-            DLL const DOMString& code() const;
+            AEONGUI_DLL const DOMString& code() const;
             /** @brief Get the key location.
              *  @return One of the DOM_KEY_LOCATION constants. */
-            DLL unsigned long location() const;
+            AEONGUI_DLL unsigned long location() const;
             /** @brief Check if Control modifier was active.
              *  @return true if active. */
-            DLL bool ctrlKey() const;
+            AEONGUI_DLL bool ctrlKey() const;
             /** @brief Check if Shift modifier was active.
              *  @return true if active. */
-            DLL bool shiftKey() const;
+            AEONGUI_DLL bool shiftKey() const;
             /** @brief Check if Alt modifier was active.
              *  @return true if active. */
-            DLL bool altKey() const;
+            AEONGUI_DLL bool altKey() const;
             /** @brief Check if Meta modifier was active.
              *  @return true if active. */
-            DLL bool metaKey() const;
+            AEONGUI_DLL bool metaKey() const;
             /** @brief Check if the key is repeating.
              *  @return true if repeating. */
-            DLL bool repeat() const;
+            AEONGUI_DLL bool repeat() const;
             /** @brief Check if part of a composition session.
              *  @return true if composing. */
-            DLL bool isComposing() const;
+            AEONGUI_DLL bool isComposing() const;
             /** @brief Query the state of a modifier key.
              *  @param keyArg The modifier key name (e.g., "Control", "Shift", "CapsLock").
              *  @return true if the modifier is active. */
-            DLL bool getModifierState ( const DOMString& keyArg ) const;
+            AEONGUI_DLL bool getModifierState ( const DOMString& keyArg ) const;
 
         private:
             DOMString m_key;

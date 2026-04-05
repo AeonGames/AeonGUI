@@ -277,11 +277,19 @@ if(USE_JPEG AND JPEG_FOUND)
   target_link_libraries(AeonGUI PRIVATE JPEG::JPEG)
 endif()
 
+# Build angle-bracket include list for PUBLIC precompiled headers.
+# Using angle-bracket includes instead of file paths ensures the exported
+# cmake config does not contain absolute build-tree paths (fixes vcpkg).
+set(AEONGUI_PCH_PUBLIC_HEADERS "")
+foreach(_hdr IN LISTS AEONGUI_HEADERS AEONGUI_DOM_HEADERS)
+    string(REGEX REPLACE "^\\.\\./include/" "" _rel "${_hdr}")
+    list(APPEND AEONGUI_PCH_PUBLIC_HEADERS "<${_rel}>")
+endforeach()
+
 if(AEONGUI_BACKEND STREQUAL "Cairo")
     target_precompile_headers(AeonGUI
       PUBLIC
-        ${AEONGUI_HEADERS}
-        ${AEONGUI_DOM_HEADERS}
+        ${AEONGUI_PCH_PUBLIC_HEADERS}
       PRIVATE
         <cairo.h>
         <string>
@@ -300,8 +308,7 @@ if(AEONGUI_BACKEND STREQUAL "Cairo")
 elseif(AEONGUI_BACKEND STREQUAL "Skia")
     target_precompile_headers(AeonGUI
       PUBLIC
-        ${AEONGUI_HEADERS}
-        ${AEONGUI_DOM_HEADERS}
+        ${AEONGUI_PCH_PUBLIC_HEADERS}
       PRIVATE
         <include/core/SkCanvas.h>
         <string>

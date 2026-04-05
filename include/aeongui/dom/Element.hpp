@@ -50,9 +50,9 @@ namespace AeonGUI
              *  @param aAttributes   The element's attribute map.
              *  @param aParent       The parent node.
              */
-            DLL Element ( const DOMString& aTagName, AttributeMap&& aAttributes, Node* aParent );
+            AEONGUI_DLL Element ( const DOMString& aTagName, AttributeMap&& aAttributes, Node* aParent );
             /** @brief Virtual destructor. */
-            DLL virtual ~Element();
+            AEONGUI_DLL virtual ~Element();
             /**DOM Properties and Methods @{*/
             /** @brief Get the node type (always ELEMENT_NODE).
              *  @return NodeType::ELEMENT_NODE. */
@@ -60,11 +60,11 @@ namespace AeonGUI
             /** @brief Get the tag name.
              *  @return The element's tag name.
              */
-            DLL const DOMString& tagName() const;
+            AEONGUI_DLL const DOMString& tagName() const;
             /** @brief Get the element's ID attribute value.
              *  @return The ID string.
              */
-            DLL const DOMString& id() const;
+            AEONGUI_DLL const DOMString& id() const;
             /** @brief Get the element's CSS class list.
              *  @return Vector of interned lwc_string class names.
              */
@@ -72,29 +72,29 @@ namespace AeonGUI
             /** @brief Get the element's attribute map.
              *  @return Const reference to the AttributeMap.
              */
-            DLL const AttributeMap& attributes() const;
+            AEONGUI_DLL const AttributeMap& attributes() const;
             /** @brief Get the value of a named attribute.
              *  @param aName Attribute name.
              *  @return Pointer to the value string, or nullptr if not found.
              */
-            DLL const DOMString* getAttribute ( const DOMString& aName ) const;
+            AEONGUI_DLL const DOMString* getAttribute ( const DOMString& aName ) const;
             /** @brief Set (or add) a named attribute.
              *  @param aName  Attribute name.
              *  @param aValue New value.
              */
-            DLL void setAttribute ( const DOMString& aName, const DOMString& aValue );
+            AEONGUI_DLL void setAttribute ( const DOMString& aName, const DOMString& aValue );
             /** @brief Check the :hover pseudo-class state.
              *  @return true if this element is hovered.
              */
-            DLL bool isHover() const;
+            AEONGUI_DLL bool isHover() const;
             /** @brief Check the :active pseudo-class state.
              *  @return true if this element is active (mouse held down).
              */
-            DLL bool isActive() const;
+            AEONGUI_DLL bool isActive() const;
             /** @brief Check the :focus pseudo-class state.
              *  @return true if this element has focus.
              */
-            DLL bool isFocus() const;
+            AEONGUI_DLL bool isFocus() const;
             /** @brief Set the :hover pseudo-class state.
              *  @param aHover true if the element is hovered. */
             void setHover ( bool aHover );
@@ -107,13 +107,13 @@ namespace AeonGUI
             /** @brief Re-run CSS selection and compose with parent styles.
              *  @param aDocumentStyleSheet Optional document-level stylesheet.
              *  If provided, it is stored for future re-selections. */
-            DLL void ReselectCSS ( css_stylesheet* aDocumentStyleSheet = nullptr );
+            AEONGUI_DLL void ReselectCSS ( css_stylesheet* aDocumentStyleSheet = nullptr );
             /**@}*/
         private:
             DOMString mTagName{};
             DOMString mId{};
             std::vector<lwc_string*> mClasses{};
-            DLL void OnAncestorChanged() override;
+            AEONGUI_DLL void OnAncestorChanged() override;
             bool mIsHover{false};     ///< :hover pseudo-class state.
             bool mIsActive{false};    ///< :active pseudo-class state.
             bool mIsFocus{false};     ///< :focus pseudo-class state.
@@ -148,7 +148,7 @@ namespace AeonGUI
              *  @param aWidth  Viewport width in pixels.
              *  @param aHeight Viewport height in pixels.
              */
-            DLL static void UpdateCSSViewport ( uint32_t aWidth, uint32_t aHeight );
+            AEONGUI_DLL static void UpdateCSSViewport ( uint32_t aWidth, uint32_t aHeight );
         };
     }
 }

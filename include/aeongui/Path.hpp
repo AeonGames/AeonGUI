@@ -64,7 +64,7 @@ namespace AeonGUI
          */
         virtual bool IsClosed() const = 0;
         /** @brief Virtual destructor. */
-        DLL virtual ~Path() = 0;
+        AEONGUI_DLL virtual ~Path() = 0;
     };
 }
 #endif

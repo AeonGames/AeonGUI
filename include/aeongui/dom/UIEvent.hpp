@@ -44,13 +44,13 @@ namespace AeonGUI
              *  @param type The event type name.
              *  @param eventInitDict Optional initialization dictionary.
              */
-            DLL UIEvent ( const DOMString& type, const UIEventInit& eventInitDict = {} );
+            AEONGUI_DLL UIEvent ( const DOMString& type, const UIEventInit& eventInitDict = {} );
             /** @brief Get the Window associated with this event.
              *  @return Pointer to the Window, or nullptr. */
-            DLL Window* view() const;
+            AEONGUI_DLL Window* view() const;
             /** @brief Get the detail value.
              *  @return Application-specific detail. */
-            DLL long detail() const;
+            AEONGUI_DLL long detail() const;
         private:
             Window* m_view{nullptr};
             long m_detail{0};

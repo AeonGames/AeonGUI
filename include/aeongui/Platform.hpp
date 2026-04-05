@@ -19,15 +19,15 @@ limitations under the License.
  */
 #ifndef AEONGUI_PLATFORM_H
 #define AEONGUI_PLATFORM_H
-#ifndef DLL
+#ifndef AEONGUI_DLL
 #ifdef WIN32
 #ifdef AeonGUI_EXPORTS
-#define DLL __declspec( dllexport )
+#define AEONGUI_DLL __declspec( dllexport )
 #else
-#define DLL __declspec( dllimport )
+#define AEONGUI_DLL __declspec( dllimport )
 #endif
 #else
-#define DLL
+#define AEONGUI_DLL
 #endif
 #endif
 #endif

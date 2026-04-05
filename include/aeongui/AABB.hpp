@@ -27,36 +27,36 @@ namespace AeonGUI
     {
     public:
         /** @brief Default constructor. Initializes center and radii to zero. */
-        DLL AABB();
+        AEONGUI_DLL AABB();
         /** @brief Construct an AABB from a center point and radii.
          *  @param aCenter The center of the bounding box.
          *  @param aRadii  The half-extents (radii) along each axis.
          */
-        DLL AABB ( const Vector2& aCenter, const Vector2& aRadii );
+        AEONGUI_DLL AABB ( const Vector2& aCenter, const Vector2& aRadii );
         /** @brief Get the center of the bounding box.
          *  @return Reference to the center vector.
          */
-        DLL const Vector2& GetCenter() const;
+        AEONGUI_DLL const Vector2& GetCenter() const;
         /** @brief Get the radii (half-extents) of the bounding box.
          *  @return Reference to the radii vector.
          */
-        DLL const Vector2& GetRadii() const;
+        AEONGUI_DLL const Vector2& GetRadii() const;
         /** @brief Get the X coordinate of the top-left corner.
          *  @return X position (center.x - radii.x).
          */
-        DLL double GetX() const;
+        AEONGUI_DLL double GetX() const;
         /** @brief Get the Y coordinate of the top-left corner.
          *  @return Y position (center.y - radii.y).
          */
-        DLL double GetY() const;
+        AEONGUI_DLL double GetY() const;
         /** @brief Get the width of the bounding box.
          *  @return Width (2 * radii.x).
          */
-        DLL double GetWidth() const;
+        AEONGUI_DLL double GetWidth() const;
         /** @brief Get the height of the bounding box.
          *  @return Height (2 * radii.y).
          */
-        DLL double GetHeight() const;
+        AEONGUI_DLL double GetHeight() const;
     private:
         Vector2 mCenter{};
         Vector2 mRadii{};

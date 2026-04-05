@@ -40,7 +40,7 @@ namespace AeonGUI
      *  Controls how an SVG element with a viewBox is scaled and aligned
      *  within its viewport. See the SVG specification for details.
      */
-    class DLL PreserveAspectRatio
+    class AEONGUI_DLL PreserveAspectRatio
     {
     public:
         /** @brief Default constructor. Initializes to xMidYMid meet. */

@@ -26,7 +26,7 @@ namespace AeonGUI
          *
          *  Wraps base and animated SVGLength values for SVG length attributes.
          */
-        class DLL SVGAnimatedLength
+        class AEONGUI_DLL SVGAnimatedLength
         {
         public:
             /** @brief Default constructor. */

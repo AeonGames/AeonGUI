@@ -48,7 +48,7 @@ namespace AeonGUI
          *  @return Pointer to the cairo_path_t.
          */
         const cairo_path_t* GetCairoPath() const;
-        DLL double GetTotalLength() const final;
+        AEONGUI_DLL double GetTotalLength() const final;
         PathPoint GetPointAtLength ( double aDistance ) const final;
         bool IsClosed() const final;
     private:

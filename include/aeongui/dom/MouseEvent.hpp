@@ -51,45 +51,45 @@ namespace AeonGUI
              *  @param type The event type name (e.g., "click", "mousedown", "mouseup", "mousemove").
              *  @param eventInitDict Optional initialization dictionary.
              */
-            DLL MouseEvent ( const DOMString& type, const MouseEventInit& eventInitDict = {} );
+            AEONGUI_DLL MouseEvent ( const DOMString& type, const MouseEventInit& eventInitDict = {} );
 
             /** @brief Horizontal coordinate relative to screen origin, as a double.
              *  @return Screen X coordinate. */
-            DLL double screenX() const;
+            AEONGUI_DLL double screenX() const;
             /** @brief Vertical coordinate relative to screen origin, as a double.
              *  @return Screen Y coordinate. */
-            DLL double screenY() const;
+            AEONGUI_DLL double screenY() const;
             /** @brief Horizontal coordinate relative to viewport, as a double.
              *  @return Client X coordinate. */
-            DLL double clientX() const;
+            AEONGUI_DLL double clientX() const;
             /** @brief Vertical coordinate relative to viewport, as a double.
              *  @return Client Y coordinate. */
-            DLL double clientY() const;
+            AEONGUI_DLL double clientY() const;
             /** @brief Check if Control modifier was active.
              *  @return true if active. */
-            DLL bool ctrlKey() const;
+            AEONGUI_DLL bool ctrlKey() const;
             /** @brief Check if Shift modifier was active.
              *  @return true if active. */
-            DLL bool shiftKey() const;
+            AEONGUI_DLL bool shiftKey() const;
             /** @brief Check if Alt modifier was active.
              *  @return true if active. */
-            DLL bool altKey() const;
+            AEONGUI_DLL bool altKey() const;
             /** @brief Check if Meta modifier was active.
              *  @return true if active. */
-            DLL bool metaKey() const;
+            AEONGUI_DLL bool metaKey() const;
             /** @brief Get the button number that changed state.
              *  @return The button number (0=primary, 1=auxiliary, 2=secondary). */
-            DLL short button() const;
+            AEONGUI_DLL short button() const;
             /** @brief Get the bitmask of currently pressed buttons.
              *  @return The buttons bitmask. */
-            DLL unsigned short buttons() const;
+            AEONGUI_DLL unsigned short buttons() const;
             /** @brief Get the related target.
              *  @return Pointer to the related EventTarget, or nullptr. */
-            DLL EventTarget* relatedTarget() const;
+            AEONGUI_DLL EventTarget* relatedTarget() const;
             /** @brief Query the state of a modifier key.
              *  @param keyArg The modifier key name (e.g., "Control", "Shift").
              *  @return true if the modifier is active. */
-            DLL bool getModifierState ( const DOMString& keyArg ) const;
+            AEONGUI_DLL bool getModifierState ( const DOMString& keyArg ) const;
 
         protected:
             double m_screenX{0.0}; ///< Horizontal coordinate in screen space.

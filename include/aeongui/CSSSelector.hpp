@@ -86,16 +86,16 @@ namespace AeonGUI
     };
 
     /// Parse a CSS selector string into a list of complex selectors (comma-separated).
-    DLL std::vector<ComplexSelector> ParseSelector ( const std::string& aSelector );
+    AEONGUI_DLL std::vector<ComplexSelector> ParseSelector ( const std::string& aSelector );
 
     /// Check whether an Element matches a compound selector.
-    DLL bool MatchesCompound ( const DOM::Element& aElement, const CompoundSelector& aCompound );
+    AEONGUI_DLL bool MatchesCompound ( const DOM::Element& aElement, const CompoundSelector& aCompound );
 
     /// Check whether an Element matches a complex selector (full chain with combinators).
-    DLL bool MatchesSelector ( const DOM::Element& aElement, const ComplexSelector& aSelector );
+    AEONGUI_DLL bool MatchesSelector ( const DOM::Element& aElement, const ComplexSelector& aSelector );
 
     /// Check whether an Element matches any of the parsed selectors (comma-separated list).
-    DLL bool MatchesAny ( const DOM::Element& aElement, const std::vector<ComplexSelector>& aSelectors );
+    AEONGUI_DLL bool MatchesAny ( const DOM::Element& aElement, const std::vector<ComplexSelector>& aSelectors );
 }
 
 #endif

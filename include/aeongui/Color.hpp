@@ -188,53 +188,53 @@ namespace AeonGUI
          *  @param color_value Optional output for the parsed color.
          *  @return true if the string is a valid color.
          */
-        DLL static bool IsColor ( const std::string& value, uint32_t* color_value = nullptr );
+        AEONGUI_DLL static bool IsColor ( const std::string& value, uint32_t* color_value = nullptr );
         /** @brief Regex used to parse CSS color strings. */
-        DLL static const std::regex ColorRegex;
-        DLL Color();
+        AEONGUI_DLL static const std::regex ColorRegex;
+        AEONGUI_DLL Color();
         /*! \brief 32 bit Unsigned integer constructor.
             \param value 32 bit color value.
         */
-        DLL explicit Color ( uint32_t value );
+        AEONGUI_DLL explicit Color ( uint32_t value );
 
         /** @brief Construct a Color from a CSS color string.
          *  @param value A CSS color string (e.g. "#FF0000" or "red").
          */
-        DLL Color ( const std::string& value );
+        AEONGUI_DLL Color ( const std::string& value );
         /*! \brief 4 8 bit Unsigned integer component constructor.
             \param A Alpha color value.
             \param R Red color value.
             \param G Green color value.
             \param B Blue color value.
         */
-        DLL Color ( uint8_t A, uint8_t R, uint8_t G, uint8_t B );
+        AEONGUI_DLL Color ( uint8_t A, uint8_t R, uint8_t G, uint8_t B );
 
         /*! \brief Blends the color with the incoming source color.
             To better handle transparency the blend function uses the source alpha as source factor
             and one minus source alpha as destination factor.
             \param src Incomming source color.*/
-        DLL void Blend ( Color src );
+        AEONGUI_DLL void Blend ( Color src );
 
         /** @brief Get red component as a double in [0.0, 1.0].
          *  @return The red component.
          */
-        DLL double R() const;
+        AEONGUI_DLL double R() const;
         /** @brief Get green component as a double in [0.0, 1.0].
          *  @return The green component.
          */
-        DLL double G() const;
+        AEONGUI_DLL double G() const;
         /** @brief Get blue component as a double in [0.0, 1.0].
          *  @return The blue component.
          */
-        DLL double B() const;
+        AEONGUI_DLL double B() const;
         /** @brief Get alpha component as a double in [0.0, 1.0].
          *  @return The alpha component.
          */
-        DLL double A() const;
+        AEONGUI_DLL double A() const;
         /** @brief Convert the color to a CSS-style string representation.
          *  @return A string such as "rgba(255,0,0,1)".
          */
-        DLL std::string ToString() const;
+        AEONGUI_DLL std::string ToString() const;
         uint32_t bgra; ///< 32 bit Unsigned integer color value.
         struct
         {

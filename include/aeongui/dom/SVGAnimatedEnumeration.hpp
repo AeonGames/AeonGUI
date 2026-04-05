@@ -27,7 +27,7 @@ namespace AeonGUI
          *
          *  Wraps a base and animated integer value for SVG enumeration attributes.
          */
-        class DLL SVGAnimatedEnumeration
+        class AEONGUI_DLL SVGAnimatedEnumeration
         {
         public:
             /** @brief Default constructor. */

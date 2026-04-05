@@ -28,7 +28,7 @@ namespace AeonGUI
          *  Extends DOMPointReadOnly with setters for x, y, z, and w.
          *  @see https://drafts.fxtf.org/geometry/#dompoint
          */
-        class DLL DOMPoint : public DOMPointReadOnly
+        class AEONGUI_DLL DOMPoint : public DOMPointReadOnly
         {
         public:
             /** @brief Construct a point.

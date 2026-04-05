@@ -24,10 +24,10 @@ namespace AeonGUI
         \throws std::runtime_error if initialization fails.
         \sa Finalize
     */
-    DLL void Initialize ( int argc, char *argv[] );
+    AEONGUI_DLL void Initialize ( int argc, char *argv[] );
     /*! \brief Finalizes any global resources allocated by Initialize.
         \sa Initialize
     */
-    DLL void Finalize();
+    AEONGUI_DLL void Finalize();
 }
 #endif

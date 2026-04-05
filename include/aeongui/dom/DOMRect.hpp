@@ -28,7 +28,7 @@ namespace AeonGUI
          *  Extends DOMRectReadOnly with setters for all components.
          *  @see https://drafts.fxtf.org/geometry/#domrect
          */
-        class DLL DOMRect : public DOMRectReadOnly
+        class AEONGUI_DLL DOMRect : public DOMRectReadOnly
         {
         public:
             /** @brief Construct a rectangle.

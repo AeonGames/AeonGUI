@@ -29,7 +29,7 @@ namespace AeonGUI
          *  Implements the DOM DOMPointReadOnly interface.
          *  @see https://drafts.fxtf.org/geometry/#dompointreadonly
          */
-        class DLL DOMPointReadOnly
+        class AEONGUI_DLL DOMPointReadOnly
         {
         public:
             /** @brief Construct a point.

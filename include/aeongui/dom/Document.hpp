@@ -40,17 +40,17 @@ namespace AeonGUI
         {
         public:
             /** @brief Default constructor. Creates an empty document. */
-            DLL Document();
+            AEONGUI_DLL Document();
             /** @brief Load a document from a file.
              *  @param aFilename Path or URL of the SVG/XML file to load.
              */
-            DLL void Load ( const USVString& aFilename );
+            AEONGUI_DLL void Load ( const USVString& aFilename );
             /** @brief Destructor. Unloads the document. */
-            DLL ~Document();
+            AEONGUI_DLL ~Document();
             /** @brief Draw the document onto a canvas.
              *  @param aCanvas The rendering surface.
              */
-            DLL void Draw ( Canvas& aCanvas ) const;
+            AEONGUI_DLL void Draw ( Canvas& aCanvas ) const;
             /** @brief Draw the document onto a canvas with a per-node callback.
              *
              *  The callback is invoked for each node before DrawStart,
@@ -59,29 +59,29 @@ namespace AeonGUI
              *  @param aCanvas  The rendering surface.
              *  @param aPreDraw Callback invoked for each node before DrawStart.
              */
-            DLL void Draw ( Canvas& aCanvas, const std::function<void ( const Node& ) >& aPreDraw ) const;
+            AEONGUI_DLL void Draw ( Canvas& aCanvas, const std::function<void ( const Node& ) >& aPreDraw ) const;
             /** @brief Advance animation time and update all animations.
              *  @param aDeltaTime Time elapsed since last update, in seconds.
              */
-            DLL void AdvanceTime ( double aDeltaTime );
+            AEONGUI_DLL void AdvanceTime ( double aDeltaTime );
             /** @brief Get the document URL.
              *  @return The URL from which the document was loaded.
              */
-            DLL const USVString& url() const;
+            AEONGUI_DLL const USVString& url() const;
             /**DOM Properties and Methods @{*/
             /** @brief Get the node type (always DOCUMENT_NODE).
              *  @return NodeType::DOCUMENT_NODE. */
-            DLL NodeType nodeType() const final;
+            AEONGUI_DLL NodeType nodeType() const final;
             /** @brief Find an element by its ID attribute.
              *  @param aElementId The ID to search for.
              *  @return Pointer to the matching Element, or nullptr.
              *  @see https://dom.spec.whatwg.org/#dom-document-getelementbyid
              */
-            DLL Element* getElementById ( const DOMString& aElementId ) const;
+            AEONGUI_DLL Element* getElementById ( const DOMString& aElementId ) const;
             /** @brief Get the document-level CSS stylesheet.
              *  @return Raw pointer to the stylesheet, or nullptr.
              */
-            DLL css_stylesheet* GetStyleSheet() const;
+            AEONGUI_DLL css_stylesheet* GetStyleSheet() const;
             /** @brief Mark the entire document as needing a full redraw.
              *
              *  Used for global changes like viewport resize or document load.

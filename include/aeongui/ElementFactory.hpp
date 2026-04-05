@@ -35,40 +35,40 @@ namespace AeonGUI
      *  @param aParent The parent node.
      *  @return A unique_ptr to the newly created Element, or nullptr on failure.
      */
-    DLL std::unique_ptr<DOM::Element> Construct ( const char* aIdentifier, AttributeMap&& aAttributeMap, DOM::Node* aParent );
+    AEONGUI_DLL std::unique_ptr<DOM::Element> Construct ( const char* aIdentifier, AttributeMap&& aAttributeMap, DOM::Node* aParent );
     /** @brief Destroy a DOM Element by tag name.
      *  @param aIdentifier The element tag name.
      *  @param aElement The element to destroy.
      */
-    DLL void Destroy ( const char* aIdentifier, DOM::Element* aElement );
+    AEONGUI_DLL void Destroy ( const char* aIdentifier, DOM::Element* aElement );
     /** @brief Register a constructor/destructor pair for a given element tag.
      *  @param aIdentifier The element tag name.
      *  @param aConstructor Factory function that creates the element.
      *  @param aDestructor  Cleanup function called when the element is destroyed.
      *  @return true if registration succeeded.
      */
-    DLL bool RegisterConstructor ( const StringLiteral& aIdentifier,
-                                   const std::function < std::unique_ptr<DOM::Element> ( AttributeMap&&, DOM::Node* ) > & aConstructor,
-                                   const std::function < void ( DOM::Element* ) > & aDestructor );
+    AEONGUI_DLL bool RegisterConstructor ( const StringLiteral& aIdentifier,
+                                           const std::function < std::unique_ptr<DOM::Element> ( AttributeMap&&, DOM::Node* ) > & aConstructor,
+                                           const std::function < void ( DOM::Element* ) > & aDestructor );
     /** @brief Unregister a previously registered element constructor.
      *  @param aIdentifier The element tag name to unregister.
      *  @return true if unregistration succeeded.
      */
-    DLL bool UnregisterConstructor ( const StringLiteral& aIdentifier );
+    AEONGUI_DLL bool UnregisterConstructor ( const StringLiteral& aIdentifier );
     /** @brief Enumerate all registered element constructors.
      *  @param aEnumerator Callback invoked for each registered tag; return false to stop.
      */
-    DLL void EnumerateConstructors ( const std::function<bool ( const StringLiteral& ) >& aEnumerator );
+    AEONGUI_DLL void EnumerateConstructors ( const std::function<bool ( const StringLiteral& ) >& aEnumerator );
     /** @brief Initialize the element factory. Call once at startup. */
-    DLL void Initialize();
+    AEONGUI_DLL void Initialize();
     /** @brief Finalize the element factory. Call once at shutdown. */
-    DLL void Finalize();
+    AEONGUI_DLL void Finalize();
     /** @brief Add an initializer/finalizer pair for newly created elements.
      *  @param aInitializer Called when an element is created.
      *  @param aFinalizer   Called when an element is destroyed.
      *  @return true if the initializer was added.
      */
-    DLL bool AddInitializer (
+    AEONGUI_DLL bool AddInitializer (
         const std::function < void ( DOM::Element* ) > & aInitializer,
         const std::function < void ( DOM::Element* ) > & aFinalizer );
     /** @brief Remove a previously added initializer/finalizer pair.
@@ -76,7 +76,7 @@ namespace AeonGUI
      *  @param aFinalizer   The finalizer function to remove.
      *  @return true if the initializer pair was found and removed.
      */
-    DLL bool RemoveInitializer (
+    AEONGUI_DLL bool RemoveInitializer (
         const std::function < void ( DOM::Element* ) > & aInitializer,
         const std::function < void ( DOM::Element* ) > & aFinalizer );
 }

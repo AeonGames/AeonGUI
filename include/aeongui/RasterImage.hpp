@@ -49,54 +49,54 @@ namespace AeonGUI
         };
 
         /** @brief Default constructor. Creates an empty (unloaded) image. */
-        DLL RasterImage();
+        AEONGUI_DLL RasterImage();
 
         /** @brief Load an image from a file.
          *  @param aPath Path to the image file.
          *  @throws std::runtime_error if loading fails.
          */
-        DLL void LoadFromFile ( const std::string& aPath );
+        AEONGUI_DLL void LoadFromFile ( const std::string& aPath );
         /** @brief Load an image from a memory buffer.
          *  @param aData Pointer to the encoded image data.
          *  @param aSize Size of the data in bytes.
          *  @throws std::runtime_error if loading fails.
          */
-        DLL void LoadFromMemory ( const void* aData, size_t aSize );
+        AEONGUI_DLL void LoadFromMemory ( const void* aData, size_t aSize );
         /** @brief Release the decoded pixel data. */
-        DLL void Clear();
+        AEONGUI_DLL void Clear();
 
         /** @brief Check whether an image has been loaded.
          *  @return true if pixel data is available.
          */
-        [[nodiscard]] DLL bool IsLoaded() const;
+        [[nodiscard]] AEONGUI_DLL bool IsLoaded() const;
         /** @brief Get the original encoded format of the loaded image.
          *  @return The encoded format.
          */
-        [[nodiscard]] DLL EncodedFormat GetEncodedFormat() const;
+        [[nodiscard]] AEONGUI_DLL EncodedFormat GetEncodedFormat() const;
         /** @brief Get the decoded pixel format.
          *  @return The pixel format.
          */
-        [[nodiscard]] DLL PixelFormat GetPixelFormat() const;
+        [[nodiscard]] AEONGUI_DLL PixelFormat GetPixelFormat() const;
         /** @brief Get the image width in pixels.
          *  @return Width in pixels.
          */
-        [[nodiscard]] DLL uint32_t GetWidth() const;
+        [[nodiscard]] AEONGUI_DLL uint32_t GetWidth() const;
         /** @brief Get the image height in pixels.
          *  @return Height in pixels.
          */
-        [[nodiscard]] DLL uint32_t GetHeight() const;
+        [[nodiscard]] AEONGUI_DLL uint32_t GetHeight() const;
         /** @brief Get the stride (bytes per row) of the decoded image.
          *  @return Stride in bytes.
          */
-        [[nodiscard]] DLL size_t GetStride() const;
+        [[nodiscard]] AEONGUI_DLL size_t GetStride() const;
         /** @brief Get a pointer to the decoded pixel data.
          *  @return Pointer to RGBA8 pixel data, or nullptr if not loaded.
          */
-        [[nodiscard]] DLL const uint8_t* GetPixels() const;
+        [[nodiscard]] AEONGUI_DLL const uint8_t* GetPixels() const;
         /** @brief Get a reference to the decoded pixel data vector.
          *  @return Const reference to the internal pixel buffer.
          */
-        [[nodiscard]] DLL const std::vector<uint8_t>& GetPixelData() const;
+        [[nodiscard]] AEONGUI_DLL const std::vector<uint8_t>& GetPixelData() const;
 
     private:
         EncodedFormat mEncodedFormat;
