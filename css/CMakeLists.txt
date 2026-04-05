@@ -14,8 +14,8 @@
 
 include(functions)
 
-gitclone(REPO "git://git.netsurf-browser.org/libparserutils.git" PATH "${CMAKE_CURRENT_SOURCE_DIR}/libparserutils" TAG 6b0cbf086ca8eb8fe74b69f0c9ecf274eb2397ca)
-gitclone(REPO "git://git.netsurf-browser.org/libwapcaplet.git" PATH "${CMAKE_CURRENT_SOURCE_DIR}/libwapcaplet" TAG c7c128d3eb3223b216c974471f82e9337fbcf4ba)
+gitclone(REPO "https://github.com/netsurf-browser/libparserutils.git" PATH "${CMAKE_CURRENT_SOURCE_DIR}/libparserutils" TAG 6b0cbf086ca8eb8fe74b69f0c9ecf274eb2397ca)
+gitclone(REPO "https://github.com/netsurf-browser/libwapcaplet.git" PATH "${CMAKE_CURRENT_SOURCE_DIR}/libwapcaplet" TAG c7c128d3eb3223b216c974471f82e9337fbcf4ba)
 gitclone(REPO "https://github.com/AeonGames/libcss.git" PATH "${CMAKE_CURRENT_SOURCE_DIR}/libcss" TAG aeongui)
 
 find_package(Python COMPONENTS Interpreter)
