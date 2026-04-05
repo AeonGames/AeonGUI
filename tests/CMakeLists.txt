@@ -27,7 +27,7 @@ endif()
 find_package(GTest CONFIG REQUIRED)
 
 include_directories(${GTEST_INCLUDE_DIR}
-                    ${CMAKE_SOURCE_DIR}/include
+                    ${PROJECT_SOURCE_DIR}/include
                     ${CAIRO_INCLUDE_DIRS})
 set(TESTED_SRCS
   DocumentTest.cpp
@@ -67,18 +67,18 @@ if(MSVC)
     unit-tests
     PROPERTIES
       COMPILE_FLAGS
-      "-DSOURCE_PATH=\"\\\"${CMAKE_SOURCE_DIR}\\\"\" -D_CRT_SECURE_NO_WARNINGS -wd4251 -wd4275"
+      "-DSOURCE_PATH=\"\\\"${PROJECT_SOURCE_DIR}\\\"\" -D_CRT_SECURE_NO_WARNINGS -wd4251 -wd4275"
     )
 else()
   set_target_properties(
     unit-tests
-    PROPERTIES COMPILE_FLAGS "-DSOURCE_PATH=\"\\\"${CMAKE_SOURCE_DIR}\\\"\"")
+    PROPERTIES COMPILE_FLAGS "-DSOURCE_PATH=\"\\\"${PROJECT_SOURCE_DIR}\\\"\"")
 endif()
 add_test(NAME unit-tests COMMAND unit-tests)
 
 # Test plugin shared library for SVGScriptElement tests
 add_library(test_plugin SHARED test_plugin.c)
-target_include_directories(test_plugin PRIVATE ${CMAKE_SOURCE_DIR}/include)
+target_include_directories(test_plugin PRIVATE ${PROJECT_SOURCE_DIR}/include)
 set_target_properties(test_plugin PROPERTIES
   PREFIX ""
   DEBUG_POSTFIX ""
@@ -86,4 +86,4 @@ set_target_properties(test_plugin PROPERTIES
   LIBRARY_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/bin"
 )
 
-configure_vscode(${CMAKE_SOURCE_DIR}/tests)
+configure_vscode(${PROJECT_SOURCE_DIR}/tests)

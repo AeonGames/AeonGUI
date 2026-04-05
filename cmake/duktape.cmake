@@ -39,14 +39,14 @@ function(aeongui_configure_duktape)
         aeongames_check_py_module("yaml" "pyyaml")
         execute_process(
             COMMAND 
-                ${Python2_EXECUTABLE} ${CMAKE_SOURCE_DIR}/duktape-2.3.0/tools/configure.py
-                    --source-directory ${CMAKE_SOURCE_DIR}/duktape-2.3.0/src-input
+                ${Python2_EXECUTABLE} ${PROJECT_SOURCE_DIR}/duktape-2.3.0/tools/configure.py
+                    --source-directory ${PROJECT_SOURCE_DIR}/duktape-2.3.0/src-input
                     --output-directory ${CMAKE_BINARY_DIR}/duktape
-                    --config-metadata ${CMAKE_SOURCE_DIR}/duktape-2.3.0/config
+                    --config-metadata ${PROJECT_SOURCE_DIR}/duktape-2.3.0/config
                     -DDUK_USE_FASTINT 
                     -DDUK_USE_FATAL_HANDLER
                     --dll
-            WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}/duktape-2.3.0/tools
+            WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}/duktape-2.3.0/tools
             RESULT_VARIABLE DUKTAPE_CONFIG_RESULT)
             if(NOT DUKTAPE_CONFIG_RESULT EQUAL 0)
                 message(FATAL_ERROR "Duktape configuration failed")
@@ -58,12 +58,12 @@ function(aeongui_configure_duktape)
     ${CMAKE_BINARY_DIR}/duktape/duktape.h
     ${CMAKE_BINARY_DIR}/duktape/duktape.c)
     set(DUKTAPE_LIBRARY duktape CACHE STRING "Duktape library target")
-    set(DUKTAPE_INCLUDE_DIRS ${CMAKE_BINARY_DIR}/duktape ${CMAKE_SOURCE_DIR}/duktape-2.3.0/extras/console CACHE PATH "Duktape include directory")
+    set(DUKTAPE_INCLUDE_DIRS ${CMAKE_BINARY_DIR}/duktape ${PROJECT_SOURCE_DIR}/duktape-2.3.0/extras/console CACHE PATH "Duktape include directory")
 
     # Console Binding Helper library
     add_library(duk_console STATIC
-        ${CMAKE_SOURCE_DIR}/duktape-2.3.0/extras/console/duk_console.c
-        ${CMAKE_SOURCE_DIR}/duktape-2.3.0/extras/console/duk_console.h)
+        ${PROJECT_SOURCE_DIR}/duktape-2.3.0/extras/console/duk_console.c
+        ${PROJECT_SOURCE_DIR}/duktape-2.3.0/extras/console/duk_console.h)
     target_include_directories(duk_console PRIVATE ${DUKTAPE_INCLUDE_DIRS})
     if(UNIX)
         target_compile_options(duk_console PRIVATE -fPIC)

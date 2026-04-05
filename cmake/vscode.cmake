@@ -124,15 +124,15 @@ if(CMAKE_GENERATOR MATCHES "(MSYS|Unix) Makefiles")
   endforeach()
   endif()
 
-  configure_file("${CMAKE_SOURCE_DIR}/cmake/cmake-kits.json.in"
-                 "${CMAKE_SOURCE_DIR}/.vscode/cmake-kits.json")
-  configure_file("${CMAKE_SOURCE_DIR}/cmake/settings.json.in"
-                 "${CMAKE_SOURCE_DIR}/.vscode/settings.json")
-  configure_file("${CMAKE_SOURCE_DIR}/cmake/launch.json.in"
-                 "${CMAKE_SOURCE_DIR}/.vscode/launch.json")
-  configure_file("${CMAKE_SOURCE_DIR}/cmake/tasks.json.in"
-                 "${CMAKE_SOURCE_DIR}/.vscode/tasks.json")
-  configure_file("${CMAKE_SOURCE_DIR}/cmake/c_cpp_properties.json.in"
-                 "${CMAKE_SOURCE_DIR}/.vscode/c_cpp_properties.json" @ONLY)
+  configure_file("${PROJECT_SOURCE_DIR}/cmake/cmake-kits.json.in"
+                 "${PROJECT_SOURCE_DIR}/.vscode/cmake-kits.json")
+  configure_file("${PROJECT_SOURCE_DIR}/cmake/settings.json.in"
+                 "${PROJECT_SOURCE_DIR}/.vscode/settings.json")
+  configure_file("${PROJECT_SOURCE_DIR}/cmake/launch.json.in"
+                 "${PROJECT_SOURCE_DIR}/.vscode/launch.json")
+  configure_file("${PROJECT_SOURCE_DIR}/cmake/tasks.json.in"
+                 "${PROJECT_SOURCE_DIR}/.vscode/tasks.json")
+  configure_file("${PROJECT_SOURCE_DIR}/cmake/c_cpp_properties.json.in"
+                 "${PROJECT_SOURCE_DIR}/.vscode/c_cpp_properties.json" @ONLY)
 endif()
 endfunction()

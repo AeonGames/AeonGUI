@@ -1,11 +1,11 @@
-cmake_minimum_required(VERSION 3.10)
+cmake_minimum_required(VERSION 3.12.0)
 project(AeonGUI VERSION 0.9.0 LANGUAGES NONE)
 
 function(add_docs_target)
   find_package(Doxygen)
   if(DOXYGEN_FOUND)
     set(DOXYGEN_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/docs")
-    configure_file(${CMAKE_SOURCE_DIR}/cmake/Doxyfile.in ${CMAKE_BINARY_DIR}/Doxyfile @ONLY)
+    configure_file(${PROJECT_SOURCE_DIR}/cmake/Doxyfile.in ${CMAKE_BINARY_DIR}/Doxyfile @ONLY)
     add_custom_target(docs
       COMMAND ${DOXYGEN_EXECUTABLE} ${CMAKE_BINARY_DIR}/Doxyfile
       WORKING_DIRECTORY ${CMAKE_BINARY_DIR}
@@ -26,7 +26,7 @@ find_package(Git QUIET)
 if(GIT_FOUND)
   execute_process(
     COMMAND "${GIT_EXECUTABLE}" rev-parse HEAD
-    WORKING_DIRECTORY "${CMAKE_SOURCE_DIR}"
+    WORKING_DIRECTORY "${PROJECT_SOURCE_DIR}"
     OUTPUT_VARIABLE GIT_COMMIT_HASH
     OUTPUT_STRIP_TRAILING_WHITESPACE
     ERROR_QUIET
@@ -39,15 +39,15 @@ endif()
 option(BUILD_SCRIPTS_ONLY "Generate only packaging scripts (PKGBUILDs, brew formula, vcpkg port)" OFF)
 if(BUILD_SCRIPTS_ONLY)
   message(STATUS "BUILD_SCRIPTS_ONLY is ON: generating packaging templates only")
-  configure_file("${CMAKE_SOURCE_DIR}/cmake/PKGBUILD-arch.in"
+  configure_file("${PROJECT_SOURCE_DIR}/cmake/PKGBUILD-arch.in"
                  "${CMAKE_BINARY_DIR}/PKGBUILD-arch" @ONLY NEWLINE_STYLE UNIX)
-  configure_file("${CMAKE_SOURCE_DIR}/cmake/PKGBUILD-msys2.in"
+  configure_file("${PROJECT_SOURCE_DIR}/cmake/PKGBUILD-msys2.in"
                  "${CMAKE_BINARY_DIR}/PKGBUILD-msys2" @ONLY NEWLINE_STYLE UNIX)
-  configure_file("${CMAKE_SOURCE_DIR}/cmake/vcpkg-port-vcpkg.json.in"
+  configure_file("${PROJECT_SOURCE_DIR}/cmake/vcpkg-port-vcpkg.json.in"
                  "${CMAKE_BINARY_DIR}/vcpkg-port/vcpkg.json" @ONLY)
-  configure_file("${CMAKE_SOURCE_DIR}/cmake/vcpkg-port-portfile.cmake.in"
+  configure_file("${PROJECT_SOURCE_DIR}/cmake/vcpkg-port-portfile.cmake.in"
                  "${CMAKE_BINARY_DIR}/vcpkg-port/portfile.cmake" @ONLY)
-  configure_file("${CMAKE_SOURCE_DIR}/cmake/aeongui.rb.in"
+  configure_file("${PROJECT_SOURCE_DIR}/cmake/aeongui.rb.in"
                  "${CMAKE_BINARY_DIR}/aeongui.rb" @ONLY)
   return()
 endif()
@@ -59,6 +59,7 @@ enable_testing()
 if(COMMAND cmake_policy)
   cmake_policy(SET CMP0003 NEW)
   cmake_policy(SET CMP0072 NEW)
+  cmake_policy(SET CMP0074 NEW)
 endif(COMMAND cmake_policy)
 
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
@@ -123,9 +124,9 @@ else()
   find_program(ASTYLE_EXECUTABLE astyle)
 endif()
 
-set(ASTYLE_OPTIONS "--options=${CMAKE_SOURCE_DIR}/astylerc")
-configure_file("${CMAKE_SOURCE_DIR}/cmake/pre-commit.in"
-               "${CMAKE_SOURCE_DIR}/.git/hooks/pre-commit")
+set(ASTYLE_OPTIONS "--options=${PROJECT_SOURCE_DIR}/astylerc")
+configure_file("${PROJECT_SOURCE_DIR}/cmake/pre-commit.in"
+               "${PROJECT_SOURCE_DIR}/.git/hooks/pre-commit")
 
 find_program(XXD_EXECUTABLE xxd HINTS ENV ProgramData PATH_SUFFIXES /usr/bin chocolatey/bin)
 
@@ -310,10 +311,10 @@ set_target_properties(button_plugin PROPERTIES
   OUTPUT_NAME "button"
   PREFIX ""
   DEBUG_POSTFIX ""
-  RUNTIME_OUTPUT_DIRECTORY "${CMAKE_SOURCE_DIR}/images"
-  RUNTIME_OUTPUT_DIRECTORY_DEBUG "${CMAKE_SOURCE_DIR}/images"
-  RUNTIME_OUTPUT_DIRECTORY_RELEASE "${CMAKE_SOURCE_DIR}/images"
-  LIBRARY_OUTPUT_DIRECTORY "${CMAKE_SOURCE_DIR}/images"
+  RUNTIME_OUTPUT_DIRECTORY "${PROJECT_SOURCE_DIR}/images"
+  RUNTIME_OUTPUT_DIRECTORY_DEBUG "${PROJECT_SOURCE_DIR}/images"
+  RUNTIME_OUTPUT_DIRECTORY_RELEASE "${PROJECT_SOURCE_DIR}/images"
+  LIBRARY_OUTPUT_DIRECTORY "${PROJECT_SOURCE_DIR}/images"
 )
 
 if(OpenGL_FOUND)
@@ -329,14 +330,14 @@ endif()
 
 set(DEMO_DIRS "")
 if(OpenGL_FOUND)
-  list(APPEND DEMO_DIRS ${CMAKE_SOURCE_DIR}/demos/OpenGL)
+  list(APPEND DEMO_DIRS ${PROJECT_SOURCE_DIR}/demos/OpenGL)
 endif()
 if(APPLE)
-    list(APPEND DEMO_DIRS ${CMAKE_SOURCE_DIR}/demos/Metal)
+    list(APPEND DEMO_DIRS ${PROJECT_SOURCE_DIR}/demos/Metal)
 endif()
-list(APPEND DEMO_DIRS ${CMAKE_SOURCE_DIR}/demos/Vulkan)
+list(APPEND DEMO_DIRS ${PROJECT_SOURCE_DIR}/demos/Vulkan)
 if(WIN32)
-  list(APPEND DEMO_DIRS ${CMAKE_SOURCE_DIR}/demos/Direct3D12)
+  list(APPEND DEMO_DIRS ${PROJECT_SOURCE_DIR}/demos/Direct3D12)
 endif()
 configure_vscode(${DEMO_DIRS})
 
@@ -408,13 +409,13 @@ install(
 file(INSTALL LICENSE DESTINATION share/aeongui RENAME copyright)
 
 # --- Packaging templates ---
-configure_file("${CMAKE_SOURCE_DIR}/cmake/PKGBUILD-arch.in"
+configure_file("${PROJECT_SOURCE_DIR}/cmake/PKGBUILD-arch.in"
                "${CMAKE_BINARY_DIR}/PKGBUILD-arch" @ONLY NEWLINE_STYLE UNIX)
-configure_file("${CMAKE_SOURCE_DIR}/cmake/PKGBUILD-msys2.in"
+configure_file("${PROJECT_SOURCE_DIR}/cmake/PKGBUILD-msys2.in"
                "${CMAKE_BINARY_DIR}/PKGBUILD-msys2" @ONLY NEWLINE_STYLE UNIX)
-configure_file("${CMAKE_SOURCE_DIR}/cmake/vcpkg-port-vcpkg.json.in"
+configure_file("${PROJECT_SOURCE_DIR}/cmake/vcpkg-port-vcpkg.json.in"
                "${CMAKE_BINARY_DIR}/vcpkg-port/vcpkg.json" @ONLY)
-configure_file("${CMAKE_SOURCE_DIR}/cmake/vcpkg-port-portfile.cmake.in"
+configure_file("${PROJECT_SOURCE_DIR}/cmake/vcpkg-port-portfile.cmake.in"
                "${CMAKE_BINARY_DIR}/vcpkg-port/portfile.cmake" @ONLY)
-configure_file("${CMAKE_SOURCE_DIR}/cmake/aeongui.rb.in"
+configure_file("${PROJECT_SOURCE_DIR}/cmake/aeongui.rb.in"
                "${CMAKE_BINARY_DIR}/aeongui.rb" @ONLY)
