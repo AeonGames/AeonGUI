@@ -189,24 +189,10 @@ jobs:
         sed -i 's/sha256 ""/sha256 "${{ steps.hashes.outputs.sha256 }}"/' scripts-build/aeongui.rb
         tar -czf aeongui-brew-${{ needs.version-check.outputs.version }}.tar.gz -C scripts-build aeongui.rb
 
-    # ── vcpkg ports ──
-    - name: '📦 Create vcpkg port archives'
+    # ── vcpkg port ──
+    - name: '📦 Create vcpkg port archive'
       run: |
-        for BACKEND in Cairo Skia; do
-          BACKEND_LOWER=$(echo "$BACKEND" | tr '[:upper:]' '[:lower:]')
-          mkdir -p "port-${BACKEND_LOWER}"
-
-          sed -e "s|-DAEONGUI_BACKEND=Cairo|-DAEONGUI_BACKEND=${BACKEND}|" \
-              scripts-build/vcpkg-port/portfile.cmake > "port-${BACKEND_LOWER}/portfile.cmake"
-
-          if [[ "$BACKEND" == "Skia" ]]; then
-            sed 's/"cairo"/"skia"/' scripts-build/vcpkg-port/vcpkg.json > "port-${BACKEND_LOWER}/vcpkg.json"
-          else
-            cp scripts-build/vcpkg-port/vcpkg.json "port-${BACKEND_LOWER}/vcpkg.json"
-          fi
-
-          tar -czf "aeongui-vcpkg-port-${BACKEND_LOWER}-${{ needs.version-check.outputs.version }}.tar.gz" -C "port-${BACKEND_LOWER}" .
-        done
+        tar -czf "aeongui-vcpkg-port-${{ needs.version-check.outputs.version }}.tar.gz" -C scripts-build/vcpkg-port .
 
     # ── Upload everything ──
     - name: '📤 Upload release assets'
@@ -218,8 +204,7 @@ jobs:
           PKGBUILD-arch-${{ needs.version-check.outputs.version }}.tar.gz
           PKGBUILD-msys2-${{ needs.version-check.outputs.version }}.tar.gz
           aeongui-brew-${{ needs.version-check.outputs.version }}.tar.gz
-          aeongui-vcpkg-port-cairo-${{ needs.version-check.outputs.version }}.tar.gz
-          aeongui-vcpkg-port-skia-${{ needs.version-check.outputs.version }}.tar.gz
+          aeongui-vcpkg-port-${{ needs.version-check.outputs.version }}.tar.gz
 
   # ── MSYS2 packages (mingw64, ucrt64, clang64 — Cairo) ─────────
   msys2-package:

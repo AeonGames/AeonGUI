@@ -15,53 +15,79 @@ limitations under the License.
 */
 #include <iostream>
 #include "aeongui/dom/SVGEllipseElement.hpp"
+#include "aeongui/dom/SVGLength.hpp"
+#include "aeongui/Canvas.hpp"
 
 namespace AeonGUI
 {
     namespace DOM
     {
+        static bool HasPercent ( const AttributeMap& attrs, const char* name )
+        {
+            auto it = attrs.find ( name );
+            if ( it == attrs.end() )
+            {
+                return false;
+            }
+            return it->second.find ( '%' ) != std::string::npos;
+        }
+
         SVGEllipseElement::SVGEllipseElement ( const std::string& aTagName, AttributeMap&& aAttributes, Node* aParent ) : SVGGeometryElement { aTagName, std::move ( aAttributes ), aParent }
         {
             std::cout << "Ellipse" << std::endl;
-            BuildPath();
+            mHasPercentage = HasPercent ( mAttributes, "cx" ) || HasPercent ( mAttributes, "cy" ) ||
+                             HasPercent ( mAttributes, "rx" ) || HasPercent ( mAttributes, "ry" );
+            if ( !mHasPercentage )
+            {
+                BuildPath ( 0, 0 );
+            }
         }
 
         SVGEllipseElement::~SVGEllipseElement()
         {
         }
 
-        void SVGEllipseElement::BuildPath()
+        void SVGEllipseElement::BuildPath ( double aVpW, double aVpH )
         {
-            double cx{mAttributes.find ( "cx" ) != mAttributes.end() ? std::stod ( mAttributes.at ( "cx" ) ) : 0.0};
-            double cy{mAttributes.find ( "cy" ) != mAttributes.end() ? std::stod ( mAttributes.at ( "cy" ) ) : 0.0};
-            double rx{mAttributes.find ( "rx" ) != mAttributes.end() ? std::stod ( mAttributes.at ( "rx" ) ) : 0.0};
-            double ry{mAttributes.find ( "ry" ) != mAttributes.end() ? std::stod ( mAttributes.at ( "ry" ) ) : 0.0};
-            /**
-             * https://www.w3.org/TR/SVG/shapes.html#EllipseElement
-             * The cx and cy coordinates define the center of the ellipse.
-             * The rx and ry properties define the x- and y-axis radii of the ellipse.
-             * A negative value for either property is illegal and must be ignored as a parsing error.
-             * A computed value of zero for either dimension, or a computed value of auto for both dimensions, disables rendering of the element.
-            */
+            auto parse = [&] ( const char* name, double ref ) -> double
+            {
+                auto it = mAttributes.find ( name );
+                return it != mAttributes.end() ? SVGLength::ParseAttribute ( it->second, ref ) : 0.0;
+            };
+            double cx = parse ( "cx", aVpW );
+            double cy = parse ( "cy", aVpH );
+            double rx = parse ( "rx", aVpW );
+            double ry = parse ( "ry", aVpH );
             if ( rx > 0.0 && ry > 0.0 )
             {
                 std::vector<DrawType> path
                 {
-                    // 1. A move-to command to the point cx+rx,cy;
                     static_cast<uint64_t> ( 'M' ), cx + rx, cy,
-                    // 2. arc to cx,cy+ry;
                     static_cast<uint64_t> ( 'A' ), rx, ry, 0.0, false, true, cx, cy + ry,
-                    // 3. arc to cx-rx,cy;
                     static_cast<uint64_t> ( 'A' ), rx, ry, 0.0, false, true, cx - rx, cy,
-                    // 4. arc to cx,cy-ry;
                     static_cast<uint64_t> ( 'A' ), rx, ry, 0.0, false, true, cx, cy - ry,
-                    // 5. arc with a segment-completing close path operation.
                     static_cast<uint64_t> ( 'A' ), rx, ry, 0.0, false, true, cx + rx, cy,
-                    // 6. close path.
                     static_cast<uint64_t> ( 'Z' ),
                 };
                 mPath->Construct ( path );
             }
+        }
+
+        void SVGEllipseElement::ResolveViewportPercentages ( const Canvas& aCanvas ) const
+        {
+            if ( !mHasPercentage )
+            {
+                return;
+            }
+            double vpW = aCanvas.GetViewportWidth();
+            double vpH = aCanvas.GetViewportHeight();
+            if ( vpW == mLastVpWidth && vpH == mLastVpHeight )
+            {
+                return;
+            }
+            mLastVpWidth  = vpW;
+            mLastVpHeight = vpH;
+            const_cast<SVGEllipseElement*> ( this )->BuildPath ( vpW, vpH );
         }
 
         void SVGEllipseElement::onAttributeChanged ( const DOMString& aName, const DOMString& aValue )
@@ -69,7 +95,13 @@ namespace AeonGUI
             Element::onAttributeChanged ( aName, aValue );
             if ( aName == "cx" || aName == "cy" || aName == "rx" || aName == "ry" )
             {
-                BuildPath();
+                mHasPercentage = HasPercent ( mAttributes, "cx" ) || HasPercent ( mAttributes, "cy" ) ||
+                                 HasPercent ( mAttributes, "rx" ) || HasPercent ( mAttributes, "ry" );
+                mLastVpWidth = -1;
+                if ( !mHasPercentage )
+                {
+                    BuildPath ( 0, 0 );
+                }
             }
         }
     }

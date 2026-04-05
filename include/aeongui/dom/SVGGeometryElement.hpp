@@ -57,6 +57,14 @@ namespace AeonGUI
              *  child path-modifying animations (e.g. rx/ry on rect) are active.
              */
             virtual void RebuildAnimatedPath() const {}
+            /** @brief Resolve percentage attributes against the current viewport.
+             *
+             *  Called from DrawStart before path drawing. Derived classes
+             *  that store percentage-based attributes override this to
+             *  resolve them against the canvas viewport and rebuild the path.
+             *  @param aCanvas The canvas providing viewport dimensions.
+             */
+            virtual void ResolveViewportPercentages ( const Canvas& aCanvas ) const {}
             mutable std::unique_ptr<Path> mPath; ///< Cached path for this geometry.
         };
     }

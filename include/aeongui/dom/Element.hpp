@@ -143,6 +143,12 @@ namespace AeonGUI
              *  @param aValue New attribute value.
              */
             virtual void onAttributeChanged ( const DOMString& aName, const DOMString& aValue );
+        public:
+            /** @brief Update the CSS viewport dimensions used for percentage resolution.
+             *  @param aWidth  Viewport width in pixels.
+             *  @param aHeight Viewport height in pixels.
+             */
+            DLL static void UpdateCSSViewport ( uint32_t aWidth, uint32_t aHeight );
         };
     }
 }

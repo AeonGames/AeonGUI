@@ -45,6 +45,7 @@ namespace AeonGUI
                 ApplyCSSPaintProperties ( aCanvas, *this, results->styles[CSS_PSEUDO_ELEMENT_NONE] );
             }
             ApplyChildPaintAnimations ( aCanvas );
+            ResolveViewportPercentages ( aCanvas );
             RebuildAnimatedPath();
             aCanvas.Draw ( *mPath );
         }

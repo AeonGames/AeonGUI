@@ -17,29 +17,49 @@ limitations under the License.
 #include <array>
 #include "aeongui/dom/SVGRectElement.hpp"
 #include "aeongui/dom/SVGAnimateElement.hpp"
+#include "aeongui/Canvas.hpp"
 
 namespace AeonGUI
 {
     namespace DOM
     {
+        bool SVGRectElement::IsPercentage ( const std::string& aStr )
+        {
+            size_t pos{};
+            std::stod ( aStr, &pos );
+            return pos < aStr.size() && aStr[pos] == '%';
+        }
+
         SVGRectElement::SVGRectElement ( const std::string& aTagName, AttributeMap&& aAttributes, Node* aParent ) : SVGGeometryElement {aTagName, std::move ( aAttributes ), aParent}
         {
             std::cout << "Rect" << std::endl;
             if ( mAttributes.find ( "width" ) != mAttributes.end() )
             {
-                mWidth = std::stod ( mAttributes.at ( "width" ) );
+                const auto& val = mAttributes.at ( "width" );
+                mWidthPct = IsPercentage ( val );
+                mWidthRaw = std::stod ( val );
+                mWidth = mWidthRaw;
             }
             if ( mAttributes.find ( "height" ) != mAttributes.end() )
             {
-                mHeight = std::stod ( mAttributes.at ( "height" ) );
+                const auto& val = mAttributes.at ( "height" );
+                mHeightPct = IsPercentage ( val );
+                mHeightRaw = std::stod ( val );
+                mHeight = mHeightRaw;
             }
             if ( mAttributes.find ( "x" ) != mAttributes.end() )
             {
-                mX = std::stod ( mAttributes.at ( "x" ) );
+                const auto& val = mAttributes.at ( "x" );
+                mXPct = IsPercentage ( val );
+                mXRaw = std::stod ( val );
+                mX = mXRaw;
             }
             if ( mAttributes.find ( "y" ) != mAttributes.end() )
             {
-                mY = std::stod ( mAttributes.at ( "y" ) );
+                const auto& val = mAttributes.at ( "y" );
+                mYPct = IsPercentage ( val );
+                mYRaw = std::stod ( val );
+                mY = mYRaw;
             }
             if ( mAttributes.find ( "rx" ) != mAttributes.end() )
             {
@@ -58,10 +78,46 @@ namespace AeonGUI
             {
                 mRx = mRy;
             }
-            BuildPath();
+            if ( !mWidthPct && !mHeightPct && !mXPct && !mYPct )
+            {
+                BuildPath();
+            }
         }
 
         SVGRectElement::~SVGRectElement() = default;
+
+        void SVGRectElement::ResolveViewportPercentages ( const Canvas& aCanvas ) const
+        {
+            if ( !mWidthPct && !mHeightPct && !mXPct && !mYPct )
+            {
+                return;
+            }
+            double vpW = aCanvas.GetViewportWidth();
+            double vpH = aCanvas.GetViewportHeight();
+            if ( vpW == mLastVpWidth && vpH == mLastVpHeight )
+            {
+                return;
+            }
+            mLastVpWidth  = vpW;
+            mLastVpHeight = vpH;
+            if ( mWidthPct )
+            {
+                mWidth  = mWidthRaw * vpW / 100.0;
+            }
+            if ( mHeightPct )
+            {
+                mHeight = mHeightRaw * vpH / 100.0;
+            }
+            if ( mXPct )
+            {
+                mX = mXRaw * vpW / 100.0;
+            }
+            if ( mYPct )
+            {
+                mY = mYRaw * vpH / 100.0;
+            }
+            const_cast<SVGRectElement * > ( this )->BuildPath();
+        }
 
         void SVGRectElement::BuildPath()
         {
@@ -150,19 +206,31 @@ namespace AeonGUI
             Element::onAttributeChanged ( aName, aValue );
             if ( aName == "width" )
             {
-                mWidth = std::stod ( aValue );
+                mWidthPct = IsPercentage ( aValue );
+                mWidthRaw = std::stod ( aValue );
+                mWidth = mWidthRaw;
+                mLastVpWidth = -1;
             }
             else if ( aName == "height" )
             {
-                mHeight = std::stod ( aValue );
+                mHeightPct = IsPercentage ( aValue );
+                mHeightRaw = std::stod ( aValue );
+                mHeight = mHeightRaw;
+                mLastVpHeight = -1;
             }
             else if ( aName == "x" )
             {
-                mX = std::stod ( aValue );
+                mXPct = IsPercentage ( aValue );
+                mXRaw = std::stod ( aValue );
+                mX = mXRaw;
+                mLastVpWidth = -1;
             }
             else if ( aName == "y" )
             {
-                mY = std::stod ( aValue );
+                mYPct = IsPercentage ( aValue );
+                mYRaw = std::stod ( aValue );
+                mY = mYRaw;
+                mLastVpHeight = -1;
             }
             else if ( aName == "rx" )
             {

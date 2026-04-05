@@ -125,6 +125,12 @@ namespace AeonGUI
             .measure           = nullptr, /* We're not implementing measure callback */
         };
 
+        void Element::UpdateCSSViewport ( uint32_t aWidth, uint32_t aHeight )
+        {
+            unit_len_ctx.viewport_width  = aWidth  * ( 1 << CSS_RADIX_POINT );
+            unit_len_ctx.viewport_height = aHeight * ( 1 << CSS_RADIX_POINT );
+        }
+
         static css_media screen_media = { .type = CSS_MEDIA_SCREEN };
 
         static css_select_handler select_handler =

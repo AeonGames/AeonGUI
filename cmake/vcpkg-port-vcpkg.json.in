@@ -5,8 +5,6 @@
   "homepage": "https://github.com/AeonGames/AeonGUI",
   "license": "Apache-2.0",
   "dependencies": [
-    "cairo",
-    "pango",
     "fontconfig",
     "freetype",
     "harfbuzz",
@@ -15,5 +13,16 @@
     "libpng",
     "libjpeg-turbo",
     "pkgconf"
-  ]
+  ],
+  "default-features": ["cairo"],
+  "features": {
+    "cairo": {
+      "description": "Use Cairo/Pango rendering backend",
+      "dependencies": ["cairo", "pango"]
+    },
+    "skia": {
+      "description": "Use Skia rendering backend",
+      "dependencies": ["skia"]
+    }
+  }
 }

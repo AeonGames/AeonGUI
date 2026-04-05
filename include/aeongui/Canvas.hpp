@@ -21,6 +21,7 @@ limitations under the License.
 #include <vector>
 #include <memory>
 #include <string>
+#include <utility>
 #include "aeongui/Platform.hpp"
 #include "aeongui/DrawType.hpp"
 #include "aeongui/Color.hpp"
@@ -299,6 +300,44 @@ namespace AeonGUI
         bool mHitTesting{false};                  ///< True when in hit-testing mode.
         uint8_t mPickId{0};                       ///< Current pick ID for Draw calls.
         std::array<PickBounds, 256> mPickBounds{}; ///< Cached device-space bounds per pick ID.
+        double mViewportWidth{0};                 ///< Current SVG viewport width for percent resolution.
+        double mViewportHeight{0};                ///< Current SVG viewport height for percent resolution.
+        std::vector<std::pair<double, double>> mViewportStack; ///< Saved viewport dimensions.
+    public:
+        /** @brief Push a new SVG viewport for percentage resolution.
+         *  @param aWidth  Viewport width in user units.
+         *  @param aHeight Viewport height in user units.
+         */
+        void PushViewport ( double aWidth, double aHeight )
+        {
+            mViewportStack.emplace_back ( mViewportWidth, mViewportHeight );
+            mViewportWidth  = aWidth;
+            mViewportHeight = aHeight;
+        }
+        /** @brief Pop the SVG viewport, restoring the previous one. */
+        void PopViewport()
+        {
+            if ( !mViewportStack.empty() )
+            {
+                mViewportWidth  = mViewportStack.back().first;
+                mViewportHeight = mViewportStack.back().second;
+                mViewportStack.pop_back();
+            }
+        }
+        /** @brief Get the current SVG viewport width.
+         *  @return Viewport width in user units.
+         */
+        double GetViewportWidth() const
+        {
+            return mViewportWidth;
+        }
+        /** @brief Get the current SVG viewport height.
+         *  @return Viewport height in user units.
+         */
+        double GetViewportHeight() const
+        {
+            return mViewportHeight;
+        }
     };
 }
 #endif

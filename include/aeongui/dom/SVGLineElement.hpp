@@ -38,12 +38,24 @@ namespace AeonGUI
             ~SVGLineElement() final;
         protected:
             void onAttributeChanged ( const DOMString& aName, const DOMString& aValue ) override;
+            void ResolveViewportPercentages ( const Canvas& aCanvas ) const override;
         private:
             void BuildPath();
-            double mX1{};
-            double mY1{};
-            double mX2{};
-            double mY2{};
+            static bool IsPercentage ( const std::string& aStr );
+            mutable double mX1{};
+            mutable double mY1{};
+            mutable double mX2{};
+            mutable double mY2{};
+            bool mX1Pct{false};
+            bool mY1Pct{false};
+            bool mX2Pct{false};
+            bool mY2Pct{false};
+            double mX1Raw{};
+            double mY1Raw{};
+            double mX2Raw{};
+            double mY2Raw{};
+            mutable double mLastVpWidth{-1};
+            mutable double mLastVpHeight{-1};
         };
     }
 }

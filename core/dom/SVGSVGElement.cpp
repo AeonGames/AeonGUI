@@ -51,11 +51,21 @@ namespace AeonGUI
             }
             if ( mAttributes.find ( "width" ) != mAttributes.end() )
             {
-                mWidth = std::stod ( mAttributes.at ( "width" ) );
+                const auto& val = mAttributes.at ( "width" );
+                mWidthRaw = std::stod ( val );
+                size_t pos{};
+                std::stod ( val, &pos );
+                mWidthPct = ( pos < val.size() && val[pos] == '%' );
+                mWidth = mWidthRaw;
             }
             if ( mAttributes.find ( "height" ) != mAttributes.end() )
             {
-                mHeight = std::stod ( mAttributes.at ( "height" ) );
+                const auto& val = mAttributes.at ( "height" );
+                mHeightRaw = std::stod ( val );
+                size_t pos{};
+                std::stod ( val, &pos );
+                mHeightPct = ( pos < val.size() && val[pos] == '%' );
+                mHeight = mHeightRaw;
             }
             if ( mAttributes.find ( "preserveAspectRatio" ) != mAttributes.end() )
             {
@@ -75,10 +85,25 @@ namespace AeonGUI
         void SVGSVGElement::DrawStart ( Canvas& aCanvas ) const
         {
             SVGGraphicsElement::DrawStart ( aCanvas );
+            double canvasW = static_cast<double> ( aCanvas.GetWidth() );
+            double canvasH = static_cast<double> ( aCanvas.GetHeight() );
             if ( mHasViewBox )
             {
                 aCanvas.SetViewBox ( mViewBox, mPreserveAspectRatio );
+                aCanvas.PushViewport ( mViewBox.width, mViewBox.height );
             }
+            else
+            {
+                double vw = mWidthPct  ? ( mWidthRaw  * canvasW / 100.0 ) : ( mWidth  > 0.0 ? mWidth  : canvasW );
+                double vh = mHeightPct ? ( mHeightRaw * canvasH / 100.0 ) : ( mHeight > 0.0 ? mHeight : canvasH );
+                aCanvas.PushViewport ( vw, vh );
+            }
+        }
+
+        void SVGSVGElement::DrawFinish ( Canvas& aCanvas ) const
+        {
+            aCanvas.PopViewport();
+            SVGGraphicsElement::DrawFinish ( aCanvas );
         }
     }
 }

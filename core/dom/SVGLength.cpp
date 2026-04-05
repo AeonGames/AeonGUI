@@ -1,5 +1,5 @@
 /*
-Copyright (C) 2025 Rodrigo Jose Hernandez Cordoba
+Copyright (C) 2025,2026 Rodrigo Jose Hernandez Cordoba
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -242,6 +242,17 @@ namespace AeonGUI
 
             // Update the string representation
             UpdateValueAsString();
+        }
+
+        double SVGLength::ParseAttribute ( const std::string& aStr, double aReferenceDimension )
+        {
+            size_t pos{};
+            double val = std::stod ( aStr, &pos );
+            if ( pos < aStr.size() && aStr[pos] == '%' )
+            {
+                return val * aReferenceDimension / 100.0;
+            }
+            return val;
         }
     }
 }

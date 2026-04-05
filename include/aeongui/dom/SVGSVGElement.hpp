@@ -41,6 +41,10 @@ namespace AeonGUI
              *  @param aCanvas Target canvas.
              */
             void DrawStart ( Canvas& aCanvas ) const final;
+            /** @brief Restore viewport state after children have drawn.
+             *  @param aCanvas Target canvas.
+             */
+            void DrawFinish ( Canvas& aCanvas ) const final;
         protected:
             void onAttributeChanged ( const DOMString& aName, const DOMString& aValue ) override;
         private:
@@ -48,6 +52,10 @@ namespace AeonGUI
             // Attributes
             double mWidth{};
             double mHeight{};
+            double mWidthRaw{};
+            double mHeightRaw{};
+            bool mWidthPct{false};
+            bool mHeightPct{false};
             ViewBox mViewBox{};
             PreserveAspectRatio mPreserveAspectRatio{};
             bool mHasViewBox{false};

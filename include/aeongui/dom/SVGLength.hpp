@@ -87,6 +87,16 @@ namespace AeonGUI
             /// @param unitType The new unit type.
             /// @param valueInSpecifiedUnits The new value in the specified units.
             void newValueSpecifiedUnits ( SVGLengthType unitType, float valueInSpecifiedUnits );
+
+            /** @brief Parse an SVG attribute length value, resolving percentages.
+             *
+             *  Handles values like "100", "50%", "3.5px", etc.
+             *  Percentage values are resolved as (value / 100) * referenceDimension.
+             *  @param aStr             The attribute value string.
+             *  @param aReferenceDimension The dimension to resolve percentages against.
+             *  @return The resolved value in user units.
+             */
+            static double ParseAttribute ( const std::string& aStr, double aReferenceDimension );
         private:
             void UpdateValueAsString();
             SVGLengthType mUnitType{SVGLengthType::UNKNOWN};

@@ -38,8 +38,12 @@ namespace AeonGUI
             ~SVGCircleElement() final;
         protected:
             void onAttributeChanged ( const DOMString& aName, const DOMString& aValue ) override;
+            void ResolveViewportPercentages ( const Canvas& aCanvas ) const override;
         private:
-            void BuildPath();
+            void BuildPath ( double aVpW, double aVpH );
+            bool mHasPercentage{false};
+            mutable double mLastVpWidth{-1};
+            mutable double mLastVpHeight{-1};
         };
     }
 }

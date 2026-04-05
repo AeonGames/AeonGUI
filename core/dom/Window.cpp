@@ -59,6 +59,7 @@ namespace AeonGUI
 #endif
                     > ( aWidth, aHeight ) }
         {
+            Element::UpdateCSSViewport ( aWidth, aHeight );
         }
 
         Window::~Window() = default;
@@ -81,6 +82,7 @@ namespace AeonGUI
         void Window::ResizeViewport ( uint32_t aWidth, uint32_t aHeight )
         {
             mCanvas->ResizeViewport ( aWidth, aHeight );
+            Element::UpdateCSSViewport ( aWidth, aHeight );
             mDocument.MarkDirty();
         }
 

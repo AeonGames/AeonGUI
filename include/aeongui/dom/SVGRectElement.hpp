@@ -17,6 +17,7 @@ limitations under the License.
 #define AEONGUI_SVGRECTELEMENT_H
 
 #include "SVGGeometryElement.hpp"
+#include "aeongui/dom/SVGLength.hpp"
 
 namespace AeonGUI
 {
@@ -39,15 +40,27 @@ namespace AeonGUI
         protected:
             /** @copydoc SVGGeometryElement::RebuildAnimatedPath */
             void RebuildAnimatedPath() const override;
+            void ResolveViewportPercentages ( const Canvas& aCanvas ) const override;
             void onAttributeChanged ( const DOMString& aName, const DOMString& aValue ) override;
         private:
+            static bool IsPercentage ( const std::string& aStr );
             void BuildPath();
-            double mWidth{};
-            double mHeight{};
-            double mX{};
-            double mY{};
+            mutable double mWidth{};
+            mutable double mHeight{};
+            mutable double mX{};
+            mutable double mY{};
             double mRx{};
             double mRy{};
+            bool mWidthPct{false};
+            bool mHeightPct{false};
+            bool mXPct{false};
+            bool mYPct{false};
+            double mWidthRaw{};
+            double mHeightRaw{};
+            double mXRaw{};
+            double mYRaw{};
+            mutable double mLastVpWidth{-1};
+            mutable double mLastVpHeight{-1};
         };
     }
 }
