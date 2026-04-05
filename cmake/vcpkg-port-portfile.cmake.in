@@ -18,6 +18,7 @@ vcpkg_cmake_configure(
     OPTIONS
         -DAEONGUI_BACKEND=${AEONGUI_BACKEND}
         -DBUILD_UNIT_TESTS=OFF
+        -DFETCHCONTENT_FULLY_DISCONNECTED=OFF
 )
 
 vcpkg_cmake_build()
