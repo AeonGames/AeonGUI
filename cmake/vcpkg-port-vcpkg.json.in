@@ -12,7 +12,15 @@
     "zlib",
     "libpng",
     "libjpeg-turbo",
-    "pkgconf"
+    "pkgconf",
+    {
+      "name": "vcpkg-cmake",
+      "host": true
+    },
+    {
+      "name": "vcpkg-cmake-config",
+      "host": true
+    }
   ],
   "default-features": ["cairo"],
   "features": {
