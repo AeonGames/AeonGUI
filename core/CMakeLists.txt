@@ -215,12 +215,24 @@ endif(USE_CUDA)
 parser_code(path_data ${CMAKE_CURRENT_SOURCE_DIR}/parsers ${CMAKE_CURRENT_SOURCE_DIR}/parsers)
 #parser_code(style ${CMAKE_CURRENT_SOURCE_DIR}/parsers ${CMAKE_CURRENT_SOURCE_DIR}/parsers)
 
-if(AEONGUI_BACKEND STREQUAL "Cairo")
-    include_directories(${CAIRO_INCLUDE_DIRS} ${PANGO_INCLUDE_DIRS} ${HARFBUZZ_INCLUDE_DIRS} ${FONTCONFIG_INCLUDE_DIRS} ${FREETYPE_INCLUDE_DIR_freetype2} ${FREETYPE_INCLUDE_DIR_ft2build} ${LIBXML2_INCLUDE_DIRS})
-elseif(AEONGUI_BACKEND STREQUAL "Skia")
-    include_directories(${PANGO_INCLUDE_DIRS} ${HARFBUZZ_INCLUDE_DIRS} ${FONTCONFIG_INCLUDE_DIRS} ${FREETYPE_INCLUDE_DIR_freetype2} ${FREETYPE_INCLUDE_DIR_ft2build} ${LIBXML2_INCLUDE_DIRS})
-endif()
 add_library(AeonGUI SHARED ${AEONGUI_HEADERS} ${AEONGUI_SOURCES} ${AEONGUI_DOM_HEADERS} ${AEONGUI_DOM_SOURCES} ${AEONGUI_RESOURCES} ${BISON_path_data_parser_OUTPUTS} ${FLEX_path_data_lexer_OUTPUTS})
+target_include_directories(AeonGUI
+    PUBLIC
+        $<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}/include>
+        $<INSTALL_INTERFACE:include>
+    PRIVATE
+        ${PANGO_INCLUDE_DIRS}
+        ${HARFBUZZ_INCLUDE_DIRS}
+        ${FONTCONFIG_INCLUDE_DIRS}
+        ${FREETYPE_INCLUDE_DIR_freetype2}
+        ${FREETYPE_INCLUDE_DIR_ft2build}
+        ${LIBXML2_INCLUDE_DIRS}
+)
+if(AEONGUI_BACKEND STREQUAL "Cairo")
+    target_include_directories(AeonGUI SYSTEM PUBLIC ${CAIRO_INCLUDE_DIRS})
+elseif(AEONGUI_BACKEND STREQUAL "Skia")
+    # Skia include directories are added below per-target
+endif()
 set_target_properties(AeonGUI PROPERTIES
     COMPILE_FLAGS "-DNOMINMAX -D_CRT_SECURE_NO_WARNINGS"
     VERSION ${PROJECT_VERSION}
