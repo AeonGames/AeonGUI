@@ -45,9 +45,8 @@ private:
     GLXContext ctx;
     Colormap cmap;
     Window window;
-    uint32_t mWidth;
-    uint32_t mHeight;
-    GLuint mScreenQuad{};
+    uint32_t mWidth{};
+    uint32_t mHeight{};
     GLuint mScreenTexture{};
     AeonGUI::DOM::Document mDocument;
     AeonGUI::DOM::Window mWindow;
