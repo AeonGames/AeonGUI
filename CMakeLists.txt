@@ -125,8 +125,10 @@ else()
 endif()
 
 set(ASTYLE_OPTIONS "--options=${PROJECT_SOURCE_DIR}/astylerc")
-configure_file("${PROJECT_SOURCE_DIR}/cmake/pre-commit.in"
-               "${PROJECT_SOURCE_DIR}/.git/hooks/pre-commit")
+if(IS_DIRECTORY "${PROJECT_SOURCE_DIR}/.git/hooks")
+  configure_file("${PROJECT_SOURCE_DIR}/cmake/pre-commit.in"
+                 "${PROJECT_SOURCE_DIR}/.git/hooks/pre-commit")
+endif()
 
 find_program(XXD_EXECUTABLE xxd HINTS ENV ProgramData PATH_SUFFIXES /usr/bin chocolatey/bin)
 
