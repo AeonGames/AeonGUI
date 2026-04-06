@@ -69,16 +69,19 @@ namespace AeonGUI
 
     size_t CairoCanvas::GetWidth() const
     {
-        return static_cast<size_t> ( cairo_image_surface_get_width ( mCairoSurface ) );
+        return mCairoSurface ? static_cast<size_t> ( cairo_image_surface_get_width ( mCairoSurface ) ) : 0;
     }
+
     size_t CairoCanvas::GetHeight() const
     {
-        return static_cast<size_t> ( cairo_image_surface_get_height ( mCairoSurface ) );
+        return mCairoSurface ? static_cast<size_t> ( cairo_image_surface_get_height ( mCairoSurface ) ) : 0;
     }
+
     size_t CairoCanvas::GetStride() const
     {
-        return static_cast<size_t> ( cairo_image_surface_get_stride ( mCairoSurface ) );
+        return mCairoSurface ? static_cast<size_t> ( cairo_image_surface_get_stride ( mCairoSurface ) ) : 0;
     }
+
     void CairoCanvas::Clear()
     {
         cairo_save ( mCairoContext );
