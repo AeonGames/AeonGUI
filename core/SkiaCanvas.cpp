@@ -26,7 +26,13 @@ limitations under the License.
 #include <core/SkBitmap.h>
 #include <core/SkImageInfo.h>
 #include <effects/SkImageFilters.h>
+#if __has_include(<effects/SkGradientShader.h>)
+#include <effects/SkGradientShader.h>
+#define AEONGUI_HAS_SK_GRADIENT_SHADER 1
+#else
 #include <effects/SkGradient.h>
+#define AEONGUI_HAS_SK_GRADIENT_SHADER 0
+#endif
 #include <pango/pango.h>
 #include <pango/pangoft2.h>
 #include <pango/pangofc-fontmap.h>
@@ -360,27 +366,42 @@ namespace AeonGUI
                 gx2 = bounds.fLeft + grad.x2 * bw;
                 gy2 = bounds.fTop + grad.y2 * bh;
             }
-            std::vector<SkColor4f> colors;
+            std::vector<SkColor> colors;
             std::vector<float> positions;
             for ( const auto& stop : grad.stops )
             {
                 double a = ( mFillOpacity >= 1.0 ) ? stop.color.A() : mFillOpacity;
-                colors.push_back ( SkColor4f::FromColor ( SkColorSetARGB (
+                colors.push_back ( SkColorSetARGB (
                                        static_cast<U8CPU> ( a * 255.0 ),
                                        static_cast<U8CPU> ( stop.color.R() * 255.0 ),
                                        static_cast<U8CPU> ( stop.color.G() * 255.0 ),
-                                       static_cast<U8CPU> ( stop.color.B() * 255.0 ) ) ) );
+                                       static_cast<U8CPU> ( stop.color.B() * 255.0 ) ) );
                 positions.push_back ( static_cast<float> ( stop.offset ) );
             }
             SkPoint pts[2] = { SkPoint::Make ( static_cast<SkScalar> ( gx1 ), static_cast<SkScalar> ( gy1 ) ),
                                SkPoint::Make ( static_cast<SkScalar> ( gx2 ), static_cast<SkScalar> ( gy2 ) )
                              };
+#if AEONGUI_HAS_SK_GRADIENT_SHADER
+            sk_sp<SkShader> shader = SkGradientShader::MakeLinear (
+                                         pts,
+                                         colors.data(),
+                                         positions.empty() ? nullptr : positions.data(),
+                                         static_cast<int> ( colors.size() ),
+                                         SkTileMode::kClamp );
+#else
+            std::vector<SkColor4f> colors4f;
+            colors4f.reserve ( colors.size() );
+            for ( const SkColor color : colors )
+            {
+                colors4f.push_back ( SkColor4f::FromColor ( color ) );
+            }
             const SkGradient::Colors gradientColors (
-                SkSpan<const SkColor4f> ( colors.data(), colors.size() ),
+                SkSpan<const SkColor4f> ( colors4f.data(), colors4f.size() ),
                 SkSpan<const float> ( positions.data(), positions.size() ),
                 SkTileMode::kClamp );
             const SkGradient gradient ( gradientColors, SkGradient::Interpolation::FromFlags ( 0 ) );
             sk_sp<SkShader> shader = SkShaders::LinearGradient ( pts, gradient );
+#endif
             SkPaint paint;
             paint.setStyle ( SkPaint::kFill_Style );
             paint.setAntiAlias ( true );

@@ -50,8 +50,8 @@ jobs:
         brew update
         brew install cmake pkg-config cairo pango libxml2 googletest gsed bison zlib libpng libjpeg-turbo
         if [ "${{ matrix.backend }}" = "Skia" ]; then
-          brew tap aeongames/ports-local "file://${{ github.workspace }}/homebrew-ports"
-          brew install --build-from-source aeongames/ports-local/skia-aeongui
+          brew tap aeongames/ports
+          brew install --build-from-source aeongames/ports/skia-aeongui
         fi
       if: matrix.compiler == 'clang' && steps.changes.outputs.compiled == 'true'
 
