@@ -12,6 +12,7 @@ jobs:
     strategy:
       matrix:
         compiler: [clang]
+        backend: [Cairo, Skia]
 
     steps:
     - name: '🧰 Checkout'
@@ -27,6 +28,8 @@ jobs:
           compiled:
             - 'CMakeLists.txt'
             - 'cmake/**'
+            - 'tools/homebrew/**'
+            - 'homebrew-ports/**'
             - 'vcpkg.json'
             - 'vcpkg-configuration.json'
             - 'core/**'
@@ -46,6 +49,10 @@ jobs:
       run: |
         brew update
         brew install cmake pkg-config cairo pango libxml2 googletest gsed bison zlib libpng libjpeg-turbo
+        if [ "${{ matrix.backend }}" = "Skia" ]; then
+          brew tap aeongames/ports-local "file://${{ github.workspace }}/homebrew-ports"
+          brew install --build-from-source aeongames/ports-local/skia-aeongui
+        fi
       if: matrix.compiler == 'clang' && steps.changes.outputs.compiled == 'true'
 
     - name: '🌋 Install Vulkan SDK'
@@ -56,11 +63,17 @@ jobs:
         cache: true
       if: steps.changes.outputs.compiled == 'true'
 
-    - name: '🛠️ Configuring'
+    - name: '🛠️ Configuring (${{ matrix.backend }})'
       run: |
         export PATH="/opt/homebrew/opt/bison/bin:$PATH"
-        export PKG_CONFIG_PATH="/opt/homebrew/lib/pkgconfig:$PKG_CONFIG_PATH"
-        cmake -B ${{github.workspace}}/build -DCMAKE_BUILD_TYPE=${{env.BUILD_TYPE}}
+        if [ "${{ matrix.backend }}" = "Skia" ]; then
+          export SKIA_ROOT="$(brew --prefix skia-aeongui)"
+          export PKG_CONFIG_PATH="$SKIA_ROOT/lib/pkgconfig:/opt/homebrew/lib/pkgconfig:$PKG_CONFIG_PATH"
+          cmake -B ${{github.workspace}}/build -DCMAKE_BUILD_TYPE=${{env.BUILD_TYPE}} -DAEONGUI_BACKEND=Skia -DAEONGUI_SKIA_ROOT="$SKIA_ROOT"
+        else
+          export PKG_CONFIG_PATH="/opt/homebrew/lib/pkgconfig:$PKG_CONFIG_PATH"
+          cmake -B ${{github.workspace}}/build -DCMAKE_BUILD_TYPE=${{env.BUILD_TYPE}} -DAEONGUI_BACKEND=Cairo
+        fi
       if: matrix.compiler == 'clang' && steps.changes.outputs.compiled == 'true'
 
     - name: '🏗️ Building'
