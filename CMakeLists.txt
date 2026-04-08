@@ -141,6 +141,7 @@ option(USE_CUDA "Enable CUDA support")
 option(BUILD_UNIT_TESTS "Enable Unit Tests using GTest/GMock" ON)
 set(AEONGUI_BACKEND "Cairo" CACHE STRING "2D rendering backend (Cairo or Skia)")
 set_property(CACHE AEONGUI_BACKEND PROPERTY STRINGS Cairo Skia)
+set(AEONGUI_SKIA_ROOT "" CACHE PATH "Skia installation root (used when AEONGUI_BACKEND=Skia, especially on macOS)")
 set(CMAKE_BUILD_TYPE "Debug" CACHE STRING "One of Debug|Release|RelWithDebInfo|MinSizeRel")
 set(HTTP_PROXY "" CACHE STRING "Specify a proxy server if required for downloads")
 set(HTTPS_PROXY "" CACHE STRING "Specify a proxy server if required for downloads")
@@ -150,6 +151,37 @@ if(NOT "${HTTP_PROXY}" STREQUAL "")
 endif()
 if(NOT "${HTTPS_PROXY}" STREQUAL "")
 	set(ENV{https_proxy} "${HTTPS_PROXY}")
+endif()
+
+# On macOS, prefer the Homebrew skia-aeongui prefix when using Skia backend.
+if(APPLE AND AEONGUI_BACKEND STREQUAL "Skia")
+  set(AEONGUI_SKIA_EFFECTIVE_ROOT "")
+  set(_aeongui_skia_root "${AEONGUI_SKIA_ROOT}")
+  if(NOT _aeongui_skia_root)
+    set(_aeongui_skia_root "$ENV{SKIA_ROOT}")
+  endif()
+  if(NOT _aeongui_skia_root)
+    if(EXISTS "/opt/homebrew/opt/skia-aeongui")
+      set(_aeongui_skia_root "/opt/homebrew/opt/skia-aeongui")
+    elseif(EXISTS "/usr/local/opt/skia-aeongui")
+      set(_aeongui_skia_root "/usr/local/opt/skia-aeongui")
+    endif()
+  endif()
+
+  if(_aeongui_skia_root)
+    set(AEONGUI_SKIA_EFFECTIVE_ROOT "${_aeongui_skia_root}")
+    list(PREPEND CMAKE_PREFIX_PATH "${_aeongui_skia_root}")
+    list(PREPEND CMAKE_LIBRARY_PATH "${_aeongui_skia_root}/lib")
+    list(PREPEND CMAKE_INCLUDE_PATH "${_aeongui_skia_root}/include")
+    if(DEFINED ENV{PKG_CONFIG_PATH} AND NOT "$ENV{PKG_CONFIG_PATH}" STREQUAL "")
+      set(ENV{PKG_CONFIG_PATH} "${_aeongui_skia_root}/lib/pkgconfig:$ENV{PKG_CONFIG_PATH}")
+    else()
+      set(ENV{PKG_CONFIG_PATH} "${_aeongui_skia_root}/lib/pkgconfig")
+    endif()
+    message(STATUS "Skia backend on macOS: using SKIA_ROOT='${_aeongui_skia_root}'")
+  else()
+    message(STATUS "Skia backend on macOS: SKIA_ROOT is not set and no default skia-aeongui prefix was found")
+  endif()
 endif()
 
 set(CMAKE_DEBUG_POSTFIX "d")
@@ -229,7 +261,19 @@ if(PKG_CONFIG_FOUND)
       endif()
       find_package(unofficial-skia CONFIG QUIET)
       if(NOT unofficial-skia_FOUND)
-        pkg_check_modules(SKIA REQUIRED skia)
+        pkg_check_modules(SKIA QUIET skia)
+        if(NOT SKIA_FOUND)
+          message(FATAL_ERROR
+            "Skia backend selected but Skia was not found.\n"
+            "macOS setup with Aeon tap:\n"
+            "  brew tap aeongames/ports\n"
+            "  brew install --build-from-source aeongames/ports/skia-aeongui\n"
+            "  cmake -S . -B build -DAEONGUI_BACKEND=Skia -DAEONGUI_SKIA_ROOT=\"$(brew --prefix skia-aeongui)\"\n"
+            "  export SKIA_ROOT=\"$(brew --prefix skia-aeongui)\"\n"
+            "  export PKG_CONFIG_PATH=\"$SKIA_ROOT/lib/pkgconfig:$PKG_CONFIG_PATH\"\n"
+            "Then rerun CMake."
+          )
+        endif()
       else()
         set(SKIA_LIBRARIES unofficial::skia::skia)
       endif()

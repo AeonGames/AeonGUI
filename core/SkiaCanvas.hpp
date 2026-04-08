@@ -18,7 +18,7 @@ limitations under the License.
 #include <cstdint>
 #include <string>
 #include <vector>
-#include <include/core/SkRefCnt.h>
+#include <core/SkRefCnt.h>
 #include "aeongui/Canvas.hpp"
 
 class SkSurface;

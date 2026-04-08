@@ -14,19 +14,19 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-#include <include/core/SkSurface.h>
-#include <include/core/SkCanvas.h>
-#include <include/core/SkPaint.h>
-#include <include/core/SkPath.h>
-#include <include/core/SkImage.h>
-#include <include/core/SkData.h>
-#include <include/core/SkMatrix.h>
-#include <include/core/SkPathMeasure.h>
-#include <include/core/SkBitmap.h>
-#include <include/core/SkColorSpace.h>
-#include <include/core/SkImageInfo.h>
-#include <include/effects/SkImageFilters.h>
-#include <include/effects/SkGradientShader.h>
+#include <core/SkSurface.h>
+#include <core/SkCanvas.h>
+#include <core/SkPaint.h>
+#include <core/SkPath.h>
+#include <core/SkPathBuilder.h>
+#include <core/SkImage.h>
+#include <core/SkData.h>
+#include <core/SkMatrix.h>
+#include <core/SkPathMeasure.h>
+#include <core/SkBitmap.h>
+#include <core/SkImageInfo.h>
+#include <effects/SkImageFilters.h>
+#include <effects/SkGradient.h>
 #include <pango/pango.h>
 #include <pango/pangoft2.h>
 #include <pango/pangofc-fontmap.h>
@@ -168,31 +168,31 @@ namespace AeonGUI
                                              [] ( hb_draw_funcs_t*, void* draw_data, hb_draw_state_t*,
                                                   float to_x, float to_y, void* )
             {
-                static_cast<SkPath*> ( draw_data )->moveTo ( to_x, -to_y );
+                static_cast<SkPathBuilder*> ( draw_data )->moveTo ( to_x, -to_y );
             }, nullptr, nullptr );
             hb_draw_funcs_set_line_to_func ( f,
                                              [] ( hb_draw_funcs_t*, void* draw_data, hb_draw_state_t*,
                                                   float to_x, float to_y, void* )
             {
-                static_cast<SkPath*> ( draw_data )->lineTo ( to_x, -to_y );
+                static_cast<SkPathBuilder*> ( draw_data )->lineTo ( to_x, -to_y );
             }, nullptr, nullptr );
             hb_draw_funcs_set_quadratic_to_func ( f,
                                                   [] ( hb_draw_funcs_t*, void* draw_data, hb_draw_state_t*,
                                                           float cx, float cy, float to_x, float to_y, void* )
             {
-                static_cast<SkPath*> ( draw_data )->quadTo ( cx, -cy, to_x, -to_y );
+                static_cast<SkPathBuilder*> ( draw_data )->quadTo ( cx, -cy, to_x, -to_y );
             }, nullptr, nullptr );
             hb_draw_funcs_set_cubic_to_func ( f,
                                               [] ( hb_draw_funcs_t*, void* draw_data, hb_draw_state_t*,
                                                    float c1x, float c1y, float c2x, float c2y,
                                                    float to_x, float to_y, void* )
             {
-                static_cast<SkPath*> ( draw_data )->cubicTo ( c1x, -c1y, c2x, -c2y, to_x, -to_y );
+                static_cast<SkPathBuilder*> ( draw_data )->cubicTo ( c1x, -c1y, c2x, -c2y, to_x, -to_y );
             }, nullptr, nullptr );
             hb_draw_funcs_set_close_path_func ( f,
                                                 [] ( hb_draw_funcs_t*, void* draw_data, hb_draw_state_t*, void* )
             {
-                static_cast<SkPath*> ( draw_data )->close();
+                static_cast<SkPathBuilder*> ( draw_data )->close();
             }, nullptr, nullptr );
             hb_draw_funcs_make_immutable ( f );
             return f;
@@ -262,7 +262,7 @@ namespace AeonGUI
 
     static SkPath BuildTextPath ( PangoLayout* aLayout, double aBaselineY )
     {
-        SkPath textPath;
+        SkPathBuilder textPathBuilder;
         hb_draw_funcs_t* drawFuncs = GetHbDrawFuncs();
         PangoLayoutIter* iter = pango_layout_get_iter ( aLayout );
         do
@@ -297,13 +297,14 @@ namespace AeonGUI
                 double xPos = runX + advanceX + static_cast<double> ( gi.geometry.x_offset ) / PANGO_SCALE;
                 double yPos = aBaselineY + static_cast<double> ( gi.geometry.y_offset ) / PANGO_SCALE;
 
-                SkPath glyphPath;
-                hb_font_draw_glyph ( hbFont, gi.glyph, drawFuncs, &glyphPath );
+                SkPathBuilder glyphPathBuilder;
+                hb_font_draw_glyph ( hbFont, gi.glyph, drawFuncs, &glyphPathBuilder );
+                SkPath glyphPath = glyphPathBuilder.detach();
                 if ( !glyphPath.isEmpty() )
                 {
-                    textPath.addPath ( glyphPath,
-                                       static_cast<SkScalar> ( xPos ),
-                                       static_cast<SkScalar> ( yPos ) );
+                    textPathBuilder.addPath ( glyphPath,
+                                              static_cast<SkScalar> ( xPos ),
+                                              static_cast<SkScalar> ( yPos ) );
                 }
 
                 advanceX += static_cast<double> ( gi.geometry.width ) / PANGO_SCALE;
@@ -311,7 +312,7 @@ namespace AeonGUI
         }
         while ( pango_layout_iter_next_run ( iter ) );
         pango_layout_iter_free ( iter );
-        return textPath;
+        return textPathBuilder.detach();
     }
 
     void SkiaCanvas::Draw ( const Path& aPath )
@@ -359,25 +360,27 @@ namespace AeonGUI
                 gx2 = bounds.fLeft + grad.x2 * bw;
                 gy2 = bounds.fTop + grad.y2 * bh;
             }
-            std::vector<SkColor> colors;
-            std::vector<SkScalar> positions;
+            std::vector<SkColor4f> colors;
+            std::vector<float> positions;
             for ( const auto& stop : grad.stops )
             {
                 double a = ( mFillOpacity >= 1.0 ) ? stop.color.A() : mFillOpacity;
-                colors.push_back ( SkColorSetARGB (
+                colors.push_back ( SkColor4f::FromColor ( SkColorSetARGB (
                                        static_cast<U8CPU> ( a * 255.0 ),
                                        static_cast<U8CPU> ( stop.color.R() * 255.0 ),
                                        static_cast<U8CPU> ( stop.color.G() * 255.0 ),
-                                       static_cast<U8CPU> ( stop.color.B() * 255.0 ) ) );
-                positions.push_back ( static_cast<SkScalar> ( stop.offset ) );
+                                       static_cast<U8CPU> ( stop.color.B() * 255.0 ) ) ) );
+                positions.push_back ( static_cast<float> ( stop.offset ) );
             }
             SkPoint pts[2] = { SkPoint::Make ( static_cast<SkScalar> ( gx1 ), static_cast<SkScalar> ( gy1 ) ),
                                SkPoint::Make ( static_cast<SkScalar> ( gx2 ), static_cast<SkScalar> ( gy2 ) )
                              };
-            sk_sp<SkShader> shader = SkGradientShader::MakeLinear (
-                                         pts, colors.data(), positions.data(),
-                                         static_cast<int> ( colors.size() ),
-                                         SkTileMode::kClamp );
+            const SkGradient::Colors gradientColors (
+                SkSpan<const SkColor4f> ( colors.data(), colors.size() ),
+                SkSpan<const float> ( positions.data(), positions.size() ),
+                SkTileMode::kClamp );
+            const SkGradient gradient ( gradientColors, SkGradient::Interpolation::FromFlags ( 0 ) );
+            sk_sp<SkShader> shader = SkShaders::LinearGradient ( pts, gradient );
             SkPaint paint;
             paint.setStyle ( SkPaint::kFill_Style );
             paint.setAntiAlias ( true );
@@ -539,7 +542,7 @@ namespace AeonGUI
         // aY is the SVG baseline. FreeType glyph outlines have their origin at
         // the baseline, so pass aY directly — not the top-of-layout offset.
         SkPath textPath = BuildTextPath ( layout, aY );
-        textPath.offset ( static_cast<SkScalar> ( aX ), 0 );
+        textPath = textPath.makeOffset ( static_cast<SkScalar> ( aX ), 0 );
 
         if ( mOpacity < 1.0 && mOpacity > 0.0 )
         {

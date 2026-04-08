@@ -15,6 +15,7 @@ limitations under the License.
 */
 #include <iostream>
 #include "aeongui/dom/SVGGeometryElement.hpp"
+#include "aeongui/Canvas.hpp"
 #ifdef AEONGUI_USE_SKIA
 #include "SkiaPath.hpp"
 #else

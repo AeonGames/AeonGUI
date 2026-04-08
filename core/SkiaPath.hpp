@@ -16,7 +16,7 @@ limitations under the License.
 #ifndef AEONGUI_SKIAPATH_H
 #define AEONGUI_SKIAPATH_H
 #include "aeongui/Path.hpp"
-#include <include/core/SkPath.h>
+#include <core/SkPath.h>
 
 namespace AeonGUI
 {

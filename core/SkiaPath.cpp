@@ -16,7 +16,8 @@ limitations under the License.
 
 #include <cmath>
 #include "SkiaPath.hpp"
-#include <include/core/SkPathMeasure.h>
+#include <core/SkPathMeasure.h>
+#include <core/SkPathBuilder.h>
 
 namespace AeonGUI
 {
@@ -36,7 +37,7 @@ namespace AeonGUI
     void SkiaPath::Construct ( const DrawType* aCommands, size_t aCommandCount, size_t aPathDataHint )
     {
         ( void ) aPathDataHint;
-        mPath.reset();
+        SkPathBuilder pathBuilder;
         uint64_t last_cmd{};
         Vector2 last_point{0, 0};
         Vector2 last_move{0, 0};
@@ -52,19 +53,19 @@ namespace AeonGUI
             case 'm':
             {
                 last_move = last_point = ( ( cmd == 'm' ) ? last_point : Vector2{0, 0} ) + Vector2{std::get<double> ( *i ), std::get<double> ( * ( i + 1 ) ) };
-                mPath.moveTo ( static_cast<SkScalar> ( last_point[0] ), static_cast<SkScalar> ( last_point[1] ) );
+                pathBuilder.moveTo ( static_cast<SkScalar> ( last_point[0] ), static_cast<SkScalar> ( last_point[1] ) );
                 i += 2;
                 while ( i != end && std::holds_alternative<double> ( *i ) )
                 {
                     last_point += {std::get<double> ( *i ), std::get<double> ( * ( i + 1 ) ) };
-                    mPath.lineTo ( static_cast<SkScalar> ( last_point[0] ), static_cast<SkScalar> ( last_point[1] ) );
+                    pathBuilder.lineTo ( static_cast<SkScalar> ( last_point[0] ), static_cast<SkScalar> ( last_point[1] ) );
                     i += 2;
                 }
             }
             break;
             case 'Z':
             case 'z':
-                mPath.close();
+                pathBuilder.close();
                 last_point = last_move;
                 break;
             case 'L':
@@ -72,7 +73,7 @@ namespace AeonGUI
                 while ( i != end && std::holds_alternative<double> ( *i ) )
                 {
                     last_point = ( ( cmd == 'l' ) ? last_point : Vector2{0, 0} ) + Vector2{std::get<double> ( *i ), std::get<double> ( * ( i + 1 ) ) };
-                    mPath.lineTo ( static_cast<SkScalar> ( last_point[0] ), static_cast<SkScalar> ( last_point[1] ) );
+                    pathBuilder.lineTo ( static_cast<SkScalar> ( last_point[0] ), static_cast<SkScalar> ( last_point[1] ) );
                     i += 2;
                 }
                 break;
@@ -80,7 +81,7 @@ namespace AeonGUI
                 while ( i != end && std::holds_alternative<double> ( *i ) )
                 {
                     last_point[0] = std::get<double> ( *i );
-                    mPath.lineTo ( static_cast<SkScalar> ( last_point[0] ), static_cast<SkScalar> ( last_point[1] ) );
+                    pathBuilder.lineTo ( static_cast<SkScalar> ( last_point[0] ), static_cast<SkScalar> ( last_point[1] ) );
                     ++i;
                 }
                 break;
@@ -88,7 +89,7 @@ namespace AeonGUI
                 while ( i != end && std::holds_alternative<double> ( *i ) )
                 {
                     last_point[0] += std::get<double> ( *i );
-                    mPath.lineTo ( static_cast<SkScalar> ( last_point[0] ), static_cast<SkScalar> ( last_point[1] ) );
+                    pathBuilder.lineTo ( static_cast<SkScalar> ( last_point[0] ), static_cast<SkScalar> ( last_point[1] ) );
                     ++i;
                 }
                 break;
@@ -96,7 +97,7 @@ namespace AeonGUI
                 while ( i != end && std::holds_alternative<double> ( *i ) )
                 {
                     last_point[1] = std::get<double> ( *i );
-                    mPath.lineTo ( static_cast<SkScalar> ( last_point[0] ), static_cast<SkScalar> ( last_point[1] ) );
+                    pathBuilder.lineTo ( static_cast<SkScalar> ( last_point[0] ), static_cast<SkScalar> ( last_point[1] ) );
                     ++i;
                 }
                 break;
@@ -104,7 +105,7 @@ namespace AeonGUI
                 while ( i != end && std::holds_alternative<double> ( *i ) )
                 {
                     last_point[1] += std::get<double> ( *i );
-                    mPath.lineTo ( static_cast<SkScalar> ( last_point[0] ), static_cast<SkScalar> ( last_point[1] ) );
+                    pathBuilder.lineTo ( static_cast<SkScalar> ( last_point[0] ), static_cast<SkScalar> ( last_point[1] ) );
                     ++i;
                 }
                 break;
@@ -115,9 +116,9 @@ namespace AeonGUI
                     double y1 = std::get<double> ( * ( i + 1 ) );
                     last_c_ctrl = {std::get<double> ( * ( i + 2 ) ), std::get<double> ( * ( i + 3 ) ) };
                     last_point  = {std::get<double> ( * ( i + 4 ) ), std::get<double> ( * ( i + 5 ) ) };
-                    mPath.cubicTo ( static_cast<SkScalar> ( x1 ), static_cast<SkScalar> ( y1 ),
-                                    static_cast<SkScalar> ( last_c_ctrl[0] ), static_cast<SkScalar> ( last_c_ctrl[1] ),
-                                    static_cast<SkScalar> ( last_point[0] ), static_cast<SkScalar> ( last_point[1] ) );
+                    pathBuilder.cubicTo ( static_cast<SkScalar> ( x1 ), static_cast<SkScalar> ( y1 ),
+                                          static_cast<SkScalar> ( last_c_ctrl[0] ), static_cast<SkScalar> ( last_c_ctrl[1] ),
+                                          static_cast<SkScalar> ( last_point[0] ), static_cast<SkScalar> ( last_point[1] ) );
                     i += 6;
                 }
                 break;
@@ -128,9 +129,9 @@ namespace AeonGUI
                     double y1 = last_point[1] + std::get<double> ( * ( i + 1 ) );
                     last_c_ctrl = last_point + Vector2{std::get<double> ( * ( i + 2 ) ), std::get<double> ( * ( i + 3 ) ) };
                     last_point += {std::get<double> ( * ( i + 4 ) ), std::get<double> ( * ( i + 5 ) ) };
-                    mPath.cubicTo ( static_cast<SkScalar> ( x1 ), static_cast<SkScalar> ( y1 ),
-                                    static_cast<SkScalar> ( last_c_ctrl[0] ), static_cast<SkScalar> ( last_c_ctrl[1] ),
-                                    static_cast<SkScalar> ( last_point[0] ), static_cast<SkScalar> ( last_point[1] ) );
+                    pathBuilder.cubicTo ( static_cast<SkScalar> ( x1 ), static_cast<SkScalar> ( y1 ),
+                                          static_cast<SkScalar> ( last_c_ctrl[0] ), static_cast<SkScalar> ( last_c_ctrl[1] ),
+                                          static_cast<SkScalar> ( last_point[0] ), static_cast<SkScalar> ( last_point[1] ) );
                     i += 6;
                 }
                 break;
@@ -141,9 +142,9 @@ namespace AeonGUI
                                   last_point;
                     last_c_ctrl = {std::get<double> ( * ( i ) ), std::get<double> ( * ( i + 1 ) ) };
                     last_point = {std::get<double> ( * ( i + 2 ) ), std::get<double> ( * ( i + 3 ) ) };
-                    mPath.cubicTo ( static_cast<SkScalar> ( cp1[0] ), static_cast<SkScalar> ( cp1[1] ),
-                                    static_cast<SkScalar> ( last_c_ctrl[0] ), static_cast<SkScalar> ( last_c_ctrl[1] ),
-                                    static_cast<SkScalar> ( last_point[0] ), static_cast<SkScalar> ( last_point[1] ) );
+                    pathBuilder.cubicTo ( static_cast<SkScalar> ( cp1[0] ), static_cast<SkScalar> ( cp1[1] ),
+                                          static_cast<SkScalar> ( last_c_ctrl[0] ), static_cast<SkScalar> ( last_c_ctrl[1] ),
+                                          static_cast<SkScalar> ( last_point[0] ), static_cast<SkScalar> ( last_point[1] ) );
                     i += 4;
                 }
                 break;
@@ -154,9 +155,9 @@ namespace AeonGUI
                                   last_point;
                     last_c_ctrl = last_point + Vector2{std::get<double> ( * ( i ) ), std::get<double> ( * ( i + 1 ) ) };
                     last_point += {std::get<double> ( * ( i + 2 ) ), std::get<double> ( * ( i + 3 ) ) };
-                    mPath.cubicTo ( static_cast<SkScalar> ( cp1[0] ), static_cast<SkScalar> ( cp1[1] ),
-                                    static_cast<SkScalar> ( last_c_ctrl[0] ), static_cast<SkScalar> ( last_c_ctrl[1] ),
-                                    static_cast<SkScalar> ( last_point[0] ), static_cast<SkScalar> ( last_point[1] ) );
+                    pathBuilder.cubicTo ( static_cast<SkScalar> ( cp1[0] ), static_cast<SkScalar> ( cp1[1] ),
+                                          static_cast<SkScalar> ( last_c_ctrl[0] ), static_cast<SkScalar> ( last_c_ctrl[1] ),
+                                          static_cast<SkScalar> ( last_point[0] ), static_cast<SkScalar> ( last_point[1] ) );
                     i += 4;
                 }
                 break;
@@ -165,8 +166,8 @@ namespace AeonGUI
                 {
                     last_q_ctrl = {std::get<double> ( *i ), std::get<double> ( * ( i + 1 ) ) };
                     last_point = {std::get<double> ( * ( i + 2 ) ), std::get<double> ( * ( i + 3 ) ) };
-                    mPath.quadTo ( static_cast<SkScalar> ( last_q_ctrl[0] ), static_cast<SkScalar> ( last_q_ctrl[1] ),
-                                   static_cast<SkScalar> ( last_point[0] ), static_cast<SkScalar> ( last_point[1] ) );
+                    pathBuilder.quadTo ( static_cast<SkScalar> ( last_q_ctrl[0] ), static_cast<SkScalar> ( last_q_ctrl[1] ),
+                                         static_cast<SkScalar> ( last_point[0] ), static_cast<SkScalar> ( last_point[1] ) );
                     i += 4;
                 }
                 break;
@@ -175,8 +176,8 @@ namespace AeonGUI
                 {
                     last_q_ctrl = last_point + Vector2{std::get<double> ( *i ), std::get<double> ( * ( i + 1 ) ) };
                     last_point += {std::get<double> ( * ( i + 2 ) ), std::get<double> ( * ( i + 3 ) ) };
-                    mPath.quadTo ( static_cast<SkScalar> ( last_q_ctrl[0] ), static_cast<SkScalar> ( last_q_ctrl[1] ),
-                                   static_cast<SkScalar> ( last_point[0] ), static_cast<SkScalar> ( last_point[1] ) );
+                    pathBuilder.quadTo ( static_cast<SkScalar> ( last_q_ctrl[0] ), static_cast<SkScalar> ( last_q_ctrl[1] ),
+                                         static_cast<SkScalar> ( last_point[0] ), static_cast<SkScalar> ( last_point[1] ) );
                     i += 4;
                 }
                 break;
@@ -186,8 +187,8 @@ namespace AeonGUI
                     last_q_ctrl = ( last_cmd == 'Q' || last_cmd == 'T' ) ? Vector2{ ( 2 * last_point[0] ) - last_q_ctrl[0], ( 2 * last_point[1] ) - last_q_ctrl[1]} :
                                   last_point;
                     last_point = {std::get<double> ( * ( i ) ), std::get<double> ( * ( i + 1 ) ) };
-                    mPath.quadTo ( static_cast<SkScalar> ( last_q_ctrl[0] ), static_cast<SkScalar> ( last_q_ctrl[1] ),
-                                   static_cast<SkScalar> ( last_point[0] ), static_cast<SkScalar> ( last_point[1] ) );
+                    pathBuilder.quadTo ( static_cast<SkScalar> ( last_q_ctrl[0] ), static_cast<SkScalar> ( last_q_ctrl[1] ),
+                                         static_cast<SkScalar> ( last_point[0] ), static_cast<SkScalar> ( last_point[1] ) );
                     i += 2;
                 }
                 break;
@@ -197,8 +198,8 @@ namespace AeonGUI
                     last_q_ctrl = ( last_cmd == 'q' || last_cmd == 't' ) ? Vector2{ ( 2 * last_point[0] ) - last_q_ctrl[0], ( 2 * last_point[1] ) - last_q_ctrl[1]} :
                                   last_point;
                     last_point += {std::get<double> ( * ( i ) ), std::get<double> ( * ( i + 1 ) ) };
-                    mPath.quadTo ( static_cast<SkScalar> ( last_q_ctrl[0] ), static_cast<SkScalar> ( last_q_ctrl[1] ),
-                                   static_cast<SkScalar> ( last_point[0] ), static_cast<SkScalar> ( last_point[1] ) );
+                    pathBuilder.quadTo ( static_cast<SkScalar> ( last_q_ctrl[0] ), static_cast<SkScalar> ( last_q_ctrl[1] ),
+                                         static_cast<SkScalar> ( last_point[0] ), static_cast<SkScalar> ( last_point[1] ) );
                     i += 2;
                 }
                 break;
@@ -212,11 +213,11 @@ namespace AeonGUI
                     bool sweep = std::get<bool> ( * ( i + 4 ) );
                     double x2 = std::get<double> ( * ( i + 5 ) );
                     double y2 = std::get<double> ( * ( i + 6 ) );
-                    mPath.arcTo ( static_cast<SkScalar> ( rx ), static_cast<SkScalar> ( ry ),
-                                  static_cast<SkScalar> ( rotation ),
-                                  largeArc ? SkPath::kLarge_ArcSize : SkPath::kSmall_ArcSize,
-                                  sweep ? SkPathDirection::kCW : SkPathDirection::kCCW,
-                                  static_cast<SkScalar> ( x2 ), static_cast<SkScalar> ( y2 ) );
+                    pathBuilder.arcTo ( SkPoint::Make ( static_cast<SkScalar> ( rx ), static_cast<SkScalar> ( ry ) ),
+                                        static_cast<SkScalar> ( rotation ),
+                                        largeArc ? SkPathBuilder::kLarge_ArcSize : SkPathBuilder::kSmall_ArcSize,
+                                        sweep ? SkPathDirection::kCW : SkPathDirection::kCCW,
+                                        SkPoint::Make ( static_cast<SkScalar> ( x2 ), static_cast<SkScalar> ( y2 ) ) );
                     last_point = {x2, y2};
                     i += 7;
                 }
@@ -231,11 +232,11 @@ namespace AeonGUI
                     bool sweep = std::get<bool> ( * ( i + 4 ) );
                     double x2 = last_point[0] + std::get<double> ( * ( i + 5 ) );
                     double y2 = last_point[1] + std::get<double> ( * ( i + 6 ) );
-                    mPath.arcTo ( static_cast<SkScalar> ( rx ), static_cast<SkScalar> ( ry ),
-                                  static_cast<SkScalar> ( rotation ),
-                                  largeArc ? SkPath::kLarge_ArcSize : SkPath::kSmall_ArcSize,
-                                  sweep ? SkPathDirection::kCW : SkPathDirection::kCCW,
-                                  static_cast<SkScalar> ( x2 ), static_cast<SkScalar> ( y2 ) );
+                    pathBuilder.arcTo ( SkPoint::Make ( static_cast<SkScalar> ( rx ), static_cast<SkScalar> ( ry ) ),
+                                        static_cast<SkScalar> ( rotation ),
+                                        largeArc ? SkPathBuilder::kLarge_ArcSize : SkPathBuilder::kSmall_ArcSize,
+                                        sweep ? SkPathDirection::kCW : SkPathDirection::kCCW,
+                                        SkPoint::Make ( static_cast<SkScalar> ( x2 ), static_cast<SkScalar> ( y2 ) ) );
                     last_point = {x2, y2};
                     i += 7;
                 }
@@ -243,6 +244,7 @@ namespace AeonGUI
             }
             last_cmd = cmd;
         }
+        mPath = pathBuilder.detach();
     }
 
     double SkiaPath::GetTotalLength() const
