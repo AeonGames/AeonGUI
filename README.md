@@ -2,7 +2,7 @@
 
 [![Windows Build](https://github.com/AeonGames/AeonGUI/actions/workflows/build-windows.yml/badge.svg)](https://github.com/AeonGames/AeonGUI/actions/workflows/build-windows.yml)
 [![MSYS2 Build](https://github.com/AeonGames/AeonGUI/actions/workflows/build-msys2.yml/badge.svg)](https://github.com/AeonGames/AeonGUI/actions/workflows/build-msys2.yml)
-[![Ubuntu Build](https://github.com/AeonGames/AeonGUI/actions/workflows/build-ubuntu.yml/badge.svg)](https://github.com/AeonGames/AeonGUI/actions/workflows/build-ubuntu.yml)
+[![Linux Build](https://github.com/AeonGames/AeonGUI/actions/workflows/build-linux.yml/badge.svg)](https://github.com/AeonGames/AeonGUI/actions/workflows/build-linux.yml)
 [![macOS Build](https://github.com/AeonGames/AeonGUI/actions/workflows/build-macos.yml/badge.svg)](https://github.com/AeonGames/AeonGUI/actions/workflows/build-macos.yml)
 
 [![Aeon Games](https://www.aeongames.com/AeonBlack.svg)](https://aeongames.com)
@@ -131,6 +131,7 @@ CI builds currently run on:
 - Windows (MSVC)
 - Windows (MSYS2: `mingw64`, `ucrt64`, `clang64`)
 - Ubuntu
+- Arch Linux (Docker)
 - macOS
 
 ## Dependencies
@@ -153,8 +154,8 @@ For MSVC builds, the repository is configured for `vcpkg` manifests (`vcpkg.json
 
 | Backend | Text rendering pipeline | Package manager availability |
 |---------|------------------------|-----------------------------|
-| Cairo   | Pango + PangoCairo     | vcpkg, apt, brew, MSYS2 pacman |
-| Skia    | Pango + PangoFT2 + HarfBuzz draw API | vcpkg, MSYS2 pacman |
+| Cairo   | Pango + PangoCairo     | vcpkg, apt, brew, MSYS2 pacman, Arch pacman |
+| Skia    | Pango + PangoFT2 + HarfBuzz draw API | vcpkg, MSYS2 pacman, [AeonGames/ArchRepo](https://github.com/AeonGames/ArchRepo/tree/main/skia) |
 
 ## Quick Start
 
@@ -195,6 +196,26 @@ cmake --build build-skia
 
 ```bash
 cmake -B build -DCMAKE_BUILD_TYPE=Release
+cmake --build build
+```
+
+#### Arch Linux (Skia backend)
+
+Skia is not available in the official Arch repositories. Build and install
+the `skia-aeongui` package from the
+[AeonGames/ArchRepo](https://github.com/AeonGames/ArchRepo/tree/main/skia)
+PKGBUILD first:
+
+```bash
+git clone https://github.com/AeonGames/ArchRepo.git
+cd ArchRepo/skia
+makepkg -si
+```
+
+Then configure AeonGUI with the Skia backend:
+
+```bash
+cmake -B build -DCMAKE_BUILD_TYPE=Release -DAEONGUI_BACKEND=Skia
 cmake --build build
 ```
 

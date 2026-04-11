@@ -14,20 +14,34 @@ jobs:
         include:
           - os: ubuntu
             compiler: gcc
+            backend: Cairo
             precompile_headers: "ON"
             name: "Ubuntu GCC with PCH"
           - os: ubuntu
             compiler: gcc
+            backend: Cairo
             precompile_headers: "OFF"
             name: "Ubuntu GCC without PCH"
           - os: archlinux
             compiler: gcc
+            backend: Cairo
             precompile_headers: "ON"
-            name: "Arch Linux GCC with PCH"
+            name: "Arch Linux GCC Cairo with PCH"
           - os: archlinux
             compiler: gcc
+            backend: Cairo
             precompile_headers: "OFF"
-            name: "Arch Linux GCC without PCH"
+            name: "Arch Linux GCC Cairo without PCH"
+          - os: archlinux
+            compiler: gcc
+            backend: Skia
+            precompile_headers: "ON"
+            name: "Arch Linux GCC Skia with PCH"
+          - os: archlinux
+            compiler: gcc
+            backend: Skia
+            precompile_headers: "OFF"
+            name: "Arch Linux GCC Skia without PCH"
 
     steps:
     - name: '🧰 Checkout'
@@ -79,7 +93,13 @@ jobs:
         docker run --rm -v ${{github.workspace}}:/workspace -w /workspace archlinux:latest bash -c "
           pacman -Syu --noconfirm &&
           pacman -S --noconfirm base-devel gcc cmake python git gtest mesa glu freeglut vulkan-devel vulkan-validation-layers glslang cairo pango libxml2 libjpeg-turbo libpng zlib pkg-config &&
-          cmake -B /workspace/build -DCMAKE_DISABLE_PRECOMPILE_HEADERS=${{ matrix.precompile_headers == 'OFF' && 'ON' || 'OFF' }} -DCMAKE_BUILD_TYPE=${{env.BUILD_TYPE}} &&
+          if [ '${{ matrix.backend }}' = 'Skia' ]; then
+            pacman -S --noconfirm gn ninja expat freetype2 harfbuzz icu libwebp &&
+            useradd -m builder &&
+            su builder -c 'cd /tmp && git clone --depth 1 https://github.com/AeonGames/ArchRepo.git && cd ArchRepo/skia && makepkg -s --noconfirm' &&
+            pacman -U --noconfirm /tmp/ArchRepo/skia/skia-aeongui-*.pkg.tar.zst
+          fi &&
+          cmake -B /workspace/build -DAEONGUI_BACKEND=${{ matrix.backend }} -DCMAKE_DISABLE_PRECOMPILE_HEADERS=${{ matrix.precompile_headers == 'OFF' && 'ON' || 'OFF' }} -DCMAKE_BUILD_TYPE=${{env.BUILD_TYPE}} &&
           cmake --build /workspace/build &&
           ctest --test-dir /workspace/build
         "
