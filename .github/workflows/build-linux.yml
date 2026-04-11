@@ -1,4 +1,4 @@
-name: Build on Ubuntu
+name: Build on Linux
 
 on: [push, pull_request]
 env:
@@ -12,12 +12,22 @@ jobs:
     strategy:
       matrix:
         include:
-          - compiler: gcc
+          - os: ubuntu
+            compiler: gcc
             precompile_headers: "ON"
-            name: "GCC with PCH"
-          - compiler: gcc
+            name: "Ubuntu GCC with PCH"
+          - os: ubuntu
+            compiler: gcc
             precompile_headers: "OFF"
-            name: "GCC without PCH"
+            name: "Ubuntu GCC without PCH"
+          - os: archlinux
+            compiler: gcc
+            precompile_headers: "ON"
+            name: "Arch Linux GCC with PCH"
+          - os: archlinux
+            compiler: gcc
+            precompile_headers: "OFF"
+            name: "Arch Linux GCC without PCH"
 
     steps:
     - name: '🧰 Checkout'
@@ -50,19 +60,30 @@ jobs:
       run: |
         sudo apt-get update
         sudo apt-get install -y build-essential software-properties-common gcc g++ sed python3 tar wget cmake autoconf automake libtool curl make unzip zlib1g-dev libpng-dev vim-common git libgtest-dev google-mock libglu1-mesa-dev freeglut3-dev mesa-common-dev libcairo-dev libpango1.0-dev libxml2-dev libjpeg-dev libvulkan-dev vulkan-validationlayers glslang-tools
-      if: matrix.compiler == 'gcc' && steps.changes.outputs.compiled == 'true'
+      if: matrix.os == 'ubuntu' && steps.changes.outputs.compiled == 'true'
 
     - name: '🛠️ Configuring'
       run: cmake -B ${{github.workspace}}/build -DCMAKE_DISABLE_PRECOMPILE_HEADERS=${{ matrix.precompile_headers == 'OFF' && 'ON' || 'OFF' }} -DCMAKE_BUILD_TYPE=${{env.BUILD_TYPE}}
-      if: matrix.compiler == 'gcc' && steps.changes.outputs.compiled == 'true'
+      if: matrix.os == 'ubuntu' && steps.changes.outputs.compiled == 'true'
 
     - name: '🏗️ Building'
       run: cmake --build ${{github.workspace}}/build
-      if: steps.changes.outputs.compiled == 'true'
+      if: matrix.os == 'ubuntu' && steps.changes.outputs.compiled == 'true'
 
     - name: '🧪 Running Tests'
       run: ctest --test-dir ${{github.workspace}}/build
-      if: steps.changes.outputs.compiled == 'true'
+      if: matrix.os == 'ubuntu' && steps.changes.outputs.compiled == 'true'
+
+    - name: '🐧 Setup and run Arch Linux build'
+      run: |
+        docker run --rm -v ${{github.workspace}}:/workspace -w /workspace archlinux:latest bash -c "
+          pacman -Syu --noconfirm &&
+          pacman -S --noconfirm base-devel gcc cmake python git gtest mesa glu freeglut vulkan-devel vulkan-validation-layers glslang cairo pango libxml2 libjpeg-turbo libpng zlib pkg-config &&
+          cmake -B /workspace/build -DCMAKE_DISABLE_PRECOMPILE_HEADERS=${{ matrix.precompile_headers == 'OFF' && 'ON' || 'OFF' }} -DCMAKE_BUILD_TYPE=${{env.BUILD_TYPE}} &&
+          cmake --build /workspace/build &&
+          ctest --test-dir /workspace/build
+        "
+      if: matrix.os == 'archlinux' && steps.changes.outputs.compiled == 'true'
 
     - name: '✅ Skip build (no compiled changes)'
       if: steps.changes.outputs.compiled != 'true'
