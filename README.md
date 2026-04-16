@@ -91,27 +91,24 @@ AeonGUI is under active development and still evolving. APIs and behavior may ch
 
 ## Architecture Overview
 
-```plantuml
-@startuml
-top to bottom direction
+```mermaid
+flowchart TD
+    svg["SVG file"]
+    parser["libxml2 parser"]
+    dom["DOM tree\n(Node / Element / Text)"]
+    css["CSS resolution\n(libcss)"]
+    text["Text layout\n(Pango / Fontconfig)"]
+    raster["Rasterisation\n(Cairo or Skia)"]
+    pixels["Pixel buffer"]
+    engine["Your engine composites\nthe buffer as a texture"]
 
-rectangle "SVG file" as svg
-rectangle "libxml2 parser" as parser
-rectangle "DOM tree\n(Node / Element / Text)" as dom
-rectangle "CSS resolution\n(libcss)" as css
-rectangle "Text layout\n(Pango / Fontconfig)" as text
-rectangle "Rasterisation\n(Cairo or Skia)" as raster
-rectangle "Pixel buffer" as pixels
-rectangle "Your engine composites\nthe buffer as a texture" as engine
-
-svg --> parser
-parser --> dom
-dom --> css
-css --> text
-text --> raster
-raster --> pixels
-pixels --> engine
-@enduml
+    svg --> parser
+    parser --> dom
+    dom --> css
+    css --> text
+    text --> raster
+    raster --> pixels
+    pixels --> engine
 ```
 
 The `Window` class ties these stages together: it owns a `Document` (the DOM
