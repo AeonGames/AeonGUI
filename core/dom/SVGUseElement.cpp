@@ -76,12 +76,6 @@ namespace AeonGUI
                 return;
             }
 
-            std::string id = mHref;
-            if ( !id.empty() && id[0] == '#' )
-            {
-                id = id.substr ( 1 );
-            }
-
             const Node* node = this;
             while ( node->parentNode() )
             {
@@ -89,7 +83,8 @@ namespace AeonGUI
             }
             const Document* document = static_cast<const Document*> ( node );
 
-            Element* referenced = document->getElementById ( id );
+            Element* referenced = document->getElementById (
+                                      mHref[0] == '#' ? mHref.substr ( 1 ) : mHref );
             if ( !referenced )
             {
                 return;

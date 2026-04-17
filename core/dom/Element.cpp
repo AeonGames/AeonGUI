@@ -968,9 +968,10 @@ namespace AeonGUI
                 }
                 else if ( it->second.compare ( 0, 5, "url(#" ) == 0 && it->second.back() == ')' )
                 {
-                    std::string fragment = "#" + it->second.substr ( 5, it->second.size() - 6 );
+                    // Intern the "#id" fragment directly from the attribute value.
+                    // "url(#id)" => skip "url(" (4 chars), drop ")" (1 char) => c_str()+4, size-5
                     lwc_string *uri_str = nullptr;
-                    lwc_intern_string ( fragment.c_str(), fragment.size(), &uri_str );
+                    lwc_intern_string ( it->second.c_str() + 4, it->second.size() - 5, &uri_str );
                     hint_buf[n].data.string = uri_str;
                     hint_buf[n].prop = CSS_PROP_FILL;
                     hint_buf[n].status = CSS_PAINT_URI;
@@ -1001,9 +1002,10 @@ namespace AeonGUI
                 }
                 else if ( it->second.compare ( 0, 5, "url(#" ) == 0 && it->second.back() == ')' )
                 {
-                    std::string fragment = "#" + it->second.substr ( 5, it->second.size() - 6 );
+                    // Intern the "#id" fragment directly from the attribute value.
+                    // "url(#id)" => skip "url(" (4 chars), drop ")" (1 char) => c_str()+4, size-5
                     lwc_string *uri_str = nullptr;
-                    lwc_intern_string ( fragment.c_str(), fragment.size(), &uri_str );
+                    lwc_intern_string ( it->second.c_str() + 4, it->second.size() - 5, &uri_str );
                     hint_buf[n].data.string = uri_str;
                     hint_buf[n].prop = CSS_PROP_STROKE;
                     hint_buf[n].status = CSS_PAINT_URI;

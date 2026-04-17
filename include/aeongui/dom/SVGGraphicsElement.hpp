@@ -47,7 +47,7 @@ namespace AeonGUI
             void DrawFinish ( Canvas& aCanvas ) const override;
         private:
             Matrix2x3 mTransform{};
-            mutable bool mHasFilter{false};
+            mutable Element* mFilterElement{nullptr};
         };
     }
 }

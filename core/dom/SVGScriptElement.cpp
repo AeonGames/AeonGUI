@@ -116,8 +116,9 @@ namespace AeonGUI
 
         // ---- Library path construction ----
 
-        std::vector<std::string> SVGScriptElement::BuildLibraryPaths ( const std::string& aHref ) const
+        std::array<std::string, 2> SVGScriptElement::BuildLibraryPaths ( const std::string& aHref, size_t& aCount ) const
         {
+            aCount = 0;
             // Extract directory from the document URL and convert to a system path
             std::string directory;
             Document* doc = ownerDocument();
@@ -130,12 +131,12 @@ namespace AeonGUI
                     directory = path.substr ( 0, lastSep + 1 );
                 }
             }
-            std::vector<std::string> candidates;
-            candidates.push_back ( directory + LibPrefix + aHref + LibExtension );
+            std::array<std::string, 2> candidates;
+            candidates[aCount++] = directory + LibPrefix + aHref + LibExtension;
 #ifndef _WIN32
             if ( std::string ( LibPrefix ).size() )
             {
-                candidates.push_back ( directory + aHref + LibExtension );
+                candidates[aCount++] = directory + aHref + LibExtension;
             }
 #endif
             return candidates;
@@ -229,14 +230,15 @@ namespace AeonGUI
                 throw std::runtime_error ( msg );
             }
 
-            auto candidates = BuildLibraryPaths ( hrefIt->second );
-            std::string libPath = candidates.front();
+            size_t candidateCount = 0;
+            auto candidates = BuildLibraryPaths ( hrefIt->second, candidateCount );
+            std::string libPath = candidates[0];
 
-            for ( const auto& candidate : candidates )
+            for ( size_t i = 0; i < candidateCount; ++i )
             {
-                if ( std::filesystem::exists ( candidate ) )
+                if ( std::filesystem::exists ( candidates[i] ) )
                 {
-                    libPath = candidate;
+                    libPath = candidates[i];
                     break;
                 }
             }
@@ -249,16 +251,16 @@ namespace AeonGUI
             catch ( const std::exception& )
             {
                 mLibHandle = nullptr;
-                for ( const auto& candidate : candidates )
+                for ( size_t i = 0; i < candidateCount; ++i )
                 {
-                    if ( candidate == libPath )
+                    if ( candidates[i] == libPath )
                     {
                         continue;
                     }
-                    std::cerr << LogLevel::Info << "SVGScriptElement: Retrying native plugin: " << candidate << std::endl;
+                    std::cerr << LogLevel::Info << "SVGScriptElement: Retrying native plugin: " << candidates[i] << std::endl;
                     try
                     {
-                        LoadLibrary ( candidate );
+                        LoadLibrary ( candidates[i] );
                         break;
                     }
                     catch ( const std::exception& )
@@ -367,6 +369,12 @@ namespace AeonGUI
                 return nullptr;
             }
             Element* elem = reinterpret_cast<Element*> ( element );
+            if ( std::string ( name ) == "textContent" )
+            {
+                static thread_local DOMString cachedTextContent;
+                cachedTextContent = elem->textContent();
+                return cachedTextContent.c_str();
+            }
             const DOMString* value = elem->getAttribute ( name );
             return value ? value->c_str() : nullptr;
         }
@@ -380,18 +388,7 @@ namespace AeonGUI
             Element* elem = reinterpret_cast<Element*> ( element );
             if ( std::string ( name ) == "textContent" )
             {
-                // textContent is a DOM property, not an attribute.
-                // Replace all child text nodes with a single new one.
-                while ( !elem->childNodes().empty() )
-                {
-                    elem->RemoveNode ( elem->childNodes().front().get() );
-                }
-                elem->AddNode ( std::make_unique<Text> ( value, elem ) );
-                Document* doc = elem->ownerDocument();
-                if ( doc )
-                {
-                    doc->MarkDirty();
-                }
+                elem->setTextContent ( value );
             }
             else
             {

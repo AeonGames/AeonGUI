@@ -21,6 +21,7 @@ limitations under the License.
 #define AEONGUI_SVGSCRIPTELEMENT_H
 
 #include <string>
+#include <array>
 #include <vector>
 #include <memory>
 #include "SVGElement.hpp"
@@ -76,9 +77,10 @@ namespace AeonGUI
         private:
             /** @brief Build the full library path from the href attribute.
              *  @param aHref The library base name.
-             *  @return Platform-specific library path.
+             *  @param aCount Output: number of valid candidates.
+             *  @return Platform-specific library path candidates (max 2).
              */
-            std::vector<std::string> BuildLibraryPaths ( const std::string& aHref ) const;
+            std::array<std::string, 2> BuildLibraryPaths ( const std::string& aHref, size_t& aCount ) const;
 
             /** @brief Load a shared library by path.
              *  @param aPath Full path to the library.

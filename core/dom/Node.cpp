@@ -19,6 +19,7 @@ Copyright (C) 2010-2013,2019,2020,2023-2026 Rodrigo Hernandez Cordoba
 #include "aeongui/dom/Node.hpp"
 #include "aeongui/dom/Document.hpp"
 #include "aeongui/dom/Element.hpp"
+#include "aeongui/dom/Text.hpp"
 #include "aeongui/CSSSelector.hpp"
 #include "aeongui/Color.hpp"
 
@@ -376,6 +377,76 @@ namespace AeonGUI
         StackTraverseDepthFirstPostOrder ( const )
         StackTraverseDepthFirstPostOrder( )
 #undef StackTraverseDepthFirstPostOrder
+
+        DOMString Node::textContent() const
+        {
+            switch ( nodeType() )
+            {
+            case DOCUMENT_NODE:
+            case DOCUMENT_TYPE_NODE:
+                return {};
+            case TEXT_NODE:
+                return static_cast<const Text*> ( this )->data();
+            default:
+            {
+                DOMString result;
+                for ( const auto& child : mChildren )
+                {
+                    if ( child->nodeType() == TEXT_NODE )
+                    {
+                        result += static_cast<const Text*> ( child.get() )->data();
+                    }
+                    else if ( child->nodeType() != DOCUMENT_TYPE_NODE )
+                    {
+                        result += child->textContent();
+                    }
+                }
+                return result;
+            }
+            }
+        }
+
+        void Node::setTextContent ( const DOMString& aTextContent )
+        {
+            switch ( nodeType() )
+            {
+            case DOCUMENT_NODE:
+            case DOCUMENT_TYPE_NODE:
+                return;
+            default:
+            {
+                // Find the first Text child and remove any extras.
+                auto textNodeIt = mChildren.begin();
+                for ( ; textNodeIt != mChildren.end(); ++textNodeIt )
+                {
+                    if ( ( *textNodeIt )->nodeType() == TEXT_NODE )
+                    {
+                        mChildren.erase ( std::remove_if ( textNodeIt + 1, mChildren.end(),
+                                                           [] ( const std::unique_ptr<Node>& node )
+                        {
+                            return node->nodeType() == TEXT_NODE;
+                        } ), mChildren.end() );
+                        break;
+                    }
+                }
+                // Only add a new Text node if the given content is non-empty and there isn't already one.
+                if ( textNodeIt != mChildren.end() )
+                {
+                    static_cast<Text*> ( textNodeIt->get() )->setData ( aTextContent );
+                }
+                else if ( !aTextContent.empty() )
+                {
+                    AddNode ( std::make_unique<Text> ( aTextContent, this ) );
+                }
+                Document* doc = ownerDocument();
+                if ( doc )
+                {
+                    doc->MarkDirty();
+                }
+                break;
+            }
+            }
+        }
 
         void Node::OnAncestorChanged()
         {

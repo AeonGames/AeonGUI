@@ -47,24 +47,21 @@ namespace AeonGUI
             ApplyChildTransformAnimations ( aCanvas );
 
             // Check for filter="url(#id)" attribute — skip during hit testing
-            mHasFilter = false;
+            mFilterElement = nullptr;
             if ( !aCanvas.IsHitTesting() )
             {
                 const DOMString* filterAttr = getAttribute ( "filter" );
-                if ( filterAttr && !filterAttr->empty() )
+                if ( filterAttr && filterAttr->size() > 6 &&
+                     filterAttr->compare ( 0, 5, "url(#" ) == 0 && filterAttr->back() == ')' )
                 {
-                    if ( filterAttr->compare ( 0, 5, "url(#" ) == 0 && filterAttr->back() == ')' )
+                    Document* doc = ownerDocument();
+                    if ( doc )
                     {
-                        std::string filterId = filterAttr->substr ( 5, filterAttr->size() - 6 );
-                        Document* doc = ownerDocument();
-                        if ( doc )
+                        Element* elem = doc->getElementById ( filterAttr->substr ( 5, filterAttr->size() - 6 ) );
+                        if ( elem && elem->tagName() == "filter" )
                         {
-                            Element* filterElem = doc->getElementById ( filterId );
-                            if ( filterElem && filterElem->tagName() == "filter" )
-                            {
-                                mHasFilter = true;
-                                aCanvas.PushGroup();
-                            }
+                            mFilterElement = elem;
+                            aCanvas.PushGroup();
                         }
                     }
                 }
@@ -73,36 +70,14 @@ namespace AeonGUI
 
         void SVGGraphicsElement::DrawFinish ( Canvas& aCanvas ) const
         {
-            if ( !mHasFilter )
+            if ( !mFilterElement )
             {
-                return;
-            }
-
-            const DOMString* filterAttr = getAttribute ( "filter" );
-            if ( !filterAttr || filterAttr->empty() )
-            {
-                aCanvas.PopGroup();
-                return;
-            }
-
-            // Re-resolve the filter element to access its primitives
-            if ( filterAttr->compare ( 0, 5, "url(#" ) != 0 || filterAttr->back() != ')' )
-            {
-                aCanvas.PopGroup();
-                return;
-            }
-            std::string filterId = filterAttr->substr ( 5, filterAttr->size() - 6 );
-            Document* doc = ownerDocument();
-            Element* filterElem = doc ? doc->getElementById ( filterId ) : nullptr;
-            if ( !filterElem || filterElem->tagName() != "filter" )
-            {
-                aCanvas.PopGroup();
                 return;
             }
 
             // Iterate child filter primitives and apply them
             bool applied = false;
-            for ( const auto& child : filterElem->childNodes() )
+            for ( const auto& child : mFilterElement->childNodes() )
             {
                 if ( child->nodeType() != Node::ELEMENT_NODE )
                 {

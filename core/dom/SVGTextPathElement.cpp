@@ -120,15 +120,10 @@ namespace AeonGUI
             SVGTextContentElement::DrawStart ( aCanvas );
 
             // Resolve the referenced path element by ID.
-            std::string hrefVal = mHref.baseVal();
+            const std::string& hrefVal = mHref.baseVal();
             if ( hrefVal.empty() )
             {
                 return;
-            }
-            // Strip leading '#' from the href fragment.
-            if ( hrefVal[0] == '#' )
-            {
-                hrefVal = hrefVal.substr ( 1 );
             }
 
             // Walk up to the Document root.
@@ -140,7 +135,9 @@ namespace AeonGUI
             const Document* document = static_cast<const Document*> ( node );
 
             // Use the DOM spec getElementById to find the referenced element.
-            Element* foundElem = document->getElementById ( hrefVal );
+            // Strip leading '#' from the href fragment.
+            Element* foundElem = document->getElementById (
+                                     hrefVal[0] == '#' ? hrefVal.substr ( 1 ) : hrefVal );
             const SVGGeometryElement* pathElement = foundElem
                                                     ? dynamic_cast<const SVGGeometryElement*> ( foundElem )
                                                     : nullptr;
@@ -217,16 +214,16 @@ namespace AeonGUI
             }
 
             // Collect text content from child text nodes.
-            std::string textContent = getTextContent();
+            DOMString tc = textContent();
 
-            if ( textContent.empty() )
+            if ( tc.empty() )
             {
                 return;
             }
 
             if ( anchor != 0 )
             {
-                double textWidth = aCanvas.MeasureText ( textContent, fontFamily, fontSize, fontWeight, fontStyle );
+                double textWidth = aCanvas.MeasureText ( tc, fontFamily, fontSize, fontWeight, fontStyle );
                 if ( anchor == 1 )
                 {
                     startOffset -= textWidth * 0.5;
@@ -239,7 +236,7 @@ namespace AeonGUI
 
             bool isClosed = pathElement->GetPath().IsClosed();
 
-            aCanvas.DrawTextOnPath ( textContent, pathElement->GetPath(), startOffset,
+            aCanvas.DrawTextOnPath ( tc, pathElement->GetPath(), startOffset,
                                      fontFamily, fontSize, fontWeight, fontStyle,
                                      mSideRight, isClosed );
         }

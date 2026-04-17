@@ -54,9 +54,9 @@ namespace AeonGUI
             return *mTextLayout;
         }
 
-        void SVGTextContentElement::syncTextLayout() const
+        long SVGTextContentElement::syncTextLayout() const
         {
-            std::string text = getTextContent();
+            std::string text = textContent();
             mTextLayout->SetText ( text );
 
             // Apply font properties from CSS computed styles if available.
@@ -69,36 +69,12 @@ namespace AeonGUI
                 mTextLayout->SetFontWeight ( GetCSSFontWeight ( style ) );
                 mTextLayout->SetFontStyle ( GetCSSFontStyle ( style ) );
             }
-        }
-
-        std::string SVGTextContentElement::getTextContent() const
-        {
-            std::string textContent;
-
-            for ( const auto& child : this->childNodes() )
-            {
-                if ( child->nodeType() == Node::TEXT_NODE )
-                {
-                    const Text* textNode = static_cast<const Text*> ( child.get() );
-                    textContent += textNode->wholeText();
-                }
-                else if ( child->nodeType() == Node::ELEMENT_NODE )
-                {
-                    const SVGTextContentElement* childElement = dynamic_cast<const SVGTextContentElement*> ( child.get() );
-                    if ( childElement )
-                    {
-                        textContent += childElement->getTextContent();
-                    }
-                }
-            }
-
-            return textContent;
+            return static_cast<long> ( text.length() );
         }
 
         long SVGTextContentElement::getNumberOfChars() const
         {
-            std::string textContent = getTextContent();
-            return static_cast<long> ( textContent.length() );
+            return syncTextLayout();
         }
 
         float SVGTextContentElement::getComputedTextLength() const
@@ -109,8 +85,7 @@ namespace AeonGUI
 
         float SVGTextContentElement::getSubStringLength ( long start, long end ) const
         {
-            std::string textContent = getTextContent();
-            long totalChars = static_cast<long> ( textContent.length() );
+            long totalChars = syncTextLayout();
 
             if ( start < 0 )
             {
@@ -129,7 +104,6 @@ namespace AeonGUI
             }
 
             // Measure full text up to actualEnd and subtract measurement up to start.
-            syncTextLayout();
             double endX = mTextLayout->GetCharOffsetX ( actualEnd );
             double startX = mTextLayout->GetCharOffsetX ( start );
             return static_cast<float> ( endX - startX );
@@ -137,45 +111,39 @@ namespace AeonGUI
 
         DOMPoint SVGTextContentElement::getStartPositionOfChar ( long index ) const
         {
-            std::string textContent = getTextContent();
-            long totalChars = static_cast<long> ( textContent.length() );
+            long totalChars = syncTextLayout();
 
             if ( index < 0 || index >= totalChars )
             {
                 throw DOMIndexSizeError ( "Character index out of bounds" );
             }
 
-            syncTextLayout();
             float xPos = static_cast<float> ( mTextLayout->GetCharOffsetX ( index ) );
             return DOMPoint ( xPos, 0.0f, 0.0f, 1.0f );
         }
 
         DOMPoint SVGTextContentElement::getEndPositionOfChar ( long index ) const
         {
-            std::string textContent = getTextContent();
-            long totalChars = static_cast<long> ( textContent.length() );
+            long totalChars = syncTextLayout();
 
             if ( index < 0 || index >= totalChars )
             {
                 throw DOMIndexSizeError ( "Character index out of bounds" );
             }
 
-            syncTextLayout();
             float xPos = static_cast<float> ( mTextLayout->GetCharOffsetX ( index + 1 ) );
             return DOMPoint ( xPos, 0.0f, 0.0f, 1.0f );
         }
 
         DOMRect SVGTextContentElement::getExtentOfChar ( long index ) const
         {
-            std::string textContent = getTextContent();
-            long totalChars = static_cast<long> ( textContent.length() );
+            long totalChars = syncTextLayout();
 
             if ( index < 0 || index >= totalChars )
             {
                 throw DOMIndexSizeError ( "Character index out of bounds" );
             }
 
-            syncTextLayout();
             float xStart = static_cast<float> ( mTextLayout->GetCharOffsetX ( index ) );
             float xEnd = static_cast<float> ( mTextLayout->GetCharOffsetX ( index + 1 ) );
             float charWidth = xEnd - xStart;
@@ -186,8 +154,7 @@ namespace AeonGUI
 
         float SVGTextContentElement::getRotationOfChar ( long index ) const
         {
-            std::string textContent = getTextContent();
-            long totalChars = static_cast<long> ( textContent.length() );
+            long totalChars = syncTextLayout();
 
             if ( index < 0 || index >= totalChars )
             {
@@ -199,15 +166,12 @@ namespace AeonGUI
 
         long SVGTextContentElement::getCharNumAtPosition ( const DOMPoint& point ) const
         {
-            std::string textContent = getTextContent();
-            long totalChars = static_cast<long> ( textContent.length() );
+            long totalChars = syncTextLayout();
 
             if ( totalChars == 0 )
             {
                 return -1;
             }
-
-            syncTextLayout();
             // Walk character positions to find hit.
             for ( long i = 0; i < totalChars; ++i )
             {

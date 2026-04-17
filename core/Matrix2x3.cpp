@@ -18,7 +18,7 @@ limitations under the License.
 #include <cmath>
 #include <cstring>
 #include <regex>
-#include <vector>
+#include <array>
 #include <string>
 namespace AeonGUI
 {
@@ -115,45 +115,46 @@ namespace AeonGUI
         {
             std::string func = ( *it ) [1].str();
             std::string args_str = ( *it ) [2].str();
-            std::vector<double> args;
+            std::array<double, 6> args{};
+            size_t argc = 0;
             auto nbegin = std::sregex_iterator ( args_str.begin(), args_str.end(), num_regex );
             auto nend = std::sregex_iterator();
-            for ( auto nit = nbegin; nit != nend; ++nit )
+            for ( auto nit = nbegin; nit != nend && argc < 6; ++nit )
             {
-                args.push_back ( std::stod ( nit->str() ) );
+                args[argc++] = std::stod ( nit->str() );
             }
-            if ( func == "matrix" && args.size() == 6 )
+            if ( func == "matrix" && argc == 6 )
             {
                 result *= Matrix2x3 { args[0], args[1], args[2], args[3], args[4], args[5] };
             }
-            else if ( func == "translate" && !args.empty() )
+            else if ( func == "translate" && argc > 0 )
             {
                 double tx = args[0];
-                double ty = args.size() > 1 ? args[1] : 0.0;
+                double ty = argc > 1 ? args[1] : 0.0;
                 result *= Matrix2x3 { 1.0, 0.0, 0.0, 1.0, tx, ty };
             }
-            else if ( func == "scale" && !args.empty() )
+            else if ( func == "scale" && argc > 0 )
             {
                 double sx = args[0];
-                double sy = args.size() > 1 ? args[1] : sx;
+                double sy = argc > 1 ? args[1] : sx;
                 result *= Matrix2x3 { sx, 0.0, 0.0, sy, 0.0, 0.0 };
             }
-            else if ( func == "rotate" && !args.empty() )
+            else if ( func == "rotate" && argc > 0 )
             {
                 double angle = args[0] * M_PI / 180.0;
-                double cx = args.size() > 1 ? args[1] : 0.0;
-                double cy = args.size() > 2 ? args[2] : 0.0;
+                double cx = argc > 1 ? args[1] : 0.0;
+                double cy = argc > 2 ? args[2] : 0.0;
                 double cos_a = std::cos ( angle );
                 double sin_a = std::sin ( angle );
                 result *= Matrix2x3 { cos_a, sin_a, -sin_a, cos_a,
                                       cx - cx * cos_a + cy * sin_a,
                                       cy - cx * sin_a - cy * cos_a };
             }
-            else if ( func == "skewX" && !args.empty() )
+            else if ( func == "skewX" && argc > 0 )
             {
                 result *= Matrix2x3 { 1.0, 0.0, std::tan ( args[0] * M_PI / 180.0 ), 1.0, 0.0, 0.0 };
             }
-            else if ( func == "skewY" && !args.empty() )
+            else if ( func == "skewY" && argc > 0 )
             {
                 result *= Matrix2x3 { 1.0, std::tan ( args[0] * M_PI / 180.0 ), 0.0, 1.0, 0.0, 0.0 };
             }

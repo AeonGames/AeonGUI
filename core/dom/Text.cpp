@@ -26,6 +26,14 @@ namespace AeonGUI
         {
             return TEXT_NODE;
         }
+        const std::string& Text::data() const
+        {
+            return mText;
+        }
+        void Text::setData ( const std::string& aData )
+        {
+            mText = aData;
+        }
         std::string Text::wholeText() const
         {
             auto parent  = parentNode();

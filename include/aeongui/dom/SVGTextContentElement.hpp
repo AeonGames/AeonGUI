@@ -90,13 +90,10 @@ namespace AeonGUI
             /// Access the internal text layout for subclass use.
             /// @return Reference to the TextLayout.
             TextLayout& GetTextLayout() const;
-            /** @brief Get concatenated text content from child text nodes.
-             *  @return UTF-8 text collected from this node subtree.
-             */
-            std::string getTextContent() const;
         private:
             /// Ensure the text layout is up to date with current text and font.
-            void syncTextLayout() const;
+            /// @return The number of characters in the laid-out text.
+            long syncTextLayout() const;
 
             SVGAnimatedLength mTextLength;
             SVGAnimatedEnumeration mLengthAdjust;

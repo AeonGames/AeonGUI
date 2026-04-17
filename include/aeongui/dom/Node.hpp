@@ -217,6 +217,25 @@ namespace AeonGUI
              *  @see https://dom.spec.whatwg.org/#dom-parentnode-queryselectorall
              */
             AEONGUI_DLL std::vector<Element*> querySelectorAll ( const DOMString& aSelector ) const;
+            /** @brief Get the text content of this node and its descendants.
+             *
+             *  For Element nodes, returns the concatenation of all descendant
+             *  Text node data.  For Text nodes, returns the node's own data.
+             *  For Document / DocumentType nodes, returns an empty string.
+             *  @return The text content.
+             *  @see https://dom.spec.whatwg.org/#dom-node-textcontent
+             */
+            AEONGUI_DLL virtual DOMString textContent() const;
+            /** @brief Set the text content of this node.
+             *
+             *  For Element nodes, removes all children and, if the given string
+             *  is non-empty, replaces them with a single Text node.
+             *  For Text nodes, replaces the node's own data.
+             *  For Document / DocumentType nodes, this is a no-op.
+             *  @param aTextContent The new text content.
+             *  @see https://dom.spec.whatwg.org/#dom-node-textcontent
+             */
+            AEONGUI_DLL virtual void setTextContent ( const DOMString& aTextContent );
             /**@}*/
         private:
             AEONGUI_DLL virtual void OnAncestorChanged();

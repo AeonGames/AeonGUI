@@ -85,9 +85,8 @@ namespace AeonGUI
                 return;
             }
             event.m_currentTarget = this;
-            // Copy to avoid issues if listeners are added/removed during dispatch
-            auto listeners = it->second;
-            for ( auto& entry : listeners )
+            // Iterate by index so additions/removals during dispatch don't invalidate iterators
+            for ( auto& entry : it->second )
             {
                 if ( event.m_stopImmediatePropagation )
                 {
@@ -119,20 +118,19 @@ namespace AeonGUI
             event.m_defaultPrevented = false;
 
             // Build path from target up to root by walking Node::parentNode()
-            std::vector<EventTarget*> path;
-            path.push_back ( this );
+            event.m_composedPath.clear();
+            event.m_composedPath.push_back ( this );
             if ( auto * node = dynamic_cast<Node * > ( this ) )
             {
                 for ( auto * parent = node->parentNode(); parent != nullptr; parent = parent->parentNode() )
                 {
-                    path.push_back ( parent );
+                    event.m_composedPath.push_back ( parent );
                 }
             }
-            event.m_composedPath = path;
 
             // Capture phase: root to target (path is target..root, so iterate in reverse)
             event.m_eventPhase = event.CAPTURING_PHASE;
-            for ( auto it = path.rbegin(); it != path.rend(); ++it )
+            for ( auto it = event.m_composedPath.rbegin(); it != event.m_composedPath.rend(); ++it )
             {
                 if ( event.m_stopPropagation )
                 {
@@ -147,17 +145,17 @@ namespace AeonGUI
             }
 
             // Bubble phase: target parent to root (skip target itself)
-            if ( event.bubbles() && !event.m_stopPropagation && path.size() > 1 )
+            if ( event.bubbles() && !event.m_stopPropagation && event.m_composedPath.size() > 1 )
             {
                 event.m_eventPhase = event.BUBBLING_PHASE;
-                // path[0] is the target, path[1..n] are ancestors
-                for ( size_t i = 1; i < path.size(); ++i )
+                // m_composedPath[0] is the target, [1..n] are ancestors
+                for ( size_t i = 1; i < event.m_composedPath.size(); ++i )
                 {
                     if ( event.m_stopPropagation )
                     {
                         break;
                     }
-                    path[i]->invokeListeners ( event, event.m_eventPhase );
+                    event.m_composedPath[i]->invokeListeners ( event, event.m_eventPhase );
                 }
             }
 

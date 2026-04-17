@@ -45,6 +45,14 @@ namespace AeonGUI
              *  @return The whole text content.
              */
             std::string wholeText() const;
+            /** @brief Get the character data of this text node.
+             *  @return The text data.
+             */
+            AEONGUI_DLL const std::string& data() const;
+            /** @brief Set the character data of this text node.
+             *  @param aData The new text data.
+             */
+            AEONGUI_DLL void setData ( const std::string& aData );
             /**@}*/
         private:
             std::string mText{};
