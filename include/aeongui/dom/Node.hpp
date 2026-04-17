@@ -197,7 +197,7 @@ namespace AeonGUI
             /** @brief Get the list of child nodes.
              *  @return Const reference to the vector of children.
              */
-            const std::vector<std::unique_ptr<Node>>& childNodes() const;
+            AEONGUI_DLL const std::vector<std::unique_ptr<Node>>& childNodes() const;
             /** @brief Get the owning Document for this node.
              *
              *  Walks the parent chain until a DOCUMENT_NODE is found.

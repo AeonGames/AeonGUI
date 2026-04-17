@@ -50,19 +50,17 @@ namespace AeonGUI
             }
             if ( mAttributes.find ( "width" ) != mAttributes.end() )
             {
-                const auto& val = mAttributes.at ( "width" );
-                mWidthRaw = std::stod ( val );
                 size_t pos{};
-                std::stod ( val, &pos );
+                const auto& val = mAttributes.at ( "width" );
+                mWidthRaw = std::stod ( val, &pos );
                 mWidthPct = ( pos < val.size() && val[pos] == '%' );
                 mWidth = mWidthRaw;
             }
             if ( mAttributes.find ( "height" ) != mAttributes.end() )
             {
                 const auto& val = mAttributes.at ( "height" );
-                mHeightRaw = std::stod ( val );
                 size_t pos{};
-                std::stod ( val, &pos );
+                mHeightRaw = std::stod ( val, &pos );
                 mHeightPct = ( pos < val.size() && val[pos] == '%' );
                 mHeight = mHeightRaw;
             }

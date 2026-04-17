@@ -259,6 +259,13 @@ elseif(AEONGUI_BACKEND STREQUAL "Skia")
         endif()
     else()
         target_include_directories(AeonGUI SYSTEM PRIVATE ${SKIA_INCLUDE_DIRS})
+        # Some Skia distributions (e.g. MSYS2) place headers under
+        # <prefix>/include/skia/include/{core,effects,...} while pkg-config
+        # only reports <prefix>/include/skia as the include dir. Add the
+        # nested include/ dir so that bare <core/Sk*.h> includes resolve.
+        if(SKIA_INCLUDEDIR AND EXISTS "${SKIA_INCLUDEDIR}/include")
+            target_include_directories(AeonGUI SYSTEM PRIVATE "${SKIA_INCLUDEDIR}/include")
+        endif()
         target_link_directories(AeonGUI PRIVATE ${SKIA_LIBRARY_DIRS})
         if(APPLE AND AEONGUI_SKIA_EFFECTIVE_ROOT)
             target_link_directories(AeonGUI PRIVATE ${AEONGUI_SKIA_EFFECTIVE_ROOT}/lib)
