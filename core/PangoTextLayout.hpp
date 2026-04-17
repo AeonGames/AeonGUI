@@ -78,7 +78,7 @@ namespace AeonGUI
          *  @param aIndex UTF-8 byte index.
          *  @return X offset in CSS pixels.
          */
-        AEONGUI_DLL double GetCharOffsetX ( long aIndex ) const override;
+        AEONGUI_DLL double GetCharOffsetX ( int32_t aIndex ) const override;
         /** @brief Access the underlying PangoLayout for advanced use.
          *  @return Pointer to the PangoLayout.
          */

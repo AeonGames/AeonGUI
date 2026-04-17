@@ -16,6 +16,7 @@ limitations under the License.
 #ifndef AEONGUI_DOM_WHEELEVENT_H
 #define AEONGUI_DOM_WHEELEVENT_H
 #include "aeongui/dom/MouseEvent.hpp"
+#include <cstdint>
 
 namespace AeonGUI
 {
@@ -29,7 +30,7 @@ namespace AeonGUI
             double deltaX{0.0};          ///< Scroll amount for the X axis.
             double deltaY{0.0};          ///< Scroll amount for the Y axis.
             double deltaZ{0.0};          ///< Scroll amount for the Z axis.
-            unsigned long deltaMode{0};  ///< Unit indicator for delta values.
+            uint32_t deltaMode{0};  ///< Unit indicator for delta values.
         };
 
         /** @brief Wheel event providing scroll-related information.
@@ -41,9 +42,9 @@ namespace AeonGUI
         class WheelEvent : public MouseEvent
         {
         public:
-            static constexpr unsigned long DOM_DELTA_PIXEL = 0x00; ///< Delta values are in pixels.
-            static constexpr unsigned long DOM_DELTA_LINE  = 0x01; ///< Delta values are in lines.
-            static constexpr unsigned long DOM_DELTA_PAGE  = 0x02; ///< Delta values are in pages.
+            static constexpr uint32_t DOM_DELTA_PIXEL = 0x00; ///< Delta values are in pixels.
+            static constexpr uint32_t DOM_DELTA_LINE  = 0x01; ///< Delta values are in lines.
+            static constexpr uint32_t DOM_DELTA_PAGE  = 0x02; ///< Delta values are in pages.
 
             /** @brief Construct a WheelEvent.
              *  @param type The event type name (typically "wheel").
@@ -62,13 +63,13 @@ namespace AeonGUI
             AEONGUI_DLL double deltaZ() const;
             /** @brief Get the unit indicator for delta values.
              *  @return One of DOM_DELTA_PIXEL, DOM_DELTA_LINE, DOM_DELTA_PAGE. */
-            AEONGUI_DLL unsigned long deltaMode() const;
+            AEONGUI_DLL uint32_t deltaMode() const;
 
         private:
             double m_deltaX{0.0};
             double m_deltaY{0.0};
             double m_deltaZ{0.0};
-            unsigned long m_deltaMode{0};
+            uint32_t m_deltaMode{0};
         };
     }
 }

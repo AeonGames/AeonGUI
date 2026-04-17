@@ -17,6 +17,7 @@ limitations under the License.
 #define AEONGUI_SVGNUMBERLIST_HPP
 
 #include <vector>
+#include <cstdint>
 #include "aeongui/Platform.hpp"
 
 namespace AeonGUI
@@ -38,10 +39,10 @@ namespace AeonGUI
 
             /** @brief Get the number of items.
              *  @return The item count. */
-            unsigned long length() const;
+            uint32_t length() const;
             /** @brief Get the number of items (alias).
              *  @return The item count. */
-            unsigned long numberOfItems() const;
+            uint32_t numberOfItems() const;
 
             /** @brief Remove all items. */
             void clear();
@@ -54,24 +55,24 @@ namespace AeonGUI
              *  @param index Zero-based index.
              *  @return The value at the index.
              */
-            float getItem ( unsigned long index ) const;
+            float getItem ( uint32_t index ) const;
             /** @brief Insert an item before the given index.
              *  @param newItem The value to insert.
              *  @param index   Position to insert before.
              *  @return The inserted value.
              */
-            float insertItemBefore ( float newItem, unsigned long index );
+            float insertItemBefore ( float newItem, uint32_t index );
             /** @brief Replace the item at the given index.
              *  @param newItem The replacement value.
              *  @param index   Zero-based index.
              *  @return The new value.
              */
-            float replaceItem ( float newItem, unsigned long index );
+            float replaceItem ( float newItem, uint32_t index );
             /** @brief Remove the item at the given index.
              *  @param index Zero-based index.
              *  @return The removed value.
              */
-            float removeItem ( unsigned long index );
+            float removeItem ( uint32_t index );
             /** @brief Append an item to the end.
              *  @param newItem The value to append.
              *  @return The appended value.

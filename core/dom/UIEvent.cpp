@@ -28,7 +28,7 @@ namespace AeonGUI
         {
             return m_view;
         }
-        long UIEvent::detail() const
+        int32_t UIEvent::detail() const
         {
             return m_detail;
         }

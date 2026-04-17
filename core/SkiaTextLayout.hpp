@@ -46,7 +46,7 @@ namespace AeonGUI
         AEONGUI_DLL double GetTextWidth() const override;
         AEONGUI_DLL double GetTextHeight() const override;
         AEONGUI_DLL double GetBaseline() const override;
-        AEONGUI_DLL double GetCharOffsetX ( long aIndex ) const override;
+        AEONGUI_DLL double GetCharOffsetX ( int32_t aIndex ) const override;
         /** @brief Get the underlying PangoLayout.
          *  @return Pointer to the PangoLayout.
          */

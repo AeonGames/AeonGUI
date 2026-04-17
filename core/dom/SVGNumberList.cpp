@@ -1,5 +1,5 @@
 /*
-Copyright (C) 2025 Rodrigo Jose Hernandez Cordoba
+Copyright (C) 2025,2026 Rodrigo Jose Hernandez Cordoba
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -23,12 +23,12 @@ namespace AeonGUI
         SVGNumberList::SVGNumberList() = default;
         SVGNumberList::~SVGNumberList() = default;
 
-        unsigned long SVGNumberList::length() const
+        uint32_t SVGNumberList::length() const
         {
-            return static_cast<unsigned long> ( mItems.size() );
+            return static_cast<uint32_t> ( mItems.size() );
         }
 
-        unsigned long SVGNumberList::numberOfItems() const
+        uint32_t SVGNumberList::numberOfItems() const
         {
             return length();
         }
@@ -45,7 +45,7 @@ namespace AeonGUI
             return mItems.back();
         }
 
-        float SVGNumberList::getItem ( unsigned long index ) const
+        float SVGNumberList::getItem ( uint32_t index ) const
         {
             if ( index >= mItems.size() )
             {
@@ -54,17 +54,17 @@ namespace AeonGUI
             return mItems[index];
         }
 
-        float SVGNumberList::insertItemBefore ( float newItem, unsigned long index )
+        float SVGNumberList::insertItemBefore ( float newItem, uint32_t index )
         {
             if ( index > mItems.size() )
             {
-                index = static_cast<unsigned long> ( mItems.size() );
+                index = static_cast<uint32_t> ( mItems.size() );
             }
             mItems.insert ( mItems.begin() + index, newItem );
             return mItems[index];
         }
 
-        float SVGNumberList::replaceItem ( float newItem, unsigned long index )
+        float SVGNumberList::replaceItem ( float newItem, uint32_t index )
         {
             if ( index >= mItems.size() )
             {
@@ -74,7 +74,7 @@ namespace AeonGUI
             return mItems[index];
         }
 
-        float SVGNumberList::removeItem ( unsigned long index )
+        float SVGNumberList::removeItem ( uint32_t index )
         {
             if ( index >= mItems.size() )
             {

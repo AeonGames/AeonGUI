@@ -16,6 +16,7 @@ limitations under the License.
 #ifndef AEONGUI_DOM_UIEVENT_H
 #define AEONGUI_DOM_UIEVENT_H
 #include "aeongui/dom/Event.hpp"
+#include <cstdint>
 
 namespace AeonGUI
 {
@@ -28,7 +29,7 @@ namespace AeonGUI
         struct UIEventInit : EventInit
         {
             Window* view{nullptr}; ///< The Window from which the event was generated.
-            long detail{0};        ///< Application-specific detail information.
+            int32_t detail{0};        ///< Application-specific detail information.
         };
 
         /** @brief UI Event base class.
@@ -50,10 +51,10 @@ namespace AeonGUI
             AEONGUI_DLL Window* view() const;
             /** @brief Get the detail value.
              *  @return Application-specific detail. */
-            AEONGUI_DLL long detail() const;
+            AEONGUI_DLL int32_t detail() const;
         private:
             Window* m_view{nullptr};
-            long m_detail{0};
+            int32_t m_detail{0};
         };
     }
 }

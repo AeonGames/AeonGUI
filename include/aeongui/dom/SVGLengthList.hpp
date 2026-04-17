@@ -17,6 +17,7 @@ limitations under the License.
 #define AEONGUI_SVGLENGTHLIST_HPP
 
 #include <vector>
+#include <cstdint>
 #include "SVGLength.hpp"
 #include "aeongui/Platform.hpp"
 
@@ -39,10 +40,10 @@ namespace AeonGUI
 
             /** @brief Get the number of items.
              *  @return The item count. */
-            unsigned long length() const;
+            uint32_t length() const;
             /** @brief Get the number of items (alias).
              *  @return The item count. */
-            unsigned long numberOfItems() const;
+            uint32_t numberOfItems() const;
 
             /** @brief Remove all items. */
             void clear();
@@ -55,24 +56,24 @@ namespace AeonGUI
              *  @param index Zero-based index.
              *  @return The item at the index.
              */
-            SVGLength getItem ( unsigned long index ) const;
+            SVGLength getItem ( uint32_t index ) const;
             /** @brief Insert an item before the given index.
              *  @param newItem The item to insert.
              *  @param index   Position to insert before.
              *  @return The inserted item.
              */
-            SVGLength insertItemBefore ( const SVGLength& newItem, unsigned long index );
+            SVGLength insertItemBefore ( const SVGLength& newItem, uint32_t index );
             /** @brief Replace the item at the given index.
              *  @param newItem The replacement item.
              *  @param index   Zero-based index.
              *  @return The new item.
              */
-            SVGLength replaceItem ( const SVGLength& newItem, unsigned long index );
+            SVGLength replaceItem ( const SVGLength& newItem, uint32_t index );
             /** @brief Remove the item at the given index.
              *  @param index Zero-based index.
              *  @return The removed item.
              */
-            SVGLength removeItem ( unsigned long index );
+            SVGLength removeItem ( uint32_t index );
             /** @brief Append an item to the end.
              *  @param newItem The item to append.
              *  @return The appended item.

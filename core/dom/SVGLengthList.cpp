@@ -1,5 +1,5 @@
 /*
-Copyright (C) 2025 Rodrigo Jose Hernandez Cordoba
+Copyright (C) 2025,2026 Rodrigo Jose Hernandez Cordoba
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -23,12 +23,12 @@ namespace AeonGUI
         SVGLengthList::SVGLengthList() = default;
         SVGLengthList::~SVGLengthList() = default;
 
-        unsigned long SVGLengthList::length() const
+        uint32_t SVGLengthList::length() const
         {
-            return static_cast<unsigned long> ( mItems.size() );
+            return static_cast<uint32_t> ( mItems.size() );
         }
 
-        unsigned long SVGLengthList::numberOfItems() const
+        uint32_t SVGLengthList::numberOfItems() const
         {
             return length();
         }
@@ -45,7 +45,7 @@ namespace AeonGUI
             return mItems.back();
         }
 
-        SVGLength SVGLengthList::getItem ( unsigned long index ) const
+        SVGLength SVGLengthList::getItem ( uint32_t index ) const
         {
             if ( index >= mItems.size() )
             {
@@ -54,17 +54,17 @@ namespace AeonGUI
             return mItems[index];
         }
 
-        SVGLength SVGLengthList::insertItemBefore ( const SVGLength& newItem, unsigned long index )
+        SVGLength SVGLengthList::insertItemBefore ( const SVGLength& newItem, uint32_t index )
         {
             if ( index > mItems.size() )
             {
-                index = static_cast<unsigned long> ( mItems.size() );
+                index = static_cast<uint32_t> ( mItems.size() );
             }
             mItems.insert ( mItems.begin() + index, newItem );
             return mItems[index];
         }
 
-        SVGLength SVGLengthList::replaceItem ( const SVGLength& newItem, unsigned long index )
+        SVGLength SVGLengthList::replaceItem ( const SVGLength& newItem, uint32_t index )
         {
             if ( index >= mItems.size() )
             {
@@ -74,7 +74,7 @@ namespace AeonGUI
             return mItems[index];
         }
 
-        SVGLength SVGLengthList::removeItem ( unsigned long index )
+        SVGLength SVGLengthList::removeItem ( uint32_t index )
         {
             if ( index >= mItems.size() )
             {

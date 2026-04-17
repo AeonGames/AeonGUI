@@ -72,7 +72,7 @@ namespace AeonGUI
          *  @param aIndex UTF-8 byte index.
          *  @return x offset in CSS pixels.
          */
-        virtual double GetCharOffsetX ( long aIndex ) const = 0;
+        virtual double GetCharOffsetX ( int32_t aIndex ) const = 0;
     };
 }
 #endif

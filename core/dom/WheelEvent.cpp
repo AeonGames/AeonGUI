@@ -51,7 +51,7 @@ namespace AeonGUI
         {
             return m_deltaZ;
         }
-        unsigned long WheelEvent::deltaMode() const
+        uint32_t WheelEvent::deltaMode() const
         {
             return m_deltaMode;
         }

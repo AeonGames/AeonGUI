@@ -22,6 +22,7 @@ limitations under the License.
 #include "DOMPoint.hpp"
 #include "DOMRect.hpp"
 #include "aeongui/TextLayout.hpp"
+#include <cstdint>
 #include <memory>
 
 namespace AeonGUI
@@ -51,7 +52,7 @@ namespace AeonGUI
 
             /** @brief Get the total number of characters.
              *  @return The character count. */
-            long getNumberOfChars() const;
+            int32_t getNumberOfChars() const;
             /** @brief Get the computed total advance width of the text.
              *  @return The text advance width. */
             float getComputedTextLength() const;
@@ -60,32 +61,32 @@ namespace AeonGUI
              *  @param end   End character index.
              *  @return Advance width of the substring.
              */
-            float getSubStringLength ( long start, long end ) const;
+            float getSubStringLength ( int32_t start, int32_t end ) const;
             /** @brief Get the start position of a character.
              *  @param index Character index.
              *  @return Start position as a DOMPoint.
              */
-            DOMPoint getStartPositionOfChar ( long index ) const;
+            DOMPoint getStartPositionOfChar ( int32_t index ) const;
             /** @brief Get the end position of a character.
              *  @param index Character index.
              *  @return End position as a DOMPoint.
              */
-            DOMPoint getEndPositionOfChar ( long index ) const;
+            DOMPoint getEndPositionOfChar ( int32_t index ) const;
             /** @brief Get the bounding box of a character.
              *  @param index Character index.
              *  @return Bounding rectangle.
              */
-            DOMRect getExtentOfChar ( long index ) const;
+            DOMRect getExtentOfChar ( int32_t index ) const;
             /** @brief Get the rotation of a character.
              *  @param index Character index.
              *  @return Rotation angle in degrees.
              */
-            float getRotationOfChar ( long index ) const;
+            float getRotationOfChar ( int32_t index ) const;
             /** @brief Get the character index at a point.
              *  @param point Position to query.
              *  @return Character index, or -1 if none.
              */
-            long getCharNumAtPosition ( const DOMPoint& point ) const;
+            int32_t getCharNumAtPosition ( const DOMPoint& point ) const;
         protected:
             /// Access the internal text layout for subclass use.
             /// @return Reference to the TextLayout.
@@ -93,7 +94,7 @@ namespace AeonGUI
         private:
             /// Ensure the text layout is up to date with current text and font.
             /// @return The number of characters in the laid-out text.
-            long syncTextLayout() const;
+            int32_t syncTextLayout() const;
 
             SVGAnimatedLength mTextLength;
             SVGAnimatedEnumeration mLengthAdjust;

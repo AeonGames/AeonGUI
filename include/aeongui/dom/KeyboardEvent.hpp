@@ -17,6 +17,7 @@ limitations under the License.
 #define AEONGUI_DOM_KEYBOARDEVENT_H
 #include "aeongui/dom/UIEvent.hpp"
 #include "aeongui/dom/EventModifierInit.hpp"
+#include <cstdint>
 
 namespace AeonGUI
 {
@@ -29,7 +30,7 @@ namespace AeonGUI
         {
             DOMString key{""};       ///< The key value of the key pressed.
             DOMString code{""};      ///< The physical key code.
-            unsigned long location{0}; ///< Key location on the device.
+            uint32_t location{0}; ///< Key location on the device.
             bool repeat{false};      ///< Whether the key is held down (repeating).
             bool isComposing{false}; ///< Whether part of a composition session.
         };
@@ -43,10 +44,10 @@ namespace AeonGUI
         class KeyboardEvent : public UIEvent
         {
         public:
-            static constexpr unsigned long DOM_KEY_LOCATION_STANDARD = 0x00; ///< Standard key location.
-            static constexpr unsigned long DOM_KEY_LOCATION_LEFT     = 0x01; ///< Left key location.
-            static constexpr unsigned long DOM_KEY_LOCATION_RIGHT    = 0x02; ///< Right key location.
-            static constexpr unsigned long DOM_KEY_LOCATION_NUMPAD   = 0x03; ///< Numpad key location.
+            static constexpr uint32_t DOM_KEY_LOCATION_STANDARD = 0x00; ///< Standard key location.
+            static constexpr uint32_t DOM_KEY_LOCATION_LEFT     = 0x01; ///< Left key location.
+            static constexpr uint32_t DOM_KEY_LOCATION_RIGHT    = 0x02; ///< Right key location.
+            static constexpr uint32_t DOM_KEY_LOCATION_NUMPAD   = 0x03; ///< Numpad key location.
 
             /** @brief Construct a KeyboardEvent.
              *  @param type The event type name (e.g., "keydown", "keyup").
@@ -62,7 +63,7 @@ namespace AeonGUI
             AEONGUI_DLL const DOMString& code() const;
             /** @brief Get the key location.
              *  @return One of the DOM_KEY_LOCATION constants. */
-            AEONGUI_DLL unsigned long location() const;
+            AEONGUI_DLL uint32_t location() const;
             /** @brief Check if Control modifier was active.
              *  @return true if active. */
             AEONGUI_DLL bool ctrlKey() const;
@@ -89,7 +90,7 @@ namespace AeonGUI
         private:
             DOMString m_key;
             DOMString m_code;
-            unsigned long m_location{0};
+            uint32_t m_location{0};
             bool m_ctrlKey{false};
             bool m_shiftKey{false};
             bool m_altKey{false};

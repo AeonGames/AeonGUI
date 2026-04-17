@@ -404,7 +404,7 @@ namespace AeonGUI
         }
 
         void Window::HandleKeyDown ( const DOMString& aKey, const DOMString& aCode,
-                                     unsigned long aLocation, bool aRepeat,
+                                     uint32_t aLocation, bool aRepeat,
                                      bool aCtrlKey, bool aShiftKey,
                                      bool aAltKey, bool aMetaKey )
         {
@@ -414,7 +414,7 @@ namespace AeonGUI
         }
 
         void Window::HandleKeyUp ( const DOMString& aKey, const DOMString& aCode,
-                                   unsigned long aLocation,
+                                   uint32_t aLocation,
                                    bool aCtrlKey, bool aShiftKey,
                                    bool aAltKey, bool aMetaKey )
         {
@@ -425,7 +425,7 @@ namespace AeonGUI
 
         void Window::HandleWheel ( double aX, double aY,
                                    double aDeltaX, double aDeltaY,
-                                   unsigned long aDeltaMode,
+                                   uint32_t aDeltaMode,
                                    unsigned short aButtons,
                                    bool aCtrlKey, bool aShiftKey,
                                    bool aAltKey, bool aMetaKey )

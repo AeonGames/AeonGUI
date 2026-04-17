@@ -54,7 +54,7 @@ namespace AeonGUI
             return *mTextLayout;
         }
 
-        long SVGTextContentElement::syncTextLayout() const
+        int32_t SVGTextContentElement::syncTextLayout() const
         {
             std::string text = textContent();
             mTextLayout->SetText ( text );
@@ -69,10 +69,10 @@ namespace AeonGUI
                 mTextLayout->SetFontWeight ( GetCSSFontWeight ( style ) );
                 mTextLayout->SetFontStyle ( GetCSSFontStyle ( style ) );
             }
-            return static_cast<long> ( text.length() );
+            return static_cast<int32_t> ( text.length() );
         }
 
-        long SVGTextContentElement::getNumberOfChars() const
+        int32_t SVGTextContentElement::getNumberOfChars() const
         {
             return syncTextLayout();
         }
@@ -83,9 +83,9 @@ namespace AeonGUI
             return static_cast<float> ( mTextLayout->GetTextWidth() );
         }
 
-        float SVGTextContentElement::getSubStringLength ( long start, long end ) const
+        float SVGTextContentElement::getSubStringLength ( int32_t start, int32_t end ) const
         {
-            long totalChars = syncTextLayout();
+            int32_t totalChars = syncTextLayout();
 
             if ( start < 0 )
             {
@@ -97,7 +97,7 @@ namespace AeonGUI
                 return 0.0f;
             }
 
-            long actualEnd = std::min ( end, totalChars );
+            int32_t actualEnd = std::min ( end, totalChars );
             if ( actualEnd <= start )
             {
                 return 0.0f;
@@ -109,9 +109,9 @@ namespace AeonGUI
             return static_cast<float> ( endX - startX );
         }
 
-        DOMPoint SVGTextContentElement::getStartPositionOfChar ( long index ) const
+        DOMPoint SVGTextContentElement::getStartPositionOfChar ( int32_t index ) const
         {
-            long totalChars = syncTextLayout();
+            int32_t totalChars = syncTextLayout();
 
             if ( index < 0 || index >= totalChars )
             {
@@ -122,9 +122,9 @@ namespace AeonGUI
             return DOMPoint ( xPos, 0.0f, 0.0f, 1.0f );
         }
 
-        DOMPoint SVGTextContentElement::getEndPositionOfChar ( long index ) const
+        DOMPoint SVGTextContentElement::getEndPositionOfChar ( int32_t index ) const
         {
-            long totalChars = syncTextLayout();
+            int32_t totalChars = syncTextLayout();
 
             if ( index < 0 || index >= totalChars )
             {
@@ -135,9 +135,9 @@ namespace AeonGUI
             return DOMPoint ( xPos, 0.0f, 0.0f, 1.0f );
         }
 
-        DOMRect SVGTextContentElement::getExtentOfChar ( long index ) const
+        DOMRect SVGTextContentElement::getExtentOfChar ( int32_t index ) const
         {
-            long totalChars = syncTextLayout();
+            int32_t totalChars = syncTextLayout();
 
             if ( index < 0 || index >= totalChars )
             {
@@ -152,9 +152,9 @@ namespace AeonGUI
             return DOMRect ( xStart, -height, charWidth, height );
         }
 
-        float SVGTextContentElement::getRotationOfChar ( long index ) const
+        float SVGTextContentElement::getRotationOfChar ( int32_t index ) const
         {
-            long totalChars = syncTextLayout();
+            int32_t totalChars = syncTextLayout();
 
             if ( index < 0 || index >= totalChars )
             {
@@ -164,16 +164,16 @@ namespace AeonGUI
             return 0.0f;
         }
 
-        long SVGTextContentElement::getCharNumAtPosition ( const DOMPoint& point ) const
+        int32_t SVGTextContentElement::getCharNumAtPosition ( const DOMPoint& point ) const
         {
-            long totalChars = syncTextLayout();
+            int32_t totalChars = syncTextLayout();
 
             if ( totalChars == 0 )
             {
                 return -1;
             }
             // Walk character positions to find hit.
-            for ( long i = 0; i < totalChars; ++i )
+            for ( int32_t i = 0; i < totalChars; ++i )
             {
                 float xStart = static_cast<float> ( mTextLayout->GetCharOffsetX ( i ) );
                 float xEnd = static_cast<float> ( mTextLayout->GetCharOffsetX ( i + 1 ) );

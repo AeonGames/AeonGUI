@@ -51,7 +51,7 @@ namespace AeonGUI
         {
             return m_code;
         }
-        unsigned long KeyboardEvent::location() const
+        uint32_t KeyboardEvent::location() const
         {
             return m_location;
         }

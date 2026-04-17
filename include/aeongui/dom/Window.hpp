@@ -140,7 +140,7 @@ namespace AeonGUI
              *  @param aMetaKey  Meta key held.
              */
             AEONGUI_DLL void HandleKeyDown ( const DOMString& aKey, const DOMString& aCode,
-                                             unsigned long aLocation = 0, bool aRepeat = false,
+                                             uint32_t aLocation = 0, bool aRepeat = false,
                                              bool aCtrlKey = false, bool aShiftKey = false,
                                              bool aAltKey = false, bool aMetaKey = false );
             /** @brief Handle a keyboard key up event from the platform.
@@ -153,7 +153,7 @@ namespace AeonGUI
              *  @param aMetaKey  Meta key held.
              */
             AEONGUI_DLL void HandleKeyUp ( const DOMString& aKey, const DOMString& aCode,
-                                           unsigned long aLocation = 0,
+                                           uint32_t aLocation = 0,
                                            bool aCtrlKey = false, bool aShiftKey = false,
                                            bool aAltKey = false, bool aMetaKey = false );
             /** @brief Handle a wheel/scroll event from the platform.
@@ -170,7 +170,7 @@ namespace AeonGUI
              */
             AEONGUI_DLL void HandleWheel ( double aX, double aY,
                                            double aDeltaX, double aDeltaY,
-                                           unsigned long aDeltaMode = 0,
+                                           uint32_t aDeltaMode = 0,
                                            unsigned short aButtons = 0,
                                            bool aCtrlKey = false, bool aShiftKey = false,
                                            bool aAltKey = false, bool aMetaKey = false );

@@ -165,7 +165,7 @@ namespace AeonGUI
         return static_cast<double> ( baseline ) / PANGO_SCALE;
     }
 
-    double SkiaTextLayout::GetCharOffsetX ( long aIndex ) const
+    double SkiaTextLayout::GetCharOffsetX ( int32_t aIndex ) const
     {
         PangoRectangle pos;
         pango_layout_index_to_pos ( mLayout, static_cast<int> ( aIndex ), &pos );
