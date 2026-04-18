@@ -165,6 +165,13 @@ namespace AeonGUI
         return mOpacity;
     }
 
+    struct HbDrawContext
+    {
+        SkPathBuilder* builder;
+        float xScale;
+        float yScale;
+    };
+
     static hb_draw_funcs_t* GetHbDrawFuncs()
     {
         static hb_draw_funcs_t* funcs = []()
@@ -174,31 +181,39 @@ namespace AeonGUI
                                              [] ( hb_draw_funcs_t*, void* draw_data, hb_draw_state_t*,
                                                   float to_x, float to_y, void* )
             {
-                static_cast<SkPathBuilder*> ( draw_data )->moveTo ( to_x, -to_y );
+                auto* ctx = static_cast<HbDrawContext*> ( draw_data );
+                ctx->builder->moveTo ( to_x * ctx->xScale, -to_y * ctx->yScale );
             }, nullptr, nullptr );
             hb_draw_funcs_set_line_to_func ( f,
                                              [] ( hb_draw_funcs_t*, void* draw_data, hb_draw_state_t*,
                                                   float to_x, float to_y, void* )
             {
-                static_cast<SkPathBuilder*> ( draw_data )->lineTo ( to_x, -to_y );
+                auto* ctx = static_cast<HbDrawContext*> ( draw_data );
+                ctx->builder->lineTo ( to_x * ctx->xScale, -to_y * ctx->yScale );
             }, nullptr, nullptr );
             hb_draw_funcs_set_quadratic_to_func ( f,
                                                   [] ( hb_draw_funcs_t*, void* draw_data, hb_draw_state_t*,
                                                           float cx, float cy, float to_x, float to_y, void* )
             {
-                static_cast<SkPathBuilder*> ( draw_data )->quadTo ( cx, -cy, to_x, -to_y );
+                auto* ctx = static_cast<HbDrawContext*> ( draw_data );
+                ctx->builder->quadTo ( cx * ctx->xScale, -cy * ctx->yScale,
+                                       to_x * ctx->xScale, -to_y * ctx->yScale );
             }, nullptr, nullptr );
             hb_draw_funcs_set_cubic_to_func ( f,
                                               [] ( hb_draw_funcs_t*, void* draw_data, hb_draw_state_t*,
                                                    float c1x, float c1y, float c2x, float c2y,
                                                    float to_x, float to_y, void* )
             {
-                static_cast<SkPathBuilder*> ( draw_data )->cubicTo ( c1x, -c1y, c2x, -c2y, to_x, -to_y );
+                auto* ctx = static_cast<HbDrawContext*> ( draw_data );
+                ctx->builder->cubicTo ( c1x * ctx->xScale, -c1y * ctx->yScale,
+                                        c2x * ctx->xScale, -c2y * ctx->yScale,
+                                        to_x * ctx->xScale, -to_y * ctx->yScale );
             }, nullptr, nullptr );
             hb_draw_funcs_set_close_path_func ( f,
                                                 [] ( hb_draw_funcs_t*, void* draw_data, hb_draw_state_t*, void* )
             {
-                static_cast<SkPathBuilder*> ( draw_data )->close();
+                auto* ctx = static_cast<HbDrawContext*> ( draw_data );
+                ctx->builder->close();
             }, nullptr, nullptr );
             hb_draw_funcs_make_immutable ( f );
             return f;
@@ -286,6 +301,34 @@ namespace AeonGUI
                 continue;
             }
 
+            // Pango's hb_font has its scale set to absolute font size in
+            // Pango units, and its draw callbacks emit coordinates in that
+            // same scale. To get pixel-space coordinates we draw into a
+            // sub-font whose scale equals the font's units-per-em, which
+            // makes coordinates come out in font design units. We then
+            // multiply by (pixel_size / upem) to convert to pixels.
+            unsigned int upem = hb_face_get_upem ( hb_font_get_face ( hbFont ) );
+            if ( upem == 0 )
+            {
+                upem = 1000;
+            }
+            double pixelSize = 0.0;
+            {
+                PangoFontDescription* fd = pango_font_describe_with_absolute_size ( font );
+                pixelSize = static_cast<double> ( pango_font_description_get_size ( fd ) ) / PANGO_SCALE;
+                pango_font_description_free ( fd );
+            }
+            if ( pixelSize <= 0.0 )
+            {
+                pixelSize = 16.0;
+            }
+            float perUnit = static_cast<float> ( pixelSize / static_cast<double> ( upem ) );
+
+            hb_font_t* drawFont = hb_font_create_sub_font ( hbFont );
+            hb_font_set_scale ( drawFont,
+                                static_cast<int> ( upem ),
+                                static_cast<int> ( upem ) );
+
             PangoRectangle logical_rect;
             pango_layout_iter_get_run_extents ( iter, nullptr, &logical_rect );
             double runX = static_cast<double> ( logical_rect.x ) / PANGO_SCALE;
@@ -304,7 +347,8 @@ namespace AeonGUI
                 double yPos = aBaselineY + static_cast<double> ( gi.geometry.y_offset ) / PANGO_SCALE;
 
                 SkPathBuilder glyphPathBuilder;
-                hb_font_draw_glyph ( hbFont, gi.glyph, drawFuncs, &glyphPathBuilder );
+                HbDrawContext ctx { &glyphPathBuilder, perUnit, perUnit };
+                hb_font_draw_glyph ( drawFont, gi.glyph, drawFuncs, &ctx );
                 SkPath glyphPath = glyphPathBuilder.detach();
                 if ( !glyphPath.isEmpty() )
                 {
@@ -315,6 +359,8 @@ namespace AeonGUI
 
                 advanceX += static_cast<double> ( gi.geometry.width ) / PANGO_SCALE;
             }
+
+            hb_font_destroy ( drawFont );
         }
         while ( pango_layout_iter_next_run ( iter ) );
         pango_layout_iter_free ( iter );
