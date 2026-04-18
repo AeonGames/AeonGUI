@@ -254,6 +254,7 @@ set(LIBCSS_SOURCES
     ${libcss_SOURCE_DIR}/src/select/properties/stroke_width.c
     ${libcss_SOURCE_DIR}/src/select/properties/table_layout.c
     ${libcss_SOURCE_DIR}/src/select/properties/text_align.c
+    ${libcss_SOURCE_DIR}/src/select/properties/text_anchor.c
     ${libcss_SOURCE_DIR}/src/select/properties/text_decoration.c
     ${libcss_SOURCE_DIR}/src/select/properties/text_indent.c
     ${libcss_SOURCE_DIR}/src/select/properties/text_transform.c

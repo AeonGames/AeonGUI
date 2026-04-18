@@ -72,8 +72,8 @@ namespace AeonGUI
             }
 
             // text-anchor adjustment: measure total text width and offset posX.
-            auto anchorIt = mAttributes.find ( "text-anchor" );
-            if ( anchorIt != mAttributes.end() && anchorIt->second != "start" )
+            uint8_t textAnchor = css_computed_text_anchor ( style );
+            if ( textAnchor == CSS_TEXT_ANCHOR_MIDDLE || textAnchor == CSS_TEXT_ANCHOR_END )
             {
                 double totalWidth = 0.0;
                 for ( const auto& child : childNodes() )
@@ -88,11 +88,11 @@ namespace AeonGUI
                         }
                     }
                 }
-                if ( anchorIt->second == "middle" )
+                if ( textAnchor == CSS_TEXT_ANCHOR_MIDDLE )
                 {
                     posX -= totalWidth / 2.0;
                 }
-                else if ( anchorIt->second == "end" )
+                else
                 {
                     posX -= totalWidth;
                 }

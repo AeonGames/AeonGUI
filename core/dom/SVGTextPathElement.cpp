@@ -191,25 +191,19 @@ namespace AeonGUI
             }
 
             // text-anchor adjustment: shift startOffset by measured text width.
-            // Also check the parent <text> element's text-anchor if not set on us.
+            // Honor the parsed attribute first; otherwise fall back to libcss
+            // (CSS rules + inline style; inherited from parent <text>).
             int anchor = mTextAnchor;
-            if ( anchor == 0 && parentNode() )
+            if ( anchor == 0 )
             {
-                const Element* parentElem = dynamic_cast<const Element*> ( parentNode() );
-                if ( parentElem )
+                uint8_t cssAnchor = css_computed_text_anchor ( style );
+                if ( cssAnchor == CSS_TEXT_ANCHOR_MIDDLE )
                 {
-                    auto pAnchorIt = parentElem->attributes().find ( "text-anchor" );
-                    if ( pAnchorIt != parentElem->attributes().end() )
-                    {
-                        if ( pAnchorIt->second == "middle" )
-                        {
-                            anchor = 1;
-                        }
-                        else if ( pAnchorIt->second == "end" )
-                        {
-                            anchor = 2;
-                        }
-                    }
+                    anchor = 1;
+                }
+                else if ( cssAnchor == CSS_TEXT_ANCHOR_END )
+                {
+                    anchor = 2;
                 }
             }
 

@@ -17,7 +17,7 @@ limitations under the License.
 #include "aeongui/Canvas.hpp"
 #include "aeongui/Color.hpp"
 #include "aeongui/dom/Document.hpp"
-#include <algorithm>
+#include "aeongui/dom/Element.hpp"
 #include "aeongui/LogLevel.hpp"
 #include <iostream>
 #include <string>
