@@ -10,6 +10,10 @@
     "zlib",
     "libpng",
     "libjpeg-turbo",
+    "glslang",
+    "spirv-tools",
+    "shaderc",
+    "vulkan",
     "yoga"
   ]
 }

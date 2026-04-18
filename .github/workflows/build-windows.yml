@@ -84,14 +84,6 @@ jobs:
           -Source "${{ env.FEED_URL }}"
       if: matrix.compiler == 'msvc' && steps.changes.outputs.compiled == 'true'
 
-    - name: '🌋 Install Vulkan SDK'
-      uses: jakoch/install-vulkan-sdk-action@v1.4.0
-      with:
-        vulkan_version: latest
-        install_runtime: true
-        cache: true
-      if: matrix.compiler == 'msvc' && steps.changes.outputs.compiled == 'true'
-
     - name: '🛠️ Configuring'
       run: |
         cmake -DCMAKE_TOOLCHAIN_FILE="C:/vcpkg/scripts/buildsystems/vcpkg.cmake" -DAEONGUI_BACKEND=${{ matrix.backend }} -B ${{github.workspace}}/build
