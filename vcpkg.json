@@ -9,6 +9,7 @@
     "gtest",
     "zlib",
     "libpng",
-    "libjpeg-turbo"
+    "libjpeg-turbo",
+    "yoga"
   ]
 }

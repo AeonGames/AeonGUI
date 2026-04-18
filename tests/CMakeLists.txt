@@ -50,6 +50,10 @@ set(TESTED_SRCS
   UIEventsTest.cpp
 )
 
+if(ENABLE_HTML)
+  list(APPEND TESTED_SRCS HTMLLayoutSpikeTest.cpp)
+endif()
+
 set(TEST_SRCS
     Main.cpp
 )
@@ -59,6 +63,10 @@ source_group("Tests" FILES ${TEST_SRCS})
 
 add_executable(unit-tests ${TEST_SRCS} ${TESTED_SRCS})
 target_link_libraries(unit-tests PRIVATE AeonGUI GTest::gtest GTest::gmock)
+
+if(ENABLE_HTML)
+  target_link_libraries(unit-tests PRIVATE yogacore)
+endif()
 
 if(MSVC)
   # VCPKG compiles GTest/GMock DLLs.
