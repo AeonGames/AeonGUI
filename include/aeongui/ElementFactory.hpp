@@ -21,6 +21,7 @@ limitations under the License.
 #include "aeongui/Platform.hpp"
 #include "aeongui/StringLiteral.hpp"
 #include "aeongui/AttributeMap.hpp"
+#include "aeongui/dom/DOMString.hpp"
 
 namespace AeonGUI
 {
@@ -29,32 +30,69 @@ namespace AeonGUI
         class Node;
         class Element;
     }
-    /** @brief Construct a DOM Element by tag name.
+    /** @brief Construct a DOM Element by tag name (namespace-agnostic).
      *  @param aIdentifier The element tag name (e.g. "rect", "circle").
      *  @param aAttributeMap The element's attributes.
      *  @param aParent The parent node.
      *  @return A unique_ptr to the newly created Element, or nullptr on failure.
+     *
+     *  Equivalent to ``Construct("", aIdentifier, ...)``: tries the empty
+     *  (wildcard) namespace, which matches both the existing SVG built-ins
+     *  and any plugin registered without a namespace.
      */
     AEONGUI_DLL std::unique_ptr<DOM::Element> Construct ( const char* aIdentifier, AttributeMap&& aAttributeMap, DOM::Node* aParent );
+    /** @brief Construct a DOM Element by namespace URI + tag name.
+     *  @param aNamespaceURI The element's namespace URI (e.g.
+     *  "http://www.w3.org/1999/xhtml" or
+     *  "http://www.w3.org/2000/svg"). Empty string means "any".
+     *  @param aIdentifier The element tag name (local name).
+     *  @param aAttributeMap The element's attributes.
+     *  @param aParent The parent node.
+     *  @return A unique_ptr to the newly created Element.
+     *
+     *  Lookup tries an exact ``(namespace, name)`` match first, then
+     *  falls back to the wildcard ``("", name)`` registration. This
+     *  preserves backwards compatibility with plugins and built-ins
+     *  registered without a namespace.
+     */
+    AEONGUI_DLL std::unique_ptr<DOM::Element> Construct ( const char* aNamespaceURI, const char* aIdentifier, AttributeMap&& aAttributeMap, DOM::Node* aParent );
     /** @brief Destroy a DOM Element by tag name.
      *  @param aIdentifier The element tag name.
      *  @param aElement The element to destroy.
      */
     AEONGUI_DLL void Destroy ( const char* aIdentifier, DOM::Element* aElement );
-    /** @brief Register a constructor/destructor pair for a given element tag.
+    /** @brief Register a constructor/destructor pair under the wildcard namespace.
      *  @param aIdentifier The element tag name.
      *  @param aConstructor Factory function that creates the element.
      *  @param aDestructor  Cleanup function called when the element is destroyed.
      *  @return true if registration succeeded.
      */
     AEONGUI_DLL bool RegisterConstructor ( const StringLiteral& aIdentifier,
-                                           const std::function < std::unique_ptr<DOM::Element> ( AttributeMap&&, DOM::Node* ) > & aConstructor,
+                                           const std::function < std::unique_ptr<DOM::Element> ( const DOM::DOMString& aTagName, AttributeMap&& aAttributeMap, DOM::Node* aParent ) > & aConstructor,
                                            const std::function < void ( DOM::Element* ) > & aDestructor );
-    /** @brief Unregister a previously registered element constructor.
+    /** @brief Register a constructor/destructor pair under a specific namespace URI.
+     *  @param aNamespaceURI The namespace this constructor handles.
+     *  @param aIdentifier   The element local name.
+     *  @param aConstructor  Factory function that creates the element.
+     *  @param aDestructor   Cleanup function.
+     *  @return true if registration succeeded (false if a registration for
+     *          this exact (namespace, name) already exists).
+     */
+    AEONGUI_DLL bool RegisterConstructor ( const StringLiteral& aNamespaceURI,
+                                           const StringLiteral& aIdentifier,
+                                           const std::function < std::unique_ptr<DOM::Element> ( const DOM::DOMString& aTagName, AttributeMap&& aAttributeMap, DOM::Node* aParent ) > & aConstructor,
+                                           const std::function < void ( DOM::Element* ) > & aDestructor );
+    /** @brief Unregister a previously registered wildcard-namespace constructor.
      *  @param aIdentifier The element tag name to unregister.
      *  @return true if unregistration succeeded.
      */
     AEONGUI_DLL bool UnregisterConstructor ( const StringLiteral& aIdentifier );
+    /** @brief Unregister a previously registered namespaced constructor.
+     *  @param aNamespaceURI The namespace.
+     *  @param aIdentifier   The element local name to unregister.
+     *  @return true if unregistration succeeded.
+     */
+    AEONGUI_DLL bool UnregisterConstructor ( const StringLiteral& aNamespaceURI, const StringLiteral& aIdentifier );
     /** @brief Enumerate all registered element constructors.
      *  @param aEnumerator Callback invoked for each registered tag; return false to stop.
      */

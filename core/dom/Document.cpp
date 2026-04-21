@@ -67,9 +67,13 @@ namespace AeonGUI
                 if ( node->type == XML_ELEMENT_NODE )
                 {
                     xmlElementPtr element = reinterpret_cast<xmlElementPtr> ( node );
+                    const char* ns_uri = ( node->ns && node->ns->href )
+                                         ? reinterpret_cast<const char*> ( node->ns->href )
+                                         : "";
                     AddNodes (
                         aNode->AddNode (
                             Construct (
+                                ns_uri,
                                 reinterpret_cast<const char*> ( element->name ),
                                 ExtractElementAttributes ( element ),
                                 aNode )
@@ -148,7 +152,10 @@ namespace AeonGUI
             }
 
             xmlElementPtr root_element = reinterpret_cast<xmlElementPtr> ( xmlDocGetRootElement ( document ) );
-            AddNodes ( AddNode ( Construct ( reinterpret_cast<const char*> ( root_element->name ), ExtractElementAttributes ( root_element ), this ) ), root_element->children );
+            const char* root_ns_uri = ( reinterpret_cast<xmlNodePtr> ( root_element )->ns && reinterpret_cast<xmlNodePtr> ( root_element )->ns->href )
+                                      ? reinterpret_cast<const char*> ( reinterpret_cast<xmlNodePtr> ( root_element )->ns->href )
+                                      : "";
+            AddNodes ( AddNode ( Construct ( root_ns_uri, reinterpret_cast<const char*> ( root_element->name ), ExtractElementAttributes ( root_element ), this ) ), root_element->children );
             xmlFreeDoc ( document );
 
             // Parse <style> element content into the document stylesheet

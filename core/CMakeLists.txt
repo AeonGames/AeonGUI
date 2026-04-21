@@ -199,6 +199,27 @@ set(AEONGUI_DOM_SOURCES
     dom/Attribute.cpp
 )
 
+if(ENABLE_HTML)
+    list(APPEND AEONGUI_DOM_HEADERS
+        ../include/aeongui/dom/HTMLElement.hpp
+        ../include/aeongui/dom/HTMLHtmlElement.hpp
+        ../include/aeongui/dom/HTMLBodyElement.hpp
+        ../include/aeongui/dom/HTMLDivElement.hpp
+        ../include/aeongui/dom/HTMLSpanElement.hpp
+        ../include/aeongui/dom/HTMLImageElement.hpp
+        ../include/aeongui/dom/HTMLParagraphElement.hpp
+    )
+    list(APPEND AEONGUI_DOM_SOURCES
+        dom/HTMLElement.cpp
+        dom/HTMLHtmlElement.cpp
+        dom/HTMLBodyElement.cpp
+        dom/HTMLDivElement.cpp
+        dom/HTMLSpanElement.cpp
+        dom/HTMLImageElement.cpp
+        dom/HTMLParagraphElement.cpp
+    )
+endif()
+
 if(USE_CUDA)
 	# Set Arch to sm_20 for printf inside kernel
 	# set(CUDA_NVCC_FLAGS -arch=sm_20;${CUDA_NVCC_FLAGS})
@@ -280,6 +301,10 @@ elseif(AEONGUI_BACKEND STREQUAL "Skia")
         target_link_libraries(AeonGUI PRIVATE ${CORETEXT_FRAMEWORK} ${COREFOUNDATION_FRAMEWORK} ${COREGRAPHICS_FRAMEWORK} ${APPLICATIONSERVICES_FRAMEWORK})
     endif()
     target_compile_definitions(AeonGUI PUBLIC AEONGUI_USE_SKIA=1)
+endif()
+
+if(ENABLE_HTML)
+  target_compile_definitions(AeonGUI PUBLIC AEONGUI_ENABLE_HTML=1)
 endif()
 
 if(USE_PNG AND PNG_FOUND)

@@ -51,7 +51,7 @@ set(TESTED_SRCS
 )
 
 if(ENABLE_HTML)
-  list(APPEND TESTED_SRCS HTMLLayoutSpikeTest.cpp)
+  list(APPEND TESTED_SRCS HTMLLayoutSpikeTest.cpp HTMLElementFactoryTest.cpp)
 endif()
 
 set(TEST_SRCS
