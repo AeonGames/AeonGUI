@@ -343,13 +343,12 @@ endif()
 include(parser)
 include(opensans)
 include_directories(include common demos/common core)
-add_subdirectory(css)
-add_subdirectory(core)
-
 if(ENABLE_HTML)
   message(STATUS "ENABLE_HTML is ON: enabling experimental HTML/XHTML support")
   include(yoga)
 endif()
+add_subdirectory(css)
+add_subdirectory(core)
 
 # Demo native plugin for button.svg
 add_library(button_plugin SHARED images/button.c)

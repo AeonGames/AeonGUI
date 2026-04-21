@@ -36,6 +36,20 @@ namespace AeonGUI
             /** @brief XHTML namespace URI. */
             static constexpr const char* kNamespaceURI = "http://www.w3.org/1999/xhtml";
 
+            /** @brief Layout box in CSS pixels, written by HTMLLayoutEngine.
+             *
+             *  (x, y) is the element's border-box origin in document
+             *  coordinates (root at 0,0). (width, height) is the
+             *  border-box size. NaN means "not laid out yet".
+             */
+            struct LayoutBox
+            {
+                float x      {0.0f};
+                float y      {0.0f};
+                float width  {0.0f};
+                float height {0.0f};
+            };
+
             /** @brief Construct an HTMLElement.
              *  @param aTagName    Tag name (local name).
              *  @param aAttributes Element attributes.
@@ -44,6 +58,26 @@ namespace AeonGUI
             HTMLElement ( const DOMString& aTagName, AttributeMap&& aAttributes, Node* aParent );
             /** @brief Destructor. */
             ~HTMLElement() override;
+
+            /** @brief Get the most recently computed layout box. */
+            AEONGUI_DLL const LayoutBox& GetLayoutBox() const noexcept
+            {
+                return mLayoutBox;
+            }
+
+            /** @brief Set the layout box. Called by HTMLLayoutEngine. */
+            AEONGUI_DLL void SetLayoutBox ( const LayoutBox& aBox ) noexcept
+            {
+                mLayoutBox = aBox;
+            }
+
+            /// Expose the inherited computed-style accessor publicly so the
+            /// HTML layout/render passes can read styles without being a
+            /// friend of every Element subclass.
+            using Element::GetComputedStyles;
+
+        private:
+            LayoutBox mLayoutBox{};
         };
     }
 }

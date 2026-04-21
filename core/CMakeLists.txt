@@ -218,6 +218,12 @@ if(ENABLE_HTML)
         dom/HTMLImageElement.cpp
         dom/HTMLParagraphElement.cpp
     )
+    list(APPEND AEONGUI_HEADERS
+        ../include/aeongui/HTMLLayoutEngine.hpp
+    )
+    list(APPEND AEONGUI_SOURCES
+        HTMLLayoutEngine.cpp
+    )
 endif()
 
 if(USE_CUDA)
@@ -305,6 +311,7 @@ endif()
 
 if(ENABLE_HTML)
   target_compile_definitions(AeonGUI PUBLIC AEONGUI_ENABLE_HTML=1)
+  target_link_libraries(AeonGUI PRIVATE yogacore)
 endif()
 
 if(USE_PNG AND PNG_FOUND)
