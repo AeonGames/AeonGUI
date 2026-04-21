@@ -59,6 +59,14 @@ namespace AeonGUI
             /** @brief Destructor. */
             ~HTMLElement() override;
 
+            /** @brief Paint background-color (if any) using the laid-out
+             *  border box.  Borders, text, and replaced content come in
+             *  later milestones.  Layout must have been computed by
+             *  HTMLLayoutEngine first; otherwise the box is 0x0 and
+             *  this is a no-op.
+             */
+            AEONGUI_DLL void DrawStart ( Canvas& aCanvas ) const override;
+
             /** @brief Get the most recently computed layout box. */
             AEONGUI_DLL const LayoutBox& GetLayoutBox() const noexcept
             {
