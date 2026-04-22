@@ -297,3 +297,37 @@ TEST ( HTMLRenderTest, WrappedTextPaintsMultipleLines )
     EXPECT_EQ ( ink_right_of_box, 0 )
             << "wrapped text leaked past the box right edge";
 }
+
+TEST ( HTMLRenderTest, BackgroundColorResolvesCurrentColor )
+{
+    // `background-color: currentColor` must resolve against the
+    // computed `color` of the same element.  We pick a vivid green
+    // for `color` and assert the box paints green where it sits.
+    TempXHTML doc
+    {
+        R"XHTML(<?xml version="1.0" encoding="UTF-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <body>
+    <div style="width: 60px; height: 30px; color: #00FF00;
+                background-color: currentColor"/>
+  </body>
+</html>)XHTML",
+        "aeongui-html-render-bg-currentcolor.xhtml"
+    };
+
+    AeonGUI::DOM::Window window ( 100u, 100u );
+    window.location() = doc.path();
+    window.Draw();
+
+    const uint8_t* pixels = window.GetPixels();
+    const size_t   stride = window.GetStride();
+    ASSERT_NE ( pixels, nullptr );
+
+    // Inside the box: solid green from currentColor.
+    EXPECT_EQ ( SamplePixel ( pixels, stride, 30, 15 ) & 0x00FFFFFFu, 0x0000FF00u )
+            << "background-color: currentColor should paint the computed color";
+
+    // Outside the box: background untouched.
+    EXPECT_EQ ( SamplePixel ( pixels, stride, 80, 50 ) & 0xFF000000u, 0u )
+            << "currentColor bg should not bleed past the box";
+}

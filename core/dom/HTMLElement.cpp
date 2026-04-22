@@ -152,11 +152,18 @@ namespace AeonGUI
             const double x1 = mLayoutBox.x + mLayoutBox.width;
             const double y1 = mLayoutBox.y + mLayoutBox.height;
 
-            // Background fill covers the entire border box.  Only
-            // paint when the author set an explicit color; CURRENT_COLOR
-            // and transparent fills are skipped for now.
+            // Background fill covers the entire border box.  Authors
+            // can set an explicit color, `currentColor` (which resolves
+            // to the computed `color`), or leave it at the initial
+            // `transparent`.  Transparent / fully-zero alpha skips the
+            // paint entirely so we don't trample whatever's underneath.
             css_color css_bg{};
             uint8_t bg_type = css_computed_background_color ( style, &css_bg );
+            if ( bg_type == CSS_BACKGROUND_COLOR_CURRENT_COLOR )
+            {
+                css_computed_color ( style, &css_bg );
+                bg_type = CSS_BACKGROUND_COLOR_COLOR;
+            }
             if ( bg_type == CSS_BACKGROUND_COLOR_COLOR && css_bg != 0 )
             {
                 aCanvas.SetFillColor ( ColorAttr{ Color{ static_cast<uint32_t> ( css_bg ) } } );
