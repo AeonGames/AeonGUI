@@ -125,6 +125,111 @@ namespace AeonGUI
                 }
                 return aOut != 0;
             }
+
+            // ---- Inline formatting context (slice 5) -------------------
+            // The helpers below let an HTMLElement whose children are a
+            // mix of Text and inline-level HTMLElements (`<span>` etc.)
+            // paint as a single wrapped paragraph with per-span colors,
+            // instead of dropping the span text on the floor.
+
+            const css_computed_style* StyleOf ( const HTMLElement& aElement )
+            {
+                css_select_results* r = aElement.GetComputedStyles();
+                return r ? r->styles[CSS_PSEUDO_ELEMENT_NONE] : nullptr;
+            }
+
+            bool IsInlineLevel ( const HTMLElement& aElement )
+            {
+                const css_computed_style* style = StyleOf ( aElement );
+                if ( !style )
+                {
+                    return false;
+                }
+                switch ( css_computed_display ( style, false ) )
+                {
+                case CSS_DISPLAY_INLINE:
+                case CSS_DISPLAY_INLINE_BLOCK:
+                case CSS_DISPLAY_INLINE_FLEX:
+                    return true;
+                default:
+                    return false;
+                }
+            }
+
+            bool IsInlineFormattingContainer ( const HTMLElement& aElement )
+            {
+                bool has_text = false;
+                for ( const auto& child : aElement.childNodes() )
+                {
+                    if ( child->nodeType() == Node::TEXT_NODE )
+                    {
+                        has_text = true;
+                        continue;
+                    }
+                    auto* html = dynamic_cast<HTMLElement*> ( child.get() );
+                    if ( !html || !IsInlineLevel ( *html ) )
+                    {
+                        return false;
+                    }
+                    if ( !IsInlineFormattingContainer ( *html ) )
+                    {
+                        return false;
+                    }
+                }
+                return has_text;
+            }
+
+            /// Per-span run produced by FlattenInline.  `style` is the
+            /// nearest ancestor element's computed style — used at
+            /// paint time to pick up properties that don't change
+            /// glyph metrics (color first; font-weight/style would
+            /// require per-run reshape and are deferred).
+            struct InlineRun
+            {
+                size_t startByte;
+                size_t endByte;
+                const css_computed_style* style;
+            };
+
+            void FlattenInline ( const Node& aNode,
+                                 const css_computed_style* aCurrent,
+                                 std::string& aOutText,
+                                 std::vector<InlineRun>& aOutRuns )
+            {
+                for ( const auto& child : aNode.childNodes() )
+                {
+                    if ( child->nodeType() == Node::TEXT_NODE )
+                    {
+                        const std::string& t =
+                            static_cast<const Text*> ( child.get() )->wholeText();
+                        if ( !t.empty() )
+                        {
+                            const size_t start = aOutText.size();
+                            aOutText.append ( t );
+                            aOutRuns.push_back ( { start, aOutText.size(), aCurrent } );
+                        }
+                    }
+                    else if ( auto * el = dynamic_cast<const HTMLElement * > ( child.get() ) )
+                    {
+                        const css_computed_style* child_style = StyleOf ( *el );
+                        FlattenInline ( *el,
+                                        child_style ? child_style : aCurrent,
+                                        aOutText, aOutRuns );
+                    }
+                }
+            }
+
+            bool IsWhitespaceOnly ( const std::string& aText, size_t aStart, size_t aEnd )
+            {
+                for ( size_t i = aStart; i < aEnd; ++i )
+                {
+                    if ( !std::isspace ( static_cast<unsigned char> ( aText[i] ) ) )
+                    {
+                        return false;
+                    }
+                }
+                return true;
+            }
         }
 
         void HTMLElement::DrawStart ( Canvas& aCanvas ) const
@@ -243,92 +348,120 @@ namespace AeonGUI
                                                 : nullptr;
             if ( mutable_style )
             {
+                // Flatten text from this element's subtree.  For a
+                // pure-text element (no element children), this is just
+                // the immediate Text concatenation.  For an inline
+                // formatting container (children are Text + inline
+                // HTMLElements), it walks all Text descendants and
+                // records per-element style runs so spans can paint
+                // with their own colors.
                 std::string concatenated;
-                for ( const auto& child : childNodes() )
+                std::vector<InlineRun> runs;
+                const bool is_inline_container = IsInlineFormattingContainer ( *this );
+                if ( is_inline_container )
                 {
-                    if ( child->nodeType() != Node::TEXT_NODE )
-                    {
-                        continue;
-                    }
-                    concatenated += static_cast<const Text*> ( child.get() )->wholeText();
+                    FlattenInline ( *this, mutable_style, concatenated, runs );
                 }
-                bool only_ws = true;
-                for ( char c : concatenated )
+                else
                 {
-                    if ( !std::isspace ( static_cast<unsigned char> ( c ) ) )
+                    for ( const auto& child : childNodes() )
                     {
-                        only_ws = false;
-                        break;
+                        if ( child->nodeType() != Node::TEXT_NODE )
+                        {
+                            continue;
+                        }
+                        concatenated += static_cast<const Text*> ( child.get() )->wholeText();
                     }
+                    runs.push_back ( { 0, concatenated.size(), mutable_style } );
                 }
-                if ( !concatenated.empty() && !only_ws )
+
+                if ( !concatenated.empty() &&
+                     !IsWhitespaceOnly ( concatenated, 0, concatenated.size() ) )
                 {
                     const std::string family  = GetCSSFontFamily ( mutable_style );
                     const double      size    = GetCSSFontSize   ( mutable_style );
                     const int         weight  = GetCSSFontWeight ( mutable_style );
                     const int         style_n = GetCSSFontStyle  ( mutable_style );
 
-                    css_color text_color{};
-                    css_computed_color ( style, &text_color );
-                    if ( text_color != 0 )
+                    PangoTextLayout layout;
+                    layout.SetFontFamily ( family );
+                    layout.SetFontSize   ( size );
+                    layout.SetFontWeight ( weight );
+                    layout.SetFontStyle  ( style_n );
+                    if ( mLayoutBox.contentWidth > 0.0f )
                     {
-                        aCanvas.SetFillColor (
-                            ColorAttr{ Color{ static_cast<uint32_t> ( text_color ) } } );
-                        fill_dirty = true;
+                        layout.SetWrapWidth ( mLayoutBox.contentWidth );
+                    }
+                    layout.SetText ( concatenated );
 
-                        PangoTextLayout layout;
-                        layout.SetFontFamily ( family );
-                        layout.SetFontSize   ( size );
-                        layout.SetFontWeight ( weight );
-                        layout.SetFontStyle  ( style_n );
-                        if ( mLayoutBox.contentWidth > 0.0f )
+                    PangoLayout* pango_layout = layout.GetPangoLayout();
+                    PangoLayoutIter* iter = pango_layout_get_iter ( pango_layout );
+                    do
+                    {
+                        PangoLayoutLine* line =
+                            pango_layout_iter_get_line_readonly ( iter );
+                        const int baseline_pango =
+                            pango_layout_iter_get_baseline ( iter );
+                        if ( !line || line->length <= 0 )
                         {
-                            layout.SetWrapWidth ( mLayoutBox.contentWidth );
+                            continue;
                         }
-                        layout.SetText ( concatenated );
-
-                        PangoLayout* pango_layout = layout.GetPangoLayout();
-                        PangoLayoutIter* iter = pango_layout_get_iter ( pango_layout );
-                        do
+                        const size_t line_start =
+                            static_cast<size_t> ( line->start_index );
+                        const size_t line_end =
+                            line_start + static_cast<size_t> ( line->length );
+                        if ( IsWhitespaceOnly ( concatenated, line_start, line_end ) )
                         {
-                            PangoLayoutLine* line =
-                                pango_layout_iter_get_line_readonly ( iter );
-                            const int baseline_pango =
-                                pango_layout_iter_get_baseline ( iter );
-                            if ( !line || line->length <= 0 )
+                            continue;
+                        }
+                        const double baseline_px =
+                            mLayoutBox.contentY +
+                            static_cast<double> ( baseline_pango ) / PANGO_SCALE;
+
+                        // Paint each (run ∩ line) sub-segment with the
+                        // run's color.  Glyph widths come from the
+                        // unified Pango layout (via index_to_pos), so
+                        // even though every sub-segment goes through a
+                        // separate DrawText reshape, advances line up
+                        // because all runs share font/size/weight.
+                        for ( const InlineRun& run : runs )
+                        {
+                            const size_t s = std::max ( run.startByte, line_start );
+                            const size_t e = std::min ( run.endByte,   line_end );
+                            if ( s >= e )
                             {
                                 continue;
                             }
-                            const std::string line_text = concatenated.substr (
-                                                              static_cast<size_t> ( line->start_index ),
-                                                              static_cast<size_t> ( line->length ) );
-                            // Skip whitespace-only lines (the trailing
-                            // newline of a wrapped paragraph would
-                            // otherwise paint an empty box outline).
-                            bool line_only_ws = true;
-                            for ( char c : line_text )
-                            {
-                                if ( !std::isspace ( static_cast<unsigned char> ( c ) ) )
-                                {
-                                    line_only_ws = false;
-                                    break;
-                                }
-                            }
-                            if ( line_only_ws )
+                            if ( IsWhitespaceOnly ( concatenated, s, e ) )
                             {
                                 continue;
                             }
-                            const double baseline_px =
-                                mLayoutBox.contentY +
-                                static_cast<double> ( baseline_pango ) / PANGO_SCALE;
-                            aCanvas.DrawText ( line_text,
-                                               mLayoutBox.contentX,
-                                               baseline_px,
+                            css_color text_color{};
+                            css_computed_color (
+                                run.style ? run.style : mutable_style, &text_color );
+                            if ( text_color == 0 )
+                            {
+                                continue;
+                            }
+                            aCanvas.SetFillColor (
+                                ColorAttr{ Color{ static_cast<uint32_t> ( text_color ) } } );
+                            fill_dirty = true;
+
+                            PangoRectangle pos{};
+                            pango_layout_index_to_pos (
+                                pango_layout, static_cast<int> ( s ), &pos );
+                            const double x_px =
+                                mLayoutBox.contentX +
+                                static_cast<double> ( pos.x ) / PANGO_SCALE;
+
+                            const std::string sub_text =
+                                concatenated.substr ( s, e - s );
+                            aCanvas.DrawText ( sub_text, x_px, baseline_px,
                                                family, size, weight, style_n );
                         }
-                        while ( pango_layout_iter_next_line ( iter ) );
-                        pango_layout_iter_free ( iter );
                     }
+                    while ( pango_layout_iter_next_line ( iter ) );
+                    pango_layout_iter_free ( iter );
                 }
             }
 

@@ -276,6 +276,64 @@ namespace AeonGUI
             return out;
         }
 
+        /// Walk every Text descendant of @p aNode in document order
+        /// and concatenate their content into a single UTF-8 string.
+        /// Used by the inline-formatter path so a paragraph like
+        /// <p>foo<span>bar</span>baz</p> measures and wraps as one
+        /// continuous text run instead of three disconnected leaves.
+        void ConcatAllInlineTextInto ( const DOM::Node& aNode, std::string& aOut )
+        {
+            for ( const auto& child : aNode.childNodes() )
+            {
+                if ( child->nodeType() == DOM::Node::TEXT_NODE )
+                {
+                    aOut += static_cast<const DOM::Text*> ( child.get() )->wholeText();
+                }
+                else
+                {
+                    ConcatAllInlineTextInto ( *child, aOut );
+                }
+            }
+        }
+
+        std::string ConcatAllInlineText ( const DOM::HTMLElement& aElement )
+        {
+            std::string out;
+            ConcatAllInlineTextInto ( aElement, out );
+            return out;
+        }
+
+        /// True when an HTMLElement's CSS-computed display participates
+        /// in an inline formatting context (display: inline /
+        /// inline-block / inline-flex).  Used to decide whether a
+        /// child element should join its parent's inline run instead
+        /// of becoming its own Yoga box.
+        bool IsInlineLevelHTMLElement ( const DOM::HTMLElement& aElement )
+        {
+            css_select_results* results = aElement.GetComputedStyles();
+            const css_computed_style* style = results
+                                              ? results->styles[CSS_PSEUDO_ELEMENT_NONE]
+                                              : nullptr;
+            if ( !style )
+            {
+                return false;
+            }
+            switch ( css_computed_display ( style, false ) )
+            {
+            case CSS_DISPLAY_INLINE:
+            case CSS_DISPLAY_INLINE_BLOCK:
+            case CSS_DISPLAY_INLINE_FLEX:
+                return true;
+            default:
+                return false;
+            }
+        }
+
+        // Forward decl: MeasureHTMLText (below) needs to know which
+        // flatten path applies to the element it was given; the
+        // helpers themselves are defined further down.
+        bool HasOnlyNonElementChildren ( const DOM::HTMLElement& aElement );
+
         /// True when @p aText contains nothing but ASCII whitespace.
         /// libxml2 keeps the indentation between tags as Text nodes;
         /// those would otherwise pin the leaf box to a non-zero size
@@ -309,7 +367,13 @@ namespace AeonGUI
                 return YGSize{ 0.0f, 0.0f };
             }
 
-            const std::string text = ConcatTextChildren ( *element );
+            // Pure-text leaves use the immediate-children concat; the
+            // inline-formatter container path flattens text across span
+            // boundaries.  Both routes feed the same Pango layout so
+            // the inline formatter produces consistent measurements.
+            const std::string text = HasOnlyNonElementChildren ( *element )
+                                     ? ConcatTextChildren ( *element )
+                                     : ConcatAllInlineText ( *element );
             if ( text.empty() || IsAllWhitespace ( text ) )
             {
                 return YGSize{ 0.0f, 0.0f };
@@ -398,11 +462,46 @@ namespace AeonGUI
             };
         }
 
+        /// True when @p aElement is a mixed inline-formatting context:
+        /// it contains at least one Text child AND zero or more
+        /// inline-level HTMLElement children (recursively also inline
+        /// containers).  Pure-element children (e.g. `<body><img/>`
+        /// with no text) fall through to the regular element-per-Yoga
+        /// node path so replaced elements still get their own box.
+        bool IsInlineFormattingContainer ( const DOM::HTMLElement& aElement )
+        {
+            bool has_text = false;
+            for ( const auto& child : aElement.childNodes() )
+            {
+                if ( child->nodeType() == DOM::Node::TEXT_NODE )
+                {
+                    has_text = true;
+                    continue;
+                }
+                auto* html = dynamic_cast<DOM::HTMLElement*> ( child.get() );
+                if ( !html )
+                {
+                    // Non-HTML children (comments, inline SVG…) — let
+                    // the regular path deal with them.
+                    return false;
+                }
+                if ( !IsInlineLevelHTMLElement ( *html ) )
+                {
+                    return false;
+                }
+                if ( !IsInlineFormattingContainer ( *html ) )
+                {
+                    return false;
+                }
+            }
+            return has_text;
+        }
+
         /// True when none of @p aElement's children are HTMLElements.
         /// Such an element is a candidate for the text measure callback
         /// because Yoga forbids combining a measure function with child
-        /// nodes.  Mixed-content inlines (e.g. <p>foo<span>bar</span>)
-        /// will need the inline formatter from a later slice.
+        /// nodes.  Inline mixed content (e.g. <p>foo<span>bar</span>)
+        /// is handled separately by IsInlineFormattingContainer.
         bool HasOnlyNonElementChildren ( const DOM::HTMLElement& aElement )
         {
             for ( const auto& child : aElement.childNodes() )
@@ -450,6 +549,23 @@ namespace AeonGUI
             if ( HasOnlyNonElementChildren ( *aElement ) )
             {
                 std::string text = ConcatTextChildren ( *aElement );
+                if ( !text.empty() && !IsAllWhitespace ( text ) )
+                {
+                    YGNodeSetContext ( node, aElement );
+                    YGNodeSetMeasureFunc ( node, MeasureHTMLText );
+                    return node;
+                }
+            }
+            // Inline-formatting context: <p>foo<span>bar</span>baz</p>
+            // and similar.  All non-Text children are inline-level so
+            // they participate in a single wrapped paragraph rather
+            // than each becoming their own block.  Yoga still treats
+            // this as a leaf — child <span>s are NOT independent flex
+            // items; their styles only affect paint via the inline
+            // formatter inside HTMLElement::DrawStart.
+            else if ( IsInlineFormattingContainer ( *aElement ) )
+            {
+                std::string text = ConcatAllInlineText ( *aElement );
                 if ( !text.empty() && !IsAllWhitespace ( text ) )
                 {
                     YGNodeSetContext ( node, aElement );
@@ -525,6 +641,18 @@ namespace AeonGUI
                 box.contentHeight = 0.0f;
             }
             aElement->SetLayoutBox ( box );
+
+            // Inline-formatting containers (e.g. <p> with <span>
+            // children) were turned into a single Yoga leaf during
+            // build, so the element has no Yoga children even though
+            // its DOM children include HTMLElements.  Skip the
+            // descent — descendant inline boxes don't get their own
+            // layout box, paint walks them as part of the container's
+            // text run.
+            if ( IsInlineFormattingContainer ( *aElement ) )
+            {
+                return;
+            }
 
             uint32_t yoga_index = 0;
             for ( const auto& child : aElement->childNodes() )

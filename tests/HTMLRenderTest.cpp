@@ -486,3 +486,64 @@ TEST ( HTMLRenderTest, InlineSVGPaintsAtLaidOutOffset )
     EXPECT_EQ ( SamplePixel ( pixels, stride, 50, 40 ) & 0xFF000000u, 0u )
             << "inline <svg> painted past its intrinsic width";
 }
+
+TEST ( HTMLRenderTest, MixedInlineSpanColorAppliesPerRun )
+{
+    // <p>FOO <span color:red>BAR</span> BAZ</p> rendered against a
+    // 600x80 viewport with an explicit black `color` on the
+    // paragraph at 32px so each glyph is wide enough to make
+    // per-column sampling reliable.
+    //
+    // We expect:
+    //   * Some red glyph ink overall (proves the span color was
+    //     applied to its sub-run).
+    //   * No red ink in the leftmost 24 px — that's the leading
+    //     'F' of "FOO" and any kerning, never reached by "BAR".
+    TempXHTML doc
+    {
+        R"XHTML(<?xml version="1.0" encoding="UTF-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <body>
+    <p style="color: #000000; font-size: 32px; margin: 0; padding: 0">FOO <span style="color: #FF0000">BAR</span> BAZ</p>
+  </body>
+</html>)XHTML",
+        "aeongui-html-render-mixed-inline.xhtml"
+    };
+
+    AeonGUI::DOM::Window window ( 600u, 80u );
+    window.location() = doc.path();
+    window.Draw();
+
+    const uint8_t* pixels = window.GetPixels();
+    const size_t   stride = window.GetStride();
+    ASSERT_NE ( pixels, nullptr );
+
+    // Treat a pixel as "red glyph ink" when its red channel is well
+    // above the green/blue ones — anti-aliased red glyphs land here
+    // even though the canvas background is fully transparent.
+    auto count_red = [&] ( int aX0, int aY0, int aX1, int aY1 ) -> int
+    {
+        int count = 0;
+        for ( int y = aY0; y < aY1; ++y )
+        {
+            for ( int x = aX0; x < aX1; ++x )
+            {
+                const uint32_t px = SamplePixel ( pixels, stride, x, y );
+                const uint32_t r = ( px >> 16 ) & 0xFFu;
+                const uint32_t g = ( px >>  8 ) & 0xFFu;
+                const uint32_t b =   px         & 0xFFu;
+                if ( r > 64u && r > g + 32u && r > b + 32u )
+                {
+                    ++count;
+                }
+            }
+        }
+        return count;
+    };
+
+    const int total_red = count_red ( 0,  0, 600, 60 );
+    const int left_red  = count_red ( 0,  0,  24, 60 );
+
+    EXPECT_GT ( total_red, 30 ) << "no red glyph ink found for <span>";
+    EXPECT_EQ ( left_red,   0 ) << "<span> color leaked into leading 'F'";
+}
