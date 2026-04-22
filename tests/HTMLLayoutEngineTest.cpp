@@ -265,3 +265,33 @@ TEST ( HTMLLayoutEngine, WhitespaceOnlyTextLeafCollapses )
     EXPECT_GT ( real->GetLayoutBox().width, 0.0f )
             << "sibling with real text should still measure positive width";
 }
+
+TEST ( HTMLLayoutEngine, TextWrapsAtAvailableWidth )
+{
+    // A long text run inside an explicit-width container forces the
+    // measure callback to receive an AT_MOST width hint, which must
+    // make Pango wrap the text into multiple lines.  We assert that:
+    //   * the laid-out width does not exceed the container's width,
+    //   * the laid-out height covers more than two lines of text,
+    //     i.e. wrapping really happened (a single 16 px line could
+    //     be a couple of pixels taller, so 2x font-size is a safe
+    //     lower bound).
+    const char* kLongText =
+        "The quick brown fox jumps over the lazy dog repeatedly.";
+
+    auto body = MakeHTMLElement<AeonGUI::DOM::HTMLBodyElement> (
+                    "body", "", nullptr );
+    auto* div = Attach ( body.get(),
+                         MakeHTMLElement<AeonGUI::DOM::HTMLDivElement> (
+                             "div", "width: 80px; font-size: 16px", body.get() ) );
+    div->AddNode ( std::make_unique<AeonGUI::DOM::Text> ( kLongText, div ) );
+
+    AeonGUI::HTMLLayoutEngine engine;
+    engine.Layout ( body.get(), 1000.0f, 600.0f );
+    const auto box = div->GetLayoutBox();
+
+    EXPECT_LE ( box.width, 80.0f )
+            << "wrapped text should respect the container's available width";
+    EXPECT_GT ( box.height, 32.0f )
+            << "wrapped text should be at least two lines tall (>2 * 16 px)";
+}

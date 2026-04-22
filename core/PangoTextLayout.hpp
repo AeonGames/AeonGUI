@@ -79,6 +79,16 @@ namespace AeonGUI
          *  @return X offset in CSS pixels.
          */
         AEONGUI_DLL double GetCharOffsetX ( int32_t aIndex ) const override;
+        /** @brief Constrain the layout width to enable line wrapping.
+         *  @param aWidth Wrap width in CSS pixels, or a negative value to disable wrapping.
+         *
+         *  Lines longer than @p aWidth are broken at word boundaries
+         *  using Pango's default wrap mode.  This is a Pango-specific
+         *  extension to the abstract TextLayout interface; the value
+         *  must be set before SetText to take effect on subsequent
+         *  measurements.
+         */
+        AEONGUI_DLL void SetWrapWidth ( double aWidth );
         /** @brief Access the underlying PangoLayout for advanced use.
          *  @return Pointer to the PangoLayout.
          */

@@ -293,12 +293,13 @@ namespace AeonGUI
         }
 
         /// Yoga measure callback used for HTMLElements that contain
-        /// only Text children.  Returns the intrinsic single-line text
-        /// dimensions; wrapping at the available width is a follow-up
-        /// slice.  The element is reachable via YGNodeGetContext, set
-        /// when the node is created in BuildYogaSubtree.
+        /// only Text children.  Returns text dimensions, optionally
+        /// wrapped to the available width when Yoga supplies an upper
+        /// bound (AT_MOST or EXACTLY width modes).  The element is
+        /// reachable via YGNodeGetContext, set when the node is
+        /// created in BuildYogaSubtree.
         YGSize MeasureHTMLText ( YGNodeConstRef aNode,
-                                 float /*aAvailWidth*/,  YGMeasureMode /*aWidthMode*/,
+                                 float aAvailWidth, YGMeasureMode aWidthMode,
                                  float /*aAvailHeight*/, YGMeasureMode /*aHeightMode*/ )
         {
             auto* element = static_cast<DOM::HTMLElement*> (
@@ -332,6 +333,16 @@ namespace AeonGUI
             layout.SetFontSize   ( GetCSSFontSize   ( style ) );
             layout.SetFontWeight ( GetCSSFontWeight ( style ) );
             layout.SetFontStyle  ( GetCSSFontStyle  ( style ) );
+
+            // YGMeasureModeUndefined means Yoga is asking for the
+            // intrinsic main-axis size with no upper bound — leave
+            // wrap disabled so we report the single-line width.  For
+            // AT_MOST / EXACTLY, constrain the layout so longer runs
+            // wrap to multiple lines and report a taller measurement.
+            if ( aWidthMode != YGMeasureModeUndefined && aAvailWidth > 0.0f )
+            {
+                layout.SetWrapWidth ( aAvailWidth );
+            }
             layout.SetText ( text );
 
             return YGSize

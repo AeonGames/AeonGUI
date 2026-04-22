@@ -172,6 +172,20 @@ namespace AeonGUI
         return static_cast<double> ( pos.x ) / PANGO_SCALE;
     }
 
+    void PangoTextLayout::SetWrapWidth ( double aWidth )
+    {
+        if ( aWidth < 0.0 )
+        {
+            pango_layout_set_width ( mLayout, -1 );
+        }
+        else
+        {
+            pango_layout_set_width ( mLayout,
+                                     static_cast<int> ( aWidth * PANGO_SCALE ) );
+        }
+        pango_layout_set_wrap ( mLayout, PANGO_WRAP_WORD_CHAR );
+    }
+
     PangoLayout* PangoTextLayout::GetPangoLayout() const
     {
         return mLayout;
