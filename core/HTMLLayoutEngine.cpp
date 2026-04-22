@@ -17,10 +17,15 @@ limitations under the License.
 #include "aeongui/HTMLLayoutEngine.hpp"
 #include "aeongui/dom/HTMLElement.hpp"
 #include "aeongui/dom/Node.hpp"
+#include "aeongui/dom/Text.hpp"
 #include "aeongui/StyleSheet.hpp"
+#include "PangoTextLayout.hpp"
 
 #include <yoga/Yoga.h>
 #include <libcss/libcss.h>
+
+#include <cctype>
+#include <string>
 
 namespace AeonGUI
 {
@@ -253,10 +258,111 @@ namespace AeonGUI
                           css_computed_border_left_style,   aStyle );
         }
 
+        /// Concatenate every Text child of @p aElement into a single
+        /// UTF-8 string, used by the measure callback to compute
+        /// intrinsic size.  Non-Text children are ignored.
+        std::string ConcatTextChildren ( const DOM::HTMLElement& aElement )
+        {
+            std::string out;
+            for ( const auto& child : aElement.childNodes() )
+            {
+                if ( child->nodeType() != DOM::Node::TEXT_NODE )
+                {
+                    continue;
+                }
+                const DOM::Text* text_node = static_cast<const DOM::Text*> ( child.get() );
+                out += text_node->wholeText();
+            }
+            return out;
+        }
+
+        /// True when @p aText contains nothing but ASCII whitespace.
+        /// libxml2 keeps the indentation between tags as Text nodes;
+        /// those would otherwise pin the leaf box to a non-zero size
+        /// even though there is nothing to render.
+        bool IsAllWhitespace ( const std::string& aText )
+        {
+            for ( char c : aText )
+            {
+                if ( !std::isspace ( static_cast<unsigned char> ( c ) ) )
+                {
+                    return false;
+                }
+            }
+            return true;
+        }
+
+        /// Yoga measure callback used for HTMLElements that contain
+        /// only Text children.  Returns the intrinsic single-line text
+        /// dimensions; wrapping at the available width is a follow-up
+        /// slice.  The element is reachable via YGNodeGetContext, set
+        /// when the node is created in BuildYogaSubtree.
+        YGSize MeasureHTMLText ( YGNodeConstRef aNode,
+                                 float /*aAvailWidth*/,  YGMeasureMode /*aWidthMode*/,
+                                 float /*aAvailHeight*/, YGMeasureMode /*aHeightMode*/ )
+        {
+            auto* element = static_cast<DOM::HTMLElement*> (
+                                YGNodeGetContext ( const_cast<YGNodeRef> ( aNode ) ) );
+            if ( !element )
+            {
+                return YGSize{ 0.0f, 0.0f };
+            }
+
+            const std::string text = ConcatTextChildren ( *element );
+            if ( text.empty() || IsAllWhitespace ( text ) )
+            {
+                return YGSize{ 0.0f, 0.0f };
+            }
+
+            css_select_results* results = element->GetComputedStyles();
+            css_computed_style* style = results
+                                        ? results->styles[CSS_PSEUDO_ELEMENT_NONE]
+                                        : nullptr;
+            if ( !style )
+            {
+                return YGSize{ 0.0f, 0.0f };
+            }
+
+            // PangoTextLayout is constructed per measure call — same
+            // lifetime that DrawText/MeasureText already use inside
+            // the Cairo/Skia canvas backends.  Caching across measure
+            // and paint phases is a future optimization.
+            PangoTextLayout layout;
+            layout.SetFontFamily ( GetCSSFontFamily ( style ) );
+            layout.SetFontSize   ( GetCSSFontSize   ( style ) );
+            layout.SetFontWeight ( GetCSSFontWeight ( style ) );
+            layout.SetFontStyle  ( GetCSSFontStyle  ( style ) );
+            layout.SetText ( text );
+
+            return YGSize
+            {
+                static_cast<float> ( layout.GetTextWidth() ),
+                static_cast<float> ( layout.GetTextHeight() )
+            };
+        }
+
+        /// True when none of @p aElement's children are HTMLElements.
+        /// Such an element is a candidate for the text measure callback
+        /// because Yoga forbids combining a measure function with child
+        /// nodes.  Mixed-content inlines (e.g. <p>foo<span>bar</span>)
+        /// will need the inline formatter from a later slice.
+        bool HasOnlyNonElementChildren ( const DOM::HTMLElement& aElement )
+        {
+            for ( const auto& child : aElement.childNodes() )
+            {
+                if ( dynamic_cast<DOM::HTMLElement * > ( child.get() ) )
+                {
+                    return false;
+                }
+            }
+            return true;
+        }
+
         /// Recursively build a Yoga subtree mirroring HTMLElement
-        /// children of @p aElement.  Non-HTML DOM children (text, inline
-        /// SVG, ...) are skipped in this slice — they will become opaque
-        /// leaf boxes in a later milestone via measure callbacks.
+        /// children of @p aElement.  Elements that contain only Text
+        /// children become Yoga leaves with a measure callback so they
+        /// size to their text content.  Other non-HTML DOM children
+        /// (comments, inline SVG, ...) are skipped for now.
         YGNodeRef BuildYogaSubtree ( YGConfigRef aConfig, DOM::HTMLElement* aElement, bool aIsRoot )
         {
             YGNodeRef node = YGNodeNewWithConfig ( aConfig );
@@ -265,6 +371,20 @@ namespace AeonGUI
             if ( results && results->styles[CSS_PSEUDO_ELEMENT_NONE] )
             {
                 ApplyComputedStyle ( node, results->styles[CSS_PSEUDO_ELEMENT_NONE], aIsRoot );
+            }
+
+            // If the element has no HTMLElement children but does have
+            // some non-whitespace text, install the text measure
+            // callback and stop recursing.
+            if ( HasOnlyNonElementChildren ( *aElement ) )
+            {
+                std::string text = ConcatTextChildren ( *aElement );
+                if ( !text.empty() && !IsAllWhitespace ( text ) )
+                {
+                    YGNodeSetContext ( node, aElement );
+                    YGNodeSetMeasureFunc ( node, MeasureHTMLText );
+                    return node;
+                }
             }
 
             uint32_t insertion_index = 0;

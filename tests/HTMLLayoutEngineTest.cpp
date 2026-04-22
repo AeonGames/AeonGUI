@@ -31,6 +31,7 @@ limitations under the License.
 #include "aeongui/dom/HTMLHtmlElement.hpp"
 #include "aeongui/dom/HTMLBodyElement.hpp"
 #include "aeongui/dom/HTMLDivElement.hpp"
+#include "aeongui/dom/Text.hpp"
 
 namespace
 {
@@ -193,4 +194,74 @@ TEST ( HTMLLayoutEngine, PercentageWidthResolvesAgainstParent )
 
     EXPECT_FLOAT_EQ ( inner->GetLayoutBox().width,  200.0f );
     EXPECT_FLOAT_EQ ( inner->GetLayoutBox().height, 100.0f );
+}
+
+TEST ( HTMLLayoutEngine, TextLeafGainsIntrinsicSize )
+{
+    // A div with no width/height set, holding only a non-trivial text
+    // run.  The Yoga measure callback should report the Pango-measured
+    // dimensions, so the laid-out box must be wider than 0 and taller
+    // than 0 — and a clearly longer text must produce a wider box than
+    // a shorter one with the same font settings.
+    //
+    // Wrapping in a <body> matters: the engine forces the *root*
+    // element to the supplied viewport size when no explicit
+    // width/height is set, which would mask the intrinsic measure.
+    auto body_a = MakeHTMLElement<AeonGUI::DOM::HTMLBodyElement> (
+                      "body", "display: flex; flex-direction: row", nullptr );
+    auto* short_div = Attach ( body_a.get(),
+                               MakeHTMLElement<AeonGUI::DOM::HTMLDivElement> (
+                                   "div", "font-size: 16px", body_a.get() ) );
+    short_div->AddNode ( std::make_unique<AeonGUI::DOM::Text> ( "Hi", short_div ) );
+
+    auto body_b = MakeHTMLElement<AeonGUI::DOM::HTMLBodyElement> (
+                      "body", "display: flex; flex-direction: row", nullptr );
+    auto* long_div = Attach ( body_b.get(),
+                              MakeHTMLElement<AeonGUI::DOM::HTMLDivElement> (
+                                  "div", "font-size: 16px", body_b.get() ) );
+    long_div->AddNode (
+        std::make_unique<AeonGUI::DOM::Text> ( "Hello, world!", long_div ) );
+
+    AeonGUI::HTMLLayoutEngine engine_a;
+    engine_a.Layout ( body_a.get(), 800.0f, 600.0f );
+    AeonGUI::HTMLLayoutEngine engine_b;
+    engine_b.Layout ( body_b.get(), 800.0f, 600.0f );
+
+    const auto& sb = short_div->GetLayoutBox();
+    const auto& lb = long_div->GetLayoutBox();
+
+    EXPECT_GT ( sb.width,  0.0f ) << "text leaf must report a positive width";
+    EXPECT_GT ( sb.height, 0.0f ) << "text leaf must report a positive height";
+    EXPECT_GT ( lb.width,  sb.width )
+            << "longer text run should measure wider than a shorter one";
+    EXPECT_FLOAT_EQ ( sb.height, lb.height )
+            << "single-line runs at the same font size should be the same height";
+}
+
+TEST ( HTMLLayoutEngine, WhitespaceOnlyTextLeafCollapses )
+{
+    // libxml2 keeps the indentation between sibling tags as Text nodes.
+    // Such nodes must not give a parent any intrinsic size; in this
+    // row-flex container the whitespace-only div should report a 0
+    // main-axis (width) extent, while a sibling holding real text
+    // should report a positive width.
+    auto body = MakeHTMLElement<AeonGUI::DOM::HTMLBodyElement> (
+                    "body", "display: flex; flex-direction: row", nullptr );
+    auto* ws = Attach ( body.get(),
+                        MakeHTMLElement<AeonGUI::DOM::HTMLDivElement> (
+                            "div", "font-size: 16px", body.get() ) );
+    ws->AddNode ( std::make_unique<AeonGUI::DOM::Text> ( "   \n\t  ", ws ) );
+
+    auto* real = Attach ( body.get(),
+                          MakeHTMLElement<AeonGUI::DOM::HTMLDivElement> (
+                              "div", "font-size: 16px", body.get() ) );
+    real->AddNode ( std::make_unique<AeonGUI::DOM::Text> ( "abc", real ) );
+
+    AeonGUI::HTMLLayoutEngine engine;
+    engine.Layout ( body.get(), 800.0f, 600.0f );
+
+    EXPECT_FLOAT_EQ ( ws->GetLayoutBox().width,  0.0f )
+            << "whitespace-only text run should not give the box any width";
+    EXPECT_GT ( real->GetLayoutBox().width, 0.0f )
+            << "sibling with real text should still measure positive width";
 }
