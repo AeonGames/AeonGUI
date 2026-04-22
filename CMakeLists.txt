@@ -410,6 +410,7 @@ install(
     include/aeongui/Platform.hpp
     include/aeongui/PluginAPI.h
     include/aeongui/RasterImage.hpp
+    include/aeongui/ResourceLoader.hpp
     include/aeongui/Rect.hpp
     include/aeongui/StringLiteral.hpp
     include/aeongui/StyleSheet.hpp

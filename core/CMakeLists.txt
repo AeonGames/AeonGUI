@@ -17,7 +17,6 @@ set(AEONGUI_HEADERS
     ../include/aeongui/Color.hpp
     ../include/aeongui/RasterImage.hpp
     ../include/aeongui/ResourceLoader.hpp
-    ../include/aeongui/ResourceLoader.hpp
     ../include/aeongui/StyleSheet.hpp
     ../include/aeongui/CSSSelector.hpp
     ../include/aeongui/TextLayout.hpp
@@ -119,7 +118,6 @@ set(AEONGUI_SOURCES
     Color.cpp
     ResourceLoader.cpp
     RasterImage.cpp
-    ResourceLoader.cpp
     StyleSheet.cpp
     Canvas.cpp
     TextLayout.cpp
