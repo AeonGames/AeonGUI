@@ -175,3 +175,76 @@ TEST ( HTMLRenderTest, BordersPaintInsideBorderBox )
     EXPECT_NE ( outside_bottom & 0x00FFFFFFu, 0x0000FF00u );
     EXPECT_NE ( outside_bottom & 0x00FFFFFFu, 0x00FF0000u );
 }
+
+namespace
+{
+    /// Count pixels inside [aX0, aX1) x [aY0, aY1) whose channel values
+    /// indicate "more than just the canvas background" — used to assert
+    /// that some glyph ink actually landed in a region without committing
+    /// to a specific pixel-perfect layout.  The threshold is conservative
+    /// to skip Pango/Cairo anti-aliased near-background pixels.
+    int CountInkPixels ( const uint8_t* aPixels, size_t aStride,
+                         int aX0, int aY0, int aX1, int aY1 )
+    {
+        int count = 0;
+        for ( int y = aY0; y < aY1; ++y )
+        {
+            const uint8_t* row = aPixels + ( y * aStride );
+            for ( int x = aX0; x < aX1; ++x )
+            {
+                const uint8_t* p = row + ( x * 4 );
+                if ( p[3] > 32 )  // alpha above noise floor
+                {
+                    ++count;
+                }
+            }
+        }
+        return count;
+    }
+}
+
+TEST ( HTMLRenderTest, TextRendersInsideContentBox )
+{
+    // A 200x60 div with a 20 px black-on-yellow text run.  We don't
+    // assert glyph shapes — we only verify that:
+    //   * the yellow background fills the box,
+    //   * some non-background ink lands inside the content area
+    //     (where the text would be drawn),
+    //   * no ink escapes the border-box outline.
+    TempXHTML doc
+    {
+        R"XHTML(<?xml version="1.0" encoding="UTF-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <body>
+    <div style="width: 200px; height: 60px; background-color: #FFFF00;
+                color: #000000; font-size: 20px">Hello</div>
+  </body>
+</html>)XHTML",
+        "aeongui-html-render-text.xhtml"
+    };
+
+    AeonGUI::DOM::Window window ( 300u, 200u );
+    window.location() = doc.path();
+    window.Draw();
+
+    const uint8_t* pixels = window.GetPixels();
+    const size_t   stride = window.GetStride();
+    ASSERT_NE ( pixels, nullptr );
+
+    // Background fill check — far right of the 200 px wide box, well
+    // past where 5 glyphs would land.
+    EXPECT_EQ ( SamplePixel ( pixels, stride, 180, 30 ) & 0x00FFFFFFu, 0x00FFFF00u )
+            << "expected yellow background to fill the box";
+
+    // Some text ink must be present in the leftmost portion of the
+    // content area where "Hello" is laid out (content origin is the
+    // border box corner because we set no padding).
+    const int ink_in_content = CountInkPixels ( pixels, stride, 0, 0, 100, 60 );
+    EXPECT_GT ( ink_in_content, 50 )
+            << "no glyph ink found in the content area; text not painted";
+
+    // No ink should appear past the bottom of the 60 px tall div.
+    const int ink_below_box = CountInkPixels ( pixels, stride, 0, 80, 200, 200 );
+    EXPECT_EQ ( ink_below_box, 0 )
+            << "text or background bled past the box bottom";
+}

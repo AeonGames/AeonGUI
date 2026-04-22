@@ -292,7 +292,36 @@ namespace AeonGUI
             const float w = YGNodeLayoutGetWidth ( aNode );
             const float h = YGNodeLayoutGetHeight ( aNode );
 
-            aElement->SetLayoutBox ( DOM::HTMLElement::LayoutBox{ x, y, w, h } );
+            // Yoga reports padding and border as resolved per-edge
+            // pixel values after layout.  The content box is the
+            // border box shrunk by border + padding on every side.
+            const float pad_t = YGNodeLayoutGetPadding ( aNode, YGEdgeTop );
+            const float pad_r = YGNodeLayoutGetPadding ( aNode, YGEdgeRight );
+            const float pad_b = YGNodeLayoutGetPadding ( aNode, YGEdgeBottom );
+            const float pad_l = YGNodeLayoutGetPadding ( aNode, YGEdgeLeft );
+            const float bor_t = YGNodeLayoutGetBorder ( aNode, YGEdgeTop );
+            const float bor_r = YGNodeLayoutGetBorder ( aNode, YGEdgeRight );
+            const float bor_b = YGNodeLayoutGetBorder ( aNode, YGEdgeBottom );
+            const float bor_l = YGNodeLayoutGetBorder ( aNode, YGEdgeLeft );
+
+            DOM::HTMLElement::LayoutBox box{};
+            box.x      = x;
+            box.y      = y;
+            box.width  = w;
+            box.height = h;
+            box.contentX      = x + bor_l + pad_l;
+            box.contentY      = y + bor_t + pad_t;
+            box.contentWidth  = w - bor_l - bor_r - pad_l - pad_r;
+            box.contentHeight = h - bor_t - bor_b - pad_t - pad_b;
+            if ( box.contentWidth  < 0.0f )
+            {
+                box.contentWidth  = 0.0f;
+            }
+            if ( box.contentHeight < 0.0f )
+            {
+                box.contentHeight = 0.0f;
+            }
+            aElement->SetLayoutBox ( box );
 
             uint32_t yoga_index = 0;
             for ( const auto& child : aElement->childNodes() )

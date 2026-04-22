@@ -40,14 +40,22 @@ namespace AeonGUI
              *
              *  (x, y) is the element's border-box origin in document
              *  coordinates (root at 0,0). (width, height) is the
-             *  border-box size. NaN means "not laid out yet".
+             *  border-box size.  The content-box fields describe the
+             *  inner area after subtracting border + padding on every
+             *  side; HTML text and replaced content paint into that
+             *  inner box.  NaN-equivalent zero size means "not laid
+             *  out yet" or "display: none".
              */
             struct LayoutBox
             {
-                float x      {0.0f};
-                float y      {0.0f};
-                float width  {0.0f};
-                float height {0.0f};
+                float x             {0.0f};
+                float y             {0.0f};
+                float width         {0.0f};
+                float height        {0.0f};
+                float contentX      {0.0f};
+                float contentY      {0.0f};
+                float contentWidth  {0.0f};
+                float contentHeight {0.0f};
             };
 
             /** @brief Construct an HTMLElement.

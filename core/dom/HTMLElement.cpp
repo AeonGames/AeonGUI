@@ -14,6 +14,7 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 #include "aeongui/dom/HTMLElement.hpp"
+#include "aeongui/dom/Text.hpp"
 #include "aeongui/Canvas.hpp"
 #include "aeongui/Color.hpp"
 #include "aeongui/DrawType.hpp"
@@ -25,6 +26,7 @@ limitations under the License.
 #endif
 #include <libcss/libcss.h>
 #include <array>
+#include <cctype>
 
 namespace AeonGUI
 {
@@ -216,6 +218,88 @@ namespace AeonGUI
                          x0, y0 + top_px, x0 + left_px, y1 - bottom_px );
             paint_edge ( right_px,  css_computed_border_right_color,
                          x1 - right_px, y0 + top_px, x1, y1 - bottom_px );
+
+            // Inline text content.  In this slice we lay out a single
+            // line per Text node child of the element starting at the
+            // content-box origin, with no wrapping or BiDi resolution.
+            // The element's computed `color` becomes the fill color
+            // for DrawText (Pango paints with the current fill color).
+            // Baseline placement uses font-size as a coarse ascent
+            // approximation; precise metric-driven baseline alignment
+            // follows once the inline measure-callback path lands.
+            css_select_results* mutable_results = GetComputedStyles();
+            css_computed_style* mutable_style = mutable_results
+                                                ? mutable_results->styles[CSS_PSEUDO_ELEMENT_NONE]
+                                                : nullptr;
+            if ( mutable_style )
+            {
+                bool any_text = false;
+                for ( const auto& child : childNodes() )
+                {
+                    if ( child->nodeType() != Node::TEXT_NODE )
+                    {
+                        continue;
+                    }
+                    const Text* text_node = static_cast<const Text*> ( child.get() );
+                    std::string text = text_node->wholeText();
+                    // Skip whitespace-only text runs — XML keeps the
+                    // indentation between tags as text nodes and we
+                    // would otherwise paint an empty box outline.
+                    bool only_ws = true;
+                    for ( char c : text )
+                    {
+                        if ( !std::isspace ( static_cast<unsigned char> ( c ) ) )
+                        {
+                            only_ws = false;
+                            break;
+                        }
+                    }
+                    if ( text.empty() || only_ws )
+                    {
+                        continue;
+                    }
+                    any_text = true;
+                    break;
+                }
+
+                if ( any_text )
+                {
+                    const std::string family = GetCSSFontFamily ( mutable_style );
+                    const double      size   = GetCSSFontSize   ( mutable_style );
+                    const int         weight = GetCSSFontWeight ( mutable_style );
+                    const int         style_n = GetCSSFontStyle ( mutable_style );
+
+                    css_color text_color{};
+                    css_computed_color ( style, &text_color );
+                    if ( text_color != 0 )
+                    {
+                        aCanvas.SetFillColor (
+                            ColorAttr{ Color{ static_cast<uint32_t> ( text_color ) } } );
+                        fill_dirty = true;
+
+                        const double content_x = mLayoutBox.contentX;
+                        double pen_x = content_x;
+                        const double baseline = mLayoutBox.contentY + size;
+
+                        for ( const auto& child : childNodes() )
+                        {
+                            if ( child->nodeType() != Node::TEXT_NODE )
+                            {
+                                continue;
+                            }
+                            const Text* text_node = static_cast<const Text*> ( child.get() );
+                            std::string text = text_node->wholeText();
+                            if ( text.empty() )
+                            {
+                                continue;
+                            }
+                            aCanvas.DrawText ( text, pen_x, baseline,
+                                               family, size, weight, style_n );
+                            pen_x += aCanvas.MeasureText ( text, family, size, weight, style_n );
+                        }
+                    }
+                }
+            }
 
             if ( fill_dirty )
             {
