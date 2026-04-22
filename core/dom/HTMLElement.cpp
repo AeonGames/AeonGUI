@@ -19,12 +19,14 @@ limitations under the License.
 #include "aeongui/Color.hpp"
 #include "aeongui/DrawType.hpp"
 #include "aeongui/StyleSheet.hpp"
+#include "PangoTextLayout.hpp"
 #ifdef AEONGUI_USE_SKIA
 #include "SkiaPath.hpp"
 #else
 #include "CairoPath.hpp"
 #endif
 #include <libcss/libcss.h>
+#include <pango/pango.h>
 #include <array>
 #include <cctype>
 
@@ -219,55 +221,45 @@ namespace AeonGUI
             paint_edge ( right_px,  css_computed_border_right_color,
                          x1 - right_px, y0 + top_px, x1, y1 - bottom_px );
 
-            // Inline text content.  In this slice we lay out a single
-            // line per Text node child of the element starting at the
-            // content-box origin, with no wrapping or BiDi resolution.
-            // The element's computed `color` becomes the fill color
-            // for DrawText (Pango paints with the current fill color).
-            // Baseline placement uses font-size as a coarse ascent
-            // approximation; precise metric-driven baseline alignment
-            // follows once the inline measure-callback path lands.
+            // Inline text content.  We concatenate every Text child into
+            // a single run, lay it out through PangoTextLayout with the
+            // content-box width as the wrap constraint (matches what
+            // HTMLLayoutEngine's measure callback used), and then walk
+            // the resulting lines so each one is painted via the
+            // backend's DrawText at its own baseline.  This keeps the
+            // canvas API minimal — both Cairo and Skia already build
+            // their own per-call PangoLayout for DrawText, so paint
+            // and measure stay agreement-by-construction.
             css_select_results* mutable_results = GetComputedStyles();
             css_computed_style* mutable_style = mutable_results
                                                 ? mutable_results->styles[CSS_PSEUDO_ELEMENT_NONE]
                                                 : nullptr;
             if ( mutable_style )
             {
-                bool any_text = false;
+                std::string concatenated;
                 for ( const auto& child : childNodes() )
                 {
                     if ( child->nodeType() != Node::TEXT_NODE )
                     {
                         continue;
                     }
-                    const Text* text_node = static_cast<const Text*> ( child.get() );
-                    std::string text = text_node->wholeText();
-                    // Skip whitespace-only text runs — XML keeps the
-                    // indentation between tags as text nodes and we
-                    // would otherwise paint an empty box outline.
-                    bool only_ws = true;
-                    for ( char c : text )
-                    {
-                        if ( !std::isspace ( static_cast<unsigned char> ( c ) ) )
-                        {
-                            only_ws = false;
-                            break;
-                        }
-                    }
-                    if ( text.empty() || only_ws )
-                    {
-                        continue;
-                    }
-                    any_text = true;
-                    break;
+                    concatenated += static_cast<const Text*> ( child.get() )->wholeText();
                 }
-
-                if ( any_text )
+                bool only_ws = true;
+                for ( char c : concatenated )
                 {
-                    const std::string family = GetCSSFontFamily ( mutable_style );
-                    const double      size   = GetCSSFontSize   ( mutable_style );
-                    const int         weight = GetCSSFontWeight ( mutable_style );
-                    const int         style_n = GetCSSFontStyle ( mutable_style );
+                    if ( !std::isspace ( static_cast<unsigned char> ( c ) ) )
+                    {
+                        only_ws = false;
+                        break;
+                    }
+                }
+                if ( !concatenated.empty() && !only_ws )
+                {
+                    const std::string family  = GetCSSFontFamily ( mutable_style );
+                    const double      size    = GetCSSFontSize   ( mutable_style );
+                    const int         weight  = GetCSSFontWeight ( mutable_style );
+                    const int         style_n = GetCSSFontStyle  ( mutable_style );
 
                     css_color text_color{};
                     css_computed_color ( style, &text_color );
@@ -277,26 +269,58 @@ namespace AeonGUI
                             ColorAttr{ Color{ static_cast<uint32_t> ( text_color ) } } );
                         fill_dirty = true;
 
-                        const double content_x = mLayoutBox.contentX;
-                        double pen_x = content_x;
-                        const double baseline = mLayoutBox.contentY + size;
-
-                        for ( const auto& child : childNodes() )
+                        PangoTextLayout layout;
+                        layout.SetFontFamily ( family );
+                        layout.SetFontSize   ( size );
+                        layout.SetFontWeight ( weight );
+                        layout.SetFontStyle  ( style_n );
+                        if ( mLayoutBox.contentWidth > 0.0f )
                         {
-                            if ( child->nodeType() != Node::TEXT_NODE )
-                            {
-                                continue;
-                            }
-                            const Text* text_node = static_cast<const Text*> ( child.get() );
-                            std::string text = text_node->wholeText();
-                            if ( text.empty() )
-                            {
-                                continue;
-                            }
-                            aCanvas.DrawText ( text, pen_x, baseline,
-                                               family, size, weight, style_n );
-                            pen_x += aCanvas.MeasureText ( text, family, size, weight, style_n );
+                            layout.SetWrapWidth ( mLayoutBox.contentWidth );
                         }
+                        layout.SetText ( concatenated );
+
+                        PangoLayout* pango_layout = layout.GetPangoLayout();
+                        PangoLayoutIter* iter = pango_layout_get_iter ( pango_layout );
+                        do
+                        {
+                            PangoLayoutLine* line =
+                                pango_layout_iter_get_line_readonly ( iter );
+                            const int baseline_pango =
+                                pango_layout_iter_get_baseline ( iter );
+                            if ( !line || line->length <= 0 )
+                            {
+                                continue;
+                            }
+                            const std::string line_text = concatenated.substr (
+                                                              static_cast<size_t> ( line->start_index ),
+                                                              static_cast<size_t> ( line->length ) );
+                            // Skip whitespace-only lines (the trailing
+                            // newline of a wrapped paragraph would
+                            // otherwise paint an empty box outline).
+                            bool line_only_ws = true;
+                            for ( char c : line_text )
+                            {
+                                if ( !std::isspace ( static_cast<unsigned char> ( c ) ) )
+                                {
+                                    line_only_ws = false;
+                                    break;
+                                }
+                            }
+                            if ( line_only_ws )
+                            {
+                                continue;
+                            }
+                            const double baseline_px =
+                                mLayoutBox.contentY +
+                                static_cast<double> ( baseline_pango ) / PANGO_SCALE;
+                            aCanvas.DrawText ( line_text,
+                                               mLayoutBox.contentX,
+                                               baseline_px,
+                                               family, size, weight, style_n );
+                        }
+                        while ( pango_layout_iter_next_line ( iter ) );
+                        pango_layout_iter_free ( iter );
                     }
                 }
             }

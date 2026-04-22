@@ -248,3 +248,52 @@ TEST ( HTMLRenderTest, TextRendersInsideContentBox )
     EXPECT_EQ ( ink_below_box, 0 )
             << "text or background bled past the box bottom";
 }
+
+TEST ( HTMLRenderTest, WrappedTextPaintsMultipleLines )
+{
+    // A long sentence inside an 80 px wide, 200 px tall div with a
+    // yellow background and 16 px black text.  The layout engine is
+    // expected to wrap the run into multiple lines, and the renderer
+    // must now paint each one — so we verify ink lands in two
+    // vertically separated bands inside the content area.
+    TempXHTML doc
+    {
+        R"XHTML(<?xml version="1.0" encoding="UTF-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <body>
+    <div style="width: 80px; height: 200px; background-color: #FFFF00;
+                color: #000000; font-size: 16px">The quick brown fox jumps over the lazy dog.</div>
+  </body>
+</html>)XHTML",
+        "aeongui-html-render-wrapped-text.xhtml"
+    };
+
+    AeonGUI::DOM::Window window ( 300u, 300u );
+    window.location() = doc.path();
+    window.Draw();
+
+    const uint8_t* pixels = window.GetPixels();
+    const size_t   stride = window.GetStride();
+    ASSERT_NE ( pixels, nullptr );
+
+    // Background sanity: the 80 px wide box is yellow far below the
+    // first wrapped line.
+    EXPECT_EQ ( SamplePixel ( pixels, stride, 75, 100 ) & 0x00FFFFFFu, 0x00FFFF00u )
+            << "expected yellow background to fill the box";
+
+    // First line band: somewhere in the top 20 px of the content.
+    const int ink_top = CountInkPixels ( pixels, stride, 0, 0, 80, 20 );
+    // Second line band: 20 px below the first, well clear of the
+    // first line's descenders.  If the renderer were still painting
+    // a single line this region would be pure background.
+    const int ink_second = CountInkPixels ( pixels, stride, 0, 22, 80, 44 );
+
+    EXPECT_GT ( ink_top,    20 ) << "no glyph ink found on the first wrapped line";
+    EXPECT_GT ( ink_second, 20 )
+            << "no glyph ink found on the second wrapped line — text was not wrapped";
+
+    // Nothing past the right edge of the 80 px box.
+    const int ink_right_of_box = CountInkPixels ( pixels, stride, 90, 0, 200, 200 );
+    EXPECT_EQ ( ink_right_of_box, 0 )
+            << "wrapped text leaked past the box right edge";
+}
