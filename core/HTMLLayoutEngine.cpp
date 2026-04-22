@@ -18,6 +18,7 @@ limitations under the License.
 #include "aeongui/dom/HTMLElement.hpp"
 #include "aeongui/dom/HTMLImageElement.hpp"
 #include "aeongui/dom/Node.hpp"
+#include "aeongui/dom/SVGSVGElement.hpp"
 #include "aeongui/dom/Text.hpp"
 #include "aeongui/StyleSheet.hpp"
 #include "PangoTextLayout.hpp"
@@ -375,6 +376,28 @@ namespace AeonGUI
             };
         }
 
+        /// Yoga measure callback for an inline <svg> embedded in an
+        /// HTML document.  Reports the SVG's intrinsic dimensions
+        /// (width/height attributes, falling back to viewBox dims).
+        /// 0 in either axis means "no intrinsic size", so the box
+        /// will collapse — same fail-safe as missing <img> bitmaps.
+        YGSize MeasureInlineSVG ( YGNodeConstRef aNode,
+                                  float /*aAvailWidth*/, YGMeasureMode /*aWidthMode*/,
+                                  float /*aAvailHeight*/, YGMeasureMode /*aHeightMode*/ )
+        {
+            auto* element = static_cast<DOM::SVGSVGElement*> (
+                                YGNodeGetContext ( const_cast<YGNodeRef> ( aNode ) ) );
+            if ( !element )
+            {
+                return YGSize{ 0.0f, 0.0f };
+            }
+            return YGSize
+            {
+                static_cast<float> ( element->GetIntrinsicWidth()  ),
+                static_cast<float> ( element->GetIntrinsicHeight() )
+            };
+        }
+
         /// True when none of @p aElement's children are HTMLElements.
         /// Such an element is a candidate for the text measure callback
         /// because Yoga forbids combining a measure function with child
@@ -438,13 +461,25 @@ namespace AeonGUI
             uint32_t insertion_index = 0;
             for ( const auto& child : aElement->childNodes() )
             {
-                DOM::HTMLElement* html_child = dynamic_cast<DOM::HTMLElement*> ( child.get() );
-                if ( !html_child )
+                if ( DOM::HTMLElement * html_child =
+                         dynamic_cast<DOM::HTMLElement * > ( child.get() ) )
                 {
-                    continue;
+                    YGNodeRef child_node = BuildYogaSubtree ( aConfig, html_child, false );
+                    YGNodeInsertChild ( node, child_node, insertion_index++ );
                 }
-                YGNodeRef child_node = BuildYogaSubtree ( aConfig, html_child, false );
-                YGNodeInsertChild ( node, child_node, insertion_index++ );
+                else if ( DOM::SVGSVGElement * svg_child =
+                              dynamic_cast<DOM::SVGSVGElement * > ( child.get() ) )
+                {
+                    // Inline SVG: contributes its own intrinsic size
+                    // and never participates further in HTML layout
+                    // (its children are SVG, not HTML).  Same align-
+                    // self pin as <img> so it doesn't stretch.
+                    YGNodeRef child_node = YGNodeNewWithConfig ( aConfig );
+                    YGNodeStyleSetAlignSelf ( child_node, YGAlignFlexStart );
+                    YGNodeSetContext       ( child_node, svg_child );
+                    YGNodeSetMeasureFunc   ( child_node, MeasureInlineSVG );
+                    YGNodeInsertChild ( node, child_node, insertion_index++ );
+                }
             }
 
             return node;
@@ -494,13 +529,23 @@ namespace AeonGUI
             uint32_t yoga_index = 0;
             for ( const auto& child : aElement->childNodes() )
             {
-                DOM::HTMLElement* html_child = dynamic_cast<DOM::HTMLElement*> ( child.get() );
-                if ( !html_child )
+                if ( DOM::HTMLElement * html_child =
+                         dynamic_cast<DOM::HTMLElement * > ( child.get() ) )
                 {
-                    continue;
+                    YGNodeRef child_node = YGNodeGetChild ( aNode, yoga_index++ );
+                    WriteLayoutBack ( html_child, child_node, x, y );
                 }
-                YGNodeRef child_node = YGNodeGetChild ( aNode, yoga_index++ );
-                WriteLayoutBack ( html_child, child_node, x, y );
+                else if ( DOM::SVGSVGElement * svg_child =
+                              dynamic_cast<DOM::SVGSVGElement * > ( child.get() ) )
+                {
+                    YGNodeRef child_node = YGNodeGetChild ( aNode, yoga_index++ );
+                    DOM::SVGSVGElement::InlineLayoutBox svg_box;
+                    svg_box.x      = x + YGNodeLayoutGetLeft   ( child_node );
+                    svg_box.y      = y + YGNodeLayoutGetTop    ( child_node );
+                    svg_box.width  = YGNodeLayoutGetWidth      ( child_node );
+                    svg_box.height = YGNodeLayoutGetHeight     ( child_node );
+                    svg_child->SetInlineLayoutBox ( svg_box );
+                }
             }
         }
     }

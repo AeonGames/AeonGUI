@@ -45,6 +45,40 @@ namespace AeonGUI
              *  @param aCanvas Target canvas.
              */
             void DrawFinish ( Canvas& aCanvas ) const final;
+
+            /** @brief Box assigned by an HTML layout pass when this
+             *  &lt;svg&gt; appears inline inside an HTML document.
+             *  Coordinates are in document/canvas pixels.  Width or
+             *  height of 0 means "no inline placement" — DrawStart
+             *  then falls back to occupying the full canvas as before.
+             */
+            struct InlineLayoutBox
+            {
+                double x{}, y{}, width{}, height{};
+            };
+            AEONGUI_DLL void SetInlineLayoutBox ( const InlineLayoutBox& aBox ) noexcept
+            {
+                mInlineLayoutBox = aBox;
+            }
+            AEONGUI_DLL const InlineLayoutBox& GetInlineLayoutBox() const noexcept
+            {
+                return mInlineLayoutBox;
+            }
+
+            /// Intrinsic width/height as authored on the element.
+            /// Returns 0 when the corresponding attribute is missing
+            /// or expressed as a percentage (which has no intrinsic
+            /// meaning outside of a containing block).
+            AEONGUI_DLL double GetIntrinsicWidth()  const noexcept
+            {
+                return ( !mWidthPct  && mWidth  > 0.0 ) ? mWidth  :
+                       ( mHasViewBox ? mViewBox.width  : 0.0 );
+            }
+            AEONGUI_DLL double GetIntrinsicHeight() const noexcept
+            {
+                return ( !mHeightPct && mHeight > 0.0 ) ? mHeight :
+                       ( mHasViewBox ? mViewBox.height : 0.0 );
+            }
         protected:
             void onAttributeChanged ( const DOMString& aName, const DOMString& aValue ) override;
         private:
@@ -59,6 +93,7 @@ namespace AeonGUI
             ViewBox mViewBox{};
             PreserveAspectRatio mPreserveAspectRatio{};
             bool mHasViewBox{false};
+            InlineLayoutBox mInlineLayoutBox{};
         };
     }
 }

@@ -444,3 +444,45 @@ TEST ( HTMLRenderTest, ImageContributesIntrinsicSizeAndPaintsBitmap )
     EXPECT_EQ ( SamplePixel ( pixels, stride, kImgW / 2, kImgH + 4 ) & 0xFF000000u, 0u )
             << "<img> painted outside its intrinsic size";
 }
+
+TEST ( HTMLRenderTest, InlineSVGPaintsAtLaidOutOffset )
+{
+    // A 30 px tall block pushes the inline <svg> down by 30 px.  The
+    // SVG is sized 40x20 with a viewBox that exactly maps to its
+    // intrinsic dimensions and contains a single red rect that fills
+    // the whole viewport.  We expect:
+    //   * red pixel at (10, 40) — clearly inside the SVG region
+    //     (svg origin is (0,30), so that's (10,10) inside the svg);
+    //   * canvas background untouched at (10, 10) — above the SVG;
+    //   * canvas background untouched at (50, 40) — to the right
+    //     of the SVG's 40 px width.
+    TempXHTML doc
+    {
+        R"XHTML(<?xml version="1.0" encoding="UTF-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <body>
+    <div style="width: 100px; height: 30px"/>
+    <svg xmlns="http://www.w3.org/2000/svg"
+         width="40" height="20" viewBox="0 0 40 20">
+      <rect x="0" y="0" width="40" height="20" fill="#FF0000"/>
+    </svg>
+  </body>
+</html>)XHTML",
+        "aeongui-html-render-inline-svg.xhtml"
+    };
+
+    AeonGUI::DOM::Window window ( 100u, 100u );
+    window.location() = doc.path();
+    window.Draw();
+
+    const uint8_t* pixels = window.GetPixels();
+    const size_t   stride = window.GetStride();
+    ASSERT_NE ( pixels, nullptr );
+
+    EXPECT_EQ ( SamplePixel ( pixels, stride, 10, 40 ) & 0x00FFFFFFu, 0x00FF0000u )
+            << "inline <svg> did not paint at its laid-out (0, 30) origin";
+    EXPECT_EQ ( SamplePixel ( pixels, stride, 10, 10 ) & 0xFF000000u, 0u )
+            << "inline <svg> painted above its laid-out top edge";
+    EXPECT_EQ ( SamplePixel ( pixels, stride, 50, 40 ) & 0xFF000000u, 0u )
+            << "inline <svg> painted past its intrinsic width";
+}

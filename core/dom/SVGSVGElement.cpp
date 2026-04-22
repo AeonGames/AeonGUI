@@ -16,6 +16,7 @@ limitations under the License.
 #include <iostream>
 #include <regex>
 #include "aeongui/Canvas.hpp"
+#include "aeongui/Matrix2x3.hpp"
 #include "aeongui/dom/SVGSVGElement.hpp"
 
 namespace AeonGUI
@@ -82,8 +83,61 @@ namespace AeonGUI
         void SVGSVGElement::DrawStart ( Canvas& aCanvas ) const
         {
             SVGGraphicsElement::DrawStart ( aCanvas );
-            double canvasW = static_cast<double> ( aCanvas.GetWidth() );
-            double canvasH = static_cast<double> ( aCanvas.GetHeight() );
+
+            // Inline-in-HTML mode: when the HTML layout engine has
+            // assigned a non-empty box on this <svg>, build the
+            // viewport-to-device transform manually so the SVG paints
+            // inside its laid-out rectangle.  We avoid Canvas::
+            // SetViewBox here because it bakes in the canvas-wide
+            // dimensions and would clobber any preceding translate.
+            const bool inline_mode =
+                mInlineLayoutBox.width  > 0.0 &&
+                mInlineLayoutBox.height > 0.0;
+
+            if ( inline_mode )
+            {
+                if ( mHasViewBox && mViewBox.width > 0.0 && mViewBox.height > 0.0 )
+                {
+                    double scale_x = mInlineLayoutBox.width  / mViewBox.width;
+                    double scale_y = mInlineLayoutBox.height / mViewBox.height;
+                    if ( mPreserveAspectRatio.GetAlign() != PreserveAspectRatio::Align::none )
+                    {
+                        if ( mPreserveAspectRatio.GetMeetOrSlice() ==
+                             PreserveAspectRatio::MeetOrSlice::Meet )
+                        {
+                            scale_x = std::min ( scale_x, scale_y );
+                            scale_y = scale_x;
+                        }
+                        else if ( mPreserveAspectRatio.GetMeetOrSlice() ==
+                                  PreserveAspectRatio::MeetOrSlice::Slice )
+                        {
+                            scale_x = std::max ( scale_x, scale_y );
+                            scale_y = scale_x;
+                        }
+                    }
+                    const double tx = mInlineLayoutBox.x - mViewBox.min_x * scale_x;
+                    const double ty = mInlineLayoutBox.y - mViewBox.min_y * scale_y;
+                    aCanvas.SetTransform ( Matrix2x3 (
+                                               scale_x, 0.0,
+                                               0.0,     scale_y,
+                                               tx,      ty ) );
+                    aCanvas.PushViewport ( mViewBox.width, mViewBox.height );
+                }
+                else
+                {
+                    aCanvas.SetTransform ( Matrix2x3 (
+                                               1.0, 0.0,
+                                               0.0, 1.0,
+                                               mInlineLayoutBox.x,
+                                               mInlineLayoutBox.y ) );
+                    aCanvas.PushViewport ( mInlineLayoutBox.width,
+                                           mInlineLayoutBox.height );
+                }
+                return;
+            }
+
+            const double canvasW = static_cast<double> ( aCanvas.GetWidth() );
+            const double canvasH = static_cast<double> ( aCanvas.GetHeight() );
             if ( mHasViewBox )
             {
                 aCanvas.SetViewBox ( mViewBox, mPreserveAspectRatio );
@@ -91,8 +145,10 @@ namespace AeonGUI
             }
             else
             {
-                double vw = mWidthPct  ? ( mWidthRaw  * canvasW / 100.0 ) : ( mWidth  > 0.0 ? mWidth  : canvasW );
-                double vh = mHeightPct ? ( mHeightRaw * canvasH / 100.0 ) : ( mHeight > 0.0 ? mHeight : canvasH );
+                double vw = mWidthPct  ? ( mWidthRaw  * canvasW / 100.0 ) :
+                            ( mWidth  > 0.0 ? mWidth  : canvasW );
+                double vh = mHeightPct ? ( mHeightRaw * canvasH / 100.0 ) :
+                            ( mHeight > 0.0 ? mHeight : canvasH );
                 aCanvas.PushViewport ( vw, vh );
             }
         }
