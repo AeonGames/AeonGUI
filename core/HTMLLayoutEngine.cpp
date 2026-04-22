@@ -16,6 +16,7 @@ limitations under the License.
 
 #include "aeongui/HTMLLayoutEngine.hpp"
 #include "aeongui/dom/HTMLElement.hpp"
+#include "aeongui/dom/HTMLImageElement.hpp"
 #include "aeongui/dom/Node.hpp"
 #include "aeongui/dom/Text.hpp"
 #include "aeongui/StyleSheet.hpp"
@@ -350,6 +351,30 @@ namespace AeonGUI
             };
         }
 
+        /// Yoga measure callback for HTMLImageElement: report the
+        /// image's intrinsic pixel dimensions as the natural size.
+        /// Yoga handles aspect-ratio preservation when only one of
+        /// width/height is constrained; if neither is set, the box
+        /// matches the bitmap exactly.  An unloaded or missing image
+        /// collapses to (0,0) so a broken `src` doesn't reserve
+        /// phantom space.
+        YGSize MeasureHTMLImage ( YGNodeConstRef aNode,
+                                  float /*aAvailWidth*/, YGMeasureMode /*aWidthMode*/,
+                                  float /*aAvailHeight*/, YGMeasureMode /*aHeightMode*/ )
+        {
+            auto* element = static_cast<DOM::HTMLImageElement*> (
+                                YGNodeGetContext ( const_cast<YGNodeRef> ( aNode ) ) );
+            if ( !element || !element->EnsureImageLoaded() )
+            {
+                return YGSize{ 0.0f, 0.0f };
+            }
+            return YGSize
+            {
+                static_cast<float> ( element->naturalWidth() ),
+                static_cast<float> ( element->naturalHeight() )
+            };
+        }
+
         /// True when none of @p aElement's children are HTMLElements.
         /// Such an element is a candidate for the text measure callback
         /// because Yoga forbids combining a measure function with child
@@ -380,6 +405,20 @@ namespace AeonGUI
             if ( results && results->styles[CSS_PSEUDO_ELEMENT_NONE] )
             {
                 ApplyComputedStyle ( node, results->styles[CSS_PSEUDO_ELEMENT_NONE], aIsRoot );
+            }
+
+            // Replaced content: <img> contributes its decoded bitmap's
+            // intrinsic dimensions and never has HTML children, so it
+            // is always a Yoga leaf with the image measure callback.
+            // Pin align-self to flex-start so it doesn't stretch on
+            // the cross axis of a column-flex parent — browsers treat
+            // <img> as inline-level by default, which never stretches.
+            if ( auto * image = dynamic_cast<DOM::HTMLImageElement * > ( aElement ) )
+            {
+                YGNodeStyleSetAlignSelf ( node, YGAlignFlexStart );
+                YGNodeSetContext ( node, image );
+                YGNodeSetMeasureFunc ( node, MeasureHTMLImage );
+                return node;
             }
 
             // If the element has no HTMLElement children but does have

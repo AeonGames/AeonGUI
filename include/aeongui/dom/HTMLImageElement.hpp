@@ -17,6 +17,7 @@ limitations under the License.
 #define AEONGUI_HTMLIMAGEELEMENT_H
 
 #include "HTMLElement.hpp"
+#include "aeongui/RasterImage.hpp"
 
 namespace AeonGUI
 {
@@ -24,12 +25,36 @@ namespace AeonGUI
     {
         /** @brief HTML &lt;img&gt; element.
          *  @see https://html.spec.whatwg.org/multipage/embedded-content.html#htmlimageelement
+         *
+         *  Acts as a CSS replaced element: contributes its decoded
+         *  intrinsic dimensions to the layout engine and paints itself
+         *  into the content box at draw time.
          */
         class HTMLImageElement : public HTMLElement
         {
         public:
             HTMLImageElement ( const DOMString& aTagName, AttributeMap&& aAttributes, Node* aParent );
             ~HTMLImageElement() final;
+
+            AEONGUI_DLL void DrawStart ( Canvas& aCanvas ) const override;
+
+            /// Lazily load the bitmap referenced by `src`, resolving
+            /// relative paths against the owner document.  Returns
+            /// true when the image is decoded and ready to paint.
+            AEONGUI_DLL bool EnsureImageLoaded() const;
+
+            /// Intrinsic width/height of the decoded image.  Returns
+            /// 0 until the image is successfully loaded.
+            AEONGUI_DLL uint32_t naturalWidth()  const;
+            AEONGUI_DLL uint32_t naturalHeight() const;
+
+        protected:
+            void onAttributeChanged ( const DOMString& aName, const DOMString& aValue ) override;
+
+        private:
+            DOMString mSrc;
+            mutable RasterImage mRasterImage;
+            mutable bool mImageLoadAttempted{false};
         };
     }
 }

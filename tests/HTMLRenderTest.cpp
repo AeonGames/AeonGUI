@@ -331,3 +331,116 @@ TEST ( HTMLRenderTest, BackgroundColorResolvesCurrentColor )
     EXPECT_EQ ( SamplePixel ( pixels, stride, 80, 50 ) & 0xFF000000u, 0u )
             << "currentColor bg should not bleed past the box";
 }
+
+namespace
+{
+    /// Encode a minimal RLE-PCX file holding a `aWidth x aHeight`
+    /// image painted with a single grayscale value.  Used to feed
+    /// the <img> code paths a real on-disk bitmap without requiring
+    /// PNG/JPEG fixtures in the repo.
+    std::vector<uint8_t> MakeSolidGrayPcx ( uint16_t aWidth, uint16_t aHeight, uint8_t aValue )
+    {
+        std::vector<uint8_t> bytes ( 128u, 0u );
+        bytes[0]  = 0x0Au;          // Identifier.
+        bytes[1]  = 5u;             // Version.
+        bytes[2]  = 1u;             // RLE encoding.
+        bytes[3]  = 8u;             // Bits per pixel per plane.
+        const uint16_t xEnd = aWidth  - 1u;
+        const uint16_t yEnd = aHeight - 1u;
+        bytes[8]  = static_cast<uint8_t> ( xEnd & 0xFFu );
+        bytes[9]  = static_cast<uint8_t> ( ( xEnd >> 8 ) & 0xFFu );
+        bytes[10] = static_cast<uint8_t> ( yEnd & 0xFFu );
+        bytes[11] = static_cast<uint8_t> ( ( yEnd >> 8 ) & 0xFFu );
+        bytes[65] = 1u;             // NumBitPlanes.
+        bytes[66] = static_cast<uint8_t> ( aWidth & 0xFFu );
+        bytes[67] = static_cast<uint8_t> ( ( aWidth >> 8 ) & 0xFFu );
+
+        // RLE rule: bytes >= 0xC0 are run prefixes (low 6 bits = run
+        // length, next byte = value).  Keeping the value below 0xC0
+        // lets us emit each pixel as a single literal byte.
+        const uint8_t literal = aValue >= 0xC0u ? 0xBFu : aValue;
+        const size_t  payload = static_cast<size_t> ( aWidth ) *
+                                static_cast<size_t> ( aHeight );
+        bytes.insert ( bytes.end(), payload, literal );
+        return bytes;
+    }
+
+    /// Scoped raw-bytes file companion to TempXHTML — used to drop a
+    /// test bitmap next to the XHTML document on disk so relative-src
+    /// resolution has something to find.
+    class TempBinaryFile
+    {
+    public:
+        TempBinaryFile ( const std::string& aName,
+                         const std::vector<uint8_t>& aBytes )
+            : mPath{ std::filesystem::temp_directory_path() / aName }
+        {
+            std::ofstream file ( mPath, std::ios::binary | std::ios::out );
+            file.write ( reinterpret_cast<const char*> ( aBytes.data() ),
+                         static_cast<std::streamsize> ( aBytes.size() ) );
+        }
+        ~TempBinaryFile()
+        {
+            std::error_code ec;
+            std::filesystem::remove ( mPath, ec );
+        }
+        std::string filename() const
+        {
+            return mPath.filename().generic_string();
+        }
+    private:
+        std::filesystem::path mPath;
+    };
+}
+
+TEST ( HTMLRenderTest, ImageContributesIntrinsicSizeAndPaintsBitmap )
+{
+    // 12x8 mid-gray bitmap dropped next to the XHTML doc in the temp
+    // directory, referenced via a relative `src`.  With no explicit
+    // CSS width/height on the <img>, the layout engine must size the
+    // box to the bitmap's natural dimensions and the renderer must
+    // paint the bitmap into the resulting content box.
+    constexpr uint16_t kImgW = 12u;
+    constexpr uint16_t kImgH = 8u;
+    constexpr uint8_t  kGray = 0x80u;
+
+    TempBinaryFile bitmap
+    {
+        "aeongui-html-img-fixture.pcx",
+        MakeSolidGrayPcx ( kImgW, kImgH, kGray ) };
+
+    TempXHTML doc
+    {
+        std::string{
+            R"XHTML(<?xml version="1.0" encoding="UTF-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <body>
+    <img src=")XHTML"} + bitmap.filename() + R"XHTML("/>
+  </body>
+</html>)XHTML",
+                                       "aeongui-html-render-img.xhtml"
+    };
+
+    AeonGUI::DOM::Window window ( 80u, 80u );
+    window.location() = doc.path();
+    window.Draw();
+
+    const uint8_t* pixels = window.GetPixels();
+    const size_t   stride = window.GetStride();
+    ASSERT_NE ( pixels, nullptr );
+
+    // Center of the natural box: must show the source's gray.  The
+    // alpha channel is opaque so we can compare RGB straight off.
+    const uint32_t center = SamplePixel ( pixels, stride, kImgW / 2, kImgH / 2 );
+    EXPECT_EQ ( center & 0x00FFFFFFu, ( static_cast<uint32_t> ( kGray ) << 16 ) |
+                ( static_cast<uint32_t> ( kGray ) <<  8 ) |
+                static_cast<uint32_t> ( kGray ) )
+            << "center pixel of <img> did not match the source bitmap value";
+
+    // Just past the bitmap's right edge — nothing painted, so the
+    // canvas background still wins (alpha == 0).
+    EXPECT_EQ ( SamplePixel ( pixels, stride, kImgW + 4, kImgH / 2 ) & 0xFF000000u, 0u )
+            << "<img> painted outside its intrinsic size";
+    EXPECT_EQ ( SamplePixel ( pixels, stride, kImgW / 2, kImgH + 4 ) & 0xFF000000u, 0u )
+            << "<img> painted outside its intrinsic size";
+}
