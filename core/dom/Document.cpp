@@ -25,6 +25,7 @@ limitations under the License.
 #include <stack>
 #include "aeongui/ElementFactory.hpp"
 #include "aeongui/LogLevel.hpp"
+#include "aeongui/ResourceLoader.hpp"
 #include "aeongui/dom/Document.hpp"
 #include "aeongui/dom/Text.hpp"
 
@@ -114,7 +115,31 @@ namespace AeonGUI
         {
             std::lock_guard<std::mutex> lock ( sLoadMutex );
             mUrl = HasScheme ( aFilename ) ? aFilename : PathToFileURL ( aFilename );
-            xmlDocPtr document{xmlReadFile ( reinterpret_cast<const char*> ( mUrl.c_str() ), nullptr, 0 ) };
+            xmlDocPtr document{nullptr};
+
+            // Give the embedder-provided resource loader a chance to supply the
+            // document bytes (e.g. from a package archive). When it returns
+            // false fall back to libxml2's filesystem loader.
+            std::vector<uint8_t> bytes;
+            const std::string loaderKey = HasScheme ( aFilename )
+                                          ? std::string ( aFilename )
+                                          : std::string ( aFilename );
+            if ( TryLoadResource ( loaderKey, bytes ) ||
+                 ( aFilename != mUrl && TryLoadResource ( mUrl, bytes ) ) )
+            {
+                if ( !bytes.empty() )
+                {
+                    document = xmlReadMemory (
+                                   reinterpret_cast<const char*> ( bytes.data() ),
+                                   static_cast<int> ( bytes.size() ),
+                                   reinterpret_cast<const char*> ( mUrl.c_str() ),
+                                   nullptr, 0 );
+                }
+            }
+            if ( document == nullptr )
+            {
+                document = xmlReadFile ( reinterpret_cast<const char*> ( mUrl.c_str() ), nullptr, 0 );
+            }
             if ( document == nullptr )
             {
                 std::string msg{"Could not open file: " + mUrl};

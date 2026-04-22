@@ -16,6 +16,7 @@ limitations under the License.
 
 #include "aeongui/RasterImage.hpp"
 #include "aeongui/LogLevel.hpp"
+#include "aeongui/ResourceLoader.hpp"
 
 #include <array>
 #include <cstdio>
@@ -282,6 +283,23 @@ namespace AeonGUI
 
     void RasterImage::LoadFromFile ( const std::string& aPath )
     {
+        // Give the embedder-provided resource loader a chance to supply
+        // the bytes (e.g. from a package archive). When it returns false,
+        // fall back to opening the file from disk.
+        std::vector<uint8_t> bytes;
+        if ( TryLoadResource ( aPath, bytes ) )
+        {
+            if ( bytes.empty() )
+            {
+                std::ostringstream oss;
+                oss << "RasterImage: Resource loader returned empty data for: " << aPath;
+                std::cerr << LogLevel::Error << oss.str() << std::endl;
+                throw std::runtime_error ( oss.str() );
+            }
+            LoadFromMemory ( bytes.data(), bytes.size() );
+            return;
+        }
+
         std::ifstream file ( aPath, std::ios_base::binary | std::ios_base::in );
         if ( !file.is_open() )
         {
@@ -302,7 +320,7 @@ namespace AeonGUI
             throw std::runtime_error ( oss.str() );
         }
 
-        std::vector<uint8_t> bytes ( static_cast<size_t> ( end ) );
+        bytes.resize ( static_cast<size_t> ( end ) );
         file.read ( reinterpret_cast<char*> ( bytes.data() ), static_cast<std::streamsize> ( bytes.size() ) );
         if ( !file )
         {
