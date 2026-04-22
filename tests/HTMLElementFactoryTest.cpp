@@ -81,14 +81,15 @@ TEST ( HTMLElementFactory, BareNameStillResolvesToSVGBuiltin )
     EXPECT_NE ( dynamic_cast<AeonGUI::DOM::SVGRectElement*> ( rect.get() ), nullptr );
 }
 
-TEST ( HTMLElementFactory, UnknownXHTMLTagFallsBackToGenericElement )
+TEST ( HTMLElementFactory, UnknownXHTMLTagFallsBackToHTMLElement )
 {
-    // XHTML tag we haven't registered (e.g. "table" — not in v1 set):
-    // wildcard fallback won't find it either, so factory returns a
-    // generic Element, NOT a wrong-typed SVG class.
-    auto elem = AeonGUI::Construct ( kXHTML, "table", AeonGUI::AttributeMap{}, nullptr );
+    // XHTML tag we haven't registered explicitly (e.g. <section>): the
+    // factory falls back to the generic HTMLElement so the element
+    // still picks up the HTML UA stylesheet and participates in HTML
+    // layout.  It must not silently degrade to a plain DOM::Element
+    // or be misidentified as an SVG class.
+    auto elem = AeonGUI::Construct ( kXHTML, "section", AeonGUI::AttributeMap{}, nullptr );
     ASSERT_NE ( elem, nullptr );
-    // Must NOT be any HTML or SVG concrete subclass.
-    EXPECT_EQ ( dynamic_cast<AeonGUI::DOM::HTMLElement*> ( elem.get() ), nullptr );
-    EXPECT_EQ ( dynamic_cast<AeonGUI::DOM::SVGElement*> ( elem.get() ), nullptr );
+    EXPECT_NE ( dynamic_cast<AeonGUI::DOM::HTMLElement*> ( elem.get() ), nullptr );
+    EXPECT_EQ ( dynamic_cast<AeonGUI::DOM::SVGElement*>  ( elem.get() ), nullptr );
 }

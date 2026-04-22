@@ -22,6 +22,7 @@ limitations under the License.
 #include <algorithm>
 #include <iostream>
 #include <mutex>
+#include <cstring>
 #include "aeongui/StringLiteral.hpp"
 #include "aeongui/LogLevel.hpp"
 #include "aeongui/ElementFactory.hpp"
@@ -58,6 +59,7 @@ limitations under the License.
 #include "aeongui/dom/HTMLSpanElement.hpp"
 #include "aeongui/dom/HTMLImageElement.hpp"
 #include "aeongui/dom/HTMLParagraphElement.hpp"
+#include "aeongui/dom/HTMLElement.hpp"
 #endif
 
 namespace AeonGUI
@@ -176,6 +178,18 @@ namespace AeonGUI
         {
             return std::get<0> ( std::get<1> ( *it ) ) ( aIdentifier, std::move ( aAttributeMap ), aParent );
         }
+#ifdef AEONGUI_ENABLE_HTML
+        // Unknown XHTML element: any tag in the XHTML namespace that we
+        // haven't registered explicitly is still an HTML element by
+        // definition (e.g. <section>, <header>, <article>).  Fall back
+        // to the generic HTMLElement so it picks up the UA stylesheet
+        // and participates in HTML layout instead of degrading to a
+        // plain DOM::Element.
+        if ( std::strcmp ( effective_ns, "http://www.w3.org/1999/xhtml" ) == 0 )
+        {
+            return std::make_unique<DOM::HTMLElement> ( aIdentifier, std::move ( aAttributeMap ), aParent );
+        }
+#endif
         std::cerr << LogLevel::Warning << "No constructor registered for identifier: {" << effective_ns << "} " << aIdentifier << std::endl;
         return std::make_unique<DOM::Element> ( aIdentifier, std::move ( aAttributeMap ), aParent );
     }

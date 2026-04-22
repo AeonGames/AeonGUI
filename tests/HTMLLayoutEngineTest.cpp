@@ -295,3 +295,30 @@ TEST ( HTMLLayoutEngine, TextWrapsAtAvailableWidth )
     EXPECT_GT ( box.height, 32.0f )
             << "wrapped text should be at least two lines tall (>2 * 16 px)";
 }
+
+TEST ( HTMLLayoutEngine, UnknownXHTMLBlockElementStacksChildrenVertically )
+{
+    // <section> isn't a registered HTML built-in, so it falls back to
+    // the generic HTMLElement.  The HTML UA stylesheet maps it to
+    // `display: block`, so two child <div>s must stack vertically
+    // (Yoga column flow), proving the UA cascade is wired up: without
+    // it, libcss would compute `display: inline` and the engine would
+    // have to lean on its inline-as-block safety net rather than on a
+    // real CSS rule.
+    auto section = MakeHTMLElement<AeonGUI::DOM::HTMLElement> (
+                       "section", "", nullptr );
+    auto* a = Attach ( section.get(),
+                       MakeHTMLElement<AeonGUI::DOM::HTMLDivElement> (
+                           "div", "height: 30px", section.get() ) );
+    auto* b = Attach ( section.get(),
+                       MakeHTMLElement<AeonGUI::DOM::HTMLDivElement> (
+                           "div", "height: 50px", section.get() ) );
+
+    AeonGUI::HTMLLayoutEngine engine;
+    engine.Layout ( section.get(), 200.0f, 400.0f );
+
+    EXPECT_FLOAT_EQ ( a->GetLayoutBox().y,      0.0f );
+    EXPECT_FLOAT_EQ ( a->GetLayoutBox().height, 30.0f );
+    EXPECT_FLOAT_EQ ( b->GetLayoutBox().y,      30.0f );
+    EXPECT_FLOAT_EQ ( b->GetLayoutBox().height, 50.0f );
+}

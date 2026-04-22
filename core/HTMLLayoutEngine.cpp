@@ -210,14 +210,12 @@ namespace AeonGUI
         /// Apply the subset of CSS properties this slice understands to
         /// a Yoga node.  Anything we don't read keeps Yoga's default.
         ///
-        /// Note: libcss has no HTML UA stylesheet loaded, so `display`
-        /// for an unstyled element comes back as the CSS-spec default
-        /// `inline`.  Because HTML's actual semantic for most elements
-        /// is `block`, we treat anything that is not explicitly `flex`,
-        /// `inline-flex`, or `none` as a block-formatted box (Yoga
-        /// flex column).  flex-direction is only honored for actual
-        /// flex containers — otherwise we'd pick up the CSS default
-        /// `row` and stack block children horizontally.
+        /// HTML block-level elements come back as `display: block` thanks
+        /// to the UA stylesheet attached in Element::ReselectCSS.  We
+        /// still treat the CSS-spec default `inline` (anything unknown
+        /// to the UA sheet, e.g. `<span>`) as block — proper inline
+        /// formatting is handled by HTMLElement at paint time, so for
+        /// flex layout purposes inline boxes act as block.
         void ApplyComputedStyle ( YGNodeRef aNode, const css_computed_style* aStyle, bool aIsRoot )
         {
             uint8_t display = css_computed_display ( aStyle, aIsRoot );

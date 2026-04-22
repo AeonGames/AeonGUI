@@ -28,6 +28,7 @@ limitations under the License.
 #include "aeongui/dom/SVGAnimateTransformElement.hpp"
 #include "aeongui/dom/SVGAnimateMotionElement.hpp"
 #include "aeongui/Canvas.hpp"
+#include "aeongui/StyleSheet.hpp"
 #include <libcss/libcss.h>
 namespace AeonGUI
 {
@@ -175,6 +176,59 @@ namespace AeonGUI
             get_libcss_node_data,
         };
 
+        /// Minimal HTML user-agent stylesheet.  libcss has no built-in
+        /// HTML knowledge — without this, every element computes
+        /// `display: inline` (the CSS spec default), which is wrong for
+        /// every block-level HTML element.  Only `display: block` rules
+        /// are included; layout-affecting properties like padding/border
+        /// stay at their CSS-spec defaults so authors can override
+        /// without having to fight the UA sheet.  The sheet is parsed
+        /// once per process and shared across every Element via the
+        /// libcss CSS_ORIGIN_UA cascade slot.
+        static css_stylesheet* GetUaStyleSheet()
+        {
+            static StyleSheetPtr sUaSheet = []() -> StyleSheetPtr
+            {
+                static const char kUaCss[] =
+                "html, body, div, p, section, article, header, footer, "
+                "nav, main, aside, h1, h2, h3, h4, h5, h6, blockquote, "
+                "pre, ul, ol, li, dl, dt, dd, fieldset, form, hr, "
+                "address, figure, figcaption "
+                "{ display: block; }\n";
+
+                css_stylesheet_params params{};
+                params.params_version = CSS_STYLESHEET_PARAMS_VERSION_1;
+                params.level = CSS_LEVEL_3;
+                params.charset = "UTF-8";
+                params.url = "ua.css";
+                params.title = "AeonGUI HTML UA stylesheet";
+                params.allow_quirks = false;
+                params.inline_style = false;
+                params.resolve =
+                    [] ( void *, const char *, lwc_string * rel, lwc_string **abs ) -> css_error
+                {
+                    *abs = lwc_string_ref ( rel );
+                    return CSS_OK;
+                };
+                css_stylesheet* raw{};
+                if ( css_stylesheet_create ( &params, &raw ) != CSS_OK )
+                {
+                    return StyleSheetPtr{};
+                }
+                StyleSheetPtr sheet{raw};
+                if ( css_stylesheet_append_data (
+                         sheet.get(),
+                         reinterpret_cast<const uint8_t * > ( kUaCss ),
+                         sizeof ( kUaCss ) - 1 ) == CSS_NEEDDATA ||
+                     css_stylesheet_data_done ( sheet.get() ) == CSS_OK )
+                {
+                    return sheet;
+                }
+                return StyleSheetPtr{};
+            } ();
+            return sUaSheet.get();
+        }
+
         Element::Element ( const DOMString& aTagName, AttributeMap&& aAttributes, Node* aParent ) :
             Node { aParent },
             mTagName{ aTagName },
@@ -253,6 +307,11 @@ namespace AeonGUI
             {
                 std::cerr << LogLevel::Error << css_error_to_string ( code ) << std::endl;
                 throw std::runtime_error ( css_error_to_string ( code ) );
+            }
+
+            if ( css_stylesheet * ua = GetUaStyleSheet() )
+            {
+                css_select_ctx_append_sheet ( css_select_ctx, ua, CSS_ORIGIN_UA, nullptr );
             }
 
             css_select_results* results {};
@@ -535,6 +594,10 @@ namespace AeonGUI
             if ( err != CSS_OK )
             {
                 return;
+            }
+            if ( css_stylesheet * ua = GetUaStyleSheet() )
+            {
+                css_select_ctx_append_sheet ( ctx, ua, CSS_ORIGIN_UA, nullptr );
             }
             if ( mDocumentStyleSheet )
             {
