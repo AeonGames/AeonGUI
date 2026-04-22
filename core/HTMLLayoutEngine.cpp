@@ -151,6 +151,57 @@ namespace AeonGUI
             }
         }
 
+        /// Resolve a CSS border-width to pixels for layout purposes.
+        /// Styles NONE and HIDDEN force a zero-width edge per CSS 2.1
+        /// regardless of the declared width.  Keyword widths use the
+        /// conventional 1/3/5 px mapping; explicit lengths only honor
+        /// CSS_UNIT_PX in this slice (em/rem need a length context).
+        float BorderEdgePx ( uint8_t aStyleResult, uint8_t aWidthResult,
+                             css_fixed aLength, css_unit aUnit )
+        {
+            if ( aStyleResult == CSS_BORDER_STYLE_NONE ||
+                 aStyleResult == CSS_BORDER_STYLE_HIDDEN )
+            {
+                return 0.0f;
+            }
+            switch ( aWidthResult )
+            {
+            case CSS_BORDER_WIDTH_THIN:
+                return 1.0f;
+            case CSS_BORDER_WIDTH_MEDIUM:
+                return 3.0f;
+            case CSS_BORDER_WIDTH_THICK:
+                return 5.0f;
+            case CSS_BORDER_WIDTH_WIDTH:
+                if ( aUnit == CSS_UNIT_PX )
+                {
+                    return FixedToPx ( aLength );
+                }
+                return 0.0f;
+            default:
+                return 0.0f;
+            }
+        }
+
+        /// Apply one border edge to a Yoga node so the border reserves
+        /// space inside the border box (Yoga shrinks the content area
+        /// by the border on each side).
+        void ApplyBorder ( YGNodeRef aNode, YGEdge aEdge,
+                           uint8_t ( *aWidthGetter ) ( const css_computed_style*, css_fixed*, css_unit* ),
+                           uint8_t ( *aStyleGetter ) ( const css_computed_style* ),
+                           const css_computed_style* aStyle )
+        {
+            css_fixed length{};
+            css_unit unit{};
+            uint8_t width_result = aWidthGetter ( aStyle, &length, &unit );
+            uint8_t style_result = aStyleGetter ( aStyle );
+            float px = BorderEdgePx ( style_result, width_result, length, unit );
+            if ( px > 0.0f )
+            {
+                YGNodeStyleSetBorder ( aNode, aEdge, px );
+            }
+        }
+
         /// Apply the subset of CSS properties this slice understands to
         /// a Yoga node.  Anything we don't read keeps Yoga's default.
         ///
@@ -191,6 +242,15 @@ namespace AeonGUI
             ApplyPadding ( aNode, YGEdgeRight,  css_computed_padding_right,  aStyle );
             ApplyPadding ( aNode, YGEdgeBottom, css_computed_padding_bottom, aStyle );
             ApplyPadding ( aNode, YGEdgeLeft,   css_computed_padding_left,   aStyle );
+
+            ApplyBorder ( aNode, YGEdgeTop,    css_computed_border_top_width,
+                          css_computed_border_top_style,    aStyle );
+            ApplyBorder ( aNode, YGEdgeRight,  css_computed_border_right_width,
+                          css_computed_border_right_style,  aStyle );
+            ApplyBorder ( aNode, YGEdgeBottom, css_computed_border_bottom_width,
+                          css_computed_border_bottom_style, aStyle );
+            ApplyBorder ( aNode, YGEdgeLeft,   css_computed_border_left_width,
+                          css_computed_border_left_style,   aStyle );
         }
 
         /// Recursively build a Yoga subtree mirroring HTMLElement

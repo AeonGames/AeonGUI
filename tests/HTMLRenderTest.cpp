@@ -124,3 +124,54 @@ TEST ( HTMLRenderTest, BackgroundColorFillsBorderBox )
     EXPECT_NE ( below_blocks & 0x00FFFFFFu, 0x00FF0000u );
     EXPECT_NE ( below_blocks & 0x00FFFFFFu, 0x000000FFu );
 }
+
+TEST ( HTMLRenderTest, BordersPaintInsideBorderBox )
+{
+    // A single 100x80 div with a red background and a 10px solid green
+    // border on every edge.  Yoga reserves the border space inside the
+    // border box, so the visible box is still 100x80; the painted edges
+    // sit on the outer 10 px of that rectangle and the red interior
+    // covers the remaining 80x60 in the middle.
+    TempXHTML doc
+    {
+        R"XHTML(<?xml version="1.0" encoding="UTF-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <body>
+    <div style="width: 100px; height: 80px; background-color: #FF0000;
+                border: 10px solid #00FF00"/>
+  </body>
+</html>)XHTML",
+        "aeongui-html-render-borders.xhtml"
+    };
+
+    AeonGUI::DOM::Window window ( 200u, 200u );
+    window.location() = doc.path();
+    window.Draw();
+
+    const uint8_t* pixels = window.GetPixels();
+    const size_t   stride = window.GetStride();
+    ASSERT_NE ( pixels, nullptr );
+
+    // Each border edge: top/left/right/bottom strips should be green.
+    EXPECT_EQ ( SamplePixel ( pixels, stride, 50,  5 ) & 0x00FFFFFFu, 0x0000FF00u )
+            << "expected green on the top border";
+    EXPECT_EQ ( SamplePixel ( pixels, stride, 50, 75 ) & 0x00FFFFFFu, 0x0000FF00u )
+            << "expected green on the bottom border";
+    EXPECT_EQ ( SamplePixel ( pixels, stride,  5, 40 ) & 0x00FFFFFFu, 0x0000FF00u )
+            << "expected green on the left border";
+    EXPECT_EQ ( SamplePixel ( pixels, stride, 95, 40 ) & 0x00FFFFFFu, 0x0000FF00u )
+            << "expected green on the right border";
+
+    // Interior — well inside the 10 px border on every side — must
+    // still be the red background.
+    EXPECT_EQ ( SamplePixel ( pixels, stride, 50, 40 ) & 0x00FFFFFFu, 0x00FF0000u )
+            << "interior should be the red background";
+
+    // Outside the border box on the right and bottom: untouched.
+    const uint32_t outside_right  = SamplePixel ( pixels, stride, 110, 40 );
+    const uint32_t outside_bottom = SamplePixel ( pixels, stride,  50, 90 );
+    EXPECT_NE ( outside_right  & 0x00FFFFFFu, 0x0000FF00u );
+    EXPECT_NE ( outside_right  & 0x00FFFFFFu, 0x00FF0000u );
+    EXPECT_NE ( outside_bottom & 0x00FFFFFFu, 0x0000FF00u );
+    EXPECT_NE ( outside_bottom & 0x00FFFFFFu, 0x00FF0000u );
+}
