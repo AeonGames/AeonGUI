@@ -34,6 +34,9 @@ elseif(AEONGUI_BACKEND STREQUAL "Skia")
         SkiaCanvas.hpp
         SkiaPath.hpp
         SkiaTextLayout.hpp
+        # PangoTextLayout is also used by the HTML layout/paint code
+        # under the Skia backend (Pango is linked in either case).
+        PangoTextLayout.hpp
     )
 endif()
 set(AEONGUI_DOM_HEADERS
@@ -134,6 +137,9 @@ elseif(AEONGUI_BACKEND STREQUAL "Skia")
         SkiaCanvas.cpp
         SkiaPath.cpp
         SkiaTextLayout.cpp
+        # PangoTextLayout is also used by the HTML layout/paint code
+        # under the Skia backend (Pango is linked in either case).
+        PangoTextLayout.cpp
     )
 endif()
 

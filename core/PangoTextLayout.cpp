@@ -17,7 +17,7 @@ limitations under the License.
 #include "PangoTextLayout.hpp"
 #include "aeongui/FontDatabase.hpp"
 #include <pango/pango.h>
-#include <pango/pangocairo.h>
+#include <pango/pangoft2.h>
 #include <stdexcept>
 namespace AeonGUI
 {
@@ -29,9 +29,14 @@ namespace AeonGUI
         }
         else
         {
-            // Fallback: create context from the default Cairo font map.
-            PangoFontMap* fontMap = pango_cairo_font_map_get_default();
+            // Fallback: build a context from a fresh FreeType-backed
+            // font map.  Using pangoft2 (rather than pangocairo) keeps
+            // PangoTextLayout free of any Cairo dependency, so the
+            // Skia backend doesn't have to link Cairo just to satisfy
+            // this branch.
+            PangoFontMap* fontMap = pango_ft2_font_map_new();
             mPangoContext = pango_font_map_create_context ( fontMap );
+            g_object_unref ( fontMap );
         }
         mLayout = pango_layout_new ( mPangoContext );
         mFontDescription = pango_font_description_new();

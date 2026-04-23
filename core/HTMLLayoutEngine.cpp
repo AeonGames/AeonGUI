@@ -28,11 +28,24 @@ limitations under the License.
 
 #include <cctype>
 #include <string>
+#include <string_view>
 
 namespace AeonGUI
 {
     namespace
     {
+        /// Document-metadata HTML elements that are not rendered and
+        /// therefore must not participate in the Yoga flex layout —
+        /// otherwise their text content (e.g. the CSS source inside
+        /// <style>) would be measured as a regular text leaf and
+        /// reserve vertical space, pushing the visible <body> down.
+        bool IsNonRenderedHtmlTag ( std::string_view aTagName )
+        {
+            return aTagName == "head" || aTagName == "style" ||
+                   aTagName == "script" || aTagName == "title" ||
+                   aTagName == "meta" || aTagName == "link" ||
+                   aTagName == "base";
+        }
         /// Convert a libcss css_fixed (Q16.16) to float pixels.
         inline float FixedToPx ( css_fixed aValue )
         {
@@ -580,6 +593,12 @@ namespace AeonGUI
                 if ( DOM::HTMLElement * html_child =
                          dynamic_cast<DOM::HTMLElement * > ( child.get() ) )
                 {
+                    // Skip non-rendered metadata elements (head,
+                    // style, script, ...).  See IsNonRenderedHtmlTag.
+                    if ( IsNonRenderedHtmlTag ( html_child->tagName() ) )
+                    {
+                        continue;
+                    }
                     YGNodeRef child_node = BuildYogaSubtree ( aConfig, html_child, false );
                     YGNodeInsertChild ( node, child_node, insertion_index++ );
                 }
@@ -660,6 +679,12 @@ namespace AeonGUI
                 if ( DOM::HTMLElement * html_child =
                          dynamic_cast<DOM::HTMLElement * > ( child.get() ) )
                 {
+                    // Must mirror the skip in BuildYogaSubtree so
+                    // yoga_index stays aligned with the Yoga tree.
+                    if ( IsNonRenderedHtmlTag ( html_child->tagName() ) )
+                    {
+                        continue;
+                    }
                     YGNodeRef child_node = YGNodeGetChild ( aNode, yoga_index++ );
                     WriteLayoutBack ( html_child, child_node, x, y );
                 }

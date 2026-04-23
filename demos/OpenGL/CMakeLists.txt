@@ -49,7 +49,7 @@ endif()
 
 #set_target_properties(OpenGLDemo PROPERTIES VS_DEBUGGER_COMMAND_ARGUMENTS "file:///${PROJECT_SOURCE_DIR}/images/tiger-style.svg")
 set_target_properties(OpenGLDemo PROPERTIES
-    AEONGUI_SVG_FILES "${PROJECT_SOURCE_DIR}/images/text.svg;${PROJECT_SOURCE_DIR}/images/textpath.svg;${PROJECT_SOURCE_DIR}/images/drawing.svg;${PROJECT_SOURCE_DIR}/images/tiger-style.svg;${PROJECT_SOURCE_DIR}/images/gradient.svg;${PROJECT_SOURCE_DIR}/images/curve.svg;${PROJECT_SOURCE_DIR}/images/arc.svg;${PROJECT_SOURCE_DIR}/images/line.svg;${PROJECT_SOURCE_DIR}/images/rasterimage.svg;${PROJECT_SOURCE_DIR}/images/button.svg;${PROJECT_SOURCE_DIR}/images/hover-demo.svg;${PROJECT_SOURCE_DIR}/images/smil-demo.svg"
+    AEONGUI_SVG_FILES "${PROJECT_SOURCE_DIR}/images/text.svg;${PROJECT_SOURCE_DIR}/images/textpath.svg;${PROJECT_SOURCE_DIR}/images/drawing.svg;${PROJECT_SOURCE_DIR}/images/tiger-style.svg;${PROJECT_SOURCE_DIR}/images/gradient.svg;${PROJECT_SOURCE_DIR}/images/curve.svg;${PROJECT_SOURCE_DIR}/images/arc.svg;${PROJECT_SOURCE_DIR}/images/line.svg;${PROJECT_SOURCE_DIR}/images/rasterimage.svg;${PROJECT_SOURCE_DIR}/images/button.svg;${PROJECT_SOURCE_DIR}/images/hover-demo.svg;${PROJECT_SOURCE_DIR}/images/smil-demo.svg;${PROJECT_SOURCE_DIR}/images/fps.xhtml"
 )
 set_target_properties(OpenGLDemo PROPERTIES COMPILE_FLAGS "-DNOMINMAX -D_CRT_SECURE_NO_WARNINGS")
 
