@@ -70,6 +70,12 @@ if(NOT _aeongui_yoga_found)
         GIT_REPOSITORY https://github.com/facebook/yoga.git
         GIT_TAG        v3.2.1
         GIT_SHALLOW    TRUE
+        # Yoga's top-level CMakeLists unconditionally
+        # ``add_subdirectory(tests)`` and the test sources don't compile
+        # cleanly under newer GCC (-Werror=array-bounds in
+        # YGPersistenceTest.cpp on GCC 15.2).  Point SOURCE_SUBDIR at the
+        # library-only subdirectory so we never see the test targets.
+        SOURCE_SUBDIR  yoga
     )
     FetchContent_MakeAvailable(yoga)
     if(TARGET yogacore)
