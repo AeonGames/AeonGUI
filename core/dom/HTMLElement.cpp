@@ -382,6 +382,7 @@ namespace AeonGUI
                     const double      size    = GetCSSFontSize   ( mutable_style );
                     const int         weight  = GetCSSFontWeight ( mutable_style );
                     const int         style_n = GetCSSFontStyle  ( mutable_style );
+                    const TextAlign   align   = GetCSSTextAlign  ( mutable_style );
 
                     PangoTextLayout layout;
                     layout.SetFontFamily ( family );
@@ -395,6 +396,26 @@ namespace AeonGUI
                     layout.SetText ( concatenated );
 
                     PangoLayout* pango_layout = layout.GetPangoLayout();
+                    // Pango's per-line alignment cooperates with
+                    // index_to_pos: once we set a layout width and an
+                    // alignment, every glyph's reported x already lives
+                    // in the aligned line, so the per-run paint loop
+                    // below needs no further math.  Setting the width
+                    // is required even for single-line text — without
+                    // it Pango lays out at width=-1 and align is a
+                    // no-op.
+                    if ( align != TextAlign::Left &&
+                         mLayoutBox.contentWidth > 0.0f )
+                    {
+                        pango_layout_set_width (
+                            pango_layout,
+                            static_cast<int> ( mLayoutBox.contentWidth * PANGO_SCALE ) );
+                        pango_layout_set_alignment (
+                            pango_layout,
+                            align == TextAlign::Right
+                            ? PANGO_ALIGN_RIGHT
+                            : PANGO_ALIGN_CENTER );
+                    }
                     PangoLayoutIter* iter = pango_layout_get_iter ( pango_layout );
                     do
                     {

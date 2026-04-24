@@ -141,6 +141,28 @@ namespace AeonGUI
         }
     }
 
+    TextAlign GetCSSTextAlign ( css_computed_style* aStyle )
+    {
+        uint8_t v = css_computed_text_align ( aStyle );
+        switch ( v )
+        {
+        case CSS_TEXT_ALIGN_RIGHT:
+        case CSS_TEXT_ALIGN_LIBCSS_RIGHT:
+            return TextAlign::Right;
+        case CSS_TEXT_ALIGN_CENTER:
+        case CSS_TEXT_ALIGN_LIBCSS_CENTER:
+            return TextAlign::Center;
+        case CSS_TEXT_ALIGN_LEFT:
+        case CSS_TEXT_ALIGN_LIBCSS_LEFT:
+        case CSS_TEXT_ALIGN_DEFAULT:
+        case CSS_TEXT_ALIGN_JUSTIFY:
+        default:
+            // Justify falls back to left until the painter learns how
+            // to spread inter-word space along each line.
+            return TextAlign::Left;
+        }
+    }
+
     static bool ResolvePaintUri ( Canvas& aCanvas, const DOM::Element& aElement,
                                   lwc_string* aUri, bool aIsFill )
     {

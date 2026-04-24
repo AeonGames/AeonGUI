@@ -103,6 +103,24 @@ namespace AeonGUI
      *  @return 0 = normal, 1 = italic, 2 = oblique.
      */
     int GetCSSFontStyle ( css_computed_style* aStyle );
+    /** @brief Logical text alignment, mirroring the CSS text-align
+     *  property values relevant to the HTML painter.  Justify is
+     *  intentionally folded into Left for now: Pango can render
+     *  PANGO_ALIGN_LEFT cheaply and we don't yet do the line-end
+     *  spacing adjustment justify requires.
+     */
+    enum class TextAlign
+    {
+        Left,
+        Right,
+        Center
+    };
+    /** @brief Extract the CSS text-align value from a computed style.
+     *  @param aStyle The computed CSS style.
+     *  @return Resolved alignment; LTR-default and unknown values map
+     *          to TextAlign::Left.
+     */
+    TextAlign GetCSSTextAlign ( css_computed_style* aStyle );
     /** @brief Apply fill, stroke, and opacity CSS properties to a canvas.
      *  @param aCanvas The canvas to configure.
      *  @param aElement The element to resolve paint server URIs against.

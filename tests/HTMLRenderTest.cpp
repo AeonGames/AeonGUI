@@ -35,6 +35,7 @@ limitations under the License.
 
 #include "aeongui/dom/Window.hpp"
 #include "aeongui/dom/Location.hpp"
+#include "aeongui/FontDatabase.hpp"
 
 namespace
 {
@@ -489,6 +490,7 @@ TEST ( HTMLRenderTest, InlineSVGPaintsAtLaidOutOffset )
 
 TEST ( HTMLRenderTest, MixedInlineSpanColorAppliesPerRun )
 {
+    AeonGUI::FontDatabase::Initialize();
     // <p>FOO <span color:red>BAR</span> BAZ</p> rendered against a
     // 600x80 viewport with an explicit black `color` on the
     // paragraph at 32px so each glyph is wide enough to make
@@ -546,4 +548,39 @@ TEST ( HTMLRenderTest, MixedInlineSpanColorAppliesPerRun )
 
     EXPECT_GT ( total_red, 30 ) << "no red glyph ink found for <span>";
     EXPECT_EQ ( left_red,   0 ) << "<span> color leaked into leading 'F'";
+}
+
+TEST ( HTMLRenderTest, TextAlignRightHugsRightEdge )
+{
+    AeonGUI::FontDatabase::Initialize();
+    // A 200px wide block at x=0 with `text-align: right` and short
+    // text.  The glyphs should land in the right half of the block
+    // and never in its leftmost ~80px.  We sample alpha rather than
+    // color channels so this test is independent of the per-backend
+    // glyph color reproduction quirks the MixedInlineSpan test
+    // exposes.
+    TempXHTML doc
+    {
+        R"XHTML(<?xml version="1.0" encoding="UTF-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <body>
+    <div style="width: 200px; height: 40px; color: #000000; font-family: monospace; font-size: 24px; text-align: right">FPS</div>
+  </body>
+</html>)XHTML",
+        "aeongui-html-render-text-align-right.xhtml"
+    };
+
+    AeonGUI::DOM::Window window ( 300u, 80u );
+    window.location() = doc.path();
+    window.Draw();
+
+    const uint8_t* pixels = window.GetPixels();
+    const size_t   stride = window.GetStride();
+    ASSERT_NE ( pixels, nullptr );
+
+    const int left_ink  = CountInkPixels ( pixels, stride, 0,    0,  80, 40 );
+    const int right_ink = CountInkPixels ( pixels, stride, 120,  0, 200, 40 );
+
+    EXPECT_GT ( right_ink, 30 ) << "no glyph ink in right half of right-aligned block";
+    EXPECT_EQ ( left_ink,   0 ) << "right-aligned text bled into left side of block";
 }
