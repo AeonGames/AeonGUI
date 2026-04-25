@@ -46,6 +46,14 @@ jobs:
             const sha = process.env.HEAD_SHA;
             core.info(`Checking workflow status for SHA ${sha}`);
 
+            // The build workflows skip their compile/test steps when the
+            // push only touches non-compiled files (docs, workflows, etc.).
+            // In that case the run still reports ``success`` but the
+            // ``✅ Skip build (no compiled changes)`` step ran instead of
+            // the real build.  We must not move ``lkg`` in that case
+            // because nothing was actually verified at this SHA.
+            const SKIP_STEP_NAME = '✅ Skip build (no compiled changes)';
+
             // For each required workflow, find the most recent run on this
             // SHA and require it to be a successful completion.
             for (const name of required) {
@@ -73,7 +81,34 @@ jobs:
                 core.setOutput('ready', 'false');
                 return;
               }
-              core.info(`"${name}" on ${sha}: success.`);
+
+              // Inspect the run's jobs.  If any job's "skip build" step
+              // executed (conclusion=success), the platform wasn't really
+              // built — refuse to promote.
+              const jobs = await github.paginate(
+                github.rest.actions.listJobsForWorkflowRun,
+                {
+                  owner: context.repo.owner,
+                  repo: context.repo.repo,
+                  run_id: match.id,
+                  per_page: 100,
+                }
+              );
+              for (const job of jobs) {
+                const skipStep = (job.steps || []).find(
+                  s => s.name === SKIP_STEP_NAME
+                );
+                if (skipStep && skipStep.conclusion === 'success') {
+                  core.info(
+                    `"${name}" job "${job.name}" skipped its build ` +
+                    `(no compiled changes) — not promoting.`
+                  );
+                  core.setOutput('ready', 'false');
+                  return;
+                }
+              }
+
+              core.info(`"${name}" on ${sha}: success (real build).`);
             }
             core.setOutput('ready', 'true');
 
