@@ -26,7 +26,9 @@ limitations under the License.
 #include <yoga/Yoga.h>
 #include <libcss/libcss.h>
 
+#include <algorithm>
 #include <cctype>
+#include <cmath>
 #include <string>
 #include <string_view>
 
@@ -363,6 +365,23 @@ namespace AeonGUI
             return true;
         }
 
+        /// Sanitize a value that will be returned to Yoga as a box
+        /// dimension.  Yoga refuses NaN/negative measurements and logs
+        /// "Measure function returned an invalid dimension" when it
+        /// sees one, after which the affected node collapses to size 0
+        /// and the whole subtree is laid out incorrectly.  This can
+        /// happen when Pango fails to find any usable font (e.g. on a
+        /// minimal CI host without a fontconfig cache) and reports
+        /// nonsense pixel sizes back through pango_layout_get_pixel_size.
+        inline float SanitizeMeasurement ( double aValue )
+        {
+            if ( !std::isfinite ( aValue ) || aValue < 0.0 )
+            {
+                return 0.0f;
+            }
+            return static_cast<float> ( aValue );
+        }
+
         /// Yoga measure callback used for HTMLElements that contain
         /// only Text children.  Returns text dimensions, optionally
         /// wrapped to the available width when Yoga supplies an upper
@@ -416,17 +435,27 @@ namespace AeonGUI
             // wrap disabled so we report the single-line width.  For
             // AT_MOST / EXACTLY, constrain the layout so longer runs
             // wrap to multiple lines and report a taller measurement.
-            if ( aWidthMode != YGMeasureModeUndefined && aAvailWidth > 0.0f )
+            if ( aWidthMode != YGMeasureModeUndefined && std::isfinite ( aAvailWidth ) && aAvailWidth > 0.0f )
             {
                 layout.SetWrapWidth ( aAvailWidth );
             }
             layout.SetText ( text );
 
-            return YGSize
+            float measured_w = SanitizeMeasurement ( layout.GetTextWidth() );
+            float measured_h = SanitizeMeasurement ( layout.GetTextHeight() );
+
+            // Honour Yoga's hard constraints exactly so we never
+            // hand back a value that contradicts the requested mode.
+            if ( aWidthMode == YGMeasureModeExactly )
             {
-                static_cast<float> ( layout.GetTextWidth() ),
-                static_cast<float> ( layout.GetTextHeight() )
-            };
+                measured_w = SanitizeMeasurement ( aAvailWidth );
+            }
+            else if ( aWidthMode == YGMeasureModeAtMost && std::isfinite ( aAvailWidth ) )
+            {
+                measured_w = std::min ( measured_w, std::max ( 0.0f, aAvailWidth ) );
+            }
+
+            return YGSize { measured_w, measured_h };
         }
 
         /// Yoga measure callback for HTMLImageElement: report the
@@ -448,8 +477,8 @@ namespace AeonGUI
             }
             return YGSize
             {
-                static_cast<float> ( element->naturalWidth() ),
-                static_cast<float> ( element->naturalHeight() )
+                SanitizeMeasurement ( element->naturalWidth() ),
+                SanitizeMeasurement ( element->naturalHeight() )
             };
         }
 
@@ -470,8 +499,8 @@ namespace AeonGUI
             }
             return YGSize
             {
-                static_cast<float> ( element->GetIntrinsicWidth()  ),
-                static_cast<float> ( element->GetIntrinsicHeight() )
+                SanitizeMeasurement ( element->GetIntrinsicWidth()  ),
+                SanitizeMeasurement ( element->GetIntrinsicHeight() )
             };
         }
 

@@ -18,6 +18,9 @@ limitations under the License.
 #include "aeongui/FontDatabase.hpp"
 #include <pango/pango.h>
 #include <pango/pangoft2.h>
+#include <algorithm>
+#include <cmath>
+#include <limits>
 #include <stdexcept>
 namespace AeonGUI
 {
@@ -179,14 +182,20 @@ namespace AeonGUI
 
     void PangoTextLayout::SetWrapWidth ( double aWidth )
     {
-        if ( aWidth < 0.0 )
+        if ( !std::isfinite ( aWidth ) || aWidth < 0.0 )
         {
             pango_layout_set_width ( mLayout, -1 );
         }
         else
         {
-            pango_layout_set_width ( mLayout,
-                                     static_cast<int> ( aWidth * PANGO_SCALE ) );
+            // Pango uses int (PANGO_SCALE = 1024) units; clamp to
+            // INT_MAX to avoid overflow on absurdly large widths
+            // (e.g. test harnesses that pass 100 000 px).
+            const double scaled = aWidth * PANGO_SCALE;
+            const double clamped = std::min<double> (
+                                       scaled,
+                                       static_cast<double> ( std::numeric_limits<int>::max() ) );
+            pango_layout_set_width ( mLayout, static_cast<int> ( clamped ) );
         }
         pango_layout_set_wrap ( mLayout, PANGO_WRAP_WORD_CHAR );
     }

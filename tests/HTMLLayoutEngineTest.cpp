@@ -268,17 +268,46 @@ TEST ( HTMLLayoutEngine, WhitespaceOnlyTextLeafCollapses )
 
 TEST ( HTMLLayoutEngine, TextWrapsAtAvailableWidth )
 {
-    // A long text run inside an explicit-width container forces the
-    // measure callback to receive an AT_MOST width hint, which must
-    // make Pango wrap the text into multiple lines.  We assert that:
-    //   * the laid-out width does not exceed the container's width,
-    //   * the laid-out height covers more than two lines of text,
-    //     i.e. wrapping really happened (a single 16 px line could
-    //     be a couple of pixels taller, so 2x font-size is a safe
-    //     lower bound).
+    // A long text run inside a narrow container forces the measure
+    // callback to receive an AT_MOST width hint, which must make Pango
+    // wrap the text into multiple lines.  Hard-coded pixel thresholds
+    // are unreliable across hosts because the actual glyph metrics
+    // depend on whichever font fontconfig resolves to (CI distros ship
+    // very different default fonts).  Instead, lay the *same* text out
+    // first in an unconstrained container to obtain a single-line
+    // baseline height, then assert the constrained layout is both
+    // clamped horizontally and meaningfully taller than that baseline.
     const char* kLongText =
         "The quick brown fox jumps over the lazy dog repeatedly.";
+    constexpr float kContainerWidth = 80.0f;
+    constexpr float kEpsilon = 0.5f;  // sub-pixel rounding tolerance
 
+    // --- Baseline: unconstrained, expected to be a single line ---
+    auto baselineBody = MakeHTMLElement<AeonGUI::DOM::HTMLBodyElement> (
+                            "body", "", nullptr );
+    auto* baselineDiv = Attach ( baselineBody.get(),
+                                 MakeHTMLElement<AeonGUI::DOM::HTMLDivElement> (
+                                     "div", "font-size: 16px", baselineBody.get() ) );
+    baselineDiv->AddNode ( std::make_unique<AeonGUI::DOM::Text> ( kLongText, baselineDiv ) );
+
+    AeonGUI::HTMLLayoutEngine baselineEngine;
+    // Give plenty of room so the text never wraps.
+    baselineEngine.Layout ( baselineBody.get(), 100000.0f, 600.0f );
+    const auto baselineBox = baselineDiv->GetLayoutBox();
+
+    if ( baselineBox.width <= kContainerWidth || baselineBox.height <= 0.0f )
+    {
+        // No font available (fontconfig fallback produced zero-width
+        // glyphs) or the font is so narrow the whole string already
+        // fits in 80 px.  In either case the wrapping behaviour we
+        // want to verify cannot be exercised meaningfully on this host.
+        GTEST_SKIP() << "Pango produced an unwrappable measurement on this "
+                        "host (baseline width=" << baselineBox.width
+                     << ", height=" << baselineBox.height
+                     << "); skipping wrap check.";
+    }
+
+    // --- Constrained: same text inside a narrow container ---
     auto body = MakeHTMLElement<AeonGUI::DOM::HTMLBodyElement> (
                     "body", "", nullptr );
     auto* div = Attach ( body.get(),
@@ -290,10 +319,15 @@ TEST ( HTMLLayoutEngine, TextWrapsAtAvailableWidth )
     engine.Layout ( body.get(), 1000.0f, 600.0f );
     const auto box = div->GetLayoutBox();
 
-    EXPECT_LE ( box.width, 80.0f )
+    EXPECT_LE ( box.width, kContainerWidth + kEpsilon )
             << "wrapped text should respect the container's available width";
-    EXPECT_GT ( box.height, 32.0f )
-            << "wrapped text should be at least two lines tall (>2 * 16 px)";
+    // Two lines should be at least ~1.5x a single line's height once
+    // line gap and leading are accounted for; this avoids depending on
+    // the exact font metrics while still proving wrapping occurred.
+    EXPECT_GT ( box.height, baselineBox.height * 1.5f )
+            << "wrapped text should be visibly taller than a single line "
+       "(baseline height=" << baselineBox.height
+            << ", wrapped height=" << box.height << ")";
 }
 
 TEST ( HTMLLayoutEngine, UnknownXHTMLBlockElementStacksChildrenVertically )
