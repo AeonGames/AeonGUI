@@ -85,12 +85,15 @@ jobs:
       if: matrix.os == 'ubuntu' && steps.changes.outputs.compiled == 'true'
 
     - name: '🧪 Running Tests'
-      run: ctest --test-dir ${{github.workspace}}/build
+      run: ctest --test-dir ${{github.workspace}}/build --output-on-failure
       if: matrix.os == 'ubuntu' && steps.changes.outputs.compiled == 'true'
 
     - name: '🐧 Setup and run Arch Linux build'
       run: |
-        docker run --rm -v ${{github.workspace}}:/workspace -w /workspace archlinux:latest bash -c "
+        docker run --rm -v ${{github.workspace}}:/workspace -w /workspace archlinux:latest bash -euxo pipefail -c "
+          pacman -Sy --noconfirm archlinux-keyring gnupg &&
+          pacman-key --init &&
+          pacman-key --populate archlinux &&
           pacman -Syu --noconfirm &&
           pacman -S --noconfirm base-devel gcc cmake python git gtest mesa glu freeglut vulkan-devel vulkan-validation-layers glslang cairo pango libxml2 libjpeg-turbo libpng zlib pkg-config &&
           if [ '${{ matrix.backend }}' = 'Skia' ]; then
@@ -101,7 +104,7 @@ jobs:
           fi &&
           cmake -B /workspace/build -DAEONGUI_BACKEND=${{ matrix.backend }} -DCMAKE_DISABLE_PRECOMPILE_HEADERS=${{ matrix.precompile_headers == 'OFF' && 'ON' || 'OFF' }} -DCMAKE_BUILD_TYPE=${{env.BUILD_TYPE}} -DENABLE_HTML=ON &&
           cmake --build /workspace/build &&
-          ctest --test-dir /workspace/build
+          ctest --test-dir /workspace/build --output-on-failure
         "
       if: matrix.os == 'archlinux' && steps.changes.outputs.compiled == 'true'
 
