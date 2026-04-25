@@ -56,7 +56,7 @@ jobs:
 
     - name: '🔁 Check previous run for this job'
       id: last
-      uses: actions/github-script@v7
+      uses: actions/github-script@v8
       env:
         JOB_NAME: '🚧${{ matrix.icon }} ${{ matrix.sys }} (${{ matrix.backend }})'
       with:
