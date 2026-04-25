@@ -1,0 +1,110 @@
+name: Last Known Good
+
+# Fires whenever any of the four platform build workflows finishes.
+# When the *current commit* has a successful run for every required
+# workflow, fast-forward the ``lkg`` tag to that commit so external
+# consumers can always pull a known-good revision.
+#
+# We deliberately do not gate on `release.yml` or `update-docs.yml` —
+# those aren't compile/test gates.
+
+on:
+  workflow_run:
+    workflows:
+      - "Build on Linux"
+      - "Build on Windows"
+      - "Build on Windows (MSYS2)"
+      - "Build on macOS"
+    types:
+      - completed
+
+permissions:
+  contents: write
+  actions: read
+
+jobs:
+  promote:
+    # Skip immediately if the triggering run wasn't on master or didn't pass.
+    if: >-
+      github.event.workflow_run.head_branch == 'master' &&
+      github.event.workflow_run.conclusion == 'success'
+    runs-on: ubuntu-latest
+    steps:
+      - name: '🔎 Verify all required workflows succeeded for this SHA'
+        id: verify
+        uses: actions/github-script@v7
+        env:
+          HEAD_SHA: ${{ github.event.workflow_run.head_sha }}
+        with:
+          script: |
+            const required = [
+              'Build on Linux',
+              'Build on Windows',
+              'Build on Windows (MSYS2)',
+              'Build on macOS',
+            ];
+            const sha = process.env.HEAD_SHA;
+            core.info(`Checking workflow status for SHA ${sha}`);
+
+            // For each required workflow, find the most recent run on this
+            // SHA and require it to be a successful completion.
+            for (const name of required) {
+              const runs = await github.paginate(
+                github.rest.actions.listWorkflowRunsForRepo,
+                {
+                  owner: context.repo.owner,
+                  repo: context.repo.repo,
+                  head_sha: sha,
+                  per_page: 100,
+                }
+              );
+              const match = runs
+                .filter(r => r.name === name)
+                .sort((a, b) => new Date(b.created_at) - new Date(a.created_at))[0];
+              if (!match) {
+                core.info(`No run yet for "${name}" on ${sha} — not promoting.`);
+                core.setOutput('ready', 'false');
+                return;
+              }
+              if (match.status !== 'completed' || match.conclusion !== 'success') {
+                core.info(
+                  `"${name}" on ${sha} is ${match.status}/${match.conclusion} — not promoting.`
+                );
+                core.setOutput('ready', 'false');
+                return;
+              }
+              core.info(`"${name}" on ${sha}: success.`);
+            }
+            core.setOutput('ready', 'true');
+
+      - name: '🏷️  Move lkg tag to this commit'
+        if: steps.verify.outputs.ready == 'true'
+        uses: actions/github-script@v7
+        env:
+          HEAD_SHA: ${{ github.event.workflow_run.head_sha }}
+        with:
+          script: |
+            const sha = process.env.HEAD_SHA;
+            const ref = 'tags/lkg';
+            try {
+              await github.rest.git.updateRef({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                ref,
+                sha,
+                force: true,
+              });
+              core.info(`Updated tag lkg -> ${sha}`);
+            } catch (err) {
+              if (err.status === 422) {
+                await github.rest.git.createRef({
+                  owner: context.repo.owner,
+                  repo: context.repo.repo,
+                  ref: `refs/${ref}`,
+                  sha,
+                });
+                core.info(`Created tag lkg -> ${sha}`);
+              } else {
+                throw err;
+              }
+            }
