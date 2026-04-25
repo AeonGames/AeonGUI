@@ -82,10 +82,13 @@ namespace AeonGUI
              */
             std::array<std::string, 2> BuildLibraryPaths ( const std::string& aHref, size_t& aCount ) const;
 
-            /** @brief Load a shared library by path.
+            /** @brief Try to load a shared library by path.
              *  @param aPath Full path to the library.
+             *  @return true if the library was loaded and exposes
+             *          @c AeonGUI_OnLoad, false otherwise. Never throws
+             *          on a simple load failure; logs a diagnostic only.
              */
-            void LoadLibrary ( const std::string& aPath );
+            bool TryLoadLibrary ( const std::string& aPath );
 
             /** @brief Unload the currently loaded shared library. */
             void UnloadLibrary();

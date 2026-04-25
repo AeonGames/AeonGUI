@@ -144,17 +144,16 @@ namespace AeonGUI
 
         // ---- Shared library loading ----
 
-        void SVGScriptElement::LoadLibrary ( const std::string& aPath )
+        bool SVGScriptElement::TryLoadLibrary ( const std::string& aPath )
         {
 #ifdef _WIN32
             mLibHandle = static_cast<void*> ( ::LoadLibraryA ( aPath.c_str() ) );
             if ( !mLibHandle )
             {
-                std::ostringstream oss;
-                oss << "SVGScriptElement: Failed to load library: " << aPath
-                    << " (error " << GetLastError() << ")";
-                std::cerr << LogLevel::Error << oss.str() << std::endl;
-                throw std::runtime_error ( oss.str() );
+                std::cerr << LogLevel::Info
+                          << "SVGScriptElement: Failed to load library: " << aPath
+                          << " (error " << GetLastError() << ")" << std::endl;
+                return false;
             }
             mOnLoadFunc = reinterpret_cast<AeonGUI_OnLoadFunc> (
                               ::GetProcAddress ( static_cast<HMODULE> ( mLibHandle ), "AeonGUI_OnLoad" ) );
@@ -164,11 +163,11 @@ namespace AeonGUI
             mLibHandle = dlopen ( aPath.c_str(), RTLD_LAZY );
             if ( !mLibHandle )
             {
-                std::ostringstream oss;
-                oss << "SVGScriptElement: Failed to load library: " << aPath
-                    << " (" << dlerror() << ")";
-                std::cerr << LogLevel::Error << oss.str() << std::endl;
-                throw std::runtime_error ( oss.str() );
+                const char* err = dlerror();
+                std::cerr << LogLevel::Info
+                          << "SVGScriptElement: Failed to load library: " << aPath
+                          << " (" << ( err ? err : "unknown error" ) << ")" << std::endl;
+                return false;
             }
             mOnLoadFunc = reinterpret_cast<AeonGUI_OnLoadFunc> (
                               dlsym ( mLibHandle, "AeonGUI_OnLoad" ) );
@@ -177,13 +176,13 @@ namespace AeonGUI
 #endif
             if ( !mOnLoadFunc )
             {
-                std::ostringstream oss;
-                oss << "SVGScriptElement: Library " << aPath
-                    << " does not export AeonGUI_OnLoad";
-                std::cerr << LogLevel::Error << oss.str() << std::endl;
+                std::cerr << LogLevel::Warning
+                          << "SVGScriptElement: Library " << aPath
+                          << " does not export AeonGUI_OnLoad" << std::endl;
                 UnloadLibrary();
-                throw std::runtime_error ( oss.str() );
+                return false;
             }
+            return true;
         }
 
         void SVGScriptElement::UnloadLibrary()
@@ -232,49 +231,38 @@ namespace AeonGUI
 
             size_t candidateCount = 0;
             auto candidates = BuildLibraryPaths ( hrefIt->second, candidateCount );
-            std::string libPath = candidates[0];
 
+            // Prefer a candidate that exists on disk; otherwise fall back to
+            // the first one so dlopen/LoadLibraryA still gets a sensible path
+            // for its diagnostic.
+            size_t startIndex = 0;
             for ( size_t i = 0; i < candidateCount; ++i )
             {
                 if ( std::filesystem::exists ( candidates[i] ) )
                 {
-                    libPath = candidates[i];
+                    startIndex = i;
                     break;
                 }
             }
 
-            std::cerr << LogLevel::Info << "SVGScriptElement: Loading native plugin: " << libPath << std::endl;
-            try
+            // Try each candidate in turn. Failures here are expected (missing
+            // optional plugins) and must not throw out of OnLoad.
+            for ( size_t step = 0; step < candidateCount && !mLibHandle; ++step )
             {
-                LoadLibrary ( libPath );
-            }
-            catch ( const std::exception& )
-            {
-                mLibHandle = nullptr;
-                for ( size_t i = 0; i < candidateCount; ++i )
+                const size_t i = ( startIndex + step ) % candidateCount;
+                std::cerr << LogLevel::Info
+                          << "SVGScriptElement: Loading native plugin: " << candidates[i] << std::endl;
+                if ( TryLoadLibrary ( candidates[i] ) )
                 {
-                    if ( candidates[i] == libPath )
-                    {
-                        continue;
-                    }
-                    std::cerr << LogLevel::Info << "SVGScriptElement: Retrying native plugin: " << candidates[i] << std::endl;
-                    try
-                    {
-                        LoadLibrary ( candidates[i] );
-                        break;
-                    }
-                    catch ( const std::exception& )
-                    {
-                        mLibHandle = nullptr;
-                    }
+                    break;
                 }
             }
 
             if ( !mLibHandle )
             {
-                std::ostringstream oss;
-                oss << "SVGScriptElement: Failed to load native plugin '" << hrefIt->second << "' from any candidate path";
-                std::cerr << LogLevel::Error << oss.str() << std::endl;
+                std::cerr << LogLevel::Warning
+                          << "SVGScriptElement: Failed to load native plugin '"
+                          << hrefIt->second << "' from any candidate path" << std::endl;
                 return;
             }
 
