@@ -134,7 +134,12 @@ jobs:
       if: steps.changes.outputs.compiled == 'true' || steps.last.outputs.force == 'true'
 
     - name: '🧪 Running Tests'
-      run: ctest --test-dir ${{github.workspace}}/build
+      run: |
+        ctest --test-dir "${{ github.workspace }}/build" --output-on-failure --rerun-failed || {
+          echo "==== LastTest.log ===="
+          cat "${{ github.workspace }}/build/Testing/Temporary/LastTest.log" || true
+          exit 1
+        }
       if: steps.changes.outputs.compiled == 'true' || steps.last.outputs.force == 'true'
 
     - name: '✅ Skip build (no compiled changes)'

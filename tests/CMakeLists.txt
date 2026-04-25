@@ -82,6 +82,9 @@ else()
     PROPERTIES COMPILE_FLAGS "-DSOURCE_PATH=\"\\\"${PROJECT_SOURCE_DIR}\\\"\"")
 endif()
 add_test(NAME unit-tests COMMAND unit-tests)
+set_tests_properties(unit-tests PROPERTIES
+  WORKING_DIRECTORY "${PROJECT_SOURCE_DIR}"
+)
 
 # Test plugin shared library for SVGScriptElement tests
 add_library(test_plugin SHARED test_plugin.c)
