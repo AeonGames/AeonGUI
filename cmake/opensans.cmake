@@ -8,7 +8,7 @@
 #
 #   sans-serif  -> Open Sans   (Apache 2.0)
 #   serif       -> Noto Serif  (OFL)
-#   monospace   -> Roboto Mono (Apache 2.0)
+#   monospace   -> Roboto Mono (OFL)
 #   cursive     -> Caveat      (OFL)
 #   fantasy     -> Bungee      (OFL)
 #
@@ -60,7 +60,7 @@ _aeongui_download_font(
 # monospace
 _aeongui_download_font(
     "Roboto Mono"
-    "https://github.com/google/fonts/raw/main/apache/robotomono/RobotoMono%5Bwght%5D.ttf"
+    "https://github.com/google/fonts/raw/main/ofl/robotomono/RobotoMono%5Bwght%5D.ttf"
     "${AEONGUI_FONT_DIR}/RobotoMono[wght].ttf")
 
 # cursive
