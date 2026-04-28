@@ -268,6 +268,50 @@ namespace AeonGUI
         void Window::Update ( double aDeltaTime )
         {
             mDocument.AdvanceTime ( aDeltaTime );
+            mAnimationFrameTimestamp += aDeltaTime * 1000.0;
+
+            // Per spec, callbacks scheduled during dispatch run on the NEXT
+            // frame, not the current one. Move the pending list out so any
+            // re-entrant requestAnimationFrame() calls land in a fresh vector.
+            std::vector<std::pair<uint32_t, FrameRequestCallback>> callbacks;
+            callbacks.swap ( mAnimationFrameCallbacks );
+            for ( auto& entry : callbacks )
+            {
+                if ( entry.second )
+                {
+                    entry.second ( mAnimationFrameTimestamp );
+                }
+            }
+        }
+
+        uint32_t Window::requestAnimationFrame ( FrameRequestCallback aCallback )
+        {
+            // Handles must be non-zero so callers can use 0 as a sentinel.
+            uint32_t handle = ++mNextAnimationFrameHandle;
+            if ( handle == 0 )
+            {
+                handle = ++mNextAnimationFrameHandle;
+            }
+            mAnimationFrameCallbacks.emplace_back ( handle, std::move ( aCallback ) );
+            return handle;
+        }
+
+        void Window::cancelAnimationFrame ( uint32_t aHandle )
+        {
+            if ( aHandle == 0 )
+            {
+                return;
+            }
+            auto it = std::find_if ( mAnimationFrameCallbacks.begin(),
+                                     mAnimationFrameCallbacks.end(),
+                                     [aHandle] ( const auto & entry )
+            {
+                return entry.first == aHandle;
+            } );
+            if ( it != mAnimationFrameCallbacks.end() )
+            {
+                mAnimationFrameCallbacks.erase ( it );
+            }
         }
 
         Element* Window::elementFromPoint ( double aX, double aY ) const

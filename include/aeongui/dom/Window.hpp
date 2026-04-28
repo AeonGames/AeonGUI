@@ -17,9 +17,11 @@ limitations under the License.
 #define AEONGUI_WINDOW_H
 #include <cstdint>
 #include <array>
+#include <functional>
 #include <memory>
 #include <unordered_map>
 #include <string>
+#include <vector>
 #include "aeongui/Platform.hpp"
 #include "aeongui/Canvas.hpp"
 #include "aeongui/dom/EventTarget.hpp"
@@ -87,6 +89,27 @@ namespace AeonGUI
              *  @return Reference to the window's Location.
              */
             AEONGUI_DLL Location& location() const;
+            /** @brief Callback invoked once per animation frame.
+             *  Receives the current frame timestamp in milliseconds.
+             *  @see https://html.spec.whatwg.org/multipage/imagebitmap-and-animations.html#animationframeprovider
+             */
+            using FrameRequestCallback = std::function<void ( double ) >;
+            /** @brief Schedule @p aCallback to be invoked before the next frame.
+             *
+             *  Mirrors the HTML spec @c requestAnimationFrame method on Window.
+             *  Callbacks scheduled while the current frame's callbacks are running
+             *  are deferred to the next frame.
+             *  @param aCallback Function to invoke. Receives the frame timestamp
+             *                   in milliseconds.
+             *  @return A handle that can be passed to cancelAnimationFrame to
+             *          cancel the request. Always non-zero.
+             */
+            AEONGUI_DLL uint32_t requestAnimationFrame ( FrameRequestCallback aCallback );
+            /** @brief Cancel a previously scheduled animation frame callback.
+             *  @param aHandle Handle returned by requestAnimationFrame. Unknown
+             *                 or already-fired handles are silently ignored.
+             */
+            AEONGUI_DLL void cancelAnimationFrame ( uint32_t aHandle );
             /**@}*/
             /**Input Handling @{*/
             /** @brief Handle a mouse move event from the platform.
@@ -192,6 +215,10 @@ namespace AeonGUI
             uint8_t mPickIdCounter{0}; ///< Number of pick IDs assigned this frame.
             /// Cached device-space bounds per element for dirty rect computation.
             std::unordered_map<const Element*, Canvas::PickBounds> mCachedBounds{};
+            /// Pending animation frame callbacks (handle, callback). Drained each Update().
+            std::vector<std::pair<uint32_t, FrameRequestCallback>> mAnimationFrameCallbacks{};
+            uint32_t mNextAnimationFrameHandle{0};
+            double mAnimationFrameTimestamp{0.0}; ///< Accumulated time in milliseconds.
         };
     }
 }
