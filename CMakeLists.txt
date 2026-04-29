@@ -409,6 +409,14 @@ install(
 	DESTINATION include/aeongui
 )
 
+if(ENABLE_HTML)
+  install(
+    FILES
+      include/aeongui/HTMLLayoutEngine.hpp
+    DESTINATION include/aeongui
+  )
+endif()
+
 install(
   DIRECTORY include/aeongui/dom/
   DESTINATION include/aeongui/dom
