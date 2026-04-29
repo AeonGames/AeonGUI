@@ -81,30 +81,6 @@ find_package(OpenGL)
 find_program(BASH_EXECUTABLE bash HINTS ENV MINGW_PREFIX MSYS2_PATH)
 find_program(ZSH_EXECUTABLE zsh HINTS ENV MINGW_PREFIX MSYS2_PATH)
 
-function(gnu_sed_check validator_result_var item)
-  execute_process(COMMAND ${item} --version
-                  RESULT_VARIABLE sed_result
-                  OUTPUT_VARIABLE sed_output
-                  ERROR_VARIABLE sed_error
-                  OUTPUT_STRIP_TRAILING_WHITESPACE
-                  ERROR_STRIP_TRAILING_WHITESPACE)
-  if(sed_output MATCHES "GNU sed")
-    message(STATUS "Found GNU sed: ${item}")
-    set(${validator_result_var} TRUE PARENT_SCOPE)
-  else()
-    set(${validator_result_var} FALSE PARENT_SCOPE)
-  endif()
-endfunction()
-
-find_program(SED_EXECUTABLE NAMES gsed sed
-            PATHS ENV MSYSTEM_PREFIX ENV ProgramFiles
-            PATH_SUFFIXES
-                  bin
-                  usr/bin
-                  Git/usr/bin
-                  VALIDATOR gnu_sed_check
-)
-
 find_program(GREP_EXECUTABLE grep
              HINTS ENV
                    MINGW_PREFIX
@@ -327,20 +303,32 @@ if(BUILD_UNIT_TESTS)
   add_subdirectory(tests)
 endif()
 
+# Capture the AeonGUI source dir at parse time so the helper script can be
+# located whether AeonGUI is built standalone or as a sub-project (e.g. via
+# FetchContent), where CMAKE_SOURCE_DIR points at the parent project.
+set(_AEONGUI_FIX_COMPILE_COMMANDS_SCRIPT
+    "${CMAKE_CURRENT_LIST_DIR}/cmake/FixCompileCommands.cmake")
+
 function(fix_compile_commands target)
-  if(SED_EXECUTABLE)
-  add_custom_command(TARGET ${target} POST_BUILD
-      COMMAND ${SED_EXECUTABLE} -i 's/\\/\\\(.\\\)\\//\\1:\\//g' ${CMAKE_BINARY_DIR}/compile_commands.json
-      WORKING_DIRECTORY ${CMAKE_BINARY_DIR}
-      COMMENT "Fixing compilation Database."
-  )
+  if(MINGW)
+    add_custom_command(TARGET ${target} POST_BUILD
+        COMMAND "${CMAKE_COMMAND}"
+                -DCOMPILE_COMMANDS_JSON=${CMAKE_BINARY_DIR}/compile_commands.json
+                -P "${_AEONGUI_FIX_COMPILE_COMMANDS_SCRIPT}"
+        WORKING_DIRECTORY "${CMAKE_BINARY_DIR}"
+        COMMENT "Fixing compilation database for ${target}"
+        VERBATIM
+    )
   endif()
 endfunction()
-if(SED_EXECUTABLE AND MINGW)
+if(MINGW)
   add_custom_target(fix_compile_commands ALL
-      COMMAND ${SED_EXECUTABLE} -i 's/\\/\\\(.\\\)\\//\\1:\\//g' ${CMAKE_BINARY_DIR}/compile_commands.json
-      WORKING_DIRECTORY ${CMAKE_BINARY_DIR}
-      COMMENT "Fixing compilation Database."
+      COMMAND "${CMAKE_COMMAND}"
+              -DCOMPILE_COMMANDS_JSON=${CMAKE_BINARY_DIR}/compile_commands.json
+              -P "${_AEONGUI_FIX_COMPILE_COMMANDS_SCRIPT}"
+      WORKING_DIRECTORY "${CMAKE_BINARY_DIR}"
+      COMMENT "Fixing compilation database"
+      VERBATIM
   )
 endif()
 
