@@ -24,11 +24,11 @@ namespace AeonGUI
         int ParsePathData ( std::vector<DrawType>& aPath, const char* s, size_t& aEstimate );
         SVGPathElement::SVGPathElement ( const std::string& aTagName, AttributeMap&& aAttributes, Node* aParent ) : SVGGeometryElement { aTagName, std::move ( aAttributes ), aParent }
         {
-            if ( mAttributes.find ( "d" ) != mAttributes.end() )
+            auto it = mAttributes.find ( "d" );
+            if ( it != mAttributes.end() )
             {
-                std::vector<DrawType> path;
                 size_t estimate = 0;
-                if ( ParsePathData ( path, mAttributes.at ( "d" ).c_str(), estimate ) )
+                if ( ParsePathData ( mPathData, it->second.c_str(), estimate ) )
                 {
 #if 0
                     auto id = GetAttribute ( "id" );
@@ -39,7 +39,8 @@ namespace AeonGUI
                     std::cerr << "Path Data: " << std::get<std::string> ( d ) << std::endl;
 #endif
                 }
-                mPath->Construct ( path, estimate );
+                mPath->Construct ( mPathData, estimate );
+                mLastPathD = it->second;
             }
         }
 
@@ -50,10 +51,21 @@ namespace AeonGUI
             Element::onAttributeChanged ( aName, aValue );
             if ( aName == "d" )
             {
-                std::vector<DrawType> path;
+                if ( aValue == mLastPathD )
+                {
+                    // SMIL/script frequently writes back the same `d`
+                    // string every frame; the Flex/Bison parse is
+                    // expensive so skip when the source is unchanged.
+                    return;
+                }
+                // Reuse the existing buffer's capacity — ParsePathData
+                // appends, so clear() (not resize/reallocate) is what we
+                // want.
+                mPathData.clear();
                 size_t estimate = 0;
-                ParsePathData ( path, aValue.c_str(), estimate );
-                mPath->Construct ( path, estimate );
+                ParsePathData ( mPathData, aValue.c_str(), estimate );
+                mPath->Construct ( mPathData, estimate );
+                mLastPathD = aValue;
             }
         }
     }

@@ -453,10 +453,42 @@ namespace AeonGUI
             // Do nothing by default
         }
 
+        void Node::OnInsertedIntoDocument ( Document& )
+        {
+            // Do nothing by default — Element overrides to maintain the
+            // document's id index.
+        }
+
+        void Node::OnRemovedFromDocument ( Document& )
+        {
+            // Do nothing by default — Element overrides to maintain the
+            // document's id index.
+        }
+
+        void Node::OnChildInserted ( Node& )
+        {
+            // Do nothing by default — Element overrides to maintain its
+            // animation-children cache.
+        }
+
+        void Node::OnChildRemoved ( Node& )
+        {
+            // Do nothing by default — Element overrides to maintain its
+            // animation-children cache.
+        }
+
         Node* Node::AddNode ( std::unique_ptr<Node> aNode )
         {
             aNode->mParent = this;
             Node* node { mChildren.emplace_back ( std::move ( aNode ) ).get() };
+            OnChildInserted ( *node );
+            if ( Document * doc = node->ownerDocument() )
+            {
+                node->TraverseDepthFirstPreOrder ( [doc] ( Node & n )
+                {
+                    n.OnInsertedIntoDocument ( *doc );
+                } );
+            }
             node->TraverseDepthFirstPreOrder (  (
                                                     [] ( Node & node )
             {
@@ -474,15 +506,32 @@ namespace AeonGUI
             } );
             if ( i != mChildren.end() )
             {
+                // Notify the parent before detaching so any cached
+                // pointers to the child can be cleared while the child is
+                // still owned by the child list.
+                OnChildRemoved ( **i );
                 node = std::move ( *i );
                 mChildren.erase ( i );
             }
-            node->mParent = nullptr;
-            node->TraverseDepthFirstPreOrder (  (
-                                                    [] ( Node & node )
+            // While the subtree's mParent still points at us we can locate
+            // its owning Document; do the unregister pass first so id
+            // mappings are torn down before the subtree is detached.
+            if ( node )
             {
-                node.OnAncestorChanged();
-            } ) );
+                if ( Document * doc = node->ownerDocument() )
+                {
+                    node->TraverseDepthFirstPreOrder ( [doc] ( Node & n )
+                    {
+                        n.OnRemovedFromDocument ( *doc );
+                    } );
+                }
+                node->mParent = nullptr;
+                node->TraverseDepthFirstPreOrder (  (
+                                                        [] ( Node & node )
+                {
+                    node.OnAncestorChanged();
+                } ) );
+            }
             return node;
         }
     }

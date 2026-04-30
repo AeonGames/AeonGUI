@@ -291,20 +291,37 @@ namespace AeonGUI
 
         Element* Document::getElementById ( const DOMString& aElementId ) const
         {
-            Element* result = nullptr;
-            StackTraverseDepthFirstPreOrder (
-                [&aElementId, &result] ( const Node & aNode )
+            auto it = mIdIndex.find ( aElementId );
+            if ( it != mIdIndex.end() )
             {
-                if ( !result && aNode.nodeType() == Node::ELEMENT_NODE )
-                {
-                    Element* elem = const_cast<Element*> ( static_cast<const Element*> ( &aNode ) );
-                    if ( elem->id() == aElementId )
-                    {
-                        result = elem;
-                    }
-                }
-            } );
-            return result;
+                return it->second;
+            }
+            return nullptr;
+        }
+
+        void Document::RegisterElementId ( const DOMString& aId, Element* aElement )
+        {
+            if ( aId.empty() || aElement == nullptr )
+            {
+                return;
+            }
+            // Preserve the first-in-document-order winner — matches the
+            // historical linear getElementById walk's behaviour for
+            // documents that contain duplicate ids.
+            mIdIndex.emplace ( aId, aElement );
+        }
+
+        void Document::UnregisterElementId ( const DOMString& aId, const Element* aElement )
+        {
+            if ( aId.empty() )
+            {
+                return;
+            }
+            auto it = mIdIndex.find ( aId );
+            if ( it != mIdIndex.end() && it->second == aElement )
+            {
+                mIdIndex.erase ( it );
+            }
         }
     }
 }

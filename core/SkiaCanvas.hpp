@@ -16,6 +16,7 @@ limitations under the License.
 #ifndef AEONGUI_SKIACANVAS_H
 #define AEONGUI_SKIACANVAS_H
 #include <cstdint>
+#include <memory>
 #include <string>
 #include <vector>
 #include <core/SkRefCnt.h>
@@ -26,6 +27,7 @@ class SkCanvas;
 
 namespace AeonGUI
 {
+    class PangoTextLayout;
     /** @brief Skia-based Canvas implementation.
      *
      *  Renders 2D geometry, text, and images into a CPU-side pixel buffer
@@ -99,6 +101,15 @@ namespace AeonGUI
         AEONGUI_DLL std::unique_ptr<Path> CreatePath() const final;
     private:
         void InitSurfaces ( uint32_t aWidth, uint32_t aHeight );
+        // Lazily-constructed cache of a single PangoTextLayout used
+        // by DrawText/MeasureText/DrawTextOnPath, so we avoid
+        // allocating a fresh PangoLayout + PangoFontDescription on
+        // every text draw.
+        PangoTextLayout& GetTextLayoutCache ( const std::string& aFontFamily,
+                                              double aFontSize,
+                                              int aFontWeight,
+                                              int aFontStyle ) const;
+        mutable std::unique_ptr<PangoTextLayout> mTextCache{};
         // Render surface
         sk_sp<SkSurface> mSurface;
         SkCanvas* mCanvas{};  // owned by mSurface

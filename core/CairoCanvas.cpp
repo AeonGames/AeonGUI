@@ -332,65 +332,39 @@ namespace AeonGUI
         cairo_surface_destroy ( imageSurface );
     }
 
-    static PangoFontDescription* CreateFontDescription ( const std::string& aFontFamily, double aFontSize,
-            int aFontWeight, int aFontStyle )
+    PangoTextLayout& CairoCanvas::GetTextLayoutCache ( const std::string& aFontFamily,
+            double aFontSize,
+            int aFontWeight,
+            int aFontStyle ) const
     {
-        PangoFontDescription* desc = pango_font_description_new();
-        pango_font_description_set_family ( desc, aFontFamily.c_str() );
-        pango_font_description_set_absolute_size ( desc, aFontSize * PANGO_SCALE );
-
-        // Map CSS font-weight (100-900) to Pango weight
-        if ( aFontWeight <= 100 )
+        if ( !mTextCache )
         {
-            pango_font_description_set_weight ( desc, PANGO_WEIGHT_THIN );
+            // When the global FontDatabase has been initialised the
+            // default PangoTextLayout constructor produces a context
+            // bound to the (cairo-compatible) shared font map.  When it
+            // has not, the default constructor would fall back to a
+            // pangoft2 context, which is incompatible with cairo
+            // rendering and crashes pango_cairo_show_layout.  Bind to
+            // the canvas's own cairo context in that case.
+            if ( FontDatabase::GetFontMap() == nullptr && mCairoContext != nullptr )
+            {
+                PangoContext* ctx = pango_cairo_create_context ( mCairoContext );
+                mTextCache = std::make_unique<PangoTextLayout> ( ctx );
+            }
+            else
+            {
+                mTextCache = std::make_unique<PangoTextLayout>();
+            }
         }
-        else if ( aFontWeight <= 200 )
-        {
-            pango_font_description_set_weight ( desc, PANGO_WEIGHT_ULTRALIGHT );
-        }
-        else if ( aFontWeight <= 300 )
-        {
-            pango_font_description_set_weight ( desc, PANGO_WEIGHT_LIGHT );
-        }
-        else if ( aFontWeight <= 400 )
-        {
-            pango_font_description_set_weight ( desc, PANGO_WEIGHT_NORMAL );
-        }
-        else if ( aFontWeight <= 500 )
-        {
-            pango_font_description_set_weight ( desc, PANGO_WEIGHT_MEDIUM );
-        }
-        else if ( aFontWeight <= 600 )
-        {
-            pango_font_description_set_weight ( desc, PANGO_WEIGHT_SEMIBOLD );
-        }
-        else if ( aFontWeight <= 700 )
-        {
-            pango_font_description_set_weight ( desc, PANGO_WEIGHT_BOLD );
-        }
-        else if ( aFontWeight <= 800 )
-        {
-            pango_font_description_set_weight ( desc, PANGO_WEIGHT_ULTRABOLD );
-        }
-        else
-        {
-            pango_font_description_set_weight ( desc, PANGO_WEIGHT_HEAVY );
-        }
-
-        // Map CSS font-style: 0 = normal, 1 = italic, 2 = oblique
-        switch ( aFontStyle )
-        {
-        case 1:
-            pango_font_description_set_style ( desc, PANGO_STYLE_ITALIC );
-            break;
-        case 2:
-            pango_font_description_set_style ( desc, PANGO_STYLE_OBLIQUE );
-            break;
-        default:
-            pango_font_description_set_style ( desc, PANGO_STYLE_NORMAL );
-            break;
-        }
-        return desc;
+        // Setters skip work when the value is unchanged, so calling
+        // them every frame is cheap once the layout has stabilised.
+        mTextCache->SetFontFamily ( aFontFamily );
+        mTextCache->SetFontSize ( aFontSize );
+        mTextCache->SetFontWeight ( aFontWeight );
+        mTextCache->SetFontStyle ( aFontStyle );
+        // Make sure wrap is disabled for inline draw paths.
+        mTextCache->SetWrapWidth ( -1.0 );
+        return *mTextCache;
     }
 
     void CairoCanvas::DrawText ( const std::string& aText, double aX, double aY,
@@ -402,23 +376,16 @@ namespace AeonGUI
             return;
         }
 
-        PangoContext* pangoContext = FontDatabase::GetFontMap()
-                                     ? FontDatabase::CreateContext()
-                                     : pango_cairo_create_context ( mCairoContext );
-        PangoLayout* layout = pango_layout_new ( pangoContext );
-        PangoFontDescription* desc = CreateFontDescription ( aFontFamily, aFontSize, aFontWeight, aFontStyle );
-
-        pango_layout_set_font_description ( layout, desc );
-        pango_layout_set_text ( layout, aText.c_str(), -1 );
+        PangoTextLayout& cache = GetTextLayoutCache ( aFontFamily, aFontSize, aFontWeight, aFontStyle );
+        cache.SetText ( aText );
+        PangoLayout* layout = cache.GetPangoLayout();
 
         // Move to the text position. SVG text y is the baseline, but Pango
         // draws from the top-left of the layout. We offset by ascent.
-        PangoLayoutIter* iter = pango_layout_get_iter ( layout );
-        int baseline = pango_layout_iter_get_baseline ( iter );
-        pango_layout_iter_free ( iter );
+        const double baselineOffset = cache.GetBaseline();
 
         cairo_save ( mCairoContext );
-        cairo_move_to ( mCairoContext, aX, aY - static_cast<double> ( baseline ) / PANGO_SCALE );
+        cairo_move_to ( mCairoContext, aX, aY - baselineOffset );
 
         if ( mOpacity < 1.0 && mOpacity > 0.0 )
         {
@@ -442,7 +409,7 @@ namespace AeonGUI
             cairo_set_line_width ( mCairoContext, mStrokeWidth );
             cairo_set_source_rgba ( mCairoContext, stroke.R(), stroke.G(), stroke.B(),
                                     ( mStrokeOpacity >= 1.0 ) ? stroke.A() : mStrokeOpacity );
-            cairo_move_to ( mCairoContext, aX, aY - static_cast<double> ( baseline ) / PANGO_SCALE );
+            cairo_move_to ( mCairoContext, aX, aY - baselineOffset );
             pango_cairo_layout_path ( mCairoContext, layout );
             cairo_stroke ( mCairoContext );
         }
@@ -454,10 +421,6 @@ namespace AeonGUI
         }
 
         cairo_restore ( mCairoContext );
-
-        pango_font_description_free ( desc );
-        g_object_unref ( layout );
-        g_object_unref ( pangoContext );
     }
 
     double CairoCanvas::MeasureText ( const std::string& aText,
@@ -469,24 +432,9 @@ namespace AeonGUI
             return 0.0;
         }
 
-        PangoContext* pangoContext = FontDatabase::GetFontMap()
-                                     ? FontDatabase::CreateContext()
-                                     : pango_cairo_create_context ( mCairoContext );
-        PangoLayout* layout = pango_layout_new ( pangoContext );
-        PangoFontDescription* desc = CreateFontDescription ( aFontFamily, aFontSize, aFontWeight, aFontStyle );
-
-        pango_layout_set_font_description ( layout, desc );
-        pango_layout_set_text ( layout, aText.c_str(), -1 );
-
-        int width = 0;
-        int height = 0;
-        pango_layout_get_pixel_size ( layout, &width, &height );
-
-        pango_font_description_free ( desc );
-        g_object_unref ( layout );
-        g_object_unref ( pangoContext );
-
-        return static_cast<double> ( width );
+        PangoTextLayout& cache = GetTextLayoutCache ( aFontFamily, aFontSize, aFontWeight, aFontStyle );
+        cache.SetText ( aText );
+        return cache.GetTextWidth();
     }
 
     void CairoCanvas::DrawTextOnPath ( const std::string& aText,
@@ -501,19 +449,12 @@ namespace AeonGUI
             return;
         }
 
-        PangoContext* pangoContext = FontDatabase::GetFontMap()
-                                     ? FontDatabase::CreateContext()
-                                     : pango_cairo_create_context ( mCairoContext );
-        PangoLayout* layout = pango_layout_new ( pangoContext );
-        PangoFontDescription* desc = CreateFontDescription ( aFontFamily, aFontSize, aFontWeight, aFontStyle );
-        pango_layout_set_font_description ( layout, desc );
+        PangoTextLayout& cache = GetTextLayoutCache ( aFontFamily, aFontSize, aFontWeight, aFontStyle );
+        cache.SetText ( aText );
+        PangoLayout* layout = cache.GetPangoLayout();
 
         // Get the baseline offset for vertical centering.
-        pango_layout_set_text ( layout, aText.c_str(), -1 );
-        PangoLayoutIter* iter = pango_layout_get_iter ( layout );
-        int baseline = pango_layout_iter_get_baseline ( iter );
-        pango_layout_iter_free ( iter );
-        double baselineOffset = static_cast<double> ( baseline ) / PANGO_SCALE;
+        const double baselineOffset = cache.GetBaseline();
 
         if ( mOpacity < 1.0 && mOpacity > 0.0 )
         {
@@ -547,10 +488,11 @@ namespace AeonGUI
             {
                 break;
             }
-            std::string oneChar = aText.substr ( pos, static_cast<size_t> ( charLen ) );
 
-            // Measure this character's advance width.
-            pango_layout_set_text ( layout, oneChar.c_str(), charLen );
+            // Measure this character's advance width without copying
+            // the substring: pango_layout_set_text takes a length
+            // argument, so we can point straight into aText's buffer.
+            pango_layout_set_text ( layout, aText.data() + pos, charLen );
             int charWidth = 0, charHeight = 0;
             pango_layout_get_pixel_size ( layout, &charWidth, &charHeight );
             double advance = static_cast<double> ( charWidth );
@@ -625,9 +567,11 @@ namespace AeonGUI
             cairo_paint_with_alpha ( mCairoContext, mOpacity );
         }
 
-        pango_font_description_free ( desc );
-        g_object_unref ( layout );
-        g_object_unref ( pangoContext );
+        // We bypassed PangoTextLayout::SetText for the per-character
+        // measurements above, so its cached last-text no longer
+        // reflects the layout's actual text. Invalidate so the next
+        // SetText call re-installs the text on the layout.
+        cache.InvalidateTextCache();
     }
 
     void CairoCanvas::SetViewBox ( const ViewBox& aViewBox, const PreserveAspectRatio& aPreserveAspectRatio )

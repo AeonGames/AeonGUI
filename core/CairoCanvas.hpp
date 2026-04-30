@@ -16,6 +16,7 @@ limitations under the License.
 #ifndef AEONGUI_CAIROCANVAS_H
 #define AEONGUI_CAIROCANVAS_H
 #include <cstdint>
+#include <memory>
 #include <string>
 #include "aeongui/Canvas.hpp"
 
@@ -26,6 +27,7 @@ typedef struct _cairo cairo_t;
 
 namespace AeonGUI
 {
+    class PangoTextLayout;
     /** @brief Cairo-backed Canvas implementation.
      *
      *  Provides software rasterization of paths, images, and text
@@ -101,6 +103,14 @@ namespace AeonGUI
     private:
         void InitPickSurface ( uint32_t aWidth, uint32_t aHeight );
         void DestroyPickSurface();
+        // Lazily-constructed cache of a single PangoTextLayout used
+        // by DrawText/MeasureText/DrawTextOnPath, so we avoid
+        // allocating a fresh PangoLayout + PangoFontDescription on
+        // every text draw.
+        PangoTextLayout& GetTextLayoutCache ( const std::string& aFontFamily,
+                                              double aFontSize,
+                                              int aFontWeight,
+                                              int aFontStyle ) const;
         cairo_surface_t* mCairoSurface{};
         cairo_t* mCairoContext{};
         cairo_surface_t* mPickSurface{};
@@ -111,6 +121,7 @@ namespace AeonGUI
         double mStrokeOpacity{1};
         double mFillOpacity{1};
         double mOpacity{1};
+        mutable std::unique_ptr<PangoTextLayout> mTextCache{};
     };
 }
 #endif

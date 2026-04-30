@@ -40,6 +40,14 @@ namespace AeonGUI
             ~SVGPathElement() final;
         protected:
             void onAttributeChanged ( const DOMString& aName, const DOMString& aValue ) override;
+        private:
+            // Cached source string of the last successfully-parsed `d`
+            // attribute.  Used to short-circuit repeated parses when SMIL
+            // or script writes the same value back every frame.  Also
+            // keeps the parsed buffer alive so we can reuse its storage
+            // and avoid per-frame heap traffic.
+            DOMString mLastPathD{};
+            std::vector<DrawType> mPathData{};
         };
     }
 }

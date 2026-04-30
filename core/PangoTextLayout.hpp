@@ -40,6 +40,17 @@ namespace AeonGUI
     public:
         /** @brief Default constructor. Creates a layout with default font settings. */
         AEONGUI_DLL PangoTextLayout();
+        /** @brief Construct a layout adopting an externally-provided PangoContext.
+         *
+         *  Ownership of @p aContext transfers to the layout — it will
+         *  be released in the destructor. Allows callers (e.g. a Cairo
+         *  canvas) to bind the layout to a backend-specific context
+         *  built via @c pango_cairo_create_context so that layouts
+         *  created without a global FontDatabase still render correctly
+         *  through that backend.
+         *  @param aContext Non-null PangoContext.
+         */
+        AEONGUI_DLL explicit PangoTextLayout ( PangoContext* aContext );
         /** @brief Destructor. Releases Pango resources. */
         AEONGUI_DLL ~PangoTextLayout() override;
         /** @brief Set the text content to lay out.
@@ -93,6 +104,18 @@ namespace AeonGUI
          *  @return Pointer to the PangoLayout.
          */
         PangoLayout* GetPangoLayout() const;
+        /** @brief Invalidate the cached last-text comparison used by SetText.
+         *
+         *  Callers that mutate the underlying PangoLayout's text
+         *  directly (for example, via per-character
+         *  pango_layout_set_text in DrawTextOnPath) must call this
+         *  afterwards so the next SetText with a previously-seen
+         *  string still re-installs the text on the layout.
+         */
+        void InvalidateTextCache()
+        {
+            mLastText.clear();
+        }
     private:
         void UpdateFontDescription();
         PangoContext* mPangoContext{};
@@ -102,6 +125,10 @@ namespace AeonGUI
         double mFontSize{16.0};
         int mFontWeight{400};
         int mFontStyle{0};
+        // Cache the last text set on the layout so repeated
+        // SetText calls with the same string skip the (somewhat
+        // expensive) pango_layout_set_text + itemize / shape pass.
+        std::string mLastText{};
     };
 }
 

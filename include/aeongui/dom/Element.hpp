@@ -36,6 +36,7 @@ namespace AeonGUI
     namespace DOM
     {
         class Document;
+        class SVGAnimationElement;
         /** @brief Base class for DOM elements.
          *
          *  An Element has a tag name, attributes, CSS classes, and
@@ -114,14 +115,39 @@ namespace AeonGUI
             DOMString mId{};
             std::vector<lwc_string*> mClasses{};
             AEONGUI_DLL void OnAncestorChanged() override;
+        protected:
+            AEONGUI_DLL void OnInsertedIntoDocument ( Document& aDocument ) override;
+            AEONGUI_DLL void OnRemovedFromDocument ( Document& aDocument ) override;
+            AEONGUI_DLL void OnChildInserted ( Node& aChild ) override;
+            AEONGUI_DLL void OnChildRemoved ( Node& aChild ) override;
+        private:
             bool mIsHover{false};     ///< :hover pseudo-class state.
             bool mIsActive{false};    ///< :active pseudo-class state.
             bool mIsFocus{false};     ///< :focus pseudo-class state.
             css_stylesheet* mDocumentStyleSheet{nullptr}; ///< Non-owning pointer to document stylesheet.
+            // Cached pointers to SMIL animation children of this element
+            // (SVGAnimateElement / SVGAnimateTransformElement /
+            // SVGAnimateMotionElement / SVGSetElement).  Maintained by
+            // OnChildInserted / OnChildRemoved so the per-frame
+            // ApplyChild*Animations passes can skip the dynamic_cast scan
+            // entirely for the common case of zero animation children.
+            std::vector<SVGAnimationElement*> mAnimationChildren{};
         protected:
             AttributeMap mAttributes{}; ///< The element's attribute map.
             StyleSheetPtr mInlineStyleSheet{}; ///< Inline style parsed from the style attribute.
             SelectResultsPtr mComputedStyles{}; ///< Computed CSS styles for this element.
+            /** @brief Cached pointers to SMIL animation children of this element.
+             *
+             *  Maintained by Element::OnChildInserted / OnChildRemoved.
+             *  Subclasses that scan for path-driver animations
+             *  (e.g. SVGRectElement::RebuildAnimatedPath) may iterate
+             *  this list directly to avoid the per-frame dynamic_cast
+             *  scan over every regular child.
+             */
+            const std::vector<SVGAnimationElement*>& AnimationChildren() const
+            {
+                return mAnimationChildren;
+            }
             /** @brief Get computed styles from the parent element.
              *  @return Pointer to parent's computed styles, or nullptr. */
             css_select_results* GetParentComputedStyles() const;

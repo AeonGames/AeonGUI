@@ -43,6 +43,7 @@ limitations under the License.
 #include <cstring>
 #include "SkiaCanvas.hpp"
 #include "SkiaPath.hpp"
+#include "PangoTextLayout.hpp"
 #include "aeongui/FontDatabase.hpp"
 
 namespace AeonGUI
@@ -582,6 +583,26 @@ namespace AeonGUI
         mPixelCacheDirty = true;
     }
 
+    PangoTextLayout& SkiaCanvas::GetTextLayoutCache ( const std::string& aFontFamily,
+            double aFontSize,
+            int aFontWeight,
+            int aFontStyle ) const
+    {
+        if ( !mTextCache )
+        {
+            mTextCache = std::make_unique<PangoTextLayout>();
+        }
+        // Setters skip work when the value is unchanged, so calling
+        // them every frame is cheap once the layout has stabilised.
+        mTextCache->SetFontFamily ( aFontFamily );
+        mTextCache->SetFontSize ( aFontSize );
+        mTextCache->SetFontWeight ( aFontWeight );
+        mTextCache->SetFontStyle ( aFontStyle );
+        // Make sure wrap is disabled for inline draw paths.
+        mTextCache->SetWrapWidth ( -1.0 );
+        return *mTextCache;
+    }
+
     void SkiaCanvas::DrawText ( const std::string& aText, double aX, double aY,
                                 const std::string& aFontFamily, double aFontSize,
                                 int aFontWeight, int aFontStyle )
@@ -595,16 +616,9 @@ namespace AeonGUI
         {
             return;
         }
-        PangoContext* pangoContext = FontDatabase::CreateContext();
-        PangoLayout* layout = pango_layout_new ( pangoContext );
-        PangoFontDescription* desc = CreateSkiaFontDescription ( aFontFamily, aFontSize, aFontWeight, aFontStyle );
-        pango_layout_set_font_description ( layout, desc );
-        pango_layout_set_text ( layout, aText.c_str(), -1 );
-
-        PangoLayoutIter* baseIter = pango_layout_get_iter ( layout );
-        int baseline = pango_layout_iter_get_baseline ( baseIter );
-        pango_layout_iter_free ( baseIter );
-        ( void ) baseline;
+        PangoTextLayout& cache = GetTextLayoutCache ( aFontFamily, aFontSize, aFontWeight, aFontStyle );
+        cache.SetText ( aText );
+        PangoLayout* layout = cache.GetPangoLayout();
 
         // aY is the SVG baseline. FreeType glyph outlines have their origin at
         // the baseline, so pass aY directly — not the top-of-layout offset.
@@ -655,10 +669,6 @@ namespace AeonGUI
             mCanvas->restore();
         }
         mPixelCacheDirty = true;
-
-        pango_font_description_free ( desc );
-        g_object_unref ( layout );
-        g_object_unref ( pangoContext );
     }
 
     double SkiaCanvas::MeasureText ( const std::string& aText,
@@ -674,21 +684,9 @@ namespace AeonGUI
         {
             return 0.0;
         }
-        PangoContext* pangoContext = FontDatabase::CreateContext();
-        PangoLayout* layout = pango_layout_new ( pangoContext );
-        PangoFontDescription* desc = CreateSkiaFontDescription ( aFontFamily, aFontSize, aFontWeight, aFontStyle );
-        pango_layout_set_font_description ( layout, desc );
-        pango_layout_set_text ( layout, aText.c_str(), -1 );
-
-        int width = 0;
-        int height = 0;
-        pango_layout_get_pixel_size ( layout, &width, &height );
-
-        pango_font_description_free ( desc );
-        g_object_unref ( layout );
-        g_object_unref ( pangoContext );
-
-        return static_cast<double> ( width );
+        PangoTextLayout& cache = GetTextLayoutCache ( aFontFamily, aFontSize, aFontWeight, aFontStyle );
+        cache.SetText ( aText );
+        return cache.GetTextWidth();
     }
 
     void SkiaCanvas::DrawTextOnPath ( const std::string& aText,
@@ -707,17 +705,12 @@ namespace AeonGUI
         {
             return;
         }
-        PangoContext* pangoContext = FontDatabase::CreateContext();
-        PangoLayout* layout = pango_layout_new ( pangoContext );
-        PangoFontDescription* desc = CreateSkiaFontDescription ( aFontFamily, aFontSize, aFontWeight, aFontStyle );
-        pango_layout_set_font_description ( layout, desc );
+        PangoTextLayout& cache = GetTextLayoutCache ( aFontFamily, aFontSize, aFontWeight, aFontStyle );
+        cache.SetText ( aText );
+        PangoLayout* layout = cache.GetPangoLayout();
 
         // Get baseline offset for vertical centering.
-        pango_layout_set_text ( layout, aText.c_str(), -1 );
-        PangoLayoutIter* baseIter = pango_layout_get_iter ( layout );
-        int baseline = pango_layout_iter_get_baseline ( baseIter );
-        pango_layout_iter_free ( baseIter );
-        double baselineOffset = static_cast<double> ( baseline ) / PANGO_SCALE;
+        const double baselineOffset = cache.GetBaseline();
 
         double pathLength = aPath.GetTotalLength();
 
@@ -751,10 +744,11 @@ namespace AeonGUI
             {
                 break;
             }
-            std::string oneChar = aText.substr ( pos, static_cast<size_t> ( charLen ) );
 
-            // Measure this character's advance width.
-            pango_layout_set_text ( layout, oneChar.c_str(), charLen );
+            // Measure this character's advance width without copying
+            // the substring: pango_layout_set_text takes a length
+            // argument, so we can point straight into aText's buffer.
+            pango_layout_set_text ( layout, aText.data() + pos, charLen );
             int charWidth = 0, charHeight = 0;
             pango_layout_get_pixel_size ( layout, &charWidth, &charHeight );
             double advance = static_cast<double> ( charWidth );
@@ -835,9 +829,11 @@ namespace AeonGUI
         }
         mPixelCacheDirty = true;
 
-        pango_font_description_free ( desc );
-        g_object_unref ( layout );
-        g_object_unref ( pangoContext );
+        // We bypassed PangoTextLayout::SetText for the per-character
+        // measurements above, so its cached last-text no longer
+        // reflects the layout's actual text. Invalidate so the next
+        // SetText call re-installs the text on the layout.
+        cache.InvalidateTextCache();
     }
 
     void SkiaCanvas::SetViewBox ( const ViewBox& aViewBox, const PreserveAspectRatio& aPreserveAspectRatio )

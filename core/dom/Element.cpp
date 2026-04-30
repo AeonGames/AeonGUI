@@ -24,6 +24,7 @@ limitations under the License.
 #include "aeongui/dom/Element.hpp"
 #include "aeongui/dom/Document.hpp"
 #include "aeongui/dom/SVGAnimateElement.hpp"
+#include "aeongui/dom/SVGAnimationElement.hpp"
 #include "aeongui/dom/SVGSetElement.hpp"
 #include "aeongui/dom/SVGAnimateTransformElement.hpp"
 #include "aeongui/dom/SVGAnimateMotionElement.hpp"
@@ -359,27 +360,31 @@ namespace AeonGUI
 
         void Element::ApplyChildTransformAnimations ( Canvas& aCanvas ) const
         {
-            for ( const auto& child : childNodes() )
+            // Iterate the cached animation-children list — for elements
+            // with no SMIL animations this is empty and the loop is a
+            // no-op, avoiding the per-frame triple-dynamic_cast scan over
+            // every regular child.
+            for ( SVGAnimationElement * anim : mAnimationChildren )
             {
-                if ( auto * anim = dynamic_cast<const SVGAnimateTransformElement * > ( child.get() ) )
+                if ( auto * t = dynamic_cast<const SVGAnimateTransformElement * > ( anim ) )
                 {
-                    if ( anim->IsActive() )
+                    if ( t->IsActive() )
                     {
-                        anim->ApplyToCanvas ( aCanvas );
+                        t->ApplyToCanvas ( aCanvas );
                     }
                 }
-                else if ( auto * motion = dynamic_cast<const SVGAnimateMotionElement * > ( child.get() ) )
+                else if ( auto * m = dynamic_cast<const SVGAnimateMotionElement * > ( anim ) )
                 {
-                    if ( motion->IsActive() )
+                    if ( m->IsActive() )
                     {
-                        motion->ApplyToCanvas ( aCanvas );
+                        m->ApplyToCanvas ( aCanvas );
                     }
                 }
-                else if ( auto * animate = dynamic_cast<const SVGAnimateElement * > ( child.get() ) )
+                else if ( auto * a = dynamic_cast<const SVGAnimateElement * > ( anim ) )
                 {
-                    if ( animate->IsActive() && animate->IsGeometryAnimation() )
+                    if ( a->IsActive() && a->IsGeometryAnimation() )
                     {
-                        animate->ApplyToCanvas ( aCanvas );
+                        a->ApplyToCanvas ( aCanvas );
                     }
                 }
             }
@@ -387,20 +392,20 @@ namespace AeonGUI
 
         void Element::ApplyChildPaintAnimations ( Canvas& aCanvas ) const
         {
-            for ( const auto& child : childNodes() )
+            for ( SVGAnimationElement * anim : mAnimationChildren )
             {
-                if ( auto * anim = dynamic_cast<const SVGAnimateElement * > ( child.get() ) )
+                if ( auto * a = dynamic_cast<const SVGAnimateElement * > ( anim ) )
                 {
-                    if ( anim->IsActive() && !anim->IsGeometryAnimation() )
+                    if ( a->IsActive() && !a->IsGeometryAnimation() )
                     {
-                        anim->ApplyToCanvas ( aCanvas );
+                        a->ApplyToCanvas ( aCanvas );
                     }
                 }
-                else if ( auto * set = dynamic_cast<const SVGSetElement * > ( child.get() ) )
+                else if ( auto * s = dynamic_cast<const SVGSetElement * > ( anim ) )
                 {
-                    if ( set->IsActive() )
+                    if ( s->IsActive() )
                     {
-                        set->ApplyToCanvas ( aCanvas );
+                        s->ApplyToCanvas ( aCanvas );
                     }
                 }
             }
@@ -434,6 +439,47 @@ namespace AeonGUI
                 mComputedStyles->styles[CSS_PSEUDO_ELEMENT_NONE] = computed_style;
             }
         }
+
+        void Element::OnInsertedIntoDocument ( Document& aDocument )
+        {
+            if ( !mId.empty() )
+            {
+                aDocument.RegisterElementId ( mId, this );
+            }
+        }
+
+        void Element::OnRemovedFromDocument ( Document& aDocument )
+        {
+            if ( !mId.empty() )
+            {
+                aDocument.UnregisterElementId ( mId, this );
+            }
+        }
+
+        void Element::OnChildInserted ( Node& aChild )
+        {
+            // Pay one dynamic_cast at insertion time so the per-frame
+            // ApplyChild*Animations passes can iterate a small typed
+            // vector instead of scanning every child with three RTTI
+            // checks.
+            if ( SVGAnimationElement * anim = dynamic_cast<SVGAnimationElement * > ( &aChild ) )
+            {
+                mAnimationChildren.push_back ( anim );
+            }
+        }
+
+        void Element::OnChildRemoved ( Node& aChild )
+        {
+            if ( SVGAnimationElement * anim = dynamic_cast<SVGAnimationElement * > ( &aChild ) )
+            {
+                auto it = std::find ( mAnimationChildren.begin(), mAnimationChildren.end(), anim );
+                if ( it != mAnimationChildren.end() )
+                {
+                    mAnimationChildren.erase ( it );
+                }
+            }
+        }
+
         Node::NodeType Element::nodeType() const
         {
             return ELEMENT_NODE;
@@ -475,7 +521,21 @@ namespace AeonGUI
         {
             if ( aName == "id" )
             {
+                // Keep the document's id index in sync.  The element may
+                // not be attached to a document yet (e.g. during parsing
+                // before AddNode); in that case OnInsertedIntoDocument
+                // will perform the registration once the subtree lands
+                // in the tree.
+                Document* doc = ownerDocument();
+                if ( doc != nullptr && !mId.empty() )
+                {
+                    doc->UnregisterElementId ( mId, this );
+                }
                 mId = aValue;
+                if ( doc != nullptr && !mId.empty() )
+                {
+                    doc->RegisterElementId ( mId, this );
+                }
             }
             else if ( aName == "class" )
             {

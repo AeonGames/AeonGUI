@@ -17,6 +17,7 @@ limitations under the License.
 #include <array>
 #include "aeongui/dom/SVGRectElement.hpp"
 #include "aeongui/dom/SVGAnimateElement.hpp"
+#include "aeongui/dom/SVGAnimationElement.hpp"
 #include "aeongui/Canvas.hpp"
 
 namespace AeonGUI
@@ -256,12 +257,17 @@ namespace AeonGUI
 
         void SVGRectElement::RebuildAnimatedPath() const
         {
+            // Common case: no SMIL children at all — skip the search.
+            if ( AnimationChildren().empty() )
+            {
+                return;
+            }
             double rx = mRx;
             double ry = mRy;
             bool needsRebuild = false;
-            for ( const auto& child : childNodes() )
+            for ( SVGAnimationElement * child : AnimationChildren() )
             {
-                if ( auto * anim = dynamic_cast<const SVGAnimateElement * > ( child.get() ) )
+                if ( auto * anim = dynamic_cast<const SVGAnimateElement * > ( child ) )
                 {
                     if ( anim->IsActive() && anim->IsPathAnimation() )
                     {

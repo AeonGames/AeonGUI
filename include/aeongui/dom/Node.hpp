@@ -237,6 +237,43 @@ namespace AeonGUI
              */
             AEONGUI_DLL virtual void setTextContent ( const DOMString& aTextContent );
             /**@}*/
+        protected:
+            /** @brief Called on each node of a freshly-inserted subtree once the
+             *  subtree is attached to a Document.
+             *
+             *  Default implementation does nothing.  Element overrides this
+             *  to register its id (if any) with the owning Document's id
+             *  index.
+             *  @param aDocument The Document the node has been inserted into.
+             */
+            AEONGUI_DLL virtual void OnInsertedIntoDocument ( Document& aDocument );
+            /** @brief Called on each node of a subtree about to be detached
+             *  from its owning Document.
+             *
+             *  Default implementation does nothing.  Element overrides this
+             *  to unregister its id (if any) from the owning Document's id
+             *  index.
+             *  @param aDocument The Document the node is being removed from.
+             */
+            AEONGUI_DLL virtual void OnRemovedFromDocument ( Document& aDocument );
+            /** @brief Called on the parent immediately after @p aChild was
+             *  appended to its child list.
+             *
+             *  Default implementation does nothing.  Element overrides to
+             *  cache references to children of interest (e.g. SMIL
+             *  animation elements) and avoid the per-frame RTTI scan
+             *  performed by ApplyChild*Animations.
+             *  @param aChild The newly-appended child.
+             */
+            AEONGUI_DLL virtual void OnChildInserted ( Node& aChild );
+            /** @brief Called on the parent immediately before @p aChild is
+             *  removed from its child list.
+             *
+             *  Default implementation does nothing.  Element overrides to
+             *  drop cached references to the child.
+             *  @param aChild The child about to be removed.
+             */
+            AEONGUI_DLL virtual void OnChildRemoved ( Node& aChild );
         private:
             AEONGUI_DLL virtual void OnAncestorChanged();
             Node* mParent{};

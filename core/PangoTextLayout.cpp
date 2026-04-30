@@ -46,6 +46,18 @@ namespace AeonGUI
         UpdateFontDescription();
     }
 
+    PangoTextLayout::PangoTextLayout ( PangoContext* aContext )
+    {
+        if ( aContext == nullptr )
+        {
+            throw std::runtime_error ( "PangoTextLayout: null PangoContext" );
+        }
+        mPangoContext = aContext;
+        mLayout = pango_layout_new ( mPangoContext );
+        mFontDescription = pango_font_description_new();
+        UpdateFontDescription();
+    }
+
     PangoTextLayout::~PangoTextLayout()
     {
         if ( mFontDescription )
@@ -122,29 +134,50 @@ namespace AeonGUI
 
     void PangoTextLayout::SetText ( const std::string& aText )
     {
-        pango_layout_set_text ( mLayout, aText.c_str(), static_cast<int> ( aText.size() ) );
+        if ( aText == mLastText )
+        {
+            return;
+        }
+        mLastText = aText;
+        pango_layout_set_text ( mLayout, mLastText.c_str(), static_cast<int> ( mLastText.size() ) );
     }
 
     void PangoTextLayout::SetFontFamily ( const std::string& aFamily )
     {
+        if ( aFamily == mFontFamily )
+        {
+            return;
+        }
         mFontFamily = aFamily;
         UpdateFontDescription();
     }
 
     void PangoTextLayout::SetFontSize ( double aSize )
     {
+        if ( aSize == mFontSize )
+        {
+            return;
+        }
         mFontSize = aSize;
         UpdateFontDescription();
     }
 
     void PangoTextLayout::SetFontWeight ( int aWeight )
     {
+        if ( aWeight == mFontWeight )
+        {
+            return;
+        }
         mFontWeight = aWeight;
         UpdateFontDescription();
     }
 
     void PangoTextLayout::SetFontStyle ( int aStyle )
     {
+        if ( aStyle == mFontStyle )
+        {
+            return;
+        }
         mFontStyle = aStyle;
         UpdateFontDescription();
     }

@@ -86,6 +86,30 @@ set_tests_properties(unit-tests PROPERTIES
   WORKING_DIRECTORY "${PROJECT_SOURCE_DIR}"
 )
 
+# Optional micro-benchmark executable. Off by default; enable with
+# -DBUILD_BENCHMARKS=ON. Allocation counting is independently
+# gated by -DAEONGUI_BENCH_ALLOC_COUNT=ON.
+option(BUILD_BENCHMARKS "Build the AeonGUI per-frame micro-benchmark executable" OFF)
+option(AEONGUI_BENCH_ALLOC_COUNT "Override global new/delete in the benchmark to count allocations" OFF)
+if(BUILD_BENCHMARKS)
+  if(NOT ENABLE_HTML)
+    message(WARNING "BUILD_BENCHMARKS requires ENABLE_HTML; benchmark target disabled")
+  else()
+    add_executable(benchmark Benchmark.cpp)
+    target_link_libraries(benchmark PRIVATE AeonGUI yogacore)
+    if(MSVC)
+      set_target_properties(benchmark PROPERTIES
+        COMPILE_FLAGS "-DSOURCE_PATH=\"\\\"${PROJECT_SOURCE_DIR}\\\"\" -D_CRT_SECURE_NO_WARNINGS")
+    else()
+      set_target_properties(benchmark PROPERTIES
+        COMPILE_FLAGS "-DSOURCE_PATH=\"\\\"${PROJECT_SOURCE_DIR}\\\"\"")
+    endif()
+    if(AEONGUI_BENCH_ALLOC_COUNT)
+      target_compile_definitions(benchmark PRIVATE AEONGUI_BENCH_ALLOC_COUNT=1)
+    endif()
+  endif()
+endif()
+
 # Test plugin shared library for SVGScriptElement tests
 add_library(test_plugin SHARED test_plugin.c)
 target_include_directories(test_plugin PRIVATE ${PROJECT_SOURCE_DIR}/include)

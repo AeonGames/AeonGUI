@@ -20,6 +20,7 @@ limitations under the License.
 #include <memory>
 #include <functional>
 #include <algorithm>
+#include <unordered_map>
 #include "aeongui/Platform.hpp"
 #include "aeongui/Canvas.hpp"
 #include "aeongui/StyleSheet.hpp"
@@ -128,6 +129,25 @@ namespace AeonGUI
                 mFullDirty = false;
                 mDirtyElements.clear();
             }
+            /** @brief Register an element's id in the document's id index.
+             *
+             *  Maintained automatically by Element via the
+             *  OnInsertedIntoDocument hook and id-attribute changes.  If the
+             *  same id is already mapped to a different element, the old
+             *  mapping is preserved (matches the historical document-order
+             *  behaviour of the linear getElementById walk).
+             *  @param aId      Element id (must be non-empty).
+             *  @param aElement Element to register.
+             */
+            AEONGUI_DLL void RegisterElementId ( const DOMString& aId, Element* aElement );
+            /** @brief Remove an id mapping if it currently points at @p aElement.
+             *
+             *  Mappings owned by other elements (e.g. duplicates) are left
+             *  untouched.
+             *  @param aId      Element id (must be non-empty).
+             *  @param aElement Element expected to own the mapping.
+             */
+            AEONGUI_DLL void UnregisterElementId ( const DOMString& aId, const Element* aElement );
             /**@}*/
         private:
             void Load ();
@@ -138,6 +158,11 @@ namespace AeonGUI
             double mDocumentTime{0.0};
             bool mFullDirty{true};
             std::vector<Element*> mDirtyElements{};
+            // O(1) id -> Element index maintained by Element via
+            // OnInsertedIntoDocument / OnRemovedFromDocument and the
+            // id-attribute setter path. Replaces the previous full-tree
+            // walk in getElementById.
+            std::unordered_map<DOMString, Element*> mIdIndex{};
         };
     }
 }
