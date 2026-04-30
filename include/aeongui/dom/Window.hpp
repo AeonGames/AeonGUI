@@ -24,6 +24,7 @@ limitations under the License.
 #include <vector>
 #include "aeongui/Platform.hpp"
 #include "aeongui/Canvas.hpp"
+#include "aeongui/Cursor.hpp"
 #include "aeongui/dom/EventTarget.hpp"
 #include "aeongui/dom/USVString.hpp"
 #include "aeongui/dom/DOMString.hpp"
@@ -198,6 +199,14 @@ namespace AeonGUI
                                            bool aCtrlKey = false, bool aShiftKey = false,
                                            bool aAltKey = false, bool aMetaKey = false );
             /**@}*/
+            /**Cursor @{*/
+            /** @brief Access this window's software cursor.
+             *  Disabled by default; see @ref AeonGUI::Cursor.
+             */
+            AEONGUI_DLL Cursor& cursor();
+            /** @brief Access this window's software cursor (const). */
+            AEONGUI_DLL const Cursor& cursor() const;
+            /**@}*/
         private:
             void OnLocationChanged ( const Location& location );
             Element* elementFromPoint ( double aX, double aY ) const;
@@ -205,6 +214,13 @@ namespace AeonGUI
             void PartialDraw();
             void AssignPickIds();
             void CacheBounds();
+            // Composite the cursor onto the canvas at the last known mouse
+            // position; no-op if cursor disabled or no mouse position is
+            // available yet.
+            void BlitCursor();
+            // Restore the pixels under the cursor (if any backing store is
+            // currently held). Safe to call when cursor is disabled.
+            void UnblitCursor();
             Element* mFocusedElement{nullptr}; ///< The currently focused element.
             Element* mHoverElement{nullptr};   ///< The element currently under the pointer.
             Element* mActiveElement{nullptr};  ///< The element currently being clicked (mousedown).
@@ -219,6 +235,10 @@ namespace AeonGUI
             std::vector<std::pair<uint32_t, FrameRequestCallback>> mAnimationFrameCallbacks{};
             uint32_t mNextAnimationFrameHandle{0};
             double mAnimationFrameTimestamp{0.0}; ///< Accumulated time in milliseconds.
+            Cursor mCursor{};                     ///< Optional custom software cursor.
+            double mLastMouseX{0.0};              ///< Last reported mouse X (for cursor blit).
+            double mLastMouseY{0.0};              ///< Last reported mouse Y (for cursor blit).
+            bool mLastMouseValid{false};          ///< True once a mouse position has been seen.
         };
     }
 }

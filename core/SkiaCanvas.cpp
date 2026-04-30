@@ -95,6 +95,16 @@ namespace AeonGUI
         return mPixelCache.data();
     }
 
+    uint8_t* SkiaCanvas::GetMutablePixels()
+    {
+        // Ensure the cache reflects the latest Skia surface contents, then
+        // return it for direct overwriting. The cache stays "clean" until
+        // the next canvas drawing operation marks it dirty again — at which
+        // point our writes are discarded (caller must re-blit if needed).
+        ( void ) GetPixels();
+        return mPixelCache.empty() ? nullptr : mPixelCache.data();
+    }
+
     size_t SkiaCanvas::GetWidth() const
     {
         return mWidth;

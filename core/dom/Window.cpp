@@ -114,6 +114,10 @@ namespace AeonGUI
             {
                 return false;
             }
+            // The canvas is about to be repainted from scratch (or partially);
+            // any backing store snapshot becomes stale and must NOT be written
+            // back, otherwise we would punch a hole through the new content.
+            mCursor.DiscardBackingStore();
             if ( mDocument.IsFullDirty() )
             {
                 FullDraw();
@@ -123,7 +127,56 @@ namespace AeonGUI
                 PartialDraw();
             }
             mDocument.ClearDirty();
+            // Re-blit the cursor on top of the freshly drawn content so that
+            // GetPixels() callers see a complete frame including the cursor.
+            BlitCursor();
             return true;
+        }
+
+        Cursor& Window::cursor()
+        {
+            return mCursor;
+        }
+
+        const Cursor& Window::cursor() const
+        {
+            return mCursor;
+        }
+
+        void Window::BlitCursor()
+        {
+            if ( !mCursor.IsEnabled() || !mCursor.HasSource() || !mLastMouseValid || !mCanvas )
+            {
+                return;
+            }
+            uint8_t* pixels = mCanvas->GetMutablePixels();
+            if ( pixels == nullptr )
+            {
+                return;
+            }
+            mCursor.Composite ( pixels,
+                                mCanvas->GetWidth(),
+                                mCanvas->GetHeight(),
+                                mCanvas->GetStride(),
+                                static_cast<int32_t> ( std::lround ( mLastMouseX ) ),
+                                static_cast<int32_t> ( std::lround ( mLastMouseY ) ) );
+        }
+
+        void Window::UnblitCursor()
+        {
+            if ( !mCursor.HasBackingStore() || !mCanvas )
+            {
+                return;
+            }
+            uint8_t* pixels = mCanvas->GetMutablePixels();
+            if ( pixels == nullptr )
+            {
+                return;
+            }
+            mCursor.Restore ( pixels,
+                              mCanvas->GetWidth(),
+                              mCanvas->GetHeight(),
+                              mCanvas->GetStride() );
         }
 
         void Window::AssignPickIds()
@@ -324,6 +377,13 @@ namespace AeonGUI
                                        bool aCtrlKey, bool aShiftKey,
                                        bool aAltKey, bool aMetaKey )
         {
+            // Restore pixels under the previous cursor position before doing
+            // anything else: event handlers may legitimately call GetPixels()
+            // and must not see a doubly-blitted cursor trail.
+            UnblitCursor();
+            mLastMouseX = aX;
+            mLastMouseY = aY;
+            mLastMouseValid = true;
             Element* target = elementFromPoint ( aX, aY );
             // Handle mouseenter/mouseleave when the hovered element changes.
             // Per W3C spec, mouseenter/mouseleave do NOT bubble but must fire
@@ -397,6 +457,7 @@ namespace AeonGUI
                 MouseEvent moveEvent ( "mousemove", MouseEventInit{EventModifierInit{UIEventInit{EventInit{true, true, false}, this, 0}, aCtrlKey, aShiftKey, aAltKey, aMetaKey}, aX, aY, aX, aY, 0, aButtons, nullptr} );
                 target->dispatchEvent ( moveEvent );
             }
+            BlitCursor();
         }
 
         void Window::HandleMouseDown ( double aX, double aY, short aButton,
@@ -404,6 +465,10 @@ namespace AeonGUI
                                        bool aCtrlKey, bool aShiftKey,
                                        bool aAltKey, bool aMetaKey )
         {
+            UnblitCursor();
+            mLastMouseX = aX;
+            mLastMouseY = aY;
+            mLastMouseValid = true;
             Element* target = elementFromPoint ( aX, aY );
             // Update focus on mousedown
             if ( target != mFocusedElement )
@@ -445,6 +510,7 @@ namespace AeonGUI
                 MouseEvent downEvent ( "mousedown", MouseEventInit{EventModifierInit{UIEventInit{EventInit{true, true, false}, this, 0}, aCtrlKey, aShiftKey, aAltKey, aMetaKey}, aX, aY, aX, aY, aButton, aButtons, nullptr} );
                 target->dispatchEvent ( downEvent );
             }
+            BlitCursor();
         }
 
         void Window::HandleMouseUp ( double aX, double aY, short aButton,
@@ -452,6 +518,10 @@ namespace AeonGUI
                                      bool aCtrlKey, bool aShiftKey,
                                      bool aAltKey, bool aMetaKey )
         {
+            UnblitCursor();
+            mLastMouseX = aX;
+            mLastMouseY = aY;
+            mLastMouseValid = true;
             // Clear :active state
             if ( mActiveElement )
             {
@@ -468,6 +538,7 @@ namespace AeonGUI
                 MouseEvent clickEvent ( "click", MouseEventInit{EventModifierInit{UIEventInit{EventInit{true, true, false}, this, 1}, aCtrlKey, aShiftKey, aAltKey, aMetaKey}, aX, aY, aX, aY, aButton, aButtons, nullptr} );
                 target->dispatchEvent ( clickEvent );
             }
+            BlitCursor();
         }
 
         void Window::HandleKeyDown ( const DOMString& aKey, const DOMString& aCode,
@@ -497,12 +568,17 @@ namespace AeonGUI
                                    bool aCtrlKey, bool aShiftKey,
                                    bool aAltKey, bool aMetaKey )
         {
+            UnblitCursor();
+            mLastMouseX = aX;
+            mLastMouseY = aY;
+            mLastMouseValid = true;
             Element* target = elementFromPoint ( aX, aY );
             if ( target )
             {
                 WheelEvent wheelEvent ( "wheel", WheelEventInit{MouseEventInit{EventModifierInit{UIEventInit{EventInit{true, true, false}, this, 0}, aCtrlKey, aShiftKey, aAltKey, aMetaKey}, aX, aY, aX, aY, 0, aButtons, nullptr}, aDeltaX, aDeltaY, 0.0, aDeltaMode} );
                 target->dispatchEvent ( wheelEvent );
             }
+            BlitCursor();
         }
     }
 }

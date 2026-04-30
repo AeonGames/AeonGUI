@@ -46,6 +46,7 @@ namespace AeonGUI
         AEONGUI_DLL ~SkiaCanvas() final;
         AEONGUI_DLL void ResizeViewport ( uint32_t aWidth, uint32_t aHeight ) final;
         AEONGUI_DLL const uint8_t* GetPixels() const final;
+        AEONGUI_DLL uint8_t* GetMutablePixels() final;
         AEONGUI_DLL size_t GetWidth() const final;
         AEONGUI_DLL size_t GetHeight() const final;
         AEONGUI_DLL size_t GetStride() const final;

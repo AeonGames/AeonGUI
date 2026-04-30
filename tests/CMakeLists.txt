@@ -41,6 +41,7 @@ set(TESTED_SRCS
   Location.cpp
   NodeTest.cpp
   RasterImageTest.cpp
+  CursorTest.cpp
   SMILAnimationTest.cpp
   SVGAnimatedTypesTest.cpp
   SVGImageElementTest.cpp

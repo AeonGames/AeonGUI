@@ -67,6 +67,20 @@ namespace AeonGUI
         return cairo_image_surface_get_data ( mCairoSurface );
     }
 
+    uint8_t* CairoCanvas::GetMutablePixels()
+    {
+        if ( mCairoSurface )
+        {
+            cairo_surface_flush ( mCairoSurface );
+            uint8_t* data = cairo_image_surface_get_data ( mCairoSurface );
+            // Mark the surface dirty so Cairo re-uploads any cached image data
+            // backed by this buffer the next time it is drawn from.
+            cairo_surface_mark_dirty ( mCairoSurface );
+            return data;
+        }
+        return nullptr;
+    }
+
     size_t CairoCanvas::GetWidth() const
     {
         return mCairoSurface ? static_cast<size_t> ( cairo_image_surface_get_width ( mCairoSurface ) ) : 0;

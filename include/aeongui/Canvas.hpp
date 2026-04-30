@@ -49,6 +49,18 @@ namespace AeonGUI
          *  @return Pointer to BGRA pixel data, or nullptr if empty.
          */
         virtual const uint8_t* GetPixels() const = 0;
+        /** @brief Get a writable pointer to the raw pixel data.
+         *
+         *  Provided so external compositors (e.g. @ref Cursor) can blit
+         *  directly into the canvas output buffer without going through a
+         *  full @c Draw pass. The returned buffer uses the same BGRA8
+         *  premultiplied format as @ref GetPixels().
+         *
+         *  @note Writes to the returned buffer are visible only through
+         *  subsequent @ref GetPixels() calls and may be discarded by the
+         *  next canvas drawing operation. Returns nullptr if empty.
+         */
+        virtual uint8_t* GetMutablePixels() = 0;
         /** @brief Get the width of the canvas in pixels.
          *  @return Width in pixels.
          */
