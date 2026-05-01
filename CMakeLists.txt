@@ -95,9 +95,13 @@ if(WIN32)
   find_program(FIND_EXECUTABLE find
                HINTS ENV ProgramFiles
                PATH_SUFFIXES /usr/bin Git/usr/bin)
+  find_program(SED_EXECUTABLE sed
+               HINTS ENV MINGW_PREFIX MSYS2_PATH ProgramFiles
+               PATH_SUFFIXES /usr/bin Git/usr/bin)
 else()
   find_program(FIND_EXECUTABLE find)
   find_program(ASTYLE_EXECUTABLE astyle)
+  find_program(SED_EXECUTABLE sed)
 endif()
 
 set(ASTYLE_OPTIONS "--options=${PROJECT_SOURCE_DIR}/astylerc")
@@ -116,9 +120,9 @@ option(USE_JPEG "Enable JPEG image support" ON)
 option(USE_CUDA "Enable CUDA support")
 option(BUILD_UNIT_TESTS "Enable Unit Tests using GTest/GMock" ON)
 option(DISABLE_DEMOS "Disable building demo applications" OFF)
-set(AEONGUI_BACKEND "Cairo" CACHE STRING "2D rendering backend (Cairo or Skia)")
-set_property(CACHE AEONGUI_BACKEND PROPERTY STRINGS Cairo Skia)
-set(AEONGUI_SKIA_ROOT "" CACHE PATH "Skia installation root (used when AEONGUI_BACKEND=Skia, especially on macOS)")
+set(BACKEND "Cairo" CACHE STRING "2D rendering backend (Cairo or Skia)")
+set_property(CACHE BACKEND PROPERTY STRINGS Cairo Skia)
+set(AEONGUI_SKIA_ROOT "" CACHE PATH "Skia installation root (used when BACKEND=Skia, especially on macOS)")
 set(CMAKE_BUILD_TYPE "Debug" CACHE STRING "One of Debug|Release|RelWithDebInfo|MinSizeRel")
 set(HTTP_PROXY "" CACHE STRING "Specify a proxy server if required for downloads")
 set(HTTPS_PROXY "" CACHE STRING "Specify a proxy server if required for downloads")
@@ -131,7 +135,7 @@ if(NOT "${HTTPS_PROXY}" STREQUAL "")
 endif()
 
 # On macOS, prefer the Homebrew skia-aeongui prefix when using Skia backend.
-if(APPLE AND AEONGUI_BACKEND STREQUAL "Skia")
+if(APPLE AND BACKEND STREQUAL "Skia")
   set(AEONGUI_SKIA_EFFECTIVE_ROOT "")
   set(_aeongui_skia_root "${AEONGUI_SKIA_ROOT}")
   if(NOT _aeongui_skia_root)
@@ -211,10 +215,10 @@ if(PKG_CONFIG_FOUND)
     endif()
     pkg_check_modules(HARFBUZZ harfbuzz)
     pkg_check_modules(FONTCONFIG fontconfig)
-    if(AEONGUI_BACKEND STREQUAL "Cairo")
+    if(BACKEND STREQUAL "Cairo")
       pkg_check_modules(CAIRO cairo)
       pkg_check_modules(PANGO pango pangocairo pangofc)
-    elseif(AEONGUI_BACKEND STREQUAL "Skia")
+    elseif(BACKEND STREQUAL "Skia")
       # Help vcpkg's Skia config find Windows SDK libraries (FontSub, Usp10).
       if(MSVC)
         # Determine the SDK platform version (VS generator sets this automatically).
@@ -245,7 +249,7 @@ if(PKG_CONFIG_FOUND)
             "macOS setup with Aeon tap:\n"
             "  brew tap aeongames/ports\n"
             "  brew install --build-from-source aeongames/ports/skia-aeongui\n"
-            "  cmake -S . -B build -DAEONGUI_BACKEND=Skia -DAEONGUI_SKIA_ROOT=\"$(brew --prefix skia-aeongui)\"\n"
+            "  cmake -S . -B build -DBACKEND=Skia -DAEONGUI_SKIA_ROOT=\"$(brew --prefix skia-aeongui)\"\n"
             "  export SKIA_ROOT=\"$(brew --prefix skia-aeongui)\"\n"
             "  export PKG_CONFIG_PATH=\"$SKIA_ROOT/lib/pkgconfig:$PKG_CONFIG_PATH\"\n"
             "Then rerun CMake."

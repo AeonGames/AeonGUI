@@ -134,7 +134,7 @@ jobs:
       if: steps.changes.outputs.compiled == 'true' || steps.last.outputs.force == 'true'
 
     - name: '🛠️ Configuring'
-      run: cmake -G "MSYS Makefiles" -B ${{github.workspace}}/build -DCMAKE_BUILD_TYPE=Release -DAEONGUI_BACKEND=${{ matrix.backend }}
+      run: cmake -G "MSYS Makefiles" -B ${{github.workspace}}/build -DCMAKE_BUILD_TYPE=Release -DBACKEND=${{ matrix.backend }}
       if: steps.changes.outputs.compiled == 'true' || steps.last.outputs.force == 'true'
 
     - name: '🏗️ Building'

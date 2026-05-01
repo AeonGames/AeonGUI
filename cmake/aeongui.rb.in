@@ -23,7 +23,7 @@ class Aeongui < Formula
   def install
     system "cmake", "-B", "build", "-S", ".",
            *std_cmake_args,
-           "-DAEONGUI_BACKEND=Cairo",
+           "-DBACKEND=Cairo",
            "-DBUILD_UNIT_TESTS=OFF"
     system "cmake", "--build", "build"
     system "cmake", "--install", "build"

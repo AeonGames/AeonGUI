@@ -24,13 +24,13 @@ set(AEONGUI_HEADERS
     ../include/aeongui/FontDatabase.hpp
     ../include/aeongui/PluginAPI.h
 )
-if(AEONGUI_BACKEND STREQUAL "Cairo")
+if(BACKEND STREQUAL "Cairo")
     set(AEONGUI_BACKEND_HEADERS
         CairoCanvas.hpp
         CairoPath.hpp
         PangoTextLayout.hpp
     )
-elseif(AEONGUI_BACKEND STREQUAL "Skia")
+elseif(BACKEND STREQUAL "Skia")
     set(AEONGUI_BACKEND_HEADERS
         SkiaCanvas.hpp
         SkiaPath.hpp
@@ -128,13 +128,13 @@ set(AEONGUI_SOURCES
     TextLayout.cpp
     FontDatabase.cpp
 )
-if(AEONGUI_BACKEND STREQUAL "Cairo")
+if(BACKEND STREQUAL "Cairo")
     list(APPEND AEONGUI_SOURCES
         CairoCanvas.cpp
         CairoPath.cpp
         PangoTextLayout.cpp
     )
-elseif(AEONGUI_BACKEND STREQUAL "Skia")
+elseif(BACKEND STREQUAL "Skia")
     list(APPEND AEONGUI_SOURCES
         SkiaCanvas.cpp
         SkiaPath.cpp
@@ -265,11 +265,11 @@ target_include_directories(AeonGUI
         ${FREETYPE_INCLUDE_DIR_ft2build}
         ${LIBXML2_INCLUDE_DIRS}
 )
-if(AEONGUI_BACKEND STREQUAL "Cairo")
+if(BACKEND STREQUAL "Cairo")
     foreach(_dir IN LISTS CAIRO_INCLUDE_DIRS)
         target_include_directories(AeonGUI SYSTEM PRIVATE ${_dir})
     endforeach()
-elseif(AEONGUI_BACKEND STREQUAL "Skia")
+elseif(BACKEND STREQUAL "Skia")
     # Skia include directories are added below per-target
 endif()
 set_target_properties(AeonGUI PROPERTIES
@@ -277,9 +277,9 @@ set_target_properties(AeonGUI PROPERTIES
     VERSION ${PROJECT_VERSION}
     SOVERSION ${PROJECT_VERSION_MAJOR}
 )
-if(AEONGUI_BACKEND STREQUAL "Cairo")
+if(BACKEND STREQUAL "Cairo")
     target_link_libraries(AeonGUI PRIVATE libcss ${pkgcfg_lib_CAIRO_cairo} ${pkgcfg_lib_PANGO_pango-1.0} ${pkgcfg_lib_PANGO_pangocairo-1.0} ${pkgcfg_lib_PANGO_pangoft2-1.0} ${pkgcfg_lib_PANGO_gobject-2.0} ${pkgcfg_lib_HARFBUZZ_harfbuzz} ${pkgcfg_lib_FONTCONFIG_fontconfig} ${LIBXML2_LIBRARIES} ${FREETYPE_LIBRARIES})
-elseif(AEONGUI_BACKEND STREQUAL "Skia")
+elseif(BACKEND STREQUAL "Skia")
     if(APPLE AND AEONGUI_SKIA_EFFECTIVE_ROOT)
         target_include_directories(AeonGUI SYSTEM PRIVATE ${AEONGUI_SKIA_EFFECTIVE_ROOT})
     endif()
@@ -352,7 +352,7 @@ foreach(_hdr IN LISTS AEONGUI_BACKEND_HEADERS)
     list(APPEND AEONGUI_PCH_BACKEND_HEADERS "\"${_hdr}\"")
 endforeach()
 
-if(AEONGUI_BACKEND STREQUAL "Cairo")
+if(BACKEND STREQUAL "Cairo")
     target_precompile_headers(AeonGUI
       PUBLIC
         ${AEONGUI_PCH_PUBLIC_HEADERS}
@@ -372,7 +372,7 @@ if(AEONGUI_BACKEND STREQUAL "Cairo")
         <tuple>
         <regex>
     )
-elseif(AEONGUI_BACKEND STREQUAL "Skia")
+elseif(BACKEND STREQUAL "Skia")
     target_precompile_headers(AeonGUI
       PUBLIC
         ${AEONGUI_PCH_PUBLIC_HEADERS}

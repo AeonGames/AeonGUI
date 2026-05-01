@@ -31,7 +31,7 @@ namespace AeonGUI
     /** @brief Skia-based Canvas implementation.
      *
      *  Renders 2D geometry, text, and images into a CPU-side pixel buffer
-     *  using Google Skia.  Selected at build time with @c -DAEONGUI_BACKEND=Skia.
+     *  using Google Skia.  Selected at build time with @c -DBACKEND=Skia.
      */
     class SkiaCanvas : public Canvas
     {

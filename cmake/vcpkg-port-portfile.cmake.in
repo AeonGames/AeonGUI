@@ -8,15 +8,15 @@ vcpkg_from_git(
 if("cairo" IN_LIST FEATURES AND "skia" IN_LIST FEATURES)
     message(FATAL_ERROR "Features 'cairo' and 'skia' are mutually exclusive. Select only one backend.")
 elseif("skia" IN_LIST FEATURES)
-    set(AEONGUI_BACKEND Skia)
+    set(BACKEND Skia)
 else()
-    set(AEONGUI_BACKEND Cairo)
+    set(BACKEND Cairo)
 endif()
 
 vcpkg_cmake_configure(
     SOURCE_PATH "${SOURCE_PATH}"
     OPTIONS
-        -DAEONGUI_BACKEND=${AEONGUI_BACKEND}
+        -DBACKEND=${BACKEND}
         -DBUILD_UNIT_TESTS=OFF
         -DFETCHCONTENT_FULLY_DISCONNECTED=OFF
 )

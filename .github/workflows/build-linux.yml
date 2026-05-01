@@ -155,7 +155,7 @@ jobs:
             su builder -c 'cd /tmp && git clone --depth 1 https://github.com/AeonGames/ArchRepo.git && cd ArchRepo/skia && makepkg -s --noconfirm' &&
             pacman -U --noconfirm /tmp/ArchRepo/skia/skia-aeongui-*.pkg.tar.zst
           fi &&
-          cmake -B /workspace/build -DAEONGUI_BACKEND=${{ matrix.backend }} -DCMAKE_DISABLE_PRECOMPILE_HEADERS=${{ matrix.precompile_headers == 'OFF' && 'ON' || 'OFF' }} -DCMAKE_BUILD_TYPE=${{env.BUILD_TYPE}} &&
+          cmake -B /workspace/build -DBACKEND=${{ matrix.backend }} -DCMAKE_DISABLE_PRECOMPILE_HEADERS=${{ matrix.precompile_headers == 'OFF' && 'ON' || 'OFF' }} -DCMAKE_BUILD_TYPE=${{env.BUILD_TYPE}} &&
           cmake --build /workspace/build &&
           ctest --test-dir /workspace/build --output-on-failure
         "

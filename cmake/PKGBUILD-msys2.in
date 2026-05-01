@@ -37,7 +37,7 @@ build() {
         -G "MSYS Makefiles" \
         -DCMAKE_BUILD_TYPE=Release \
         -DCMAKE_INSTALL_PREFIX="${MINGW_PREFIX}" \
-        -DAEONGUI_BACKEND=Cairo \
+        -DBACKEND=Cairo \
         -DBUILD_UNIT_TESTS=OFF
     cmake --build build
 }

@@ -11,7 +11,7 @@ dual-backend support, cross-platform CI, and a comprehensive test suite.
 ### Added
 
 - **Dual 2D backend** — Cairo and Skia, selectable at build time via
-  `AEONGUI_BACKEND`.  Both backends produce identical pixel-buffer output
+  `BACKEND`.  Both backends produce identical pixel-buffer output
   and share the Pango + HarfBuzz text pipeline.
 - **SVG DOM** — parser (libxml2) builds a DOM tree with support for
   `<svg>`, `<g>`, `<defs>`, `<use>`, `<rect>`, `<circle>`, `<ellipse>`,

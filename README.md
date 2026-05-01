@@ -39,7 +39,7 @@ and the build integrates cleanly with vcpkg on Windows.
   or Metal directly.  It rasterises into a CPU-side pixel buffer that your
   engine composites however it sees fit.
 - **Pluggable 2D backend.** Choose between Cairo and Skia at build time
-  via the `AEONGUI_BACKEND` CMake option.  Both backends produce identical
+  via the `BACKEND` CMake option.  Both backends produce identical
   pixel-buffer output and share the same Pango + HarfBuzz text pipeline.
 - **Minimal footprint.** Only the parts of the SVG and DOM specifications
   that are useful for game and application UI are implemented&mdash;no
@@ -176,7 +176,7 @@ cmake -B build -DCMAKE_TOOLCHAIN_FILE="C:/vcpkg/scripts/buildsystems/vcpkg.cmake
 cmake --build build
 
 # Skia backend
-cmake -B build-skia -DCMAKE_TOOLCHAIN_FILE="C:/vcpkg/scripts/buildsystems/vcpkg.cmake" -DAEONGUI_BACKEND=Skia
+cmake -B build-skia -DCMAKE_TOOLCHAIN_FILE="C:/vcpkg/scripts/buildsystems/vcpkg.cmake" -DBACKEND=Skia
 cmake --build build-skia
 ```
 
@@ -188,7 +188,7 @@ cmake -G "MSYS Makefiles" -B build -DCMAKE_BUILD_TYPE=Release
 cmake --build build
 
 # Skia backend (requires mingw-w64-x86_64-skia or equivalent pacboy)
-cmake -G "MSYS Makefiles" -B build-skia -DCMAKE_BUILD_TYPE=Release -DAEONGUI_BACKEND=Skia
+cmake -G "MSYS Makefiles" -B build-skia -DCMAKE_BUILD_TYPE=Release -DBACKEND=Skia
 cmake --build build-skia
 ```
 
@@ -215,7 +215,7 @@ makepkg -si
 Then configure AeonGUI with the Skia backend:
 
 ```bash
-cmake -B build -DCMAKE_BUILD_TYPE=Release -DAEONGUI_BACKEND=Skia
+cmake -B build -DCMAKE_BUILD_TYPE=Release -DBACKEND=Skia
 cmake --build build
 ```
 
@@ -318,7 +318,7 @@ vcpkg install aeongui --overlay-ports=overlay-ports
 
 ## Common CMake Options
 
-- `-DAEONGUI_BACKEND=Cairo|Skia` Select the 2D rendering backend (default: `Cairo`).
+- `-DBACKEND=Cairo|Skia` Select the 2D rendering backend (default: `Cairo`).
 - `-DBUILD_UNIT_TESTS=ON|OFF` Build and register unit tests (default: `ON`).
 - `-DUSE_ZLIB=ON|OFF` Enable/disable zlib integration.
 - `-DUSE_PNG=ON|OFF` Enable/disable PNG decoding.
