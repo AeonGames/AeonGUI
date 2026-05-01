@@ -18,17 +18,20 @@ CMAKE_FILES=`git diff --cached $against --name-only --diff-filter=ACMR | grep -E
 
 EXIT_CODE=0
 
-# Remove trailing spaces
-for FILE in $TEXT_FILES; do
-	"${SED_EXECUTABLE}" -i 's/[ \t]*$//' $FILE
-	if [ $? -ne 0 ]; then
-		echo "[!] $FILE" >&2
-        EXIT_CODE=1
+# Remove trailing spaces (skipped if no GNU sed was found at configure time)
+SED="${SED_EXECUTABLE}"
+if [ -n "$SED" ] && [ -x "$SED" ]; then
+	for FILE in $TEXT_FILES; do
+		"$SED" -i 's/[ \t]*$//' $FILE
+		if [ $? -ne 0 ]; then
+			echo "[!] $FILE" >&2
+			EXIT_CODE=1
+		fi
+	done
+	if [ $EXIT_CODE -ne 0 ]; then
+		echo "[!] sed failed when removing trailing spaces." >&2
+		exit 1
 	fi
-done
-if [ $EXIT_CODE -ne 0 ]; then
-    echo "[!] sed failed when removing trailing spaces." >&2
-    exit 1
 fi
 
 # Format CMake Files only if the executable exists

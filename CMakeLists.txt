@@ -101,7 +101,27 @@ if(WIN32)
 else()
   find_program(FIND_EXECUTABLE find)
   find_program(ASTYLE_EXECUTABLE astyle)
-  find_program(SED_EXECUTABLE sed)
+  # Prefer Homebrew's `gsed` over BSD `sed` on macOS; the pre-commit
+  # hook uses `sed -i 's/.../.../'` which only works with GNU sed.
+  find_program(SED_EXECUTABLE NAMES gsed sed)
+endif()
+
+# Validate that SED_EXECUTABLE is GNU sed. BSD sed (default on macOS)
+# silently corrupts files when invoked with the GNU-style `-i` flag the
+# pre-commit hook uses, so clear the cache entry instead and let the
+# user install GNU sed (`brew install gnu-sed`).
+if(SED_EXECUTABLE)
+  execute_process(COMMAND "${SED_EXECUTABLE}" --version
+                  RESULT_VARIABLE _sed_rc
+                  OUTPUT_VARIABLE _sed_out
+                  ERROR_QUIET
+                  OUTPUT_STRIP_TRAILING_WHITESPACE)
+  if(NOT _sed_rc EQUAL 0 OR NOT _sed_out MATCHES "GNU sed")
+    message(STATUS "sed at ${SED_EXECUTABLE} is not GNU sed; pre-commit hook needs GNU sed (install `gsed` via Homebrew on macOS).")
+    set(SED_EXECUTABLE "SED_EXECUTABLE-NOTFOUND" CACHE FILEPATH "Path to a program." FORCE)
+  else()
+    message(STATUS "Found GNU sed: ${SED_EXECUTABLE}")
+  endif()
 endif()
 
 set(ASTYLE_OPTIONS "--options=${PROJECT_SOURCE_DIR}/astylerc")
