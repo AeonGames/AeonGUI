@@ -51,9 +51,7 @@ set(TESTED_SRCS
   UIEventsTest.cpp
 )
 
-if(ENABLE_HTML)
-  list(APPEND TESTED_SRCS HTMLLayoutSpikeTest.cpp HTMLElementFactoryTest.cpp HTMLLayoutEngineTest.cpp HTMLRenderTest.cpp)
-endif()
+list(APPEND TESTED_SRCS HTMLLayoutSpikeTest.cpp HTMLElementFactoryTest.cpp HTMLLayoutEngineTest.cpp HTMLRenderTest.cpp)
 
 set(TEST_SRCS
     Main.cpp
@@ -65,9 +63,7 @@ source_group("Tests" FILES ${TEST_SRCS})
 add_executable(unit-tests ${TEST_SRCS} ${TESTED_SRCS})
 target_link_libraries(unit-tests PRIVATE AeonGUI GTest::gtest GTest::gmock)
 
-if(ENABLE_HTML)
-  target_link_libraries(unit-tests PRIVATE yogacore)
-endif()
+target_link_libraries(unit-tests PRIVATE yogacore)
 
 if(MSVC)
   # VCPKG compiles GTest/GMock DLLs.
@@ -93,21 +89,17 @@ set_tests_properties(unit-tests PROPERTIES
 option(BUILD_BENCHMARKS "Build the AeonGUI per-frame micro-benchmark executable" OFF)
 option(AEONGUI_BENCH_ALLOC_COUNT "Override global new/delete in the benchmark to count allocations" OFF)
 if(BUILD_BENCHMARKS)
-  if(NOT ENABLE_HTML)
-    message(WARNING "BUILD_BENCHMARKS requires ENABLE_HTML; benchmark target disabled")
+  add_executable(benchmark Benchmark.cpp)
+  target_link_libraries(benchmark PRIVATE AeonGUI yogacore)
+  if(MSVC)
+    set_target_properties(benchmark PROPERTIES
+      COMPILE_FLAGS "-DSOURCE_PATH=\"\\\"${PROJECT_SOURCE_DIR}\\\"\" -D_CRT_SECURE_NO_WARNINGS")
   else()
-    add_executable(benchmark Benchmark.cpp)
-    target_link_libraries(benchmark PRIVATE AeonGUI yogacore)
-    if(MSVC)
-      set_target_properties(benchmark PROPERTIES
-        COMPILE_FLAGS "-DSOURCE_PATH=\"\\\"${PROJECT_SOURCE_DIR}\\\"\" -D_CRT_SECURE_NO_WARNINGS")
-    else()
-      set_target_properties(benchmark PROPERTIES
-        COMPILE_FLAGS "-DSOURCE_PATH=\"\\\"${PROJECT_SOURCE_DIR}\\\"\"")
-    endif()
-    if(AEONGUI_BENCH_ALLOC_COUNT)
-      target_compile_definitions(benchmark PRIVATE AEONGUI_BENCH_ALLOC_COUNT=1)
-    endif()
+    set_target_properties(benchmark PROPERTIES
+      COMPILE_FLAGS "-DSOURCE_PATH=\"\\\"${PROJECT_SOURCE_DIR}\\\"\"")
+  endif()
+  if(AEONGUI_BENCH_ALLOC_COUNT)
+    target_compile_definitions(benchmark PRIVATE AEONGUI_BENCH_ALLOC_COUNT=1)
   endif()
 endif()
 

@@ -51,9 +51,11 @@ and the build integrates cleanly with vcpkg on Windows.
 
 ## What AeonGUI Is *Not*
 
-- **Not a web browser.** There is no JavaScript engine, no full HTML layout,
-  and no networking stack.  If you need a browser in your game, look at CEF
-  or Ultralight.
+- **Not a web browser.** There is no JavaScript engine and no networking
+  stack.  Basic HTML/XHTML layout (a flexbox-style subset powered by Yoga)
+  is supported for embedding lightweight HTML inside the same DOM, but
+  AeonGUI is not a substitute for a real browser&mdash;if you need one in
+  your game, look at CEF or Ultralight.
 - **Not a desktop widget toolkit.** AeonGUI does not provide buttons, scroll
   bars, or dialog boxes out of the box.  It provides the rendering
   primitives you can use to build those things.
@@ -140,6 +142,7 @@ Core dependencies used by the project:
 - `harfbuzz`
 - `fontconfig`
 - `libxml2`
+- `yoga` (HTML/XHTML layout; fetched automatically if not found)
 - `zlib`
 - `libpng` (optional, controlled by `USE_PNG`)
 - `libjpeg-turbo` (optional, controlled by `USE_JPEG`)

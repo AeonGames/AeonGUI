@@ -52,7 +52,6 @@ limitations under the License.
 #include "aeongui/dom/SVGFilterElement.hpp"
 #include "aeongui/dom/SVGFEDropShadowElement.hpp"
 
-#ifdef AEONGUI_ENABLE_HTML
 #include "aeongui/dom/HTMLHtmlElement.hpp"
 #include "aeongui/dom/HTMLBodyElement.hpp"
 #include "aeongui/dom/HTMLDivElement.hpp"
@@ -60,7 +59,6 @@ limitations under the License.
 #include "aeongui/dom/HTMLImageElement.hpp"
 #include "aeongui/dom/HTMLParagraphElement.hpp"
 #include "aeongui/dom/HTMLElement.hpp"
-#endif
 
 namespace AeonGUI
 {
@@ -132,7 +130,6 @@ namespace AeonGUI
             MakeConstructor<DOM::SVGScriptElement> ( "script" ),
             MakeConstructor<DOM::SVGFilterElement> ( "filter" ),
             MakeConstructor<DOM::SVGFEDropShadowElement> ( "feDropShadow" ),
-#ifdef AEONGUI_ENABLE_HTML
             // HTML built-ins are registered explicitly under the XHTML namespace.
             MakeConstructor<DOM::HTMLHtmlElement>      ( StringLiteral{"http://www.w3.org/1999/xhtml"}, StringLiteral{"html"} ),
             MakeConstructor<DOM::HTMLBodyElement>      ( StringLiteral{"http://www.w3.org/1999/xhtml"}, StringLiteral{"body"} ),
@@ -140,7 +137,6 @@ namespace AeonGUI
             MakeConstructor<DOM::HTMLSpanElement>      ( StringLiteral{"http://www.w3.org/1999/xhtml"}, StringLiteral{"span"} ),
             MakeConstructor<DOM::HTMLImageElement>     ( StringLiteral{"http://www.w3.org/1999/xhtml"}, StringLiteral{"img"} ),
             MakeConstructor<DOM::HTMLParagraphElement> ( StringLiteral{"http://www.w3.org/1999/xhtml"}, StringLiteral{"p"} ),
-#endif
         };
         return sConstructors;
     }
@@ -178,7 +174,6 @@ namespace AeonGUI
         {
             return std::get<0> ( std::get<1> ( *it ) ) ( aIdentifier, std::move ( aAttributeMap ), aParent );
         }
-#ifdef AEONGUI_ENABLE_HTML
         // Unknown XHTML element: any tag in the XHTML namespace that we
         // haven't registered explicitly is still an HTML element by
         // definition (e.g. <section>, <header>, <article>).  Fall back
@@ -189,7 +184,6 @@ namespace AeonGUI
         {
             return std::make_unique<DOM::HTMLElement> ( aIdentifier, std::move ( aAttributeMap ), aParent );
         }
-#endif
         std::cerr << LogLevel::Warning << "No constructor registered for identifier: {" << effective_ns << "} " << aIdentifier << std::endl;
         return std::make_unique<DOM::Element> ( aIdentifier, std::move ( aAttributeMap ), aParent );
     }

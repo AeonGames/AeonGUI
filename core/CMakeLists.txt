@@ -209,32 +209,30 @@ set(AEONGUI_DOM_SOURCES
     dom/Attribute.cpp
 )
 
-if(ENABLE_HTML)
-    list(APPEND AEONGUI_DOM_HEADERS
-        ../include/aeongui/dom/HTMLElement.hpp
-        ../include/aeongui/dom/HTMLHtmlElement.hpp
-        ../include/aeongui/dom/HTMLBodyElement.hpp
-        ../include/aeongui/dom/HTMLDivElement.hpp
-        ../include/aeongui/dom/HTMLSpanElement.hpp
-        ../include/aeongui/dom/HTMLImageElement.hpp
-        ../include/aeongui/dom/HTMLParagraphElement.hpp
-    )
-    list(APPEND AEONGUI_DOM_SOURCES
-        dom/HTMLElement.cpp
-        dom/HTMLHtmlElement.cpp
-        dom/HTMLBodyElement.cpp
-        dom/HTMLDivElement.cpp
-        dom/HTMLSpanElement.cpp
-        dom/HTMLImageElement.cpp
-        dom/HTMLParagraphElement.cpp
-    )
-    list(APPEND AEONGUI_HEADERS
-        ../include/aeongui/HTMLLayoutEngine.hpp
-    )
-    list(APPEND AEONGUI_SOURCES
-        HTMLLayoutEngine.cpp
-    )
-endif()
+list(APPEND AEONGUI_DOM_HEADERS
+    ../include/aeongui/dom/HTMLElement.hpp
+    ../include/aeongui/dom/HTMLHtmlElement.hpp
+    ../include/aeongui/dom/HTMLBodyElement.hpp
+    ../include/aeongui/dom/HTMLDivElement.hpp
+    ../include/aeongui/dom/HTMLSpanElement.hpp
+    ../include/aeongui/dom/HTMLImageElement.hpp
+    ../include/aeongui/dom/HTMLParagraphElement.hpp
+)
+list(APPEND AEONGUI_DOM_SOURCES
+    dom/HTMLElement.cpp
+    dom/HTMLHtmlElement.cpp
+    dom/HTMLBodyElement.cpp
+    dom/HTMLDivElement.cpp
+    dom/HTMLSpanElement.cpp
+    dom/HTMLImageElement.cpp
+    dom/HTMLParagraphElement.cpp
+)
+list(APPEND AEONGUI_HEADERS
+    ../include/aeongui/HTMLLayoutEngine.hpp
+)
+list(APPEND AEONGUI_SOURCES
+    HTMLLayoutEngine.cpp
+)
 
 if(USE_CUDA)
 	# Set Arch to sm_20 for printf inside kernel
@@ -319,10 +317,7 @@ elseif(AEONGUI_BACKEND STREQUAL "Skia")
     target_compile_definitions(AeonGUI PUBLIC AEONGUI_USE_SKIA=1)
 endif()
 
-if(ENABLE_HTML)
-  target_compile_definitions(AeonGUI PUBLIC AEONGUI_ENABLE_HTML=1)
-  target_link_libraries(AeonGUI PRIVATE yogacore)
-endif()
+target_link_libraries(AeonGUI PRIVATE yogacore)
 
 if(USE_PNG AND PNG_FOUND)
   target_compile_definitions(AeonGUI PRIVATE USE_PNG=1)

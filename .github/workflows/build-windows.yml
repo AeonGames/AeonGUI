@@ -140,7 +140,7 @@ jobs:
 
     - name: '🛠️ Configuring'
       run: |
-        cmake -DCMAKE_TOOLCHAIN_FILE="C:/vcpkg/scripts/buildsystems/vcpkg.cmake" -DAEONGUI_BACKEND=${{ matrix.backend }} -DENABLE_HTML=ON -B ${{github.workspace}}/build
+        cmake -DCMAKE_TOOLCHAIN_FILE="C:/vcpkg/scripts/buildsystems/vcpkg.cmake" -DAEONGUI_BACKEND=${{ matrix.backend }} -B ${{github.workspace}}/build
       if: steps.changes.outputs.compiled == 'true' || steps.last.outputs.force == 'true'
 
     - name: '🏗️ Building'

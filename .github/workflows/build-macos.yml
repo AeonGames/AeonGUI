@@ -122,10 +122,10 @@ jobs:
         if [ "${{ matrix.backend }}" = "Skia" ]; then
           export SKIA_ROOT="$(brew --prefix skia-aeongui)"
           export PKG_CONFIG_PATH="$SKIA_ROOT/lib/pkgconfig:/opt/homebrew/lib/pkgconfig:$PKG_CONFIG_PATH"
-          cmake -B ${{github.workspace}}/build -DCMAKE_BUILD_TYPE=${{env.BUILD_TYPE}} -DAEONGUI_BACKEND=Skia -DAEONGUI_SKIA_ROOT="$SKIA_ROOT" -DENABLE_HTML=ON
+          cmake -B ${{github.workspace}}/build -DCMAKE_BUILD_TYPE=${{env.BUILD_TYPE}} -DAEONGUI_BACKEND=Skia -DAEONGUI_SKIA_ROOT="$SKIA_ROOT"
         else
           export PKG_CONFIG_PATH="/opt/homebrew/lib/pkgconfig:$PKG_CONFIG_PATH"
-          cmake -B ${{github.workspace}}/build -DCMAKE_BUILD_TYPE=${{env.BUILD_TYPE}} -DAEONGUI_BACKEND=Cairo -DENABLE_HTML=ON
+          cmake -B ${{github.workspace}}/build -DCMAKE_BUILD_TYPE=${{env.BUILD_TYPE}} -DAEONGUI_BACKEND=Cairo
         fi
       if: matrix.compiler == 'clang' && (steps.changes.outputs.compiled == 'true' || steps.last.outputs.force == 'true')
 

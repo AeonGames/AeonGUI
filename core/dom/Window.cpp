@@ -35,10 +35,8 @@ limitations under the License.
 #include "aeongui/dom/KeyboardEvent.hpp"
 #include "aeongui/dom/WheelEvent.hpp"
 #include "aeongui/dom/FocusEvent.hpp"
-#ifdef AEONGUI_ENABLE_HTML
 #include "aeongui/dom/HTMLElement.hpp"
 #include "aeongui/HTMLLayoutEngine.hpp"
-#endif
 #include <vector>
 #include <algorithm>
 #include <cmath>
@@ -243,7 +241,6 @@ namespace AeonGUI
         {
             mCanvas->Clear();
             mCanvas->ResetPick();
-#ifdef AEONGUI_ENABLE_HTML
             // If the document root is an HTML element, run a layout
             // pass before drawing so each HTMLElement has an up-to-date
             // border box for HTMLElement::DrawStart to paint.
@@ -261,7 +258,6 @@ namespace AeonGUI
                     static_cast<float> ( mCanvas->GetHeight() ) );
                 break;
             }
-#endif
             AssignPickIds();
             CacheBounds();
         }

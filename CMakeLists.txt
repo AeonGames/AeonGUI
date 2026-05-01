@@ -116,7 +116,6 @@ option(USE_JPEG "Enable JPEG image support" ON)
 option(USE_CUDA "Enable CUDA support")
 option(BUILD_UNIT_TESTS "Enable Unit Tests using GTest/GMock" ON)
 option(DISABLE_DEMOS "Disable building demo applications" OFF)
-option(ENABLE_HTML "Enable experimental HTML/XHTML support (requires Yoga)" OFF)
 set(AEONGUI_BACKEND "Cairo" CACHE STRING "2D rendering backend (Cairo or Skia)")
 set_property(CACHE AEONGUI_BACKEND PROPERTY STRINGS Cairo Skia)
 set(AEONGUI_SKIA_ROOT "" CACHE PATH "Skia installation root (used when AEONGUI_BACKEND=Skia, especially on macOS)")
@@ -294,10 +293,7 @@ else()
   add_definitions(-D_USE_MATH_DEFINES "-D_ALIGNED=__attribute__((aligned))")
 endif()
 
-if(ENABLE_HTML)
-  message(STATUS "ENABLE_HTML is ON: enabling experimental HTML/XHTML support")
-  include(yoga)
-endif()
+include(yoga)
 
 if(BUILD_UNIT_TESTS)
   add_subdirectory(tests)
@@ -409,13 +405,11 @@ install(
 	DESTINATION include/aeongui
 )
 
-if(ENABLE_HTML)
-  install(
-    FILES
-      include/aeongui/HTMLLayoutEngine.hpp
-    DESTINATION include/aeongui
-  )
-endif()
+install(
+  FILES
+    include/aeongui/HTMLLayoutEngine.hpp
+  DESTINATION include/aeongui
+)
 
 install(
   DIRECTORY include/aeongui/dom/
