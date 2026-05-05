@@ -410,6 +410,7 @@ install(
     include/aeongui/Canvas.hpp
     include/aeongui/Color.hpp
     include/aeongui/CSSSelector.hpp
+    include/aeongui/Cursor.hpp
     include/aeongui/DrawType.hpp
     include/aeongui/ElementFactory.hpp
     include/aeongui/FontDatabase.hpp
