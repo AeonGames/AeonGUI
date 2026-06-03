@@ -359,19 +359,6 @@ include_directories(include common demos/common core)
 add_subdirectory(css)
 add_subdirectory(core)
 
-# Demo native plugin for button.svg
-add_library(button_plugin SHARED images/button.c)
-target_include_directories(button_plugin PRIVATE include)
-set_target_properties(button_plugin PROPERTIES
-  OUTPUT_NAME "button"
-  PREFIX ""
-  DEBUG_POSTFIX ""
-  RUNTIME_OUTPUT_DIRECTORY "${PROJECT_SOURCE_DIR}/images"
-  RUNTIME_OUTPUT_DIRECTORY_DEBUG "${PROJECT_SOURCE_DIR}/images"
-  RUNTIME_OUTPUT_DIRECTORY_RELEASE "${PROJECT_SOURCE_DIR}/images"
-  LIBRARY_OUTPUT_DIRECTORY "${PROJECT_SOURCE_DIR}/images"
-)
-
 set(DEMO_DIRS "")
 if(NOT DISABLE_DEMOS)
   if(OpenGL_FOUND)
@@ -418,7 +405,6 @@ install(
     include/aeongui/Matrix2x3.hpp
     include/aeongui/Path.hpp
     include/aeongui/Platform.hpp
-    include/aeongui/PluginAPI.h
     include/aeongui/RasterImage.hpp
     include/aeongui/ResourceLoader.hpp
     include/aeongui/Rect.hpp

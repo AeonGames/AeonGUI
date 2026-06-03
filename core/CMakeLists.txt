@@ -22,7 +22,6 @@ set(AEONGUI_HEADERS
     ../include/aeongui/CSSSelector.hpp
     ../include/aeongui/TextLayout.hpp
     ../include/aeongui/FontDatabase.hpp
-    ../include/aeongui/PluginAPI.h
 )
 if(BACKEND STREQUAL "Cairo")
     set(AEONGUI_BACKEND_HEADERS
@@ -92,7 +91,6 @@ set(AEONGUI_DOM_HEADERS
     ../include/aeongui/dom/SVGSetElement.hpp
     ../include/aeongui/dom/SVGAnimateTransformElement.hpp
     ../include/aeongui/dom/SVGAnimateMotionElement.hpp
-    ../include/aeongui/dom/SVGScriptElement.hpp
     ../include/aeongui/dom/SVGFilterElement.hpp
     ../include/aeongui/dom/SVGFEDropShadowElement.hpp
     ../include/aeongui/dom/SVGLength.hpp
@@ -193,7 +191,6 @@ set(AEONGUI_DOM_SOURCES
     dom/SVGSetElement.cpp
     dom/SVGAnimateTransformElement.cpp
     dom/SVGAnimateMotionElement.cpp
-    dom/SVGScriptElement.cpp
     dom/SVGFilterElement.cpp
     dom/SVGFEDropShadowElement.cpp
     dom/SVGLength.cpp

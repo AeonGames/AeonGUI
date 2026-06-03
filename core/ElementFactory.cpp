@@ -48,7 +48,6 @@ limitations under the License.
 #include "aeongui/dom/SVGSetElement.hpp"
 #include "aeongui/dom/SVGAnimateTransformElement.hpp"
 #include "aeongui/dom/SVGAnimateMotionElement.hpp"
-#include "aeongui/dom/SVGScriptElement.hpp"
 #include "aeongui/dom/SVGFilterElement.hpp"
 #include "aeongui/dom/SVGFEDropShadowElement.hpp"
 
@@ -127,7 +126,6 @@ namespace AeonGUI
             MakeConstructor<DOM::SVGSetElement> ( "set" ),
             MakeConstructor<DOM::SVGAnimateTransformElement> ( "animateTransform" ),
             MakeConstructor<DOM::SVGAnimateMotionElement> ( "animateMotion" ),
-            MakeConstructor<DOM::SVGScriptElement> ( "script" ),
             MakeConstructor<DOM::SVGFilterElement> ( "filter" ),
             MakeConstructor<DOM::SVGFEDropShadowElement> ( "feDropShadow" ),
             // HTML built-ins are registered explicitly under the XHTML namespace.

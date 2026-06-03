@@ -46,7 +46,6 @@ set(TESTED_SRCS
   SVGAnimatedTypesTest.cpp
   SVGImageElementTest.cpp
   SVGLengthTest.cpp
-  SVGScriptElementTest.cpp
   ThreadSafetyTest.cpp
   UIEventsTest.cpp
 )
@@ -102,15 +101,5 @@ if(BUILD_BENCHMARKS)
     target_compile_definitions(benchmark PRIVATE AEONGUI_BENCH_ALLOC_COUNT=1)
   endif()
 endif()
-
-# Test plugin shared library for SVGScriptElement tests
-add_library(test_plugin SHARED test_plugin.c)
-target_include_directories(test_plugin PRIVATE ${PROJECT_SOURCE_DIR}/include)
-set_target_properties(test_plugin PROPERTIES
-  PREFIX ""
-  DEBUG_POSTFIX ""
-  RUNTIME_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/bin"
-  LIBRARY_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/bin"
-)
 
 configure_vscode(${PROJECT_SOURCE_DIR}/tests)

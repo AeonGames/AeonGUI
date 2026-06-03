@@ -35,8 +35,6 @@ dual-backend support, cross-platform CI, and a comprehensive test suite.
   (type, id, class, compound, descendant, child, comma-list).
 - **setAttribute / onAttributeChanged** — live DOM mutation with
   attribute-change callbacks.
-- **Native plugin system** — loadable shared-library plugins for element
-  construction.
 - **DOMMatrix / DOMPoint** — W3C Geometry Interfaces (`DOMMatrix`,
   `DOMMatrixReadOnly`, `DOMPoint`, `DOMPointReadOnly`).
 - **Thread safety** — `ParsePathData` (mutex), `FontDatabase`
