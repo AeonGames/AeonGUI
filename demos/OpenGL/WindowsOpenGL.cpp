@@ -29,6 +29,12 @@ limitations under the License.
 #include "aeongui/AeonGUI.hpp"
 #include "aeongui/dom/Window.hpp"
 #include "aeongui/dom/Document.hpp"
+#ifdef AEONGUI_HAVE_COMPILED_FPS
+#include <cstring>
+#include <memory>
+#include "aeongui/CompiledDocument.hpp"
+#include "fps.xmlcxx.hpp"
+#endif
 
 #define GLGETPROCADDRESS(glFunctionType,glFunction) \
     if(glFunction==nullptr) { \
@@ -96,6 +102,9 @@ private:
     GLuint mScreenQuad{};
     GLuint mScreenTexture{};
     AeonGUI::DOM::Window mWindow{};
+#ifdef AEONGUI_HAVE_COMPILED_FPS
+    std::unique_ptr<AeonGUI::CompiledDocument> mCompiledDocument {};
+#endif
 };
 
 ATOM Window::atom = 0;
@@ -309,7 +318,25 @@ void Window::Initialize ( HINSTANCE hInstance, LPSTR aFilename, LONG aWidth, LON
     OPENGL_CHECK_ERROR;
     glActiveTexture ( GL_TEXTURE0 );
     OPENGL_CHECK_ERROR;
-    mWindow.location() = ( aFilename ? aFilename : "" );
+#ifdef AEONGUI_HAVE_COMPILED_FPS
+    if ( aFilename && std::strcmp ( aFilename, "compiled-fps" ) == 0 )
+    {
+        // Host a compiled document: the host owns the Window, constructs the
+        // generated document and hands it to Window::Load. The host only knows
+        // about named callbacks (here "exit") - not element ids or events.
+        mCompiledDocument = std::make_unique<FpsDocument>();
+        mCompiledDocument->SetCallback ( "exit", [] ( const std::string & aDetail )
+        {
+            std::cout << "FpsDocument requested exit (" << aDetail << ")" << std::endl;
+            PostQuitMessage ( 0 );
+        } );
+        mWindow.Load ( *mCompiledDocument );
+    }
+    else
+#endif
+    {
+        mWindow.location() = ( aFilename ? aFilename : "" );
+    }
     ShowWindow ( hWnd, SW_SHOW );
 }
 

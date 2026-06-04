@@ -6,6 +6,7 @@ set(AEONGUI_HEADERS
     ../include/aeongui/Platform.hpp
     ../include/aeongui/Rect.hpp
     ../include/aeongui/ElementFactory.hpp
+    ../include/aeongui/CompiledDocument.hpp
     ../include/aeongui/StringLiteral.hpp
     ../include/aeongui/Canvas.hpp
     ../include/aeongui/Path.hpp
@@ -110,6 +111,7 @@ set(AEONGUI_SOURCES
     AeonGUI.cpp
     CSSSelector.cpp
     ElementFactory.cpp
+    CompiledDocument.cpp
     Rect.cpp
     Transform.cpp
     Vector2.cpp

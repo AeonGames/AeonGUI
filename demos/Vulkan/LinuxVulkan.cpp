@@ -29,6 +29,12 @@ limitations under the License.
 #include "aeongui/dom/Window.hpp"
 #include "aeongui/dom/Document.hpp"
 #include "VulkanRenderer.h"
+#ifdef AEONGUI_HAVE_COMPILED_FPS
+#include <cstring>
+#include <memory>
+#include "aeongui/CompiledDocument.hpp"
+#include "fps.xmlcxx.hpp"
+#endif
 
 int main ( int argc, char** argv )
 {
@@ -38,10 +44,28 @@ int main ( int argc, char** argv )
         uint32_t height = 600;
 
         AeonGUI::DOM::Window aeonWindow ( width, height );
-        if ( argc > 1 )
+        bool running = true;
+#ifdef AEONGUI_HAVE_COMPILED_FPS
+        std::unique_ptr<AeonGUI::CompiledDocument> compiledDocument;
+        if ( argc > 1 && std::strcmp ( argv[1], "compiled-fps" ) == 0 )
         {
-            aeonWindow.location() = argv[1];
+            // Host a compiled document: the host owns the Window, constructs
+            // the generated document and hands it to Window::Load. The host
+            // only knows about named callbacks (here "exit") - not element ids.
+            compiledDocument = std::make_unique<FpsDocument>();
+            compiledDocument->SetCallback ( "exit", [&running] ( const std::string & aDetail )
+            {
+                std::cout << "FpsDocument requested exit (" << aDetail << ")" << std::endl;
+                running = false;
+            } );
+            aeonWindow.Load ( *compiledDocument );
         }
+        else
+#endif
+            if ( argc > 1 )
+            {
+                aeonWindow.location() = argv[1];
+            }
 
         // ── X11 window creation ──────────────────────────────────────────
         Display* display = XOpenDisplay ( nullptr );
@@ -90,7 +114,6 @@ int main ( int argc, char** argv )
                               static_cast<uint32_t> ( aeonWindow.GetHeight() ) );
 
         // ── Event loop ───────────────────────────────────────────────────
-        bool running = true;
         XEvent xEvent;
         while ( running )
         {

@@ -46,6 +46,17 @@ namespace AeonGUI
              *  @param aFilename Path or URL of the SVG/XML file to load.
              */
             AEONGUI_DLL void Load ( const USVString& aFilename );
+            /** @brief Load a document by building its DOM tree imperatively.
+             *
+             *  Runs the same finalize pipeline as the file-based Load
+             *  (stylesheet creation, @c <style> parsing, CSS reselection and
+             *  the OnLoad traversal) but lets the caller populate the tree via
+             *  @p aBuilder instead of parsing XML.  Used by compiled documents
+             *  (see @ref AeonGUI::CompiledDocument) whose tree is generated as
+             *  C++ at build time.
+             *  @param aBuilder Callback that appends nodes to the document.
+             */
+            AEONGUI_DLL void Load ( const std::function<void ( Document& ) >& aBuilder );
             /** @brief Destructor. Unloads the document. */
             AEONGUI_DLL ~Document();
             /** @brief Draw the document onto a canvas.
@@ -152,6 +163,13 @@ namespace AeonGUI
         private:
             void Load ();
             void Unload ();
+            // Create a fresh document stylesheet for mUrl. Shared by both the
+            // file-based and builder-based Load paths.
+            void CreateStyleSheet ();
+            // Post-tree finalize shared by both Load paths: parse <style>
+            // content into the stylesheet, reselect CSS for every element,
+            // then run the OnLoad traversal.
+            void FinishLoad ();
             //Element* mDocumentElement{};
             StyleSheetPtr mStyleSheet{};
             USVString mUrl{};

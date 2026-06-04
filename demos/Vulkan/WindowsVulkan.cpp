@@ -32,6 +32,12 @@ limitations under the License.
 #include "aeongui/dom/Window.hpp"
 #include "aeongui/dom/Document.hpp"
 #include "VulkanRenderer.h"
+#ifdef AEONGUI_HAVE_COMPILED_FPS
+#include <cstring>
+#include <memory>
+#include "aeongui/CompiledDocument.hpp"
+#include "fps.xmlcxx.hpp"
+#endif
 
 // ─────────────────────────────────────────────────────────────────────────────
 class VulkanWindow
@@ -52,6 +58,9 @@ private:
     std::string             mVertPath;
     std::string             mFragPath;
     AeonGUI::DOM::Window    mAeonWindow;
+#ifdef AEONGUI_HAVE_COMPILED_FPS
+    std::unique_ptr<AeonGUI::CompiledDocument> mCompiledDocument {};
+#endif
     VulkanRenderer          mRenderer;
 };
 
@@ -76,10 +85,26 @@ VulkanWindow::VulkanWindow ( HINSTANCE hInstance, const char* filename, LONG aWi
     , mHeight ( static_cast<uint32_t> ( aHeight ) )
     , mAeonWindow ( mWidth, mHeight )
 {
-    if ( filename )
+#ifdef AEONGUI_HAVE_COMPILED_FPS
+    if ( filename && std::strcmp ( filename, "compiled-fps" ) == 0 )
     {
-        mAeonWindow.location() = filename;
+        // Host a compiled document: the host owns the Window, constructs the
+        // generated document and hands it to Window::Load. The host only knows
+        // about named callbacks (here "exit") - not element ids or events.
+        mCompiledDocument = std::make_unique<FpsDocument>();
+        mCompiledDocument->SetCallback ( "exit", [] ( const std::string & aDetail )
+        {
+            std::cout << "FpsDocument requested exit (" << aDetail << ")" << std::endl;
+            PostQuitMessage ( 0 );
+        } );
+        mAeonWindow.Load ( *mCompiledDocument );
     }
+    else
+#endif
+        if ( filename )
+        {
+            mAeonWindow.location() = filename;
+        }
 
     if ( atom == 0 )
     {

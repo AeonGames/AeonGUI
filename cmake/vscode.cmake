@@ -79,13 +79,24 @@ if(CMAKE_GENERATOR MATCHES "(MSYS|Unix) Makefiles")
                   if(svg_files)
                       foreach(SVG_FILE ${svg_files})
                           get_filename_component(SVG_NAME "${SVG_FILE}" NAME_WE)
-                          message(STATUS "Generating debug launch configuration for ${TARGET} [${SVG_NAME}]")
+                          if(SVG_NAME STREQUAL "fps")
+                              # images/fps.xhtml is compiled into the demo via
+                              # xmlcxx; launch the generated FpsDocument through
+                              # the special "compiled-fps" argument instead of
+                              # loading the file from disk.
+                              set(LAUNCH_LABEL "compiled-fps")
+                              set(LAUNCH_ARGS "\"compiled-fps\"")
+                          else()
+                              set(LAUNCH_LABEL "${SVG_NAME}")
+                              set(LAUNCH_ARGS "\"file:///${SVG_FILE}\"")
+                          endif()
+                          message(STATUS "Generating debug launch configuration for ${TARGET} [${LAUNCH_LABEL}]")
                           set(DEBUG_CONFIGURATIONS "${DEBUG_CONFIGURATIONS}
                   {
-                  \"name\": \"${TARGET} [${SVG_NAME}]\",
+                  \"name\": \"${TARGET} [${LAUNCH_LABEL}]\",
                   \"type\": \"${DEBUGGER_TYPE}\",
                   \"request\": \"launch\",
-                  \"args\": [\"file:///${SVG_FILE}\"],
+                  \"args\": [${LAUNCH_ARGS}],
                   \"stopAtEntry\": false,
                   \"cwd\": \"${CMAKE_BINARY_DIR}\",
                   \"environment\": [

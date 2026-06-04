@@ -33,6 +33,7 @@ limitations under the License.
 
 namespace AeonGUI
 {
+    class CompiledDocument;
     namespace DOM
     {
         class Document;
@@ -81,6 +82,15 @@ namespace AeonGUI
              *  @param aDeltaTime Time elapsed since last frame, in seconds.
              */
             AEONGUI_DLL void Update ( double aDeltaTime );
+            /** @brief Load a compiled document into this window.
+             *
+             *  Builds @p aDocument's DOM tree into the window's document and
+             *  runs its OnLoad hook. The host retains ownership of the window
+             *  and continues to drive resizing, drawing and input as usual.
+             *  The compiled document keeps only a reference back to this window.
+             *  @param aDocument The compiled document to load.
+             */
+            AEONGUI_DLL void Load ( CompiledDocument& aDocument );
             /**DOM Properties and Methods @{*/
             /** @brief Get the associated Document.
              *  @return Pointer to the Document, or nullptr.

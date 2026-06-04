@@ -58,6 +58,20 @@ if(APPLE)
 else()
     target_link_libraries(OpenGLDemo AeonGUI ${X11_LIBRARIES} OpenGL::GL)
 endif()
+
+# Compile images/fps.xhtml into a C++ document the demo can host directly
+# (xmlcxx). Run OpenGLDemo with the literal argument "compiled-fps" to load
+# the generated FpsDocument instead of parsing an SVG/XHTML file at runtime.
+if(TARGET xmlcxx)
+    include(xmlcxx)
+    xmlcxx_generate(FPS_DOCUMENT_SRCS
+        "${PROJECT_SOURCE_DIR}/images/fps.xhtml"
+        CLASS FpsDocument)
+    target_sources(OpenGLDemo PRIVATE ${FPS_DOCUMENT_SRCS})
+    target_include_directories(OpenGLDemo PRIVATE ${CMAKE_CURRENT_BINARY_DIR})
+    target_compile_definitions(OpenGLDemo PRIVATE AEONGUI_HAVE_COMPILED_FPS)
+endif()
+
 if(MINGW)
     fix_compile_commands(OpenGLDemo)
 endif()

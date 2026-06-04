@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <body onload="Init">
+    <div id="quit" onclick="RequestExit">Quit</div>
+    <script type="text/c++"><![CDATA[
+      // Verbatim, file-scope C++. These free functions are bound declaratively
+      // by the onload / onclick attributes above. Each receives the document
+      // (CompiledDocument) first, giving access to the host/guest contract.
+
+      // Bound by <body onload="Init">; called as Init ( *this, window, document ).
+      void Init ( CompiledDocument& self, Window& window, Document& document )
+      {
+          (void) window;
+          (void) document;
+          self.SetProperty ( "title", "Compiled Test" );
+      }
+
+      // Bound by <div onclick="RequestExit">; called as
+      // RequestExit ( *this, window, document, event ) on click.
+      void RequestExit ( CompiledDocument& self, Window& window, Document& document, Event& event )
+      {
+          (void) window;
+          (void) document;
+          (void) event;
+          self.Emit ( "exit", "clicked" );
+      }
+    ]]></script>
+  </body>
+</html>

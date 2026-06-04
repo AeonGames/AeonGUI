@@ -52,6 +52,16 @@ set(TESTED_SRCS
 
 list(APPEND TESTED_SRCS HTMLLayoutSpikeTest.cpp HTMLElementFactoryTest.cpp HTMLLayoutEngineTest.cpp HTMLRenderTest.cpp)
 
+# Compile a fixture XHTML document to C++ with the xmlcxx tool and link it into
+# the unit tests to exercise the CompiledDocument pipeline end to end.
+set(COMPILED_DOCUMENT_SRCS "")
+if(TARGET xmlcxx)
+  include(xmlcxx)
+  xmlcxx_generate(COMPILED_DOCUMENT_SRCS
+    ${CMAKE_CURRENT_SOURCE_DIR}/fixtures/CompiledDocumentFixture.xhtml)
+  list(APPEND TESTED_SRCS CompiledDocumentTest.cpp)
+endif()
+
 set(TEST_SRCS
     Main.cpp
 )
@@ -59,8 +69,11 @@ set(TEST_SRCS
 source_group("Tested" FILES ${TESTED_SRCS})
 source_group("Tests" FILES ${TEST_SRCS})
 
-add_executable(unit-tests ${TEST_SRCS} ${TESTED_SRCS})
+add_executable(unit-tests ${TEST_SRCS} ${TESTED_SRCS} ${COMPILED_DOCUMENT_SRCS})
 target_link_libraries(unit-tests PRIVATE AeonGUI GTest::gtest GTest::gmock)
+if(COMPILED_DOCUMENT_SRCS)
+  target_include_directories(unit-tests PRIVATE ${CMAKE_CURRENT_BINARY_DIR})
+endif()
 
 target_link_libraries(unit-tests PRIVATE yogacore)
 

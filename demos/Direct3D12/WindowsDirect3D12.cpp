@@ -34,6 +34,11 @@ limitations under the License.
 #include "aeongui/AeonGUI.hpp"
 #include "aeongui/dom/Window.hpp"
 #include "aeongui/dom/Document.hpp"
+#ifdef AEONGUI_HAVE_COMPILED_FPS
+#include <memory>
+#include "aeongui/CompiledDocument.hpp"
+#include "fps.xmlcxx.hpp"
+#endif
 
 using Microsoft::WRL::ComPtr;
 
@@ -123,14 +128,30 @@ public:
         , mHeight(static_cast<uint32_t>(height))
         , mAeonWindow(mWidth, mHeight)
     {
-        if (filename)
+#ifdef AEONGUI_HAVE_COMPILED_FPS
+        if (filename && std::strcmp(filename, "compiled-fps") == 0)
         {
-            mAeonWindow.location() = filename;
+            // Host a compiled document: the host owns the Window, constructs
+            // the generated document and hands it to Window::Load. The host
+            // only knows about named callbacks (here "exit") - not element ids.
+            mCompiledDocument = std::make_unique<FpsDocument>();
+            mCompiledDocument->SetCallback("exit", [](const std::string& aDetail)
+            {
+                std::cout << "FpsDocument requested exit (" << aDetail << ")" << std::endl;
+                PostQuitMessage ( 0 );
+            } );
+            mAeonWindow.Load ( *mCompiledDocument );
         }
+        else
+#endif
+            if ( filename )
+            {
+                mAeonWindow.location() = filename;
+            }
 
-        InitializeWindow(hInstance, width, height);
+        InitializeWindow ( hInstance, width, height );
         InitializeD3D12();
-        ShowWindow(mHWnd, SW_SHOW);
+        ShowWindow ( mHWnd, SW_SHOW );
     }
 
     ~D3D12Window()
@@ -138,18 +159,18 @@ public:
         try
         {
             WaitForGpu();
-            if (mFenceEvent)
+            if ( mFenceEvent )
             {
-                CloseHandle(mFenceEvent);
+                CloseHandle ( mFenceEvent );
                 mFenceEvent = nullptr;
             }
-            if (mHWnd)
+            if ( mHWnd )
             {
-                DestroyWindow(mHWnd);
+                DestroyWindow ( mHWnd );
                 mHWnd = nullptr;
             }
         }
-        catch (...)
+        catch ( ... )
         {
         }
     }
@@ -159,136 +180,136 @@ public:
         PopulateCommandList();
 
         ID3D12CommandList* commandLists[] = { mCommandList.Get() };
-        mCommandQueue->ExecuteCommandLists(1, commandLists);
+        mCommandQueue->ExecuteCommandLists ( 1, commandLists );
 
-        ThrowIfFailed(mSwapChain->Present(1, 0), "Failed to present frame.");
+        ThrowIfFailed ( mSwapChain->Present ( 1, 0 ), "Failed to present frame." );
         MoveToNextFrame();
     }
 
-    static void Register(HINSTANCE hInstance)
+    static void Register ( HINSTANCE hInstance )
     {
         WNDCLASSEX wcex{};
-        wcex.cbSize = sizeof(WNDCLASSEX);
+        wcex.cbSize = sizeof ( WNDCLASSEX );
         wcex.style = CS_HREDRAW | CS_VREDRAW | CS_OWNDC;
         wcex.lpfnWndProc = D3D12Window::WindowProc;
-        wcex.cbWndExtra = sizeof(D3D12Window*);
+        wcex.cbWndExtra = sizeof ( D3D12Window* );
         wcex.hInstance = hInstance;
-        wcex.hIcon = LoadIcon(NULL, IDI_WINLOGO);
-        wcex.hCursor = LoadCursor(NULL, IDC_ARROW);
+        wcex.hIcon = LoadIcon ( NULL, IDI_WINLOGO );
+        wcex.hCursor = LoadCursor ( NULL, IDC_ARROW );
         wcex.lpszClassName = "AeonGUIDirect3D12";
-        atom = RegisterClassEx(&wcex);
+        atom = RegisterClassEx ( &wcex );
     }
 
-    static LRESULT CALLBACK WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
+    static LRESULT CALLBACK WindowProc ( HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam )
     {
-        auto* self = reinterpret_cast<D3D12Window*>(GetWindowLongPtr(hwnd, 0));
+        auto* self = reinterpret_cast<D3D12Window*> ( GetWindowLongPtr ( hwnd, 0 ) );
 
-        switch (uMsg)
+        switch ( uMsg )
         {
         case WM_CLOSE:
-            PostQuitMessage(0);
+            PostQuitMessage ( 0 );
             return 0;
         case WM_SIZE:
-            if (self)
+            if ( self )
             {
-                self->OnResize(LOWORD(lParam), HIWORD(lParam));
+                self->OnResize ( LOWORD ( lParam ), HIWORD ( lParam ) );
             }
             return 0;
         case WM_PAINT:
         {
             PAINTSTRUCT ps{};
-            BeginPaint(hwnd, &ps);
-            EndPaint(hwnd, &ps);
+            BeginPaint ( hwnd, &ps );
+            EndPaint ( hwnd, &ps );
             return 0;
         }
         case WM_MOUSEMOVE:
-            if (self)
+            if ( self )
             {
-                self->mAeonWindow.HandleMouseMove(
-                    static_cast<double>(GET_X_LPARAM(lParam)),
-                    static_cast<double>(GET_Y_LPARAM(lParam)));
+                self->mAeonWindow.HandleMouseMove (
+                    static_cast<double> ( GET_X_LPARAM ( lParam ) ),
+                    static_cast<double> ( GET_Y_LPARAM ( lParam ) ) );
             }
             return 0;
         case WM_LBUTTONDOWN:
-            if (self)
+            if ( self )
             {
-                self->mAeonWindow.HandleMouseDown(
-                    static_cast<double>(GET_X_LPARAM(lParam)),
-                    static_cast<double>(GET_Y_LPARAM(lParam)), 0);
+                self->mAeonWindow.HandleMouseDown (
+                    static_cast<double> ( GET_X_LPARAM ( lParam ) ),
+                    static_cast<double> ( GET_Y_LPARAM ( lParam ) ), 0 );
             }
             return 0;
         case WM_LBUTTONUP:
-            if (self)
+            if ( self )
             {
-                self->mAeonWindow.HandleMouseUp(
-                    static_cast<double>(GET_X_LPARAM(lParam)),
-                    static_cast<double>(GET_Y_LPARAM(lParam)), 0);
+                self->mAeonWindow.HandleMouseUp (
+                    static_cast<double> ( GET_X_LPARAM ( lParam ) ),
+                    static_cast<double> ( GET_Y_LPARAM ( lParam ) ), 0 );
             }
             return 0;
         case WM_MBUTTONDOWN:
-            if (self)
+            if ( self )
             {
-                self->mAeonWindow.HandleMouseDown(
-                    static_cast<double>(GET_X_LPARAM(lParam)),
-                    static_cast<double>(GET_Y_LPARAM(lParam)), 1);
+                self->mAeonWindow.HandleMouseDown (
+                    static_cast<double> ( GET_X_LPARAM ( lParam ) ),
+                    static_cast<double> ( GET_Y_LPARAM ( lParam ) ), 1 );
             }
             return 0;
         case WM_MBUTTONUP:
-            if (self)
+            if ( self )
             {
-                self->mAeonWindow.HandleMouseUp(
-                    static_cast<double>(GET_X_LPARAM(lParam)),
-                    static_cast<double>(GET_Y_LPARAM(lParam)), 1);
+                self->mAeonWindow.HandleMouseUp (
+                    static_cast<double> ( GET_X_LPARAM ( lParam ) ),
+                    static_cast<double> ( GET_Y_LPARAM ( lParam ) ), 1 );
             }
             return 0;
         case WM_RBUTTONDOWN:
-            if (self)
+            if ( self )
             {
-                self->mAeonWindow.HandleMouseDown(
-                    static_cast<double>(GET_X_LPARAM(lParam)),
-                    static_cast<double>(GET_Y_LPARAM(lParam)), 2);
+                self->mAeonWindow.HandleMouseDown (
+                    static_cast<double> ( GET_X_LPARAM ( lParam ) ),
+                    static_cast<double> ( GET_Y_LPARAM ( lParam ) ), 2 );
             }
             return 0;
         case WM_RBUTTONUP:
-            if (self)
+            if ( self )
             {
-                self->mAeonWindow.HandleMouseUp(
-                    static_cast<double>(GET_X_LPARAM(lParam)),
-                    static_cast<double>(GET_Y_LPARAM(lParam)), 2);
+                self->mAeonWindow.HandleMouseUp (
+                    static_cast<double> ( GET_X_LPARAM ( lParam ) ),
+                    static_cast<double> ( GET_Y_LPARAM ( lParam ) ), 2 );
             }
             return 0;
         case WM_MOUSEWHEEL:
-            if (self)
+            if ( self )
             {
-                POINT pt = { GET_X_LPARAM(lParam), GET_Y_LPARAM(lParam) };
-                ScreenToClient(hwnd, &pt);
-                self->mAeonWindow.HandleWheel(
-                    static_cast<double>(pt.x),
-                    static_cast<double>(pt.y),
+                POINT pt = { GET_X_LPARAM ( lParam ), GET_Y_LPARAM ( lParam ) };
+                ScreenToClient ( hwnd, &pt );
+                self->mAeonWindow.HandleWheel (
+                    static_cast<double> ( pt.x ),
+                    static_cast<double> ( pt.y ),
                     0.0,
-                    static_cast<double>(-GET_WHEEL_DELTA_WPARAM(wParam)));
+                    static_cast<double> ( -GET_WHEEL_DELTA_WPARAM ( wParam ) ) );
             }
             return 0;
         default:
-            return DefWindowProc(hwnd, uMsg, wParam, lParam);
+            return DefWindowProc ( hwnd, uMsg, wParam, lParam );
         }
     }
 
 private:
-    void InitializeWindow(HINSTANCE hInstance, LONG width, LONG height)
+    void InitializeWindow ( HINSTANCE hInstance, LONG width, LONG height )
     {
-        if (atom == 0)
+        if ( atom == 0 )
         {
-            Register(hInstance);
+            Register ( hInstance );
         }
 
         RECT rect = { 0, 0, width, height };
-        AdjustWindowRectEx(&rect,
-                           WS_OVERLAPPEDWINDOW | WS_CLIPSIBLINGS | WS_CLIPCHILDREN,
-                           FALSE,
-                           WS_EX_APPWINDOW | WS_EX_WINDOWEDGE);
+        AdjustWindowRectEx ( &rect,
+                             WS_OVERLAPPEDWINDOW | WS_CLIPSIBLINGS | WS_CLIPCHILDREN,
+                             FALSE,
+                             WS_EX_APPWINDOW | WS_EX_WINDOWEDGE );
 
-        mHWnd = CreateWindowEx(
+        mHWnd = CreateWindowEx (
                     WS_EX_APPWINDOW | WS_EX_WINDOWEDGE,
                     "AeonGUIDirect3D12",
                     "AeonGUI - Direct3D12",
@@ -300,14 +321,14 @@ private:
                     NULL,
                     NULL,
                     hInstance,
-                    this);
+                    this );
 
-        if (!mHWnd)
+        if ( !mHWnd )
         {
-            throw std::runtime_error("Failed to create window.");
+            throw std::runtime_error ( "Failed to create window." );
         }
 
-        SetWindowLongPtr(mHWnd, 0, reinterpret_cast<LONG_PTR>(this));
+        SetWindowLongPtr ( mHWnd, 0, reinterpret_cast<LONG_PTR> ( this ) );
     }
 
     void InitializeD3D12()
@@ -317,7 +338,7 @@ private:
 #ifdef _DEBUG
         {
             ComPtr<ID3D12Debug> debugController;
-            if (SUCCEEDED(D3D12GetDebugInterface(IID_PPV_ARGS(&debugController))))
+            if ( SUCCEEDED ( D3D12GetDebugInterface ( IID_PPV_ARGS ( &debugController ) ) ) )
             {
                 debugController->EnableDebugLayer();
                 dxgiFactoryFlags |= DXGI_CREATE_FACTORY_DEBUG;
@@ -326,31 +347,31 @@ private:
 #endif
 
         ComPtr<IDXGIFactory6> factory;
-        ThrowIfFailed(
-            CreateDXGIFactory2(dxgiFactoryFlags, IID_PPV_ARGS(&factory)),
-            "Failed to create DXGI factory.");
+        ThrowIfFailed (
+            CreateDXGIFactory2 ( dxgiFactoryFlags, IID_PPV_ARGS ( &factory ) ),
+            "Failed to create DXGI factory." );
 
-        ComPtr<IDXGIAdapter1> adapter = GetHardwareAdapter(factory.Get());
-        if (adapter)
+        ComPtr<IDXGIAdapter1> adapter = GetHardwareAdapter ( factory.Get() );
+        if ( adapter )
         {
-            ThrowIfFailed(
-                D3D12CreateDevice(adapter.Get(), D3D_FEATURE_LEVEL_11_0, IID_PPV_ARGS(&mDevice)),
-                "Failed to create D3D12 device.");
+            ThrowIfFailed (
+                D3D12CreateDevice ( adapter.Get(), D3D_FEATURE_LEVEL_11_0, IID_PPV_ARGS ( &mDevice ) ),
+                "Failed to create D3D12 device." );
         }
         else
         {
             ComPtr<IDXGIAdapter> warpAdapter;
-            ThrowIfFailed(factory->EnumWarpAdapter(IID_PPV_ARGS(&warpAdapter)),
-                          "Failed to enumerate WARP adapter.");
-            ThrowIfFailed(
-                D3D12CreateDevice(warpAdapter.Get(), D3D_FEATURE_LEVEL_11_0, IID_PPV_ARGS(&mDevice)),
-                "Failed to create D3D12 WARP device.");
+            ThrowIfFailed ( factory->EnumWarpAdapter ( IID_PPV_ARGS ( &warpAdapter ) ),
+                            "Failed to enumerate WARP adapter." );
+            ThrowIfFailed (
+                D3D12CreateDevice ( warpAdapter.Get(), D3D_FEATURE_LEVEL_11_0, IID_PPV_ARGS ( &mDevice ) ),
+                "Failed to create D3D12 WARP device." );
         }
 
         D3D12_COMMAND_QUEUE_DESC queueDesc{};
         queueDesc.Type = D3D12_COMMAND_LIST_TYPE_DIRECT;
-        ThrowIfFailed(mDevice->CreateCommandQueue(&queueDesc, IID_PPV_ARGS(&mCommandQueue)),
-                      "Failed to create command queue.");
+        ThrowIfFailed ( mDevice->CreateCommandQueue ( &queueDesc, IID_PPV_ARGS ( &mCommandQueue ) ),
+                        "Failed to create command queue." );
 
         DXGI_SWAP_CHAIN_DESC1 swapDesc{};
         swapDesc.BufferCount = FrameCount;
@@ -362,82 +383,83 @@ private:
         swapDesc.SampleDesc.Count = 1;
 
         ComPtr<IDXGISwapChain1> swapChain;
-        ThrowIfFailed(
-            factory->CreateSwapChainForHwnd(
+        ThrowIfFailed (
+            factory->CreateSwapChainForHwnd (
                 mCommandQueue.Get(),
                 mHWnd,
                 &swapDesc,
                 nullptr,
                 nullptr,
-                &swapChain),
-            "Failed to create swap chain.");
+                &swapChain ),
+            "Failed to create swap chain." );
 
-        ThrowIfFailed(factory->MakeWindowAssociation(mHWnd, DXGI_MWA_NO_ALT_ENTER),
-                      "Failed to set window association.");
-        ThrowIfFailed(swapChain.As(&mSwapChain), "Failed to get swap chain 3 interface.");
+        ThrowIfFailed ( factory->MakeWindowAssociation ( mHWnd, DXGI_MWA_NO_ALT_ENTER ),
+                        "Failed to set window association." );
+        ThrowIfFailed ( swapChain.As ( &mSwapChain ), "Failed to get swap chain 3 interface." );
         mFrameIndex = mSwapChain->GetCurrentBackBufferIndex();
 
         D3D12_DESCRIPTOR_HEAP_DESC rtvHeapDesc{};
         rtvHeapDesc.NumDescriptors = FrameCount;
         rtvHeapDesc.Type = D3D12_DESCRIPTOR_HEAP_TYPE_RTV;
-        ThrowIfFailed(mDevice->CreateDescriptorHeap(&rtvHeapDesc, IID_PPV_ARGS(&mRtvHeap)),
-                      "Failed to create RTV heap.");
-        mRtvDescriptorSize = mDevice->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_RTV);
+        ThrowIfFailed ( mDevice->CreateDescriptorHeap ( &rtvHeapDesc, IID_PPV_ARGS ( &mRtvHeap ) ),
+                        "Failed to create RTV heap." );
+        mRtvDescriptorSize = mDevice->GetDescriptorHandleIncrementSize ( D3D12_DESCRIPTOR_HEAP_TYPE_RTV );
 
         D3D12_DESCRIPTOR_HEAP_DESC srvHeapDesc{};
         srvHeapDesc.NumDescriptors = 1;
         srvHeapDesc.Type = D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV;
         srvHeapDesc.Flags = D3D12_DESCRIPTOR_HEAP_FLAG_SHADER_VISIBLE;
-        ThrowIfFailed(mDevice->CreateDescriptorHeap(&srvHeapDesc, IID_PPV_ARGS(&mSrvHeap)),
-                      "Failed to create SRV heap.");
+        ThrowIfFailed ( mDevice->CreateDescriptorHeap ( &srvHeapDesc, IID_PPV_ARGS ( &mSrvHeap ) ),
+                        "Failed to create SRV heap." );
 
         D3D12_CPU_DESCRIPTOR_HANDLE rtvHandle = mRtvHeap->GetCPUDescriptorHandleForHeapStart();
-        for (UINT i = 0; i < FrameCount; ++i)
+        for ( UINT i = 0; i < FrameCount; ++i )
         {
-            ThrowIfFailed(
-                mSwapChain->GetBuffer(i, IID_PPV_ARGS(&mRenderTargets[i])),
-                "Failed to get render target from swap chain.");
-            mDevice->CreateRenderTargetView(mRenderTargets[i].Get(), nullptr, rtvHandle);
+            ThrowIfFailed (
+                mSwapChain->GetBuffer ( i, IID_PPV_ARGS ( &mRenderTargets[i] ) ),
+                "Failed to get render target from swap chain." );
+            mDevice->CreateRenderTargetView ( mRenderTargets[i].Get(), nullptr, rtvHandle );
             rtvHandle.ptr += mRtvDescriptorSize;
 
-            ThrowIfFailed(
-                mDevice->CreateCommandAllocator(D3D12_COMMAND_LIST_TYPE_DIRECT,
-                                                IID_PPV_ARGS(&mCommandAllocators[i])),
-                "Failed to create command allocator.");
+            ThrowIfFailed (
+                mDevice->CreateCommandAllocator ( D3D12_COMMAND_LIST_TYPE_DIRECT,
+                                                  IID_PPV_ARGS ( &mCommandAllocators[i] ) ),
+                "Failed to create command allocator." );
         }
 
-        ThrowIfFailed(
-            mDevice->CreateCommandList(
+        ThrowIfFailed (
+            mDevice->CreateCommandList (
                 0,
                 D3D12_COMMAND_LIST_TYPE_DIRECT,
                 mCommandAllocators[mFrameIndex].Get(),
                 nullptr,
-                IID_PPV_ARGS(&mCommandList)),
-            "Failed to create command list.");
-        ThrowIfFailed(mCommandList->Close(), "Failed to close initial command list.");
+                IID_PPV_ARGS ( &mCommandList ) ),
+            "Failed to create command list." );
+        ThrowIfFailed ( mCommandList->Close(), "Failed to close initial command list." );
 
-        ThrowIfFailed(mDevice->CreateFence(0, D3D12_FENCE_FLAG_NONE, IID_PPV_ARGS(&mFence)),
-                      "Failed to create fence.");
-        mFenceEvent = CreateEvent(nullptr, FALSE, FALSE, nullptr);
-        if (!mFenceEvent)
+        ThrowIfFailed ( mDevice->CreateFence ( 0, D3D12_FENCE_FLAG_NONE, IID_PPV_ARGS ( &mFence ) ),
+                        "Failed to create fence." );
+        mFenceEvent = CreateEvent ( nullptr, FALSE, FALSE, nullptr );
+        if ( !mFenceEvent )
         {
-            throw std::runtime_error("Failed to create fence event.");
+            throw std::runtime_error ( "Failed to create fence event." );
         }
 
-        mFenceValues.fill(0);
+        mFenceValues.fill ( 0 );
 
         CreatePipelineState();
         CreateOrResizeTexture();
 
-        mViewport = {
-                        0.0f,
-                        0.0f,
-                        static_cast<float>(mWidth),
-                        static_cast<float>(mHeight),
-                        0.0f,
-                        1.0f
-                    };
-        mScissorRect = { 0, 0, static_cast<LONG>(mWidth), static_cast<LONG>(mHeight) };
+        mViewport =
+        {
+            0.0f,
+            0.0f,
+            static_cast<float> ( mWidth ),
+            static_cast<float> ( mHeight ),
+            0.0f,
+            1.0f
+        };
+        mScissorRect = { 0, 0, static_cast<LONG> ( mWidth ), static_cast<LONG> ( mHeight ) };
     }
 
     void CreatePipelineState()
@@ -451,28 +473,28 @@ private:
         shaderFlags |= D3DCOMPILE_DEBUG | D3DCOMPILE_SKIP_OPTIMIZATION;
 #endif
 
-        HRESULT hr = D3DCompile(kVertexShader, std::strlen(kVertexShader), nullptr,
-                                nullptr, nullptr, "main", "vs_5_0", shaderFlags, 0,
-                                &vertexShader, &errorBlob);
-        if (FAILED(hr))
+        HRESULT hr = D3DCompile ( kVertexShader, std::strlen ( kVertexShader ), nullptr,
+                                  nullptr, nullptr, "main", "vs_5_0", shaderFlags, 0,
+                                  &vertexShader, &errorBlob );
+        if ( FAILED ( hr ) )
         {
-            if (errorBlob)
+            if ( errorBlob )
             {
-                std::cerr << static_cast<const char*>(errorBlob->GetBufferPointer()) << std::endl;
+                std::cerr << static_cast<const char*> ( errorBlob->GetBufferPointer() ) << std::endl;
             }
-            ThrowIfFailed(hr, "Failed to compile D3D12 vertex shader.");
+            ThrowIfFailed ( hr, "Failed to compile D3D12 vertex shader." );
         }
 
-        hr = D3DCompile(kPixelShader, std::strlen(kPixelShader), nullptr,
-                        nullptr, nullptr, "main", "ps_5_0", shaderFlags, 0,
-                        &pixelShader, &errorBlob);
-        if (FAILED(hr))
+        hr = D3DCompile ( kPixelShader, std::strlen ( kPixelShader ), nullptr,
+                          nullptr, nullptr, "main", "ps_5_0", shaderFlags, 0,
+                          &pixelShader, &errorBlob );
+        if ( FAILED ( hr ) )
         {
-            if (errorBlob)
+            if ( errorBlob )
             {
-                std::cerr << static_cast<const char*>(errorBlob->GetBufferPointer()) << std::endl;
+                std::cerr << static_cast<const char*> ( errorBlob->GetBufferPointer() ) << std::endl;
             }
-            ThrowIfFailed(hr, "Failed to compile D3D12 pixel shader.");
+            ThrowIfFailed ( hr, "Failed to compile D3D12 pixel shader." );
         }
 
         D3D12_DESCRIPTOR_RANGE1 range{};
@@ -507,18 +529,18 @@ private:
         rootSignatureDesc.Desc_1_1.Flags = D3D12_ROOT_SIGNATURE_FLAG_ALLOW_INPUT_ASSEMBLER_INPUT_LAYOUT;
 
         ComPtr<ID3DBlob> serializedRootSig;
-        ThrowIfFailed(
-            D3D12SerializeVersionedRootSignature(&rootSignatureDesc,
+        ThrowIfFailed (
+            D3D12SerializeVersionedRootSignature ( &rootSignatureDesc,
                     &serializedRootSig,
-                    &errorBlob),
-            "Failed to serialize root signature.");
+                    &errorBlob ),
+            "Failed to serialize root signature." );
 
-        ThrowIfFailed(
-            mDevice->CreateRootSignature(0,
-                                         serializedRootSig->GetBufferPointer(),
-                                         serializedRootSig->GetBufferSize(),
-                                         IID_PPV_ARGS(&mRootSignature)),
-            "Failed to create root signature.");
+        ThrowIfFailed (
+            mDevice->CreateRootSignature ( 0,
+                                           serializedRootSig->GetBufferPointer(),
+                                           serializedRootSig->GetBufferSize(),
+                                           IID_PPV_ARGS ( &mRootSignature ) ),
+            "Failed to create root signature." );
 
         D3D12_GRAPHICS_PIPELINE_STATE_DESC psoDesc{};
         psoDesc.pRootSignature = mRootSignature.Get();
@@ -528,7 +550,8 @@ private:
         D3D12_BLEND_DESC blendDesc{};
         blendDesc.AlphaToCoverageEnable = FALSE;
         blendDesc.IndependentBlendEnable = FALSE;
-        const D3D12_RENDER_TARGET_BLEND_DESC defaultBlendTarget{
+        const D3D12_RENDER_TARGET_BLEND_DESC defaultBlendTarget
+        {
             TRUE,
             FALSE,
             D3D12_BLEND_SRC_ALPHA,
@@ -540,7 +563,7 @@ private:
             D3D12_LOGIC_OP_NOOP,
             D3D12_COLOR_WRITE_ENABLE_ALL
         };
-        for (auto& renderTargetBlend : blendDesc.RenderTarget)
+        for ( auto& renderTargetBlend : blendDesc.RenderTarget )
         {
             renderTargetBlend = defaultBlendTarget;
         }
@@ -569,15 +592,15 @@ private:
         psoDesc.RTVFormats[0] = DXGI_FORMAT_B8G8R8A8_UNORM;
         psoDesc.SampleDesc.Count = 1;
 
-        ThrowIfFailed(
-            mDevice->CreateGraphicsPipelineState(&psoDesc, IID_PPV_ARGS(&mPipelineState)),
-            "Failed to create pipeline state.");
+        ThrowIfFailed (
+            mDevice->CreateGraphicsPipelineState ( &psoDesc, IID_PPV_ARGS ( &mPipelineState ) ),
+            "Failed to create pipeline state." );
     }
 
     void CreateOrResizeTexture()
     {
-        const UINT texWidth = static_cast<UINT>(mAeonWindow.GetWidth());
-        const UINT texHeight = static_cast<UINT>(mAeonWindow.GetHeight());
+        const UINT texWidth = static_cast<UINT> ( mAeonWindow.GetWidth() );
+        const UINT texHeight = static_cast<UINT> ( mAeonWindow.GetHeight() );
 
         mTexture.Reset();
         mTextureUpload.Reset();
@@ -595,15 +618,15 @@ private:
         D3D12_HEAP_PROPERTIES defaultHeap{};
         defaultHeap.Type = D3D12_HEAP_TYPE_DEFAULT;
 
-        ThrowIfFailed(
-            mDevice->CreateCommittedResource(
+        ThrowIfFailed (
+            mDevice->CreateCommittedResource (
                 &defaultHeap,
                 D3D12_HEAP_FLAG_NONE,
                 &texDesc,
                 D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE,
                 nullptr,
-                IID_PPV_ARGS(&mTexture)),
-            "Failed to create texture resource.");
+                IID_PPV_ARGS ( &mTexture ) ),
+            "Failed to create texture resource." );
 
         D3D12_SHADER_RESOURCE_VIEW_DESC srvDesc{};
         srvDesc.Shader4ComponentMapping = D3D12_DEFAULT_SHADER_4_COMPONENT_MAPPING;
@@ -611,12 +634,12 @@ private:
         srvDesc.ViewDimension = D3D12_SRV_DIMENSION_TEXTURE2D;
         srvDesc.Texture2D.MipLevels = 1;
 
-        mDevice->CreateShaderResourceView(
+        mDevice->CreateShaderResourceView (
             mTexture.Get(),
             &srvDesc,
-            mSrvHeap->GetCPUDescriptorHandleForHeapStart());
+            mSrvHeap->GetCPUDescriptorHandleForHeapStart() );
 
-        mDevice->GetCopyableFootprints(&texDesc, 0, 1, 0, &mTextureFootprint, nullptr, nullptr, &mUploadBufferSize);
+        mDevice->GetCopyableFootprints ( &texDesc, 0, 1, 0, &mTextureFootprint, nullptr, nullptr, &mUploadBufferSize );
 
         D3D12_HEAP_PROPERTIES uploadHeap{};
         uploadHeap.Type = D3D12_HEAP_TYPE_UPLOAD;
@@ -630,48 +653,48 @@ private:
         uploadDesc.SampleDesc.Count = 1;
         uploadDesc.Layout = D3D12_TEXTURE_LAYOUT_ROW_MAJOR;
 
-        ThrowIfFailed(
-            mDevice->CreateCommittedResource(
+        ThrowIfFailed (
+            mDevice->CreateCommittedResource (
                 &uploadHeap,
                 D3D12_HEAP_FLAG_NONE,
                 &uploadDesc,
                 D3D12_RESOURCE_STATE_GENERIC_READ,
                 nullptr,
-                IID_PPV_ARGS(&mTextureUpload)),
-            "Failed to create upload texture buffer.");
+                IID_PPV_ARGS ( &mTextureUpload ) ),
+            "Failed to create upload texture buffer." );
     }
 
     void UploadAeonTexture()
     {
-        const uint8_t* src = reinterpret_cast<const uint8_t*>(mAeonWindow.GetPixels());
-        const UINT srcRowPitch = static_cast<UINT>(mAeonWindow.GetStride());
+        const uint8_t* src = reinterpret_cast<const uint8_t*> ( mAeonWindow.GetPixels() );
+        const UINT srcRowPitch = static_cast<UINT> ( mAeonWindow.GetStride() );
         const UINT rowPitch = mTextureFootprint.Footprint.RowPitch;
         const UINT rowCount = mTextureFootprint.Footprint.Height;
-        const UINT copyBytes = (srcRowPitch < rowPitch) ? srcRowPitch : rowPitch;
+        const UINT copyBytes = ( srcRowPitch < rowPitch ) ? srcRowPitch : rowPitch;
 
         uint8_t* mapped = nullptr;
         D3D12_RANGE readRange{ 0, 0 };
-        ThrowIfFailed(mTextureUpload->Map(0, &readRange, reinterpret_cast<void**>(&mapped)),
-                      "Failed to map upload texture.");
+        ThrowIfFailed ( mTextureUpload->Map ( 0, &readRange, reinterpret_cast<void**> ( &mapped ) ),
+                        "Failed to map upload texture." );
 
-        for (UINT y = 0; y < rowCount; ++y)
+        for ( UINT y = 0; y < rowCount; ++y )
         {
-            std::memcpy(mapped + (rowPitch * y), src + (srcRowPitch * y), copyBytes);
+            std::memcpy ( mapped + ( rowPitch * y ), src + ( srcRowPitch * y ), copyBytes );
         }
 
         D3D12_RANGE writeRange{ 0, mUploadBufferSize };
-        mTextureUpload->Unmap(0, &writeRange);
+        mTextureUpload->Unmap ( 0, &writeRange );
     }
 
     void PopulateCommandList()
     {
-        ThrowIfFailed(
+        ThrowIfFailed (
             mCommandAllocators[mFrameIndex]->Reset(),
-            "Failed to reset command allocator.");
+            "Failed to reset command allocator." );
 
-        ThrowIfFailed(
-            mCommandList->Reset(mCommandAllocators[mFrameIndex].Get(), mPipelineState.Get()),
-            "Failed to reset command list.");
+        ThrowIfFailed (
+            mCommandList->Reset ( mCommandAllocators[mFrameIndex].Get(), mPipelineState.Get() ),
+            "Failed to reset command list." );
 
         mAeonWindow.Update ( 1.0 / 60.0 );
         if ( mAeonWindow.Draw() )
@@ -679,7 +702,7 @@ private:
             UploadAeonTexture();
         }
 
-        D3D12_RESOURCE_BARRIER barriers[2]{};
+        D3D12_RESOURCE_BARRIER barriers[2] {};
         barriers[0].Type = D3D12_RESOURCE_BARRIER_TYPE_TRANSITION;
         barriers[0].Transition.pResource = mTexture.Get();
         barriers[0].Transition.Subresource = D3D12_RESOURCE_BARRIER_ALL_SUBRESOURCES;
@@ -692,7 +715,7 @@ private:
         barriers[1].Transition.StateBefore = D3D12_RESOURCE_STATE_PRESENT;
         barriers[1].Transition.StateAfter = D3D12_RESOURCE_STATE_RENDER_TARGET;
 
-        mCommandList->ResourceBarrier(2, barriers);
+        mCommandList->ResourceBarrier ( 2, barriers );
 
         D3D12_TEXTURE_COPY_LOCATION dstLocation{};
         dstLocation.pResource = mTexture.Get();
@@ -704,7 +727,7 @@ private:
         srcLocation.Type = D3D12_TEXTURE_COPY_TYPE_PLACED_FOOTPRINT;
         srcLocation.PlacedFootprint = mTextureFootprint;
 
-        mCommandList->CopyTextureRegion(&dstLocation, 0, 0, 0, &srcLocation, nullptr);
+        mCommandList->CopyTextureRegion ( &dstLocation, 0, 0, 0, &srcLocation, nullptr );
 
         D3D12_RESOURCE_BARRIER textureToShader{};
         textureToShader.Type = D3D12_RESOURCE_BARRIER_TYPE_TRANSITION;
@@ -712,24 +735,24 @@ private:
         textureToShader.Transition.Subresource = D3D12_RESOURCE_BARRIER_ALL_SUBRESOURCES;
         textureToShader.Transition.StateBefore = D3D12_RESOURCE_STATE_COPY_DEST;
         textureToShader.Transition.StateAfter = D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE;
-        mCommandList->ResourceBarrier(1, &textureToShader);
+        mCommandList->ResourceBarrier ( 1, &textureToShader );
 
         D3D12_CPU_DESCRIPTOR_HANDLE rtvHandle = mRtvHeap->GetCPUDescriptorHandleForHeapStart();
-        rtvHandle.ptr += static_cast<SIZE_T>(mFrameIndex) * static_cast<SIZE_T>(mRtvDescriptorSize);
+        rtvHandle.ptr += static_cast<SIZE_T> ( mFrameIndex ) * static_cast<SIZE_T> ( mRtvDescriptorSize );
 
-        mCommandList->RSSetViewports(1, &mViewport);
-        mCommandList->RSSetScissorRects(1, &mScissorRect);
-        mCommandList->OMSetRenderTargets(1, &rtvHandle, FALSE, nullptr);
+        mCommandList->RSSetViewports ( 1, &mViewport );
+        mCommandList->RSSetScissorRects ( 1, &mScissorRect );
+        mCommandList->OMSetRenderTargets ( 1, &rtvHandle, FALSE, nullptr );
 
         constexpr float clearColor[] = { 1.0f, 1.0f, 1.0f, 1.0f };
-        mCommandList->ClearRenderTargetView(rtvHandle, clearColor, 0, nullptr);
+        mCommandList->ClearRenderTargetView ( rtvHandle, clearColor, 0, nullptr );
 
         ID3D12DescriptorHeap* heaps[] = { mSrvHeap.Get() };
-        mCommandList->SetDescriptorHeaps(1, heaps);
-        mCommandList->SetGraphicsRootSignature(mRootSignature.Get());
-        mCommandList->SetGraphicsRootDescriptorTable(0, mSrvHeap->GetGPUDescriptorHandleForHeapStart());
-        mCommandList->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLESTRIP);
-        mCommandList->DrawInstanced(4, 1, 0, 0);
+        mCommandList->SetDescriptorHeaps ( 1, heaps );
+        mCommandList->SetGraphicsRootSignature ( mRootSignature.Get() );
+        mCommandList->SetGraphicsRootDescriptorTable ( 0, mSrvHeap->GetGPUDescriptorHandleForHeapStart() );
+        mCommandList->IASetPrimitiveTopology ( D3D_PRIMITIVE_TOPOLOGY_TRIANGLESTRIP );
+        mCommandList->DrawInstanced ( 4, 1, 0, 0 );
 
         D3D12_RESOURCE_BARRIER toPresent{};
         toPresent.Type = D3D12_RESOURCE_BARRIER_TYPE_TRANSITION;
@@ -737,84 +760,84 @@ private:
         toPresent.Transition.Subresource = D3D12_RESOURCE_BARRIER_ALL_SUBRESOURCES;
         toPresent.Transition.StateBefore = D3D12_RESOURCE_STATE_RENDER_TARGET;
         toPresent.Transition.StateAfter = D3D12_RESOURCE_STATE_PRESENT;
-        mCommandList->ResourceBarrier(1, &toPresent);
+        mCommandList->ResourceBarrier ( 1, &toPresent );
 
-        ThrowIfFailed(mCommandList->Close(), "Failed to close command list.");
+        ThrowIfFailed ( mCommandList->Close(), "Failed to close command list." );
     }
 
     void WaitForGpu()
     {
         const UINT64 value = ++mFenceValues[mFrameIndex];
-        ThrowIfFailed(
-            mCommandQueue->Signal(mFence.Get(), value),
-            "Failed to signal fence.");
+        ThrowIfFailed (
+            mCommandQueue->Signal ( mFence.Get(), value ),
+            "Failed to signal fence." );
 
-        ThrowIfFailed(
-            mFence->SetEventOnCompletion(value, mFenceEvent),
-            "Failed to set fence completion event.");
-        WaitForSingleObject(mFenceEvent, INFINITE);
+        ThrowIfFailed (
+            mFence->SetEventOnCompletion ( value, mFenceEvent ),
+            "Failed to set fence completion event." );
+        WaitForSingleObject ( mFenceEvent, INFINITE );
     }
 
     void MoveToNextFrame()
     {
         const UINT64 currentFence = ++mFenceValues[mFrameIndex];
-        ThrowIfFailed(
-            mCommandQueue->Signal(mFence.Get(), currentFence),
-            "Failed to signal fence for frame transition.");
+        ThrowIfFailed (
+            mCommandQueue->Signal ( mFence.Get(), currentFence ),
+            "Failed to signal fence for frame transition." );
 
         mFrameIndex = mSwapChain->GetCurrentBackBufferIndex();
 
-        if (mFence->GetCompletedValue() < mFenceValues[mFrameIndex])
+        if ( mFence->GetCompletedValue() < mFenceValues[mFrameIndex] )
         {
-            ThrowIfFailed(
-                mFence->SetEventOnCompletion(mFenceValues[mFrameIndex], mFenceEvent),
-                "Failed to set frame fence completion event.");
-            WaitForSingleObject(mFenceEvent, INFINITE);
+            ThrowIfFailed (
+                mFence->SetEventOnCompletion ( mFenceValues[mFrameIndex], mFenceEvent ),
+                "Failed to set frame fence completion event." );
+            WaitForSingleObject ( mFenceEvent, INFINITE );
         }
 
         mFenceValues[mFrameIndex] = currentFence;
     }
 
-    void OnResize(WORD newWidth, WORD newHeight)
+    void OnResize ( WORD newWidth, WORD newHeight )
     {
-        if (newWidth == 0 || newHeight == 0)
+        if ( newWidth == 0 || newHeight == 0 )
         {
             return;
         }
 
-        mWidth = static_cast<uint32_t>(newWidth);
-        mHeight = static_cast<uint32_t>(newHeight);
+        mWidth = static_cast<uint32_t> ( newWidth );
+        mHeight = static_cast<uint32_t> ( newHeight );
 
         WaitForGpu();
 
-        for (UINT i = 0; i < FrameCount; ++i)
+        for ( UINT i = 0; i < FrameCount; ++i )
         {
             mRenderTargets[i].Reset();
         }
 
         DXGI_SWAP_CHAIN_DESC swapDesc{};
-        ThrowIfFailed(mSwapChain->GetDesc(&swapDesc), "Failed to get swap chain desc.");
-        ThrowIfFailed(
-            mSwapChain->ResizeBuffers(FrameCount, mWidth, mHeight, swapDesc.BufferDesc.Format, swapDesc.Flags),
-            "Failed to resize swap chain buffers.");
+        ThrowIfFailed ( mSwapChain->GetDesc ( &swapDesc ), "Failed to get swap chain desc." );
+        ThrowIfFailed (
+            mSwapChain->ResizeBuffers ( FrameCount, mWidth, mHeight, swapDesc.BufferDesc.Format, swapDesc.Flags ),
+            "Failed to resize swap chain buffers." );
 
         mFrameIndex = mSwapChain->GetCurrentBackBufferIndex();
 
         D3D12_CPU_DESCRIPTOR_HANDLE rtvHandle = mRtvHeap->GetCPUDescriptorHandleForHeapStart();
-        for (UINT i = 0; i < FrameCount; ++i)
+        for ( UINT i = 0; i < FrameCount; ++i )
         {
-            ThrowIfFailed(mSwapChain->GetBuffer(i, IID_PPV_ARGS(&mRenderTargets[i])),
-                          "Failed to reacquire swap chain render target.");
-            mDevice->CreateRenderTargetView(mRenderTargets[i].Get(), nullptr, rtvHandle);
+            ThrowIfFailed ( mSwapChain->GetBuffer ( i, IID_PPV_ARGS ( &mRenderTargets[i] ) ),
+                            "Failed to reacquire swap chain render target." );
+            mDevice->CreateRenderTargetView ( mRenderTargets[i].Get(), nullptr, rtvHandle );
             rtvHandle.ptr += mRtvDescriptorSize;
         }
 
-        mViewport.Width = static_cast<float>(mWidth);
-        mViewport.Height = static_cast<float>(mHeight);
-        mScissorRect.right = static_cast<LONG>(mWidth);
-        mScissorRect.bottom = static_cast<LONG>(mHeight);
+        mViewport.Width = static_cast<float> ( mWidth );
+        mViewport.Height = static_cast<float> ( mHeight );
+        mScissorRect.right = static_cast<LONG> ( mWidth );
+        mScissorRect.bottom = static_cast<LONG> ( mHeight );
 
-        mAeonWindow.ResizeViewport(static_cast<size_t>(mWidth), static_cast<size_t>(mHeight));
+        mAeonWindow.ResizeViewport ( static_cast<size_t> ( mWidth ), static_cast<size_t> ( mHeight ) );
         CreateOrResizeTexture();
     }
 
@@ -826,6 +849,9 @@ private:
     uint32_t mHeight{};
 
     AeonGUI::DOM::Window mAeonWindow;
+#ifdef AEONGUI_HAVE_COMPILED_FPS
+    std::unique_ptr<AeonGUI::CompiledDocument> mCompiledDocument {};
+#endif
 
     ComPtr<ID3D12Device> mDevice;
     ComPtr<ID3D12CommandQueue> mCommandQueue;
@@ -861,36 +887,36 @@ ATOM D3D12Window::atom = 0;
  * @return tuple containing a vector of char* (std::get<0>) and a string
  * containing the argument strings separated each by a null character(std::get<1>).
  */
-static std::tuple<std::vector<char*>, std::string> GetArgs(char* cmdLine)
+static std::tuple<std::vector<char*>, std::string> GetArgs ( char* cmdLine )
 {
     std::tuple<std::vector<char*>, std::string> result;
-    std::get<1>(result) = cmdLine ? cmdLine : "";
+    std::get<1> ( result ) = cmdLine ? cmdLine : "";
 
-    if (std::get<1>(result).empty())
+    if ( std::get<1> ( result ).empty() )
     {
         return result;
     }
 
-    for (char& c : std::get<1>(result))
+    for ( char& c : std::get<1> ( result ) )
     {
-        if (c == ' ' || c == '\t' || c == '\r' || c == '\n')
+        if ( c == ' ' || c == '\t' || c == '\r' || c == '\n' )
         {
             c = '\0';
         }
     }
 
-    std::string& storage = std::get<1>(result);
-    std::vector<char*>& args = std::get<0>(result);
+    std::string& storage = std::get<1> ( result );
+    std::vector<char*>& args = std::get<0> ( result );
 
     bool atStart = true;
-    for (size_t i = 0; i < storage.size(); ++i)
+    for ( size_t i = 0; i < storage.size(); ++i )
     {
-        if (storage[i] != '\0' && atStart)
+        if ( storage[i] != '\0' && atStart )
         {
-            args.emplace_back(storage.data() + i);
+            args.emplace_back ( storage.data() + i );
             atStart = false;
         }
-        else if (storage[i] == '\0')
+        else if ( storage[i] == '\0' )
         {
             atStart = true;
         }
@@ -899,28 +925,28 @@ static std::tuple<std::vector<char*>, std::string> GetArgs(char* cmdLine)
     return result;
 }
 
-int main(int argc, char* argv[])
+int main ( int argc, char* argv[] )
 {
-    AeonGUI::Initialize(argc, argv);
+    AeonGUI::Initialize ( argc, argv );
 
     MSG msg{};
     try
     {
         {
-            D3D12Window window(
-                GetModuleHandle(NULL),
-                (argc > 1) ? argv[1] : nullptr,
+            D3D12Window window (
+                GetModuleHandle ( NULL ),
+                ( argc > 1 ) ? argv[1] : nullptr,
                 800,
-                600);
+                600 );
 
-            while (msg.message != WM_QUIT)
+            while ( msg.message != WM_QUIT )
             {
-                if (PeekMessage(&msg, NULL, 0, 0, PM_REMOVE))
+                if ( PeekMessage ( &msg, NULL, 0, 0, PM_REMOVE ) )
                 {
-                    if (msg.message != WM_QUIT)
+                    if ( msg.message != WM_QUIT )
                     {
-                        TranslateMessage(&msg);
-                        DispatchMessage(&msg);
+                        TranslateMessage ( &msg );
+                        DispatchMessage ( &msg );
                     }
                 }
                 else
@@ -930,17 +956,17 @@ int main(int argc, char* argv[])
             }
         }
     }
-    catch (const std::runtime_error& e)
+    catch ( const std::runtime_error& e )
     {
         std::cerr << e.what() << std::endl;
     }
 
     AeonGUI::Finalize();
-    return static_cast<int>(msg.wParam);
+    return static_cast<int> ( msg.wParam );
 }
 
-int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nCmdShow)
+int WINAPI WinMain ( HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nCmdShow )
 {
-    auto args = GetArgs(lpCmdLine);
-    return main(static_cast<int>(std::get<0>(args).size()), std::get<0>(args).data());
+    auto args = GetArgs ( lpCmdLine );
+    return main ( static_cast<int> ( std::get<0> ( args ).size() ), std::get<0> ( args ).data() );
 }

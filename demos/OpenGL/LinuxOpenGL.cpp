@@ -31,6 +31,12 @@ limitations under the License.
 #include "aeongui/AeonGUI.hpp"
 #include "aeongui/dom/Window.hpp"
 #include "aeongui/dom/Document.hpp"
+#ifdef AEONGUI_HAVE_COMPILED_FPS
+#include <cstring>
+#include <memory>
+#include "aeongui/CompiledDocument.hpp"
+#include "fps.xmlcxx.hpp"
+#endif
 #include "Common.h"
 
 class GLWindow
@@ -50,6 +56,10 @@ private:
     GLuint mScreenTexture{};
     AeonGUI::DOM::Document mDocument;
     AeonGUI::DOM::Window mWindow;
+#ifdef AEONGUI_HAVE_COMPILED_FPS
+    std::unique_ptr<AeonGUI::CompiledDocument> mCompiledDocument {};
+#endif
+    bool mExitRequested {false};
 };
 
 GLWindow::GLWindow ( char* aFilename ) :
@@ -61,7 +71,25 @@ GLWindow::GLWindow ( char* aFilename ) :
     mHeight ( 600 ),
     mWindow{static_cast<uint32_t> ( mWidth ), static_cast<uint32_t> ( mHeight ) }
 {
-    mWindow.location() = ( aFilename ? aFilename : "" );
+#ifdef AEONGUI_HAVE_COMPILED_FPS
+    if ( aFilename && strcmp ( aFilename, "compiled-fps" ) == 0 )
+    {
+        // Host a compiled document: the host owns the Window, constructs the
+        // generated document and hands it to Window::Load. The host only knows
+        // about named callbacks (here "exit") - not element ids or events.
+        mCompiledDocument = std::make_unique<FpsDocument>();
+        mCompiledDocument->SetCallback ( "exit", [this] ( const std::string & aDetail )
+        {
+            std::cout << "FpsDocument requested exit (" << aDetail << ")" << std::endl;
+            mExitRequested = true;
+        } );
+        mWindow.Load ( *mCompiledDocument );
+    }
+    else
+#endif
+    {
+        mWindow.location() = ( aFilename ? aFilename : "" );
+    }
 }
 
 bool GLWindow::Create ( Display* dpy )
@@ -235,7 +263,7 @@ bool GLWindow::Create ( Display* dpy )
     clock_gettime ( CLOCK_REALTIME, &current_time );
     static timespec last_time = current_time;
     float delta;
-    while ( running )
+    while ( running && !mExitRequested )
     {
         while ( ( XPending ( display ) > 0 ) && running )
         {

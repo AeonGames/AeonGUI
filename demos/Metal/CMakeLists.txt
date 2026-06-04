@@ -45,4 +45,17 @@ if(APPLE)
 
     add_dependencies(MetalDemo MetalShaders)
     target_link_libraries(MetalDemo AeonGUI "-framework Cocoa" "-framework Metal" "-framework MetalKit" "-framework QuartzCore")
+
+    # Compile images/fps.xhtml into a C++ document the demo can host directly
+    # (xmlcxx). Run MetalDemo with the literal argument "compiled-fps" to load
+    # the generated FpsDocument instead of parsing an SVG/XHTML file at runtime.
+    if(TARGET xmlcxx)
+        include(xmlcxx)
+        xmlcxx_generate(FPS_DOCUMENT_SRCS
+            "${PROJECT_SOURCE_DIR}/images/fps.xhtml"
+            CLASS FpsDocument)
+        target_sources(MetalDemo PRIVATE ${FPS_DOCUMENT_SRCS})
+        target_include_directories(MetalDemo PRIVATE ${CMAKE_CURRENT_BINARY_DIR})
+        target_compile_definitions(MetalDemo PRIVATE AEONGUI_HAVE_COMPILED_FPS)
+    endif()
 endif()

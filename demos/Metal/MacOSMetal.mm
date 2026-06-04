@@ -27,7 +27,10 @@ limitations under the License.
 #include "aeongui/AeonGUI.hpp"
 #include "aeongui/dom/Window.hpp"
 #include "aeongui/dom/Document.hpp"
-
+#ifdef AEONGUI_HAVE_COMPILED_FPS
+#include "aeongui/CompiledDocument.hpp"
+#include "fps.xmlcxx.hpp"
+#endif
 // ─────────────────────────────────────────────────────────────────────────────
 // Vertex data – full-screen quad (positions + tex-coords, same as OpenGL demo)
 // ─────────────────────────────────────────────────────────────────────────────
@@ -361,6 +364,9 @@ static const uint16_t indices[] = { 0, 1, 2, 0, 2, 3 };
     NSWindow*                window;
     MetalView*               metalView;
     AeonGUI::DOM::Window*    aeonWindow;
+#ifdef AEONGUI_HAVE_COMPILED_FPS
+    AeonGUI::CompiledDocument* compiledDocument;
+#endif
 }
 
 - (id)initWithFilename:(const char*)filename width:(uint32_t)width height:(uint32_t)height;
@@ -374,6 +380,19 @@ static const uint16_t indices[] = { 0, 1, 2, 0, 2, 3 };
     self = [super init];
     if (self) {
         aeonWindow = new AeonGUI::DOM::Window(width, height);
+#ifdef AEONGUI_HAVE_COMPILED_FPS
+        if (filename && strcmp(filename, "compiled-fps") == 0) {
+            // Host a compiled document: the host owns the Window, constructs
+            // the generated document and hands it to Window::Load. The host
+            // only knows about named callbacks (here "exit") - not element ids.
+            compiledDocument = new FpsDocument();
+            compiledDocument->SetCallback("exit", [](const std::string& aDetail) {
+                std::cout << "FpsDocument requested exit (" << aDetail << ")" << std::endl;
+                [NSApp terminate:nil];
+            });
+            aeonWindow->Load(*compiledDocument);
+        } else
+#endif
         if (filename) {
             aeonWindow->location() = filename;
         }
@@ -404,6 +423,9 @@ static const uint16_t indices[] = { 0, 1, 2, 0, 2, 3 };
 - (void)dealloc
 {
     delete aeonWindow;
+#ifdef AEONGUI_HAVE_COMPILED_FPS
+    delete compiledDocument;
+#endif
     [metalView release];
     [window release];
     [super dealloc];

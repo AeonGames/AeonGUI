@@ -31,6 +31,11 @@ limitations under the License.
 #include "aeongui/AeonGUI.hpp"
 #include "aeongui/dom/Window.hpp"
 #include "aeongui/dom/Document.hpp"
+#ifdef AEONGUI_HAVE_COMPILED_FPS
+#include <cstring>
+#include "aeongui/CompiledDocument.hpp"
+#include "fps.xmlcxx.hpp"
+#endif
 #include "Common.h"
 
 @interface OpenGLView : NSOpenGLView
@@ -455,6 +460,9 @@ limitations under the License.
     NSWindow* window;
     OpenGLView* openGLView;
     AeonGUI::DOM::Window* aeonWindow;
+#ifdef AEONGUI_HAVE_COMPILED_FPS
+    AeonGUI::CompiledDocument* compiledDocument;
+#endif
 }
 
 - (id)initWithFilename:(const char*)filename width:(uint32_t)width height:(uint32_t)height;
@@ -468,6 +476,19 @@ limitations under the License.
     self = [super init];
     if (self) {
         aeonWindow = new AeonGUI::DOM::Window(width, height);
+#ifdef AEONGUI_HAVE_COMPILED_FPS
+        if (filename && strcmp(filename, "compiled-fps") == 0) {
+            // Host a compiled document: the host owns the Window, constructs
+            // the generated document and hands it to Window::Load. The host
+            // only knows about named callbacks (here "exit") - not element ids.
+            compiledDocument = new FpsDocument();
+            compiledDocument->SetCallback("exit", [](const std::string& aDetail) {
+                std::cout << "FpsDocument requested exit (" << aDetail << ")" << std::endl;
+                [NSApp terminate:nil];
+            });
+            aeonWindow->Load(*compiledDocument);
+        } else
+#endif
         if (filename) {
             aeonWindow->location() = filename;
         }
@@ -493,6 +514,9 @@ limitations under the License.
 - (void)dealloc
 {
     delete aeonWindow;
+#ifdef AEONGUI_HAVE_COMPILED_FPS
+    delete compiledDocument;
+#endif
     [openGLView release];
     [window release];
     [super dealloc];

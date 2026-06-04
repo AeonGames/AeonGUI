@@ -319,6 +319,10 @@ endif()
 
 include(yoga)
 
+if(LibXml2_FOUND OR LIBXML2_FOUND)
+  add_subdirectory(tools/xmlcxx)
+endif()
+
 if(BUILD_UNIT_TESTS)
   add_subdirectory(tests)
 endif()

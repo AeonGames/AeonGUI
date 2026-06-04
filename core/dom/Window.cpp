@@ -22,6 +22,7 @@ limitations under the License.
 
 #include "aeongui/dom/Element.hpp"
 #include "aeongui/dom/Window.hpp"
+#include "aeongui/CompiledDocument.hpp"
 #ifdef AEONGUI_USE_SKIA
 #include "SkiaCanvas.hpp"
 #else
@@ -79,6 +80,17 @@ namespace AeonGUI
         void Window::OnLocationChanged ( const Location& location )
         {
             mDocument.Load ( location.href() );
+        }
+
+        void Window::Load ( CompiledDocument& aDocument )
+        {
+            aDocument.mWindow = this;
+            aDocument.mDocument = &mDocument;
+            mDocument.Load ( [&aDocument] ( Document & aDoc )
+            {
+                aDocument.BuildDOM ( aDoc );
+            } );
+            aDocument.OnLoad ( mDocument, *this );
         }
 
         void Window::ResizeViewport ( uint32_t aWidth, uint32_t aHeight )

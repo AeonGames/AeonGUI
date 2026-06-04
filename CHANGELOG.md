@@ -3,6 +3,22 @@
 All notable changes to AeonGUI are documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/).
 
+## [Unreleased]
+
+### Added
+
+- **xmlcxx compiled documents** — a build-time tool (`tools/xmlcxx`) parses an
+  `.xhtml`/`.svg` file with libxml2 and emits C++ that builds the DOM tree
+  imperatively (no runtime XML parse) and embeds `type="text/c++"` `<script>`
+  bodies and inline `onEVENT` handlers. Generated classes subclass the new
+  `AeonGUI::CompiledDocument` black-box base, which exposes an id-agnostic
+  host/guest contract (`SetCallback`/`Emit` named events over the DOM event
+  infrastructure, plus `SetProperty`/`GetProperty`). The host owns the
+  `DOM::Window` and loads a compiled document with the new
+  `Window::Load(CompiledDocument&)` overload. A `cmake/xmlcxx.cmake` helper
+  (`xmlcxx_generate`) wires generation into the build. Purely additive; the
+  existing `Document::Load(filename)`/`location()` flow is unchanged.
+
 ## [0.9.0] — 2026-04-02
 
 First pre-release milestone, covering the full SVG rendering pipeline,

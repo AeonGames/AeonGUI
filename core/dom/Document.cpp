@@ -111,42 +111,8 @@ namespace AeonGUI
         // single static mutex is sufficient to prevent the data race.
         static std::mutex sLoadMutex;
 
-        void Document::Load ( const USVString& aFilename )
+        void Document::CreateStyleSheet()
         {
-            std::lock_guard<std::mutex> lock ( sLoadMutex );
-            mUrl = HasScheme ( aFilename ) ? aFilename : PathToFileURL ( aFilename );
-            xmlDocPtr document{nullptr};
-
-            // Give the embedder-provided resource loader a chance to supply the
-            // document bytes (e.g. from a package archive). When it returns
-            // false fall back to libxml2's filesystem loader.
-            std::vector<uint8_t> bytes;
-            const std::string loaderKey = HasScheme ( aFilename )
-                                          ? std::string ( aFilename )
-                                          : std::string ( aFilename );
-            if ( TryLoadResource ( loaderKey, bytes ) ||
-                 ( aFilename != mUrl && TryLoadResource ( mUrl, bytes ) ) )
-            {
-                if ( !bytes.empty() )
-                {
-                    document = xmlReadMemory (
-                                   reinterpret_cast<const char*> ( bytes.data() ),
-                                   static_cast<int> ( bytes.size() ),
-                                   reinterpret_cast<const char*> ( mUrl.c_str() ),
-                                   nullptr, 0 );
-                }
-            }
-            if ( document == nullptr )
-            {
-                document = xmlReadFile ( reinterpret_cast<const char*> ( mUrl.c_str() ), nullptr, 0 );
-            }
-            if ( document == nullptr )
-            {
-                std::string msg{"Could not open file: " + mUrl};
-                std::cerr << LogLevel::Error << msg << std::endl;
-                throw std::runtime_error ( msg );
-            }
-
             css_error code{};
             css_stylesheet_params params{};
             params.params_version = CSS_STYLESHEET_PARAMS_VERSION_1;
@@ -175,14 +141,10 @@ namespace AeonGUI
                 }
                 mStyleSheet.reset ( stylesheet );
             }
+        }
 
-            xmlElementPtr root_element = reinterpret_cast<xmlElementPtr> ( xmlDocGetRootElement ( document ) );
-            const char* root_ns_uri = ( reinterpret_cast<xmlNodePtr> ( root_element )->ns && reinterpret_cast<xmlNodePtr> ( root_element )->ns->href )
-                                      ? reinterpret_cast<const char*> ( reinterpret_cast<xmlNodePtr> ( root_element )->ns->href )
-                                      : "";
-            AddNodes ( AddNode ( Construct ( root_ns_uri, reinterpret_cast<const char*> ( root_element->name ), ExtractElementAttributes ( root_element ), this ) ), root_element->children );
-            xmlFreeDoc ( document );
-
+        void Document::FinishLoad()
+        {
             // Parse <style> element content into the document stylesheet
             TraverseDepthFirstPreOrder (
                 [this] ( Node & aNode )
@@ -219,6 +181,62 @@ namespace AeonGUI
             } );
 
             Load();
+        }
+
+        void Document::Load ( const std::function<void ( Document& ) >& aBuilder )
+        {
+            std::lock_guard<std::mutex> lock ( sLoadMutex );
+            CreateStyleSheet();
+            aBuilder ( *this );
+            FinishLoad();
+        }
+
+        void Document::Load ( const USVString& aFilename )
+        {
+            std::lock_guard<std::mutex> lock ( sLoadMutex );
+            mUrl = HasScheme ( aFilename ) ? aFilename : PathToFileURL ( aFilename );
+            xmlDocPtr document{nullptr};
+
+            // Give the embedder-provided resource loader a chance to supply the
+            // document bytes (e.g. from a package archive). When it returns
+            // false fall back to libxml2's filesystem loader.
+            std::vector<uint8_t> bytes;
+            const std::string loaderKey = HasScheme ( aFilename )
+                                          ? std::string ( aFilename )
+                                          : std::string ( aFilename );
+            if ( TryLoadResource ( loaderKey, bytes ) ||
+                 ( aFilename != mUrl && TryLoadResource ( mUrl, bytes ) ) )
+            {
+                if ( !bytes.empty() )
+                {
+                    document = xmlReadMemory (
+                                   reinterpret_cast<const char*> ( bytes.data() ),
+                                   static_cast<int> ( bytes.size() ),
+                                   reinterpret_cast<const char*> ( mUrl.c_str() ),
+                                   nullptr, 0 );
+                }
+            }
+            if ( document == nullptr )
+            {
+                document = xmlReadFile ( reinterpret_cast<const char*> ( mUrl.c_str() ), nullptr, 0 );
+            }
+            if ( document == nullptr )
+            {
+                std::string msg{"Could not open file: " + mUrl};
+                std::cerr << LogLevel::Error << msg << std::endl;
+                throw std::runtime_error ( msg );
+            }
+
+            CreateStyleSheet();
+
+            xmlElementPtr root_element = reinterpret_cast<xmlElementPtr> ( xmlDocGetRootElement ( document ) );
+            const char* root_ns_uri = ( reinterpret_cast<xmlNodePtr> ( root_element )->ns && reinterpret_cast<xmlNodePtr> ( root_element )->ns->href )
+                                      ? reinterpret_cast<const char*> ( reinterpret_cast<xmlNodePtr> ( root_element )->ns->href )
+                                      : "";
+            AddNodes ( AddNode ( Construct ( root_ns_uri, reinterpret_cast<const char*> ( root_element->name ), ExtractElementAttributes ( root_element ), this ) ), root_element->children );
+            xmlFreeDoc ( document );
+
+            FinishLoad();
         }
 
         const USVString& Document::url() const

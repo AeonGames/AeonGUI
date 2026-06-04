@@ -30,6 +30,10 @@ limitations under the License.
 #include "aeongui/dom/Window.hpp"
 #include "aeongui/dom/Document.hpp"
 #include "VulkanRenderer.h"
+#ifdef AEONGUI_HAVE_COMPILED_FPS
+#include "aeongui/CompiledDocument.hpp"
+#include "fps.xmlcxx.hpp"
+#endif
 
 // ─────────────────────────────────────────────────────────────────────────────
 // VulkanView – an NSView subclass backed by a CAMetalLayer for Vulkan
@@ -237,6 +241,9 @@ limitations under the License.
     VulkanView*             vulkanView;
     AeonGUI::DOM::Window*   aeonWindow;
     VulkanRenderer*         renderer;
+#ifdef AEONGUI_HAVE_COMPILED_FPS
+    AeonGUI::CompiledDocument* compiledDocument;
+#endif
 }
 
 - (id)initWithFilename:(const char*)filename
@@ -258,6 +265,19 @@ limitations under the License.
     self = [super init];
     if (self) {
         aeonWindow = new AeonGUI::DOM::Window(width, height);
+#ifdef AEONGUI_HAVE_COMPILED_FPS
+        if (filename && strcmp(filename, "compiled-fps") == 0) {
+            // Host a compiled document: the host owns the Window, constructs
+            // the generated document and hands it to Window::Load. The host
+            // only knows about named callbacks (here "exit") - not element ids.
+            compiledDocument = new FpsDocument();
+            compiledDocument->SetCallback("exit", [](const std::string& aDetail) {
+                std::cout << "FpsDocument requested exit (" << aDetail << ")" << std::endl;
+                [NSApp terminate:nil];
+            });
+            aeonWindow->Load(*compiledDocument);
+        } else
+#endif
         if (filename) {
             aeonWindow->location() = filename;
         }
@@ -308,6 +328,10 @@ limitations under the License.
     if (renderer) { renderer->Cleanup(); delete renderer; renderer = nullptr; }
     delete aeonWindow;
     aeonWindow = nullptr;
+#ifdef AEONGUI_HAVE_COMPILED_FPS
+    delete compiledDocument;
+    compiledDocument = nullptr;
+#endif
     [vulkanView release];
     [window release];
     [super dealloc];

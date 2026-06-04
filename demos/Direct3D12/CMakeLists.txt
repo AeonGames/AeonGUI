@@ -23,6 +23,19 @@ set_target_properties(Direct3D12Demo PROPERTIES
 
 target_link_libraries(Direct3D12Demo AeonGUI d3d12 dxgi d3dcompiler)
 
+# Compile images/fps.xhtml into a C++ document the demo can host directly
+# (xmlcxx). Run Direct3D12Demo with the literal argument "compiled-fps" to load
+# the generated FpsDocument instead of parsing an SVG/XHTML file at runtime.
+if(TARGET xmlcxx)
+    include(xmlcxx)
+    xmlcxx_generate(FPS_DOCUMENT_SRCS
+        "${PROJECT_SOURCE_DIR}/images/fps.xhtml"
+        CLASS FpsDocument)
+    target_sources(Direct3D12Demo PRIVATE ${FPS_DOCUMENT_SRCS})
+    target_include_directories(Direct3D12Demo PRIVATE ${CMAKE_CURRENT_BINARY_DIR})
+    target_compile_definitions(Direct3D12Demo PRIVATE AEONGUI_HAVE_COMPILED_FPS)
+endif()
+
 if(MINGW)
     fix_compile_commands(Direct3D12Demo)
 endif()

@@ -37,7 +37,46 @@
       }
     </style>
   </head>
-  <body>
+  <body onload="StartFps">
     <div id="fps">FPS: 0</div>
+    <script type="text/c++"><![CDATA[
+      // Free function bound to the document load event by <body onload="StartFps">.
+      // The generated OnLoad override calls StartFps ( *this, window, document ).
+      //
+      //   self     - the CompiledDocument (host/guest contract: Emit, SetProperty...)
+      //   window   - the host-owned DOM::Window
+      //   document - the DOM::Document the tree was built into
+      void StartFps ( CompiledDocument& self, Window& window, Document& document )
+      {
+          (void) self;
+          (void) document;
+
+          // FPS counter state. Static so it persists for the lifetime of the
+          // self-rearming requestAnimationFrame chain below.
+          static double lastTime = 0.0;
+          static int    frames   = 0;
+          static double acc      = 0.0;
+          static std::function<void ( double ) > tick;
+
+          tick = [&window] ( double now ) // 'now' is a DOMHighResTimeStamp in ms
+          {
+              double delta = now - lastTime;
+              lastTime = now;
+
+              ++frames;
+              acc += delta;
+              if ( acc >= 1000.0 ) // once per second
+              {
+                  window.document()->getElementById ( "fps" )->setTextContent ( "FPS: " + std::to_string ( frames ) );
+                  frames = 0;
+                  acc -= 1000.0;
+              }
+
+              window.requestAnimationFrame ( tick ); // schedule the next frame
+          };
+
+          window.requestAnimationFrame ( tick );
+      }
+    ]]></script>
   </body>
 </html>
