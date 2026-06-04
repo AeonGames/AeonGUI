@@ -63,8 +63,9 @@ namespace AeonGUI
         if ( mCairoSurface )
         {
             cairo_surface_flush ( const_cast<cairo_surface_t*> ( mCairoSurface ) );
+            return cairo_image_surface_get_data ( mCairoSurface );
         }
-        return cairo_image_surface_get_data ( mCairoSurface );
+        return nullptr;
     }
 
     uint8_t* CairoCanvas::GetMutablePixels()
@@ -677,7 +678,10 @@ namespace AeonGUI
     }
     void CairoCanvas::Save()
     {
-        cairo_save ( mCairoContext );
+        if ( mCairoContext )
+        {
+            cairo_save ( mCairoContext );
+        }
         if ( mPickContext )
         {
             cairo_save ( mPickContext );
@@ -685,7 +689,10 @@ namespace AeonGUI
     }
     void CairoCanvas::Restore()
     {
-        cairo_restore ( mCairoContext );
+        if ( mCairoContext )
+        {
+            cairo_restore ( mCairoContext );
+        }
         if ( mPickContext )
         {
             cairo_restore ( mPickContext );
