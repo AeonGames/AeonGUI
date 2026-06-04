@@ -65,6 +65,13 @@ if(NOT _aeongui_yoga_found)
     include(FetchContent)
     set(YOGA_BUILD_TESTS OFF CACHE BOOL "" FORCE)
     set(BUILD_TESTING OFF CACHE BOOL "" FORCE)
+    # Once Yoga has been downloaded, do not contact the network again on every
+    # reconfigure: the default FetchContent "update" step runs a git fetch +
+    # checkout each time CMake runs, which is slow and re-touches the source
+    # timestamps (forcing Yoga to recompile whenever AeonGUI is rebuilt).
+    # Disabling the update step keeps the populated copy untouched.
+    set(FETCHCONTENT_UPDATES_DISCONNECTED_YOGA ON CACHE BOOL
+        "Skip the Yoga git update step on reconfigure" FORCE)
     FetchContent_Declare(
         yoga
         GIT_REPOSITORY https://github.com/facebook/yoga.git

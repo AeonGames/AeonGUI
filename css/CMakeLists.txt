@@ -14,6 +14,19 @@
 
 include(FetchContent)
 
+# Once these dependencies have been downloaded, do not contact the network
+# again on every reconfigure: the default FetchContent "update" step runs a
+# git fetch + checkout each time CMake runs, which is slow and re-touches the
+# source timestamps (forcing libcss/libparserutils/libwapcaplet to recompile
+# whenever AeonGUI is rebuilt). Disabling the update step keeps the populated
+# copies untouched.
+set(FETCHCONTENT_UPDATES_DISCONNECTED_LIBPARSERUTILS ON CACHE BOOL
+    "Skip the libparserutils git update step on reconfigure" FORCE)
+set(FETCHCONTENT_UPDATES_DISCONNECTED_LIBWAPCAPLET ON CACHE BOOL
+    "Skip the libwapcaplet git update step on reconfigure" FORCE)
+set(FETCHCONTENT_UPDATES_DISCONNECTED_LIBCSS ON CACHE BOOL
+    "Skip the libcss git update step on reconfigure" FORCE)
+
 FetchContent_Declare(libparserutils
     GIT_REPOSITORY https://github.com/netsurf-browser/libparserutils.git
     GIT_TAG        6b0cbf086ca8eb8fe74b69f0c9ecf274eb2397ca
