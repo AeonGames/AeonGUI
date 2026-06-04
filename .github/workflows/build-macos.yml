@@ -106,20 +106,21 @@ jobs:
         # clean (ignore failures in case the runner image changes).
         brew untap aws/tap azure/bicep hashicorp/tap || true
         brew update
-        brew install cmake pkg-config cairo pango libxml2 googletest gsed bison zlib libpng libjpeg-turbo
+        # Vulkan is installed from Homebrew (mirroring AeonEngine) rather than
+        # the LunarG SDK installer: MoltenVK provides the runtime on macOS and
+        # glslang provides glslangValidator for shader compilation.
+        brew install \
+          cmake pkg-config cairo pango libxml2 googletest gsed bison \
+          zlib libpng libjpeg-turbo \
+          molten-vk glslang \
+          spirv-headers spirv-tools \
+          vulkan-headers vulkan-loader vulkan-tools \
+          vulkan-utility-libraries vulkan-validationlayers vulkan-volk
         if [ "${{ matrix.backend }}" = "Skia" ]; then
           brew tap aeongames/ports
           brew install --build-from-source aeongames/ports/skia-aeongui
         fi
       if: matrix.compiler == 'clang' && (steps.changes.outputs.compiled == 'true' || steps.last.outputs.force == 'true')
-
-    - name: '🌋 Install Vulkan SDK'
-      uses: jakoch/install-vulkan-sdk-action@v1.5.5
-      with:
-        vulkan_version: latest
-        install_runtime: true
-        cache: true
-      if: steps.changes.outputs.compiled == 'true' || steps.last.outputs.force == 'true'
 
     - name: '🛠️ Configuring (${{ matrix.backend }})'
       run: |

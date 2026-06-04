@@ -6,13 +6,13 @@ if(NOT Vulkan_FOUND)
     return()
 endif()
 
-find_program(GLSLC_EXECUTABLE glslc HINTS
+find_program(GLSLANG_VALIDATOR NAMES glslangValidator HINTS
     $ENV{VULKAN_SDK}/bin
     $ENV{VULKAN_SDK}/Bin)
 
-if(NOT GLSLC_EXECUTABLE)
-    # Try glslangValidator as a fallback
-    find_program(GLSLANG_VALIDATOR glslangValidator HINTS
+if(NOT GLSLANG_VALIDATOR)
+    # Try glslc (shaderc) as a fallback
+    find_program(GLSLC_EXECUTABLE glslc HINTS
         $ENV{VULKAN_SDK}/bin
         $ENV{VULKAN_SDK}/Bin)
 endif()
@@ -23,20 +23,7 @@ set(FRAG_SHADER "${CMAKE_CURRENT_SOURCE_DIR}/shaders/screen.frag")
 set(VERT_SPV    "${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/screen.vert.spv")
 set(FRAG_SPV    "${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/screen.frag.spv")
 
-if(GLSLC_EXECUTABLE)
-    add_custom_command(
-        OUTPUT  ${VERT_SPV}
-        COMMAND ${GLSLC_EXECUTABLE} ${VERT_SHADER} -o ${VERT_SPV}
-        DEPENDS ${VERT_SHADER}
-        COMMENT "Compiling screen.vert → SPIR-V (glslc)"
-    )
-    add_custom_command(
-        OUTPUT  ${FRAG_SPV}
-        COMMAND ${GLSLC_EXECUTABLE} ${FRAG_SHADER} -o ${FRAG_SPV}
-        DEPENDS ${FRAG_SHADER}
-        COMMENT "Compiling screen.frag → SPIR-V (glslc)"
-    )
-elseif(GLSLANG_VALIDATOR)
+if(GLSLANG_VALIDATOR)
     add_custom_command(
         OUTPUT  ${VERT_SPV}
         COMMAND ${GLSLANG_VALIDATOR} -V ${VERT_SHADER} -o ${VERT_SPV}
@@ -49,8 +36,21 @@ elseif(GLSLANG_VALIDATOR)
         DEPENDS ${FRAG_SHADER}
         COMMENT "Compiling screen.frag → SPIR-V (glslangValidator)"
     )
+elseif(GLSLC_EXECUTABLE)
+    add_custom_command(
+        OUTPUT  ${VERT_SPV}
+        COMMAND ${GLSLC_EXECUTABLE} ${VERT_SHADER} -o ${VERT_SPV}
+        DEPENDS ${VERT_SHADER}
+        COMMENT "Compiling screen.vert → SPIR-V (glslc)"
+    )
+    add_custom_command(
+        OUTPUT  ${FRAG_SPV}
+        COMMAND ${GLSLC_EXECUTABLE} ${FRAG_SHADER} -o ${FRAG_SPV}
+        DEPENDS ${FRAG_SHADER}
+        COMMENT "Compiling screen.frag → SPIR-V (glslc)"
+    )
 else()
-    message(WARNING "Neither glslc nor glslangValidator found – "
+    message(WARNING "Neither glslangValidator nor glslc found – "
                     "SPIR-V shaders will not be compiled. "
                     "Please install the Vulkan SDK or provide pre-compiled .spv files.")
     return()
