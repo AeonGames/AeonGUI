@@ -100,6 +100,11 @@ jobs:
 
     - name: '📦 Install dependencies'
       run: |
+        # The GitHub macOS runner image pre-taps aws/tap, azure/bicep and
+        # hashicorp/tap, none of which we use. Homebrew now warns about
+        # untrusted taps on every `brew update`; untap them to keep the log
+        # clean (ignore failures in case the runner image changes).
+        brew untap aws/tap azure/bicep hashicorp/tap || true
         brew update
         brew install cmake pkg-config cairo pango libxml2 googletest gsed bison zlib libpng libjpeg-turbo
         if [ "${{ matrix.backend }}" = "Skia" ]; then
@@ -109,7 +114,7 @@ jobs:
       if: matrix.compiler == 'clang' && (steps.changes.outputs.compiled == 'true' || steps.last.outputs.force == 'true')
 
     - name: '🌋 Install Vulkan SDK'
-      uses: jakoch/install-vulkan-sdk-action@v1.4.0
+      uses: jakoch/install-vulkan-sdk-action@v1.5.5
       with:
         vulkan_version: latest
         install_runtime: true
