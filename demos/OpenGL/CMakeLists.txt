@@ -1,26 +1,30 @@
 include_directories(${CAIRO_INCLUDE_DIRS})
 
 # Locate GL extension headers from vcpkg / system, download as fallback.
-find_path(GLCOREARB_INCLUDE_DIR GL/glcorearb.h)
-if(NOT GLCOREARB_INCLUDE_DIR)
-    message(STATUS "Downloading KHR/khrplatform.h")
-    file(DOWNLOAD https://registry.khronos.org/EGL/api/KHR/khrplatform.h
-                "${CMAKE_CURRENT_BINARY_DIR}/KHR/khrplatform.h"
-        SHOW_PROGRESS
-        STATUS _khr_status)
-    message(STATUS "Downloading GL/glcorearb.h")
-    file(DOWNLOAD https://registry.khronos.org/OpenGL/api/GL/glcorearb.h
-                "${CMAKE_CURRENT_BINARY_DIR}/GL/glcorearb.h"
-        SHOW_PROGRESS
-        STATUS _glcorearb_status)
-    list(GET _khr_status 0 _khr_code)
-    list(GET _glcorearb_status 0 _glcorearb_code)
-    if(NOT _khr_code EQUAL 0 OR NOT _glcorearb_code EQUAL 0)
-        message(FATAL_ERROR "Failed to download GL extension headers: khrplatform=${_khr_status} glcorearb=${_glcorearb_status}")
+# macOS uses Apple's own <OpenGL/gl3.h> framework header instead, so these
+# Khronos headers are neither needed nor included there.
+if(NOT APPLE)
+    find_path(GLCOREARB_INCLUDE_DIR GL/glcorearb.h)
+    if(NOT GLCOREARB_INCLUDE_DIR)
+        message(STATUS "Downloading KHR/khrplatform.h")
+        file(DOWNLOAD https://registry.khronos.org/EGL/api/KHR/khrplatform.h
+                    "${CMAKE_CURRENT_BINARY_DIR}/KHR/khrplatform.h"
+            SHOW_PROGRESS
+            STATUS _khr_status)
+        message(STATUS "Downloading GL/glcorearb.h")
+        file(DOWNLOAD https://registry.khronos.org/OpenGL/api/GL/glcorearb.h
+                    "${CMAKE_CURRENT_BINARY_DIR}/GL/glcorearb.h"
+            SHOW_PROGRESS
+            STATUS _glcorearb_status)
+        list(GET _khr_status 0 _khr_code)
+        list(GET _glcorearb_status 0 _glcorearb_code)
+        if(NOT _khr_code EQUAL 0 OR NOT _glcorearb_code EQUAL 0)
+            message(FATAL_ERROR "Failed to download GL extension headers: khrplatform=${_khr_status} glcorearb=${_glcorearb_status}")
+        endif()
+        set(GLCOREARB_INCLUDE_DIR "${CMAKE_CURRENT_BINARY_DIR}" CACHE INTERNAL "GL extension headers" FORCE)
     endif()
-    set(GLCOREARB_INCLUDE_DIR "${CMAKE_CURRENT_BINARY_DIR}" CACHE INTERNAL "GL extension headers" FORCE)
+    include_directories(${GLCOREARB_INCLUDE_DIR})
 endif()
-include_directories(${GLCOREARB_INCLUDE_DIR})
 
 if(WIN32)
     find_path(WGLEXT_INCLUDE_DIR GL/wglext.h)
