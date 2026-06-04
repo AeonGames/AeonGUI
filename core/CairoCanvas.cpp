@@ -98,11 +98,15 @@ namespace AeonGUI
 
     void CairoCanvas::Clear()
     {
-        cairo_save ( mCairoContext );
-        cairo_set_operator ( mCairoContext, CAIRO_OPERATOR_CLEAR );
-        cairo_paint ( mCairoContext );
-        cairo_restore ( mCairoContext );
+        if ( mCairoContext )
+        {
+            cairo_save ( mCairoContext );
+            cairo_set_operator ( mCairoContext, CAIRO_OPERATOR_CLEAR );
+            cairo_paint ( mCairoContext );
+            cairo_restore ( mCairoContext );
+        }
     }
+
     CairoCanvas::~CairoCanvas()
     {
         DestroyPickSurface();
