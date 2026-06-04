@@ -4,6 +4,7 @@ on: [push, pull_request]
 
 env:
   BUILD_TYPE: Release
+  HOMEBREW_REQUIRE_TAP_TRUST: 1
 
 permissions:
   contents: read
