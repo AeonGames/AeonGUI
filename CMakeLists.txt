@@ -400,6 +400,7 @@ install(
     include/aeongui/AttributeMap.hpp
     include/aeongui/Canvas.hpp
     include/aeongui/Color.hpp
+    include/aeongui/CompiledDocument.hpp
     include/aeongui/CSSSelector.hpp
     include/aeongui/Cursor.hpp
     include/aeongui/DrawType.hpp
