@@ -43,6 +43,15 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/).
   (`xmlcxx_generate`) wires generation into the build. Purely additive; the
   existing `Document::Load(filename)`/`location()` flow is unchanged.
 
+### Fixed
+
+- **Partial redraws clipped to the wrong rectangle** — the cached pick
+  bounds kept only the last path an element drew instead of the union of
+  all of them. Elements that emit several paths under one pick ID (form
+  control chrome draws a background plus four border edges) reported a
+  border sliver as their bounds, so `:hover`/`:active`/`:focus` changes
+  did not reach the screen until an unrelated full redraw happened.
+
 ## [0.9.0] — 2026-04-02
 
 First pre-release milestone, covering the full SVG rendering pipeline,

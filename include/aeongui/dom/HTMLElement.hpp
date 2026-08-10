@@ -102,6 +102,14 @@ namespace AeonGUI
             /** @brief Lay out and paint this element's inline text content
              *  inside the content box. */
             AEONGUI_DLL void PaintInlineContent ( Canvas& aCanvas ) const;
+            /** @brief Stamp the border box into the pick buffer without
+             *  painting anything visible.
+             *
+             *  Hit testing only sees filled paths, so elements whose
+             *  visible parts don't cover their box (a label's text, a
+             *  slider's thin track) would otherwise be unclickable
+             *  outside those parts. */
+            AEONGUI_DLL void PaintHitArea ( Canvas& aCanvas ) const;
             /** @brief Fill an axis-aligned rectangle with the canvas' current
              *  fill color.  Degenerate rectangles are ignored. */
             AEONGUI_DLL static void FillRect ( Canvas& aCanvas, double aX0, double aY0,

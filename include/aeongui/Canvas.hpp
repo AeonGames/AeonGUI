@@ -15,6 +15,7 @@ limitations under the License.
 */
 #ifndef AEONGUI_CANVAS_H
 #define AEONGUI_CANVAS_H
+#include <algorithm>
 #include <array>
 #include <cstdint>
 #include <cstddef>
@@ -316,9 +317,38 @@ namespace AeonGUI
             return mPickBounds[aId];
         }
     protected:
+        /** @brief Union a device-space rectangle into the current pick ID's
+         *  bounds.
+         *
+         *  An element may emit several paths under one pick ID (form
+         *  control chrome draws a background plus four border edges);
+         *  keeping only the last one would shrink the partial-redraw
+         *  rectangle to whatever happened to be drawn last.
+         */
+        void AccumulatePickBounds ( double aX1, double aY1, double aX2, double aY2 )
+        {
+            PickBounds& bounds = mPickBounds[mPickId];
+            if ( !mPickBoundsValid[mPickId] )
+            {
+                bounds = { aX1, aY1, aX2, aY2 };
+                mPickBoundsValid[mPickId] = true;
+                return;
+            }
+            bounds.x1 = std::min ( bounds.x1, aX1 );
+            bounds.y1 = std::min ( bounds.y1, aY1 );
+            bounds.x2 = std::max ( bounds.x2, aX2 );
+            bounds.y2 = std::max ( bounds.y2, aY2 );
+        }
+        /** @brief Drop the accumulated pick bounds. Backends call this from
+         *  ResetPick so each frame starts a fresh accumulation. */
+        void ResetPickBounds()
+        {
+            mPickBoundsValid.fill ( false );
+        }
         bool mHitTesting{false};                  ///< True when in hit-testing mode.
         uint8_t mPickId{0};                       ///< Current pick ID for Draw calls.
         std::array<PickBounds, 256> mPickBounds{}; ///< Cached device-space bounds per pick ID.
+        std::array<bool, 256> mPickBoundsValid{};  ///< Whether mPickBounds[i] has been written this frame.
         double mViewportWidth{0};                 ///< Current SVG viewport width for percent resolution.
         double mViewportHeight{0};                ///< Current SVG viewport height for percent resolution.
         std::vector<std::pair<double, double>> mViewportStack; ///< Saved viewport dimensions.

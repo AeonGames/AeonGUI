@@ -38,6 +38,8 @@ namespace AeonGUI
             /** @brief The labeled control: the `for` target if present,
              *  otherwise the first form control descendant. */
             AEONGUI_DLL HTMLFormControlElement* control() const;
+
+            AEONGUI_DLL void DrawStart ( Canvas& aCanvas ) const override;
         };
     }
 }

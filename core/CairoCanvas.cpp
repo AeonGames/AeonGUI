@@ -269,7 +269,7 @@ namespace AeonGUI
                     dy2 = cy[i];
                 }
             }
-            mPickBounds[mPickId] = { dx1, dy1, dx2, dy2 };
+            AccumulatePickBounds ( dx1, dy1, dx2, dy2 );
         }
         cairo_new_path ( mCairoContext );
         // Fill path on pick surface for hit testing
@@ -906,6 +906,7 @@ namespace AeonGUI
     void CairoCanvas::ResetPick()
     {
         mPickId = 0;
+        ResetPickBounds();
         if ( mPickContext )
         {
             cairo_save ( mPickContext );

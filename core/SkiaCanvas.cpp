@@ -507,13 +507,11 @@ namespace AeonGUI
             SkMatrix ctm = mCanvas->getTotalMatrix();
             SkRect devBounds;
             ctm.mapRect ( &devBounds, bounds );
-            mPickBounds[mPickId] = { static_cast<double> ( devBounds.fLeft ),
-                                     static_cast<double> ( devBounds.fTop ),
-                                     static_cast<double> ( devBounds.fRight ),
-                                     static_cast<double> ( devBounds.fBottom )
-                                   };
+            AccumulatePickBounds ( static_cast<double> ( devBounds.fLeft ),
+                                   static_cast<double> ( devBounds.fTop ),
+                                   static_cast<double> ( devBounds.fRight ),
+                                   static_cast<double> ( devBounds.fBottom ) );
         }
-
         // Fill pick buffer
         if ( mPickId > 0 && mWidth > 0 && mHeight > 0 )
         {
@@ -1053,6 +1051,7 @@ namespace AeonGUI
     void SkiaCanvas::ResetPick()
     {
         mPickId = 0;
+        ResetPickBounds();
         std::fill ( mPickPixels.begin(), mPickPixels.end(), static_cast<uint8_t> ( 0 ) );
     }
 

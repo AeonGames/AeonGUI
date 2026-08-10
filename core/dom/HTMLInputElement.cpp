@@ -852,14 +852,11 @@ namespace AeonGUI
             FillRect ( aCanvas, box.contentX, center_y - track_height * 0.5,
                        thumb_x, center_y + track_height * 0.5 );
             FillEllipse ( aCanvas, thumb_x, center_y, thumb_radius, thumb_radius );
-
-            // The track and thumb alone leave most of the widget box
-            // untouched, so stamp the whole border box into the pick
-            // buffer to keep the slider clickable end to end.
-            aCanvas.SetFillColor ( ColorAttr{ none{} } );
-            FillRect ( aCanvas, box.x, box.y, box.x + box.width, box.y + box.height );
-
             aCanvas.SetFillColor ( previous_fill );
+
+            // The track and thumb leave most of the widget box untouched;
+            // stamping it keeps the slider clickable end to end.
+            PaintHitArea ( aCanvas );
         }
 
         void HTMLInputElement::PaintRadio ( Canvas& aCanvas ) const

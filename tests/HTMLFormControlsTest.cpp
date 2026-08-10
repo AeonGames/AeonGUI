@@ -89,6 +89,16 @@ namespace
         return raw;
     }
 
+    /// Both canvas backends expose pixels as BGRA8; returned 0xAARRGGBB.
+    uint32_t SamplePixel ( const uint8_t* aPixels, size_t aStride, int aX, int aY )
+    {
+        const uint8_t* p = aPixels + ( aY * aStride ) + ( aX * 4 );
+        return ( static_cast<uint32_t> ( p[3] ) << 24 ) |
+               ( static_cast<uint32_t> ( p[2] ) << 16 ) |
+               ( static_cast<uint32_t> ( p[1] ) <<  8 ) |
+               static_cast<uint32_t> ( p[0] );
+    }
+
     /// Records how many times an event of the registered type fired.
     class CountingListener : public AeonGUI::DOM::EventListener
     {
@@ -484,6 +494,101 @@ TEST ( HTMLFormControls, DraggingARangeThroughTheWindowMovesTheThumb )
     EXPECT_DOUBLE_EQ ( slider->valueAsNumber(), 0.0 );
 
     window.HandleMouseUp ( box.x - 200.0, y );
+}
+
+TEST ( HTMLFormControls, PressingAButtonRepaintsItsWholeBox )
+{
+    // Regression: pick bounds used to keep only the last path drawn
+    // under a pick id, so a control that paints a background plus four
+    // border edges reported the right border sliver as its bounds.
+    // Partial redraws then clipped to that sliver and the :active
+    // chrome never reached the screen until something forced a full
+    // redraw.
+    TempXHTML doc
+    {
+        R"XHTML(<?xml version="1.0" encoding="UTF-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <body>
+    <form>
+      <input type="submit" id="go" value="Send"/>
+    </form>
+  </body>
+</html>)XHTML"
+    };
+
+    AeonGUI::DOM::Window window ( 200u, 200u );
+    window.location() = doc.path();
+    window.Draw();
+
+    auto* button = dynamic_cast<AeonGUI::DOM::HTMLInputElement*> (
+                       window.document()->querySelector ( "input" ) );
+    ASSERT_NE ( button, nullptr );
+
+    const auto& box = button->GetLayoutBox();
+    ASSERT_GT ( box.width,  12.0f );
+    ASSERT_GT ( box.height, 6.0f );
+
+    // Inside the border but left of the centered label, so only the
+    // background colour is under this pixel.
+    const int sample_x = static_cast<int> ( box.x ) + 3;
+    const int sample_y = static_cast<int> ( box.y + box.height * 0.5f );
+    const uint32_t idle = SamplePixel ( window.GetPixels(), window.GetStride(),
+                                        sample_x, sample_y );
+
+    window.HandleMouseDown ( box.x + box.width * 0.5, box.y + box.height * 0.5 );
+    ASSERT_TRUE ( window.Draw() ) << "pressing the button should dirty the document";
+
+    const uint32_t pressed = SamplePixel ( window.GetPixels(), window.GetStride(),
+                                           sample_x, sample_y );
+    EXPECT_NE ( pressed, idle )
+            << "the :active background must repaint on press, not only after release";
+
+    window.HandleMouseUp ( box.x + box.width * 0.5, box.y + box.height * 0.5 );
+    ASSERT_TRUE ( window.Draw() );
+    EXPECT_NE ( SamplePixel ( window.GetPixels(), window.GetStride(), sample_x, sample_y ),
+                pressed )
+            << "releasing must drop the :active background again";
+}
+
+TEST ( HTMLFormControls, ClickingALabelActivatesItsControl )
+{
+    TempXHTML doc
+    {
+        R"XHTML(<?xml version="1.0" encoding="UTF-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <body>
+    <form>
+      <input type="checkbox" id="peas" name="vegetable" value="peas"/>
+      <label for="peas">Peas</label>
+    </form>
+  </body>
+</html>)XHTML"
+    };
+
+    AeonGUI::DOM::Window window ( 200u, 200u );
+    window.location() = doc.path();
+    window.Draw();
+
+    auto* checkbox = dynamic_cast<AeonGUI::DOM::HTMLInputElement*> (
+                         window.document()->querySelector ( "input" ) );
+    auto* label = dynamic_cast<AeonGUI::DOM::HTMLLabelElement*> (
+                      window.document()->querySelector ( "label" ) );
+    ASSERT_NE ( checkbox, nullptr );
+    ASSERT_NE ( label, nullptr );
+    ASSERT_EQ ( label->control(), checkbox );
+    ASSERT_FALSE ( checkbox->checked() );
+
+    // A label paints text only, which does not stamp the pick buffer on
+    // its own; the label has to contribute a hit area to be clickable.
+    const auto& box = label->GetLayoutBox();
+    ASSERT_GT ( box.width,  0.0f );
+    const double x = box.x + box.width  * 0.5;
+    const double y = box.y + box.height * 0.5;
+
+    window.HandleMouseDown ( x, y );
+    window.HandleMouseUp ( x, y );
+
+    EXPECT_TRUE ( checkbox->checked() ) << "clicking a label should activate its control";
 }
 
 TEST ( HTMLFormControls, ClickingThroughTheWindowTogglesACheckbox )

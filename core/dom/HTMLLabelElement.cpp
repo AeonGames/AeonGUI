@@ -16,6 +16,7 @@ limitations under the License.
 #include "aeongui/dom/HTMLLabelElement.hpp"
 #include "aeongui/dom/HTMLFormControlElement.hpp"
 #include "aeongui/dom/Document.hpp"
+#include "aeongui/Canvas.hpp"
 
 namespace AeonGUI
 {
@@ -54,6 +55,14 @@ namespace AeonGUI
                 first = dynamic_cast<HTMLFormControlElement*> ( &aNode );
             } );
             return first;
+        }
+
+        void HTMLLabelElement::DrawStart ( Canvas& aCanvas ) const
+        {
+            HTMLElement::DrawStart ( aCanvas );
+            // Text alone doesn't stamp the pick buffer, so a click
+            // anywhere on the label would otherwise miss it.
+            PaintHitArea ( aCanvas );
         }
     }
 }

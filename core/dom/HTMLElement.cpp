@@ -453,6 +453,20 @@ namespace AeonGUI
             }
         }
 
+        void HTMLElement::PaintHitArea ( Canvas& aCanvas ) const
+        {
+            if ( mLayoutBox.width <= 0.0f || mLayoutBox.height <= 0.0f )
+            {
+                return;
+            }
+            const ColorAttr previous_fill = aCanvas.GetFillColor();
+            aCanvas.SetFillColor ( ColorAttr{ none{} } );
+            FillRect ( aCanvas, mLayoutBox.x, mLayoutBox.y,
+                       mLayoutBox.x + mLayoutBox.width,
+                       mLayoutBox.y + mLayoutBox.height );
+            aCanvas.SetFillColor ( previous_fill );
+        }
+
         void HTMLElement::PaintInlineContent ( Canvas& aCanvas ) const
         {
             if ( mLayoutBox.width <= 0.0f || mLayoutBox.height <= 0.0f )
