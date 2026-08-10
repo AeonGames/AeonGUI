@@ -1,0 +1,137 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <title>Basic native form controls</title>
+    <style type="text/css">
+      body {
+        background-color: #fdfdfd;
+        color: #202020;
+        font-family: sans-serif;
+        font-size: 14px;
+        padding: 12px;
+      }
+      h1 {
+        font-size: 18px;
+        margin-bottom: 8px;
+      }
+      fieldset {
+        margin-bottom: 10px;
+        padding: 6px;
+      }
+      legend {
+        font-weight: bold;
+      }
+      .row {
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        margin-bottom: 6px;
+      }
+      .row label {
+        width: 110px;
+      }
+      .row input[type="checkbox"], .row input[type="radio"] {
+        margin-right: 6px;
+      }
+      input:focus, textarea:focus {
+        border-color: #1a73e8;
+      }
+      .buttons {
+        display: flex;
+        flex-direction: row;
+      }
+      .buttons button, .buttons input {
+        margin-right: 6px;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>Basic native form controls</h1>
+    <form action="#" method="get" name="demo">
+      <fieldset>
+        <legend>Text input fields</legend>
+        <div class="row">
+          <label for="comment">Comment</label>
+          <input type="text" id="comment" name="comment" value="I'm a text field" size="26"/>
+        </div>
+        <div class="row">
+          <label for="pwd">Password</label>
+          <input type="password" id="pwd" name="pwd" size="26"/>
+        </div>
+        <div class="row">
+          <label for="nickname">Nickname</label>
+          <input type="text" id="nickname" name="nickname" placeholder="Type something" size="26"/>
+        </div>
+        <div class="row">
+          <label for="frozen">Read only</label>
+          <input type="text" id="frozen" name="frozen" value="Cannot be edited" readonly="readonly" size="26"/>
+        </div>
+        <div class="row">
+          <label for="off">Disabled</label>
+          <input type="text" id="off" name="off" value="Disabled" disabled="disabled" size="26"/>
+        </div>
+        <div class="row">
+          <label for="bio">Biography</label>
+          <textarea id="bio" name="bio" rows="3" cols="26">Multi-line text.</textarea>
+        </div>
+        <input type="hidden" id="timestamp" name="timestamp" value="1286705410"/>
+      </fieldset>
+
+      <fieldset>
+        <legend>Choose all the vegetables you like to eat</legend>
+        <div class="row">
+          <input type="checkbox" id="carrots" name="vegetable" value="carrots" checked="checked"/>
+          <label for="carrots">Carrots</label>
+        </div>
+        <div class="row">
+          <input type="checkbox" id="peas" name="vegetable" value="peas"/>
+          <label for="peas">Peas</label>
+        </div>
+        <div class="row">
+          <input type="checkbox" id="cabbage" name="vegetable" value="cabbage"/>
+          <label for="cabbage">Cabbage</label>
+        </div>
+      </fieldset>
+
+      <fieldset>
+        <legend>What is your favorite meal?</legend>
+        <div class="row">
+          <input type="radio" id="soup" name="meal" value="soup" checked="checked"/>
+          <label for="soup">Soup</label>
+        </div>
+        <div class="row">
+          <input type="radio" id="curry" name="meal" value="curry"/>
+          <label for="curry">Curry</label>
+        </div>
+        <div class="row">
+          <input type="radio" id="pizza" name="meal" value="pizza"/>
+          <label for="pizza">Pizza</label>
+        </div>
+      </fieldset>
+
+      <fieldset>
+        <legend>Sliders</legend>
+        <div class="row">
+          <label for="volume">Volume</label>
+          <input type="range" id="volume" name="volume" min="0" max="100" value="70"/>
+        </div>
+        <div class="row">
+          <label for="gamma">Gamma</label>
+          <input type="range" id="gamma" name="gamma" min="0.5" max="3" step="any" value="1.8"
+                 style="color: #1a73e8; width: 200px"/>
+        </div>
+        <div class="row">
+          <label for="quality">Quality</label>
+          <input type="range" id="quality" name="quality" min="0" max="4" step="1" value="2"
+                 disabled="disabled"/>
+        </div>
+      </fieldset>
+
+      <div class="buttons">
+        <input type="submit" value="Submit this form"/>
+        <input type="reset" value="Reset this form"/>
+        <button type="button">Do nothing</button>
+      </div>
+    </form>
+  </body>
+</html>

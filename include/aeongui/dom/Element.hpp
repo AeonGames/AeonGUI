@@ -96,6 +96,19 @@ namespace AeonGUI
              *  @return true if this element has focus.
              */
             AEONGUI_DLL bool isFocus() const;
+            /** @brief Whether this element type supports the disabled state.
+             *
+             *  Only elements that answer true can match :enabled or
+             *  :disabled, per the Selectors spec — a plain &lt;div&gt;
+             *  matches neither.
+             *  @return true for form controls, false otherwise. */
+            AEONGUI_DLL virtual bool canBeDisabled() const;
+            /** @brief Check the :disabled pseudo-class state.
+             *  @return true if this element is a disabled form control. */
+            AEONGUI_DLL virtual bool isDisabled() const;
+            /** @brief Check the :checked pseudo-class state.
+             *  @return true if this element is a checked checkbox or radio. */
+            AEONGUI_DLL virtual bool isChecked() const;
             /** @brief Set the :hover pseudo-class state.
              *  @param aHover true if the element is hovered. */
             void setHover ( bool aHover );

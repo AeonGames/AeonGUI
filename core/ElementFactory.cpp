@@ -57,6 +57,12 @@ limitations under the License.
 #include "aeongui/dom/HTMLSpanElement.hpp"
 #include "aeongui/dom/HTMLImageElement.hpp"
 #include "aeongui/dom/HTMLParagraphElement.hpp"
+#include "aeongui/dom/HTMLFormElement.hpp"
+#include "aeongui/dom/HTMLInputElement.hpp"
+#include "aeongui/dom/HTMLButtonElement.hpp"
+#include "aeongui/dom/HTMLTextAreaElement.hpp"
+#include "aeongui/dom/HTMLLabelElement.hpp"
+#include "aeongui/dom/HTMLFieldSetElement.hpp"
 #include "aeongui/dom/HTMLElement.hpp"
 
 namespace AeonGUI
@@ -135,6 +141,13 @@ namespace AeonGUI
             MakeConstructor<DOM::HTMLSpanElement>      ( StringLiteral{"http://www.w3.org/1999/xhtml"}, StringLiteral{"span"} ),
             MakeConstructor<DOM::HTMLImageElement>     ( StringLiteral{"http://www.w3.org/1999/xhtml"}, StringLiteral{"img"} ),
             MakeConstructor<DOM::HTMLParagraphElement> ( StringLiteral{"http://www.w3.org/1999/xhtml"}, StringLiteral{"p"} ),
+            MakeConstructor<DOM::HTMLFormElement>      ( StringLiteral{"http://www.w3.org/1999/xhtml"}, StringLiteral{"form"} ),
+            MakeConstructor<DOM::HTMLInputElement>     ( StringLiteral{"http://www.w3.org/1999/xhtml"}, StringLiteral{"input"} ),
+            MakeConstructor<DOM::HTMLButtonElement>    ( StringLiteral{"http://www.w3.org/1999/xhtml"}, StringLiteral{"button"} ),
+            MakeConstructor<DOM::HTMLTextAreaElement>  ( StringLiteral{"http://www.w3.org/1999/xhtml"}, StringLiteral{"textarea"} ),
+            MakeConstructor<DOM::HTMLLabelElement>     ( StringLiteral{"http://www.w3.org/1999/xhtml"}, StringLiteral{"label"} ),
+            MakeConstructor<DOM::HTMLFieldSetElement>  ( StringLiteral{"http://www.w3.org/1999/xhtml"}, StringLiteral{"fieldset"} ),
+            MakeConstructor<DOM::HTMLLegendElement>    ( StringLiteral{"http://www.w3.org/1999/xhtml"}, StringLiteral{"legend"} ),
         };
         return sConstructors;
     }

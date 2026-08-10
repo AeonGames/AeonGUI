@@ -180,9 +180,10 @@ namespace AeonGUI
         /// Minimal HTML user-agent stylesheet.  libcss has no built-in
         /// HTML knowledge — without this, every element computes
         /// `display: inline` (the CSS spec default), which is wrong for
-        /// every block-level HTML element.  Only `display: block` rules
-        /// are included; layout-affecting properties like padding/border
-        /// stay at their CSS-spec defaults so authors can override
+        /// every block-level HTML element.  Besides `display`, the only
+        /// other rules are the default chrome for native form controls,
+        /// which browsers also supply from their UA sheet.  Everything
+        /// else stays at its CSS-spec default so authors can override
         /// without having to fight the UA sheet.  The sheet is parsed
         /// once per process and shared across every Element via the
         /// libcss CSS_ORIGIN_UA cascade slot.
@@ -195,7 +196,34 @@ namespace AeonGUI
                 "nav, main, aside, h1, h2, h3, h4, h5, h6, blockquote, "
                 "pre, ul, ol, li, dl, dt, dd, fieldset, form, hr, "
                 "address, figure, figcaption "
-                "{ display: block; }\n";
+                "{ display: block; }\n"
+                "input, button, textarea, select, label, legend "
+                "{ display: inline-block; }\n"
+                "input[type=\"hidden\"] { display: none; }\n"
+                // File pickers and image buttons need privileges and
+                // submission semantics an embedded UI has no business
+                // assuming, so they render as nothing at all.
+                "input[type=\"file\"], input[type=\"image\"] { display: none; }\n"
+                "input, textarea "
+                "{ border: 1px solid #767676; background-color: #ffffff; "
+                "color: #000000; padding: 1px 2px; }\n"
+                "button, input[type=\"button\"], input[type=\"submit\"], "
+                "input[type=\"reset\"] "
+                "{ border: 2px solid #767676; background-color: #efefef; "
+                "color: #000000; padding: 1px 6px; text-align: center; }\n"
+                "input[type=\"checkbox\"], input[type=\"radio\"] "
+                "{ width: 13px; height: 13px; padding: 0; "
+                "border: 1px solid #767676; background-color: #ffffff; }\n"
+                "input[type=\"range\"] "
+                "{ width: 129px; height: 21px; padding: 0; "
+                "border: none; background-color: transparent; }\n"
+                "input:disabled, button:disabled, textarea:disabled, "
+                "select:disabled "
+                "{ color: #7f7f7f; background-color: #efefef; "
+                "border-color: #b4b4b4; }\n"
+                "input[type=\"range\"]:disabled { background-color: transparent; }\n"
+                "fieldset { border: 2px solid #c0c0c0; padding: 2px; }\n"
+                "legend { padding: 0 2px; }\n";
 
                 css_stylesheet_params params{};
                 params.params_version = CSS_STYLESHEET_PARAMS_VERSION_1;
@@ -628,6 +656,21 @@ namespace AeonGUI
             return mIsFocus;
         }
 
+        bool Element::canBeDisabled() const
+        {
+            return false;
+        }
+
+        bool Element::isDisabled() const
+        {
+            return false;
+        }
+
+        bool Element::isChecked() const
+        {
+            return false;
+        }
+
         void Element::setHover ( bool aHover )
         {
             mIsHover = aHover;
@@ -848,14 +891,20 @@ namespace AeonGUI
             return CSS_OK;
         }
 
+        /// libwapcaplet strings are explicitly not guaranteed to be
+        /// NUL terminated, so always pair data with length.
+        static DOMString ToDOMString ( lwc_string* aString )
+        {
+            return DOMString{ lwc_string_data ( aString ), lwc_string_length ( aString ) };
+        }
+
         css_error node_has_attribute ( void *pw, void *n,
                                        const css_qname *qname,
                                        bool *match )
         {
             ( void ) ( pw );
-            ( void ) ( n );
-            ( void ) ( qname );
-            *match = false;
+            DOM::Element *element {reinterpret_cast<DOM::Element*> ( n ) };
+            *match = element->getAttribute ( ToDOMString ( qname->name ) ) != nullptr;
             return CSS_OK;
         }
 
@@ -865,10 +914,10 @@ namespace AeonGUI
                                              bool *match )
         {
             ( void ) ( pw );
-            ( void ) ( n );
-            ( void ) ( qname );
-            ( void ) ( value );
-            *match = false;
+            DOM::Element *element {reinterpret_cast<DOM::Element*> ( n ) };
+            const DOMString* attribute =
+                element->getAttribute ( ToDOMString ( qname->name ) );
+            *match = attribute != nullptr && *attribute == ToDOMString ( value );
             return CSS_OK;
         }
 
@@ -1015,24 +1064,24 @@ namespace AeonGUI
         css_error node_is_enabled ( void *pw, void *n, bool *match )
         {
             ( void ) ( pw );
-            ( void ) ( n );
-            *match = false;
+            Element *element {reinterpret_cast<Element*> ( n ) };
+            *match = element->canBeDisabled() && !element->isDisabled();
             return CSS_OK;
         }
 
         css_error node_is_disabled ( void *pw, void *n, bool *match )
         {
             ( void ) ( pw );
-            ( void ) ( n );
-            *match = false;
+            Element *element {reinterpret_cast<Element*> ( n ) };
+            *match = element->canBeDisabled() && element->isDisabled();
             return CSS_OK;
         }
 
         css_error node_is_checked ( void *pw, void *n, bool *match )
         {
             ( void ) ( pw );
-            ( void ) ( n );
-            *match = false;
+            Element *element {reinterpret_cast<Element*> ( n ) };
+            *match = element->isChecked();
             return CSS_OK;
         }
 

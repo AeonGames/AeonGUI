@@ -220,6 +220,10 @@ namespace AeonGUI
         private:
             void OnLocationChanged ( const Location& location );
             Element* elementFromPoint ( double aX, double aY ) const;
+            /// Run the HTML activation behavior for a clicked element:
+            /// toggling checkboxes, submitting forms, forwarding label
+            /// clicks to the control they label.
+            void RunActivationBehavior ( Element* aTarget );
             void FullDraw();
             void PartialDraw();
             void AssignPickIds();

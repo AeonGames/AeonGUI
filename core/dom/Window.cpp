@@ -37,6 +37,8 @@ limitations under the License.
 #include "aeongui/dom/WheelEvent.hpp"
 #include "aeongui/dom/FocusEvent.hpp"
 #include "aeongui/dom/HTMLElement.hpp"
+#include "aeongui/dom/HTMLFormControlElement.hpp"
+#include "aeongui/dom/HTMLLabelElement.hpp"
 #include "aeongui/HTMLLayoutEngine.hpp"
 #include <vector>
 #include <algorithm>
@@ -195,8 +197,14 @@ namespace AeonGUI
             mPickElements.fill ( nullptr );
             mDocument.Draw ( *mCanvas, [this] ( const Node & aNode )
             {
+                // SVG geometry and native HTML form controls are the
+                // only elements that paint a shape we can hit-test
+                // against; everything else stays transparent to picks
+                // so clicks fall through to what's behind it.
                 if ( aNode.nodeType() == Node::ELEMENT_NODE &&
-                     dynamic_cast<const SVGGeometryElement * > ( &aNode ) &&
+                     ( dynamic_cast<const SVGGeometryElement * > ( &aNode ) ||
+                       dynamic_cast<const HTMLFormControlElement * > ( &aNode ) ||
+                       dynamic_cast<const HTMLLabelElement * > ( &aNode ) ) &&
                      mPickIdCounter < 255 )
                 {
                     ++mPickIdCounter;
@@ -465,6 +473,13 @@ namespace AeonGUI
                 MouseEvent moveEvent ( "mousemove", MouseEventInit{EventModifierInit{UIEventInit{EventInit{true, true, false}, this, 0}, aCtrlKey, aShiftKey, aAltKey, aMetaKey}, aX, aY, aX, aY, 0, aButtons, nullptr} );
                 target->dispatchEvent ( moveEvent );
             }
+            // A control captured on mousedown keeps receiving the pointer
+            // even once it wanders outside the widget, so slider drags
+            // don't stop at the widget edge.
+            if ( auto * dragging = dynamic_cast<HTMLFormControlElement * > ( mActiveElement ) )
+            {
+                dragging->HandlePointerDrag ( aX, aY );
+            }
             BlitCursor();
         }
 
@@ -516,7 +531,13 @@ namespace AeonGUI
             if ( target )
             {
                 MouseEvent downEvent ( "mousedown", MouseEventInit{EventModifierInit{UIEventInit{EventInit{true, true, false}, this, 0}, aCtrlKey, aShiftKey, aAltKey, aMetaKey}, aX, aY, aX, aY, aButton, aButtons, nullptr} );
-                target->dispatchEvent ( downEvent );
+                if ( target->dispatchEvent ( downEvent ) )
+                {
+                    if ( auto * control = dynamic_cast<HTMLFormControlElement * > ( target ) )
+                    {
+                        control->HandlePointerDrag ( aX, aY );
+                    }
+                }
             }
             BlitCursor();
         }
@@ -533,6 +554,10 @@ namespace AeonGUI
             // Clear :active state
             if ( mActiveElement )
             {
+                if ( auto * dragging = dynamic_cast<HTMLFormControlElement * > ( mActiveElement ) )
+                {
+                    dragging->EndPointerDrag();
+                }
                 mActiveElement->setActive ( false );
                 mActiveElement->ReselectCSS();
                 mActiveElement = nullptr;
@@ -544,9 +569,40 @@ namespace AeonGUI
                 target->dispatchEvent ( upEvent );
                 // Fire click after mouseup on the same element
                 MouseEvent clickEvent ( "click", MouseEventInit{EventModifierInit{UIEventInit{EventInit{true, true, false}, this, 1}, aCtrlKey, aShiftKey, aAltKey, aMetaKey}, aX, aY, aX, aY, aButton, aButtons, nullptr} );
-                target->dispatchEvent ( clickEvent );
+                if ( target->dispatchEvent ( clickEvent ) )
+                {
+                    RunActivationBehavior ( target );
+                }
             }
             BlitCursor();
+        }
+
+        void Window::RunActivationBehavior ( Element* aTarget )
+        {
+            HTMLFormControlElement* control =
+                dynamic_cast<HTMLFormControlElement*> ( aTarget );
+            if ( !control )
+            {
+                // Clicking a label activates and focuses the control
+                // it labels, per the HTML activation behavior.
+                auto* label = dynamic_cast<HTMLLabelElement*> ( aTarget );
+                control = label ? label->control() : nullptr;
+                if ( control && control != mFocusedElement )
+                {
+                    if ( mFocusedElement )
+                    {
+                        mFocusedElement->setFocus ( false );
+                        mFocusedElement->ReselectCSS();
+                    }
+                    mFocusedElement = control;
+                    mFocusedElement->setFocus ( true );
+                    mFocusedElement->ReselectCSS();
+                }
+            }
+            if ( control )
+            {
+                control->Activate();
+            }
         }
 
         void Window::HandleKeyDown ( const DOMString& aKey, const DOMString& aCode,
@@ -556,7 +612,16 @@ namespace AeonGUI
         {
             EventTarget* target = mFocusedElement ? static_cast<EventTarget*> ( mFocusedElement ) : static_cast<EventTarget*> ( this );
             KeyboardEvent keyDownEvent ( "keydown", KeyboardEventInit{EventModifierInit{UIEventInit{EventInit{true, true, false}, this, 0}, aCtrlKey, aShiftKey, aAltKey, aMetaKey}, aKey, aCode, aLocation, aRepeat, false} );
-            target->dispatchEvent ( keyDownEvent );
+            if ( !target->dispatchEvent ( keyDownEvent ) )
+            {
+                return;
+            }
+            // Default action: let a focused native form control consume
+            // the key (text editing, space to toggle, Enter to submit).
+            if ( auto * control = dynamic_cast<HTMLFormControlElement * > ( mFocusedElement ) )
+            {
+                control->HandleKey ( aKey );
+            }
         }
 
         void Window::HandleKeyUp ( const DOMString& aKey, const DOMString& aCode,

@@ -87,6 +87,9 @@ public:
     LRESULT OnMouseMove ( int32_t x, int32_t y );
     LRESULT OnMouseButtonDown ( uint8_t button, int32_t x, int32_t y );
     LRESULT OnMouseButtonUp ( uint8_t button, int32_t x, int32_t y );
+    LRESULT OnKeyDown ( WPARAM aVirtualKey );
+    LRESULT OnKeyUp ( WPARAM aVirtualKey );
+    LRESULT OnChar ( WPARAM aCharacter );
     static LRESULT CALLBACK WindowProc ( HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam );
     static void Register ( HINSTANCE hInstance );
     void RenderLoop();
@@ -438,10 +441,13 @@ LRESULT CALLBACK Window::WindowProc ( HWND hwnd, UINT uMsg, WPARAM wParam, LPARA
         lresult = window_ptr->OnSize ( wParam, LOWORD ( lParam ), HIWORD ( lParam ) );
         break;
     case WM_KEYDOWN:
-        lresult = DefWindowProc ( hwnd, uMsg, wParam, lParam );
+        lresult = window_ptr->OnKeyDown ( wParam );
         break;
     case WM_KEYUP:
-        lresult = DefWindowProc ( hwnd, uMsg, wParam, lParam );
+        lresult = window_ptr->OnKeyUp ( wParam );
+        break;
+    case WM_CHAR:
+        lresult = window_ptr->OnChar ( wParam );
         break;
     case WM_MOUSEMOVE:
         lresult = window_ptr->OnMouseMove ( GET_X_LPARAM ( lParam ), GET_Y_LPARAM ( lParam ) );
@@ -531,6 +537,80 @@ LRESULT Window::OnMouseButtonUp ( uint8_t button, int32_t x, int32_t y )
 {
     short domButton = ( button == 1 ) ? 0 : ( button == 2 ) ? 2 : ( button == 3 ) ? 1 : 0;
     mWindow.HandleMouseUp ( static_cast<double> ( x ), static_cast<double> ( y ), domButton );
+    return 0;
+}
+
+/** Map a Windows virtual key to the DOM UI Events `key` value.
+ *  Printable characters are intentionally left to WM_CHAR, which
+ *  already applies the keyboard layout and dead-key composition.
+ *  @return nullptr for keys WM_CHAR will deliver instead.
+ */
+static const char* VirtualKeyToDOMKey ( WPARAM aVirtualKey )
+{
+    switch ( aVirtualKey )
+    {
+    case VK_BACK:
+        return "Backspace";
+    case VK_DELETE:
+        return "Delete";
+    case VK_LEFT:
+        return "ArrowLeft";
+    case VK_RIGHT:
+        return "ArrowRight";
+    case VK_UP:
+        return "ArrowUp";
+    case VK_DOWN:
+        return "ArrowDown";
+    case VK_HOME:
+        return "Home";
+    case VK_END:
+        return "End";
+    case VK_RETURN:
+        return "Enter";
+    case VK_TAB:
+        return "Tab";
+    case VK_ESCAPE:
+        return "Escape";
+    default:
+        return nullptr;
+    }
+}
+
+LRESULT Window::OnKeyDown ( WPARAM aVirtualKey )
+{
+    if ( const char * key = VirtualKeyToDOMKey ( aVirtualKey ) )
+    {
+        mWindow.HandleKeyDown ( key, key );
+    }
+    return 0;
+}
+
+LRESULT Window::OnKeyUp ( WPARAM aVirtualKey )
+{
+    if ( const char * key = VirtualKeyToDOMKey ( aVirtualKey ) )
+    {
+        mWindow.HandleKeyUp ( key, key );
+    }
+    return 0;
+}
+
+LRESULT Window::OnChar ( WPARAM aCharacter )
+{
+    // WM_CHAR delivers UTF-16 after layout translation; control
+    // characters have already been reported through WM_KEYDOWN.
+    const wchar_t utf16[2] = { static_cast<wchar_t> ( aCharacter ), L'\0' };
+    if ( utf16[0] < 0x20 || utf16[0] == 0x7F )
+    {
+        return 0;
+    }
+    char utf8[8] = {};
+    const int written = WideCharToMultiByte ( CP_UTF8, 0, utf16, 1, utf8, sizeof ( utf8 ) - 1, nullptr, nullptr );
+    if ( written <= 0 )
+    {
+        return 0;
+    }
+    mWindow.HandleKeyDown ( utf8, utf8 );
+    mWindow.HandleKeyUp ( utf8, utf8 );
     return 0;
 }
 

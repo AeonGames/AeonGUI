@@ -17,6 +17,7 @@ limitations under the License.
 #define AEONGUI_HTMLELEMENT_H
 
 #include "Element.hpp"
+#include "aeongui/Color.hpp"
 
 namespace AeonGUI
 {
@@ -91,6 +92,33 @@ namespace AeonGUI
             /// HTML layout/render passes can read styles without being a
             /// friend of every Element subclass.
             using Element::GetComputedStyles;
+
+        protected:
+            /** @brief Paint background-color and borders over the laid-out
+             *  border box.  Split out of DrawStart so form controls can
+             *  reuse the CSS box chrome and then paint their own widget
+             *  content on top. */
+            AEONGUI_DLL void PaintBox ( Canvas& aCanvas ) const;
+            /** @brief Lay out and paint this element's inline text content
+             *  inside the content box. */
+            AEONGUI_DLL void PaintInlineContent ( Canvas& aCanvas ) const;
+            /** @brief Fill an axis-aligned rectangle with the canvas' current
+             *  fill color.  Degenerate rectangles are ignored. */
+            AEONGUI_DLL static void FillRect ( Canvas& aCanvas, double aX0, double aY0,
+                                               double aX1, double aY1 );
+            /** @brief Fill an axis-aligned ellipse with the canvas' current
+             *  fill color, used for radio button chrome. */
+            AEONGUI_DLL static void FillEllipse ( Canvas& aCanvas, double aCenterX, double aCenterY,
+                                                  double aRadiusX, double aRadiusY );
+            /** @brief Fill a closed polygon with the canvas' current fill color.
+             *  @param aCanvas     Target canvas.
+             *  @param aPoints     Interleaved x/y coordinates.
+             *  @param aPointCount Number of (x, y) pairs in @p aPoints. */
+            AEONGUI_DLL static void FillPolygon ( Canvas& aCanvas, const double* aPoints,
+                                                  size_t aPointCount );
+            /** @brief Resolve the computed `color` property to a paint color.
+             *  @return false when the color is fully transparent. */
+            AEONGUI_DLL bool ResolveTextColor ( ColorAttr& aOut ) const;
 
         private:
             LayoutBox mLayoutBox{};

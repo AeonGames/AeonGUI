@@ -7,6 +7,30 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/).
 
 ### Added
 
+- **Basic native form controls (XHTML)** — `<form>`, `<input>`, `<button>`,
+  `<textarea>`, `<label>`, `<fieldset>`, and `<legend>` are now real DOM
+  elements with UA-stylesheet chrome, intrinsic layout sizes, widget
+  painting, and interaction. `<input>` supports the original type set:
+  `text`, `password`, `search`, `tel`, `url`, `email`, `number`, `hidden`,
+  `checkbox`, `radio`, `button`, `submit`, and `reset`. Clicking hit-tests
+  through the pick buffer to toggle checkables and run activation
+  behavior; a focused control consumes keys for caret movement and text
+  editing. `HTMLFormElement::GetFormData()` builds the submission entry
+  list and `submit()`/`reset()` fire cancelable DOM events so the host
+  decides what happens next — there is no networking. `type="file"` and
+  `type="image"` are deliberately unsupported: they need privileges and
+  submission semantics an embedded UI should not assume.
+- **`<input type="range">`** — a horizontal slider with `min`, `max`, and
+  `step` (including `step="any"`), value sanitization per the HTML value
+  algorithm, `valueAsNumber()`/`setValueAsNumber()`, arrow/Page/Home/End
+  keyboard stepping, and pointer capture so a drag keeps tracking after
+  the cursor leaves the widget. The track and thumb pick up the computed
+  `color`, so authors theme it with plain CSS.
+- **CSS `:enabled` / `:disabled` / `:checked` and attribute selectors** —
+  the libcss select handler now answers these from the DOM instead of
+  returning a constant false, so `input[type="checkbox"]:checked` and
+  friends match.
+
 - **xmlcxx compiled documents** — a build-time tool (`tools/xmlcxx`) parses an
   `.xhtml`/`.svg` file with libxml2 and emits C++ that builds the DOM tree
   imperatively (no runtime XML parse) and embeds `type="text/c++"` `<script>`

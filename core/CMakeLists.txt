@@ -24,6 +24,10 @@ set(AEONGUI_HEADERS
     ../include/aeongui/TextLayout.hpp
     ../include/aeongui/FontDatabase.hpp
 )
+# Core-private headers: not installed, included by quoted path.
+set(AEONGUI_PRIVATE_HEADERS
+    AsciiCase.hpp
+)
 if(BACKEND STREQUAL "Cairo")
     set(AEONGUI_BACKEND_HEADERS
         CairoCanvas.hpp
@@ -216,6 +220,13 @@ list(APPEND AEONGUI_DOM_HEADERS
     ../include/aeongui/dom/HTMLSpanElement.hpp
     ../include/aeongui/dom/HTMLImageElement.hpp
     ../include/aeongui/dom/HTMLParagraphElement.hpp
+    ../include/aeongui/dom/HTMLFormElement.hpp
+    ../include/aeongui/dom/HTMLFormControlElement.hpp
+    ../include/aeongui/dom/HTMLInputElement.hpp
+    ../include/aeongui/dom/HTMLButtonElement.hpp
+    ../include/aeongui/dom/HTMLTextAreaElement.hpp
+    ../include/aeongui/dom/HTMLLabelElement.hpp
+    ../include/aeongui/dom/HTMLFieldSetElement.hpp
 )
 list(APPEND AEONGUI_DOM_SOURCES
     dom/HTMLElement.cpp
@@ -225,6 +236,13 @@ list(APPEND AEONGUI_DOM_SOURCES
     dom/HTMLSpanElement.cpp
     dom/HTMLImageElement.cpp
     dom/HTMLParagraphElement.cpp
+    dom/HTMLFormElement.cpp
+    dom/HTMLFormControlElement.cpp
+    dom/HTMLInputElement.cpp
+    dom/HTMLButtonElement.cpp
+    dom/HTMLTextAreaElement.cpp
+    dom/HTMLLabelElement.cpp
+    dom/HTMLFieldSetElement.cpp
 )
 list(APPEND AEONGUI_HEADERS
     ../include/aeongui/HTMLLayoutEngine.hpp
@@ -249,7 +267,7 @@ endif(USE_CUDA)
 parser_code(path_data ${CMAKE_CURRENT_SOURCE_DIR}/parsers ${CMAKE_CURRENT_SOURCE_DIR}/parsers)
 #parser_code(style ${CMAKE_CURRENT_SOURCE_DIR}/parsers ${CMAKE_CURRENT_SOURCE_DIR}/parsers)
 
-add_library(AeonGUI SHARED ${AEONGUI_HEADERS} ${AEONGUI_BACKEND_HEADERS} ${AEONGUI_SOURCES} ${AEONGUI_DOM_HEADERS} ${AEONGUI_DOM_SOURCES} ${AEONGUI_RESOURCES} ${BISON_path_data_parser_OUTPUTS} ${FLEX_path_data_lexer_OUTPUTS})
+add_library(AeonGUI SHARED ${AEONGUI_HEADERS} ${AEONGUI_PRIVATE_HEADERS} ${AEONGUI_BACKEND_HEADERS} ${AEONGUI_SOURCES} ${AEONGUI_DOM_HEADERS} ${AEONGUI_DOM_SOURCES} ${AEONGUI_RESOURCES} ${BISON_path_data_parser_OUTPUTS} ${FLEX_path_data_lexer_OUTPUTS})
 target_include_directories(AeonGUI
     PUBLIC
         $<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}/include>

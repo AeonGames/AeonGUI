@@ -16,6 +16,7 @@ limitations under the License.
 
 #include "aeongui/HTMLLayoutEngine.hpp"
 #include "aeongui/dom/HTMLElement.hpp"
+#include "aeongui/dom/HTMLFormControlElement.hpp"
 #include "aeongui/dom/HTMLImageElement.hpp"
 #include "aeongui/dom/Node.hpp"
 #include "aeongui/dom/SVGSVGElement.hpp"
@@ -482,6 +483,26 @@ namespace AeonGUI
             };
         }
 
+        /// Yoga measure callback for a native form control that paints
+        /// its own widget chrome (&lt;input&gt;, &lt;textarea&gt;).  The
+        /// intrinsic size comes from the control itself so the layout
+        /// engine does not need to know about `size`, `rows`, or
+        /// checkbox metrics.
+        YGSize MeasureHTMLFormControl ( YGNodeConstRef aNode,
+                                        float /*aAvailWidth*/, YGMeasureMode /*aWidthMode*/,
+                                        float /*aAvailHeight*/, YGMeasureMode /*aHeightMode*/ )
+        {
+            auto* control = static_cast<DOM::HTMLFormControlElement*> (
+                                YGNodeGetContext ( const_cast<YGNodeRef> ( aNode ) ) );
+            float width{0.0f};
+            float height{0.0f};
+            if ( !control || !control->GetIntrinsicContentSize ( width, height ) )
+            {
+                return YGSize{ 0.0f, 0.0f };
+            }
+            return YGSize{ SanitizeMeasurement ( width ), SanitizeMeasurement ( height ) };
+        }
+
         /// Yoga measure callback for an inline <svg> embedded in an
         /// HTML document.  Reports the SVG's intrinsic dimensions
         /// (width/height attributes, falling back to viewBox dims).
@@ -525,6 +546,13 @@ namespace AeonGUI
                 {
                     // Non-HTML children (comments, inline SVG…) — let
                     // the regular path deal with them.
+                    return false;
+                }
+                if ( dynamic_cast<DOM::HTMLFormControlElement * > ( html ) ||
+                     dynamic_cast<DOM::HTMLImageElement * > ( html ) )
+                {
+                    // Replaced content needs its own box; it cannot be
+                    // folded into the parent's single text run.
                     return false;
                 }
                 if ( !IsInlineLevelHTMLElement ( *html ) )
@@ -583,6 +611,24 @@ namespace AeonGUI
                 YGNodeSetContext ( node, image );
                 YGNodeSetMeasureFunc ( node, MeasureHTMLImage );
                 return node;
+            }
+
+            // Native form controls are inline-level replaced content:
+            // pinned to flex-start so they don't stretch, and sized
+            // from their own intrinsic metrics when they paint their
+            // own chrome.  <button> reports no intrinsic size and
+            // falls through to the regular text-content path.
+            if ( auto * control = dynamic_cast<DOM::HTMLFormControlElement * > ( aElement ) )
+            {
+                YGNodeStyleSetAlignSelf ( node, YGAlignFlexStart );
+                float intrinsic_width{0.0f};
+                float intrinsic_height{0.0f};
+                if ( control->GetIntrinsicContentSize ( intrinsic_width, intrinsic_height ) )
+                {
+                    YGNodeSetContext ( node, control );
+                    YGNodeSetMeasureFunc ( node, MeasureHTMLFormControl );
+                    return node;
+                }
             }
 
             // If the element has no HTMLElement children but does have

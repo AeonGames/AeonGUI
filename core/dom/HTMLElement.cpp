@@ -14,6 +14,8 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 #include "aeongui/dom/HTMLElement.hpp"
+#include "aeongui/dom/HTMLFormControlElement.hpp"
+#include "aeongui/dom/HTMLImageElement.hpp"
 #include "aeongui/dom/Text.hpp"
 #include "aeongui/Canvas.hpp"
 #include "aeongui/Color.hpp"
@@ -29,6 +31,7 @@ limitations under the License.
 #include <pango/pango.h>
 #include <array>
 #include <cctype>
+#include <vector>
 
 namespace AeonGUI
 {
@@ -45,34 +48,6 @@ namespace AeonGUI
 #else
             using BackendPath = CairoPath;
 #endif
-
-            /// Build a closed-rectangle path (M H V H Z) from two
-            /// corners and emit it on the canvas using the current
-            /// fill color.
-            void FillRect ( Canvas& aCanvas, double aX0, double aY0,
-                            double aX1, double aY1 )
-            {
-                if ( aX1 <= aX0 || aY1 <= aY0 )
-                {
-                    return;
-                }
-                std::array<DrawType, 10> commands{};
-                size_t i = 0;
-                commands[i++] = static_cast<uint64_t> ( 'M' );
-                commands[i++] = aX0;
-                commands[i++] = aY0;
-                commands[i++] = static_cast<uint64_t> ( 'H' );
-                commands[i++] = aX1;
-                commands[i++] = static_cast<uint64_t> ( 'V' );
-                commands[i++] = aY1;
-                commands[i++] = static_cast<uint64_t> ( 'H' );
-                commands[i++] = aX0;
-                commands[i++] = static_cast<uint64_t> ( 'Z' );
-
-                BackendPath path;
-                path.Construct ( commands.data(), i );
-                aCanvas.Draw ( path );
-            }
 
             /// Map a CSS border-width result to layout pixels using
             /// the same THIN/MEDIUM/THICK convention as the layout
@@ -171,6 +146,13 @@ namespace AeonGUI
                     {
                         return false;
                     }
+                    if ( dynamic_cast<HTMLFormControlElement * > ( html ) ||
+                         dynamic_cast<HTMLImageElement * > ( html ) )
+                    {
+                        // Replaced content paints itself into its own
+                        // box; it never joins the parent's text run.
+                        return false;
+                    }
                     if ( !IsInlineFormattingContainer ( *html ) )
                     {
                         return false;
@@ -232,7 +214,139 @@ namespace AeonGUI
             }
         }
 
+        void HTMLElement::FillRect ( Canvas& aCanvas, double aX0, double aY0,
+                                     double aX1, double aY1 )
+        {
+            if ( aX1 <= aX0 || aY1 <= aY0 )
+            {
+                return;
+            }
+            std::array<DrawType, 10> commands{};
+            size_t i = 0;
+            commands[i++] = static_cast<uint64_t> ( 'M' );
+            commands[i++] = aX0;
+            commands[i++] = aY0;
+            commands[i++] = static_cast<uint64_t> ( 'H' );
+            commands[i++] = aX1;
+            commands[i++] = static_cast<uint64_t> ( 'V' );
+            commands[i++] = aY1;
+            commands[i++] = static_cast<uint64_t> ( 'H' );
+            commands[i++] = aX0;
+            commands[i++] = static_cast<uint64_t> ( 'Z' );
+
+            BackendPath path;
+            path.Construct ( commands.data(), i );
+            aCanvas.Draw ( path );
+        }
+
+        void HTMLElement::FillEllipse ( Canvas& aCanvas, double aCenterX, double aCenterY,
+                                        double aRadiusX, double aRadiusY )
+        {
+            if ( aRadiusX <= 0.0 || aRadiusY <= 0.0 )
+            {
+                return;
+            }
+            // Four cubic segments with the classic circle-to-Bezier
+            // constant; visually exact at the sizes widgets use.
+            constexpr double kKappa = 0.5522847498307936;
+            const double ox = aRadiusX * kKappa;
+            const double oy = aRadiusY * kKappa;
+            const double x0 = aCenterX - aRadiusX;
+            const double x1 = aCenterX + aRadiusX;
+            const double y0 = aCenterY - aRadiusY;
+            const double y1 = aCenterY + aRadiusY;
+
+            std::array<DrawType, 32> commands{};
+            size_t i = 0;
+            commands[i++] = static_cast<uint64_t> ( 'M' );
+            commands[i++] = x0;
+            commands[i++] = aCenterY;
+            commands[i++] = static_cast<uint64_t> ( 'C' );
+            commands[i++] = x0;
+            commands[i++] = aCenterY - oy;
+            commands[i++] = aCenterX - ox;
+            commands[i++] = y0;
+            commands[i++] = aCenterX;
+            commands[i++] = y0;
+            commands[i++] = static_cast<uint64_t> ( 'C' );
+            commands[i++] = aCenterX + ox;
+            commands[i++] = y0;
+            commands[i++] = x1;
+            commands[i++] = aCenterY - oy;
+            commands[i++] = x1;
+            commands[i++] = aCenterY;
+            commands[i++] = static_cast<uint64_t> ( 'C' );
+            commands[i++] = x1;
+            commands[i++] = aCenterY + oy;
+            commands[i++] = aCenterX + ox;
+            commands[i++] = y1;
+            commands[i++] = aCenterX;
+            commands[i++] = y1;
+            commands[i++] = static_cast<uint64_t> ( 'C' );
+            commands[i++] = aCenterX - ox;
+            commands[i++] = y1;
+            commands[i++] = x0;
+            commands[i++] = aCenterY + oy;
+            commands[i++] = x0;
+            commands[i++] = aCenterY;
+            commands[i++] = static_cast<uint64_t> ( 'Z' );
+
+            BackendPath path;
+            path.Construct ( commands.data(), i );
+            aCanvas.Draw ( path );
+        }
+
+        void HTMLElement::FillPolygon ( Canvas& aCanvas, const double* aPoints, size_t aPointCount )
+        {
+            if ( aPoints == nullptr || aPointCount < 3 )
+            {
+                return;
+            }
+            std::vector<DrawType> commands;
+            commands.reserve ( aPointCount * 2 + 3 );
+            commands.emplace_back ( static_cast<uint64_t> ( 'M' ) );
+            commands.emplace_back ( aPoints[0] );
+            commands.emplace_back ( aPoints[1] );
+            if ( aPointCount > 1 )
+            {
+                commands.emplace_back ( static_cast<uint64_t> ( 'L' ) );
+                for ( size_t i = 1; i < aPointCount; ++i )
+                {
+                    commands.emplace_back ( aPoints[i * 2] );
+                    commands.emplace_back ( aPoints[i * 2 + 1] );
+                }
+            }
+            commands.emplace_back ( static_cast<uint64_t> ( 'Z' ) );
+
+            BackendPath path;
+            path.Construct ( commands.data(), commands.size() );
+            aCanvas.Draw ( path );
+        }
+
+        bool HTMLElement::ResolveTextColor ( ColorAttr& aOut ) const
+        {
+            const css_computed_style* style = StyleOf ( *this );
+            if ( !style )
+            {
+                return false;
+            }
+            css_color color{};
+            css_computed_color ( style, &color );
+            if ( color == 0 )
+            {
+                return false;
+            }
+            aOut = ColorAttr{ Color{ static_cast<uint32_t> ( color ) } };
+            return true;
+        }
+
         void HTMLElement::DrawStart ( Canvas& aCanvas ) const
+        {
+            PaintBox ( aCanvas );
+            PaintInlineContent ( aCanvas );
+        }
+
+        void HTMLElement::PaintBox ( Canvas& aCanvas ) const
         {
             // Border-box sized 0 contributes nothing to render.  This
             // also short-circuits display: none, which the layout
@@ -333,6 +447,20 @@ namespace AeonGUI
             paint_edge ( right_px,  css_computed_border_right_color,
                          x1 - right_px, y0 + top_px, x1, y1 - bottom_px );
 
+            if ( fill_dirty )
+            {
+                aCanvas.SetFillColor ( previous_fill );
+            }
+        }
+
+        void HTMLElement::PaintInlineContent ( Canvas& aCanvas ) const
+        {
+            if ( mLayoutBox.width <= 0.0f || mLayoutBox.height <= 0.0f )
+            {
+                return;
+            }
+            const ColorAttr previous_fill = aCanvas.GetFillColor();
+            bool fill_dirty = false;
             // Inline text content.  We concatenate every Text child into
             // a single run, lay it out through PangoTextLayout with the
             // content-box width as the wrap constraint (matches what

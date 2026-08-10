@@ -50,7 +50,7 @@ set(TESTED_SRCS
   UIEventsTest.cpp
 )
 
-list(APPEND TESTED_SRCS HTMLLayoutSpikeTest.cpp HTMLElementFactoryTest.cpp HTMLLayoutEngineTest.cpp HTMLRenderTest.cpp)
+list(APPEND TESTED_SRCS HTMLLayoutSpikeTest.cpp HTMLElementFactoryTest.cpp HTMLLayoutEngineTest.cpp HTMLRenderTest.cpp HTMLFormControlsTest.cpp)
 
 # Compile a fixture XHTML document to C++ with the xmlcxx tool and link it into
 # the unit tests to exercise the CompiledDocument pipeline end to end.
